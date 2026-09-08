@@ -4,32 +4,20 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"net/url"
-	"os"
 	"sync"
 	"testing"
 	"time"
 
-	"github.com/JDinSeattle/forge-runtime/db"
 	"github.com/JDinSeattle/forge-runtime/internal/domain"
 	flow "github.com/JDinSeattle/forge-runtime/internal/runtime"
+	"github.com/JDinSeattle/forge-runtime/internal/testdb"
 )
 
 func integrationStore(t *testing.T) *Store {
 	t.Helper()
-	dsn := os.Getenv("FORGE_TEST_DATABASE_URL")
-	if dsn == "" {
-		t.Skip("set FORGE_TEST_DATABASE_URL to isolated local Forge database")
-	}
-	u, err := url.Parse(dsn)
-	if err != nil || u.Hostname() != "127.0.0.1" || u.Path != "/forge" {
-		t.Fatal("integration fixtures require loopback /forge database")
-	}
+	dsn := testdb.New(t)
 	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
 	defer cancel()
-	if err = db.Migrate(ctx, dsn); err != nil {
-		t.Fatal(err)
-	}
 	s, err := Open(ctx, dsn)
 	if err != nil {
 		t.Fatal(err)
@@ -44,16 +32,6 @@ func fixture(t *testing.T, s *Store) (Identity, Project, Config) {
 	if err := s.BootstrapTenant(ctx, i.TenantID, i.PrincipalID, i.Role); err != nil {
 		t.Fatal(err)
 	}
-	t.Cleanup(func() {
-		// Fixtures are uniquely scoped; never truncate a shared database.
-		for _, table := range []string{"artifacts", "quota_reservations", "idempotency_keys", "run_events", "approvals", "effects", "model_attempts", "steps", "run_messages", "run_snapshots", "runner_allocations", "runs", "projects", "memberships", "tenant_runtime"} {
-			if _, err := s.Pool.Exec(context.Background(), "DELETE FROM "+table+" WHERE tenant_id=$1", i.TenantID); err != nil {
-				t.Errorf("cleanup %s: %v", table, err)
-			}
-		}
-		_, _ = s.Pool.Exec(context.Background(), `DELETE FROM api_tokens WHERE principal_id=$1`, i.PrincipalID)
-		_, _ = s.Pool.Exec(context.Background(), `DELETE FROM tenants WHERE id=$1`, i.TenantID)
-	})
 	p, err := s.CreateProject(ctx, i.TenantID, "fixture", "fixture-python", "python")
 	if err != nil {
 		t.Fatal(err)
@@ -131,7 +109,6 @@ func TestClaimFencingAndCapacity(t *testing.T) {
 	if err := s.RegisterRunner(ctx, rid, "unix:///tmp/test-only.sock", 2); err != nil {
 		t.Fatal(err)
 	}
-	t.Cleanup(func() { _, _ = s.Pool.Exec(context.Background(), `DELETE FROM runners WHERE id=$1`, rid) })
 	// Force these tasks onto the fixture runner; no other suite's runner is used.
 	for n := range 3 {
 		r := submitFixture(t, s, i, p, c, fmt.Sprint(n))

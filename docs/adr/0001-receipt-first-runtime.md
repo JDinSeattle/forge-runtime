@@ -1,7 +1,9 @@
 # ADR 0001: Make execution receipts the recovery boundary
 
-Date: 2026-09-07  
-Status: Proposed architecture; implementation and acceptance remain subject to the gates in [the implementation map](../implementation-map.md).  
+Date: 2026-09-07
+
+Status: Proposed architecture; implementation and acceptance remain subject to the gates in [the implementation map](../implementation-map.md).
+
 Scope: The mandatory single-runner, controlled-tenant SDE baseline in `SDE_IMPLEMENTATION_PLAN.md`, sections 1–18 and 20.
 
 ## Product problem

@@ -6,14 +6,15 @@ It does **not** establish that the entire SDE specification has passed. The
 [140-row implementation map](implementation-map.md) keeps incomplete compound
 requirements open.
 
-This audit inspected an uncommitted working tree. There is no tested commit ID
-to report yet. The measured scheduler report contains source hashes and exact
+The first implementation commit is `191cb89e06688df4f12d09e6e99712d15d8ea725`.
+A clean-checkout run exposed a test isolation defect described below; that commit
+is not claimed to have passed every delivery check. The measured scheduler report contains source hashes and exact
 environment details. Earlier tests were reported through agent tool output and
 the [independent review log](reviews/implementation-review.md); most original
 stdout files were not retained. Those records are labeled accordingly rather
 than reconstructed as raw logs. A retained race JSONL now records 233 passing test/subtest entries and zero
 failures. Newer execution/load evidence is linked below. The final validation
-of the final working tree, its commit identity and clean-clone reproduction
+of the corrected tree and clean-clone reproduction
 remain pending; earlier raw artifacts must not be relabeled as those checks.
 
 | Record | What is supported | Evidence form | Main limitation |
@@ -521,7 +522,7 @@ the baseline/repair/verification sequence. No API credentials or live model
 were used. Independent review of the Go profile found no new P1/P2 issue in
 that bounded change; this is not a general audit of arbitrary hostile code.
 
-## E13 — Final whole-repository source checks
+## E13 — Whole-repository source checks and clean-checkout correction
 
 After business code was frozen, the integration owner ran `go test -race
 -count=1 -json ./...` against the isolated local PostgreSQL test fixtures.
@@ -539,7 +540,18 @@ the three commands. The Python suites passed
 [14 volume-helper tests](../benchmarks/results/volume-helper-tests-20260908.log)
 and [eight runner-configuration tests](../benchmarks/results/runner-config-tests-20260908.log).
 The command ran in the working tree immediately before its first commit.
-Clean-checkout and GitHub CI results, when completed, are separate records.
+A subsequent [clean-checkout run](../benchmarks/results/clean-checkout-initial-failure-191cb89.jsonl)
+failed while cleaning a persistence fixture: that early helper still used the
+public schema, so a live worker could claim a test run and append a snapshot
+during cleanup. This invalidated the original claim that every integration
+helper was isolated. Persistence and quota helpers now use a new private schema
+per test; cross-tenant quota pools deliberately share their one test schema.
+The one identified terminal leftover was removed by exact fixture tenant ID;
+demo runs were preserved. The fix changes test setup, not production scheduling.
+
+The first GitHub job also failed before checkout because the runner parsed the
+single-quoted Docker health command incorrectly. The workflow now uses double
+quotes. Neither initial failure is reported as a passing CI result.
 
 ## Updating this record
 

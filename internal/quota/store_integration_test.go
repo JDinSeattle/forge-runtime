@@ -4,33 +4,28 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"net/url"
-	"os"
 	"sync"
 	"sync/atomic"
 	"testing"
 	"time"
 
-	"github.com/JDinSeattle/forge-runtime/db"
 	"github.com/JDinSeattle/forge-runtime/internal/domain"
+	"github.com/JDinSeattle/forge-runtime/internal/testdb"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-func quotaFixture(t *testing.T) (*Store, string, string, string) {
+func quotaFixture(t *testing.T, sharedDSN ...string) (*Store, string, string, string) {
 	t.Helper()
-	dsn := os.Getenv("FORGE_TEST_DATABASE_URL")
-	if dsn == "" {
-		t.Skip("set FORGE_TEST_DATABASE_URL to isolated loopback /forge database")
-	}
-	u, err := url.Parse(dsn)
-	if err != nil || u.Hostname() != "127.0.0.1" || u.Path != "/forge" {
-		t.Fatal("quota integration tests require loopback /forge database")
+	var dsn string
+	if len(sharedDSN) == 0 {
+		dsn = testdb.New(t)
+	} else {
+		// A second independent pool may share this test's private schema to
+		// exercise the real cross-tenant credential-group budget boundary.
+		dsn = sharedDSN[0]
 	}
 	ctx := context.Background()
-	if err = db.Migrate(ctx, dsn); err != nil {
-		t.Fatal(err)
-	}
 	pool, err := pgxpool.New(ctx, dsn)
 	if err != nil {
 		t.Fatal(err)
@@ -49,19 +44,6 @@ func quotaFixture(t *testing.T) (*Store, string, string, string) {
 			t.Fatal(err)
 		}
 	}
-	t.Cleanup(func() {
-		for _, table := range []string{"quota_reservations", "runs", "projects"} {
-			if _, err := pool.Exec(context.Background(), "DELETE FROM "+table+" WHERE tenant_id=$1", tenant); err != nil {
-				t.Error(err)
-			}
-		}
-		if _, err := pool.Exec(context.Background(), `DELETE FROM provider_quotas WHERE credential_group=$1`, group); err != nil {
-			t.Error(err)
-		}
-		if _, err := pool.Exec(context.Background(), `DELETE FROM tenants WHERE id=$1`, tenant); err != nil {
-			t.Error(err)
-		}
-	})
 	s := New(pool)
 	if err = s.Configure(ctx, Config{CredentialGroup: group, MaxConcurrent: 4, MaxTokens: 10000, MaxCost: 10000, WindowDuration: time.Hour, FailureThreshold: 2, BreakerCooldown: time.Minute}); err != nil {
 		t.Fatal(err)
@@ -71,7 +53,7 @@ func quotaFixture(t *testing.T) (*Store, string, string, string) {
 
 func TestSharedBudgetsAcrossTenantsAndIndependentPools(t *testing.T) {
 	s, tenant, run, group := quotaFixture(t)
-	other, otherTenant, otherRun, _ := quotaFixture(t)
+	other, otherTenant, otherRun, _ := quotaFixture(t, s.Pool.Config().ConnString())
 	ctx := context.Background()
 	if err := s.Configure(ctx, Config{CredentialGroup: group, MaxConcurrent: 4, MaxTokens: 201, MaxCost: 101, WindowDuration: time.Hour, FailureThreshold: 2, BreakerCooldown: time.Minute}); err != nil {
 		t.Fatal(err)

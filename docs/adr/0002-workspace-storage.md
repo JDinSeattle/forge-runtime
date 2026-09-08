@@ -1,6 +1,7 @@
 # ADR 0002: Bound durable workspaces with a private ext4 image pool
 
-Date: 2026-09-07  
+Date: 2026-09-07
+
 Status: Proposed from read-only host inspection; **no image, mount, daemon, quota or system configuration was changed during this investigation**. The commands below are a setup-script specification for review and subsequent authorization, not completed acceptance evidence.
 
 ## Decision and host evidence
