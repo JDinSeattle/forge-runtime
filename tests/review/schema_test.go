@@ -40,6 +40,19 @@ func reviewDB(t *testing.T) (context.Context, *pgx.Conn) {
 	return ctx, conn
 }
 
+// SQL/RLS fixtures also need their own migrated schema. A freshly created CI
+// database deliberately has no public application tables.
+func schemaReviewDB(t *testing.T) (context.Context, *pgx.Conn) {
+	t.Helper()
+	ctx, store := isolatedStore(t)
+	connection, err := store.Pool.Acquire(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(connection.Release)
+	return ctx, connection.Conn()
+}
+
 func exec(t *testing.T, ctx context.Context, tx pgx.Tx, sql string, args ...any) {
 	t.Helper()
 	if _, err := tx.Exec(ctx, sql, args...); err != nil {
@@ -85,7 +98,7 @@ func seed(t *testing.T, ctx context.Context, tx pgx.Tx) fixture {
 }
 
 func TestReviewEffectsAndApprovalsBindDurableParents(t *testing.T) {
-	ctx, conn := reviewDB(t)
+	ctx, conn := schemaReviewDB(t)
 	tx, err := conn.Begin(ctx)
 	if err != nil {
 		t.Fatal(err)
@@ -107,7 +120,7 @@ func TestReviewEffectsAndApprovalsBindDurableParents(t *testing.T) {
 }
 
 func TestReviewRLSUsesActualNonOwnerRoleAndLocalContext(t *testing.T) {
-	ctx, conn := reviewDB(t)
+	ctx, conn := schemaReviewDB(t)
 	tx, err := conn.Begin(ctx)
 	if err != nil {
 		t.Fatal(err)
@@ -118,7 +131,11 @@ func TestReviewRLSUsesActualNonOwnerRoleAndLocalContext(t *testing.T) {
 	identifier := pgx.Identifier{role}.Sanitize()
 	// The role and all fixtures are created in the same rollback-only transaction.
 	exec(t, ctx, tx, `CREATE ROLE `+identifier+` NOLOGIN NOSUPERUSER NOBYPASSRLS`)
-	exec(t, ctx, tx, `GRANT USAGE ON SCHEMA public TO `+identifier)
+	var schema string
+	if err := tx.QueryRow(ctx, `SELECT current_schema()`).Scan(&schema); err != nil {
+		t.Fatal(err)
+	}
+	exec(t, ctx, tx, `GRANT USAGE ON SCHEMA `+pgx.Identifier{schema}.Sanitize()+` TO `+identifier)
 	exec(t, ctx, tx, `GRANT SELECT,INSERT,UPDATE,DELETE ON runs,projects TO `+identifier)
 	exec(t, ctx, tx, `SET LOCAL ROLE `+identifier)
 	var superuser, bypass, owner bool
