@@ -1,0 +1,47 @@
+{
+  "base_commit": "66ee6f4ae415b0735c6eb4d0645f5a8d72d33e7946d0219e319aa9158a375659",
+  "config": {
+    "max_cost_microusd": 1000000,
+    "max_model_rounds": 8,
+    "max_runtime_seconds": 300,
+    "max_tool_calls": 20,
+    "model": "fake",
+    "provider": "fake"
+  },
+  "covered_seq": 41,
+  "created_at": "2026-09-08T01:08:53.04375-07:00",
+  "id": "run_K6VTFFCNYOARPLMUN5734RRNP2",
+  "principal_id": "operator",
+  "project_id": "project_O5W53R6QTT7WT3RGOHO2ANL4TF",
+  "runner_id": "local",
+  "state": {
+    "cost_microusd": 0,
+    "lease": {
+      "epoch": 2,
+      "owner": "recovery-worker-1-0",
+      "until": "2026-09-08T01:09:53.155949-07:00"
+    },
+    "limits": {
+      "deadline": "2026-09-08T01:13:53.04291-07:00",
+      "max_cost_microusd": 1000000,
+      "max_model_rounds": 8,
+      "max_tool_calls": 20
+    },
+    "model_rounds": 3,
+    "output_ref": "artifact_7882880fe246ce98fdb4c1989e0adca230d46543cc872c1f20f5ea0aa9862e13",
+    "run_id": "run_K6VTFFCNYOARPLMUN5734RRNP2",
+    "schema_version": 1,
+    "stage": "stopped",
+    "status": "completed",
+    "step_seq": 3,
+    "tenant_id": "demo",
+    "tool_calls": 2,
+    "verification_report_ref": "artifact_c4d6906b1d097c6d9d07ba601977a51f546c05fc7d4c346c8f6394f21297ad9f",
+    "verification_revision": 2,
+    "verification_status": "verified",
+    "version": 19,
+    "workspace_revision": 2
+  },
+  "task": "Fix clamp(value, low, high): return a value inside the inclusive bounds, leave in-range values unchanged, and preserve ValueError for inverted bounds.\n",
+  "tenant_id": "demo"
+}

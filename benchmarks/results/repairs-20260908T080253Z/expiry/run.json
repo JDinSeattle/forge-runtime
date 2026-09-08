@@ -1,0 +1,47 @@
+{
+  "base_commit": "061283bcfc07d3365c5c7e40199ef9f79e165ddfe798ff16932e211164445958",
+  "config": {
+    "max_cost_microusd": 1000000,
+    "max_model_rounds": 8,
+    "max_runtime_seconds": 300,
+    "max_tool_calls": 20,
+    "model": "fake",
+    "provider": "fake"
+  },
+  "covered_seq": 38,
+  "created_at": "2026-09-08T01:06:23.017186-07:00",
+  "id": "run_3GDLQQ7XWGFT6L3U2GMUWGFKK7",
+  "principal_id": "operator",
+  "project_id": "project_774ZD7YY27SHZX33A5Y2DDVPSM",
+  "runner_id": "local",
+  "state": {
+    "cost_microusd": 0,
+    "lease": {
+      "epoch": 1,
+      "owner": "local-worker-1-0",
+      "until": "2026-09-08T01:06:53.138588-07:00"
+    },
+    "limits": {
+      "deadline": "2026-09-08T01:11:23.016938-07:00",
+      "max_cost_microusd": 1000000,
+      "max_model_rounds": 8,
+      "max_tool_calls": 20
+    },
+    "model_rounds": 3,
+    "output_ref": "artifact_96436f8de9ba94c56cf781919ae13f340dc05388d0b316b305944f686beb64f8",
+    "run_id": "run_3GDLQQ7XWGFT6L3U2GMUWGFKK7",
+    "schema_version": 1,
+    "stage": "stopped",
+    "status": "completed",
+    "step_seq": 3,
+    "tenant_id": "demo",
+    "tool_calls": 2,
+    "verification_report_ref": "artifact_c02689fc5a3216f4cfcf9ce346783b3e2abc747d06918338c56b9d1cd8c0b29c",
+    "verification_revision": 2,
+    "verification_status": "verified",
+    "version": 17,
+    "workspace_revision": 2
+  },
+  "task": "Fix TTL expiration at the exact deadline. A zero TTL expires immediately; future deadlines remain valid; negative TTL still raises ValueError.\n",
+  "tenant_id": "demo"
+}

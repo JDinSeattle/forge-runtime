@@ -1,0 +1,8 @@
+=== RUN   TestRealDockerRunnerIsolationQuotaAndCancellation
+    docker_integration_test.go:79: real fixture workspace docker-probe-a430c70627c4c86d baseline 66ee6f4ae415b0735c6eb4d0645f5a8d72d33e7946d0219e319aa9158a375659
+    docker_integration_test.go:145: operation docker-probe-a430c70627c4c86d-op-1 receipt=66f399509c82a461baa7013adeb355cb84fdedbf6c8239d967e4ff077e685937 output={"uid": 1000, "gid": 1000, "cap_eff": "0000000000000000", "no_new_privs": 1, "private_file_mode": "0o600"}
+    docker_integration_test.go:145: operation docker-probe-a430c70627c4c86d-op-4 receipt=95d504acc1a45ef6f68199059c91c8fc6a93e9bdaa4452095466cb43604cc642 output={"enospc": true, "allocated_bytes_before_enospc": 228589568, "filesystem_bytes": 234594304}
+    docker_integration_test.go:210: real cancellation job=forge-bcbeab388a21f902d9385de15ba12328e71bab94 exit=137 no_active=true stop_receipt=01b0e8c73238e181c586ea6217b936cc2b2d7b6da6c52f9017f4ffab5580fffe
+--- PASS: TestRealDockerRunnerIsolationQuotaAndCancellation (2.33s)
+PASS
+ok  	github.com/JDinSeattle/forge-runtime/internal/runnerclient	2.335s

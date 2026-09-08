@@ -1,0 +1,493 @@
+openapi: 3.1.0
+info:
+  title: Forge Runtime Control API
+  version: 0.1.0
+  description: |
+    Durable coding-run control plane. Bearer credentials and tenant identity are
+    headers only. Mutations do not automatically retry. Submit/message retries
+    must reuse the same Idempotency-Key and unchanged request body.
+servers:
+  - url: http://127.0.0.1:8080
+security:
+  - BearerAuth: []
+    TenantHeader: []
+paths:
+  /metrics:
+    get:
+      operationId: getMetrics
+      security: []
+      responses:
+        '200':
+          description: Prometheus metrics exposition
+          content:
+            text/plain:
+              schema: { type: string }
+  /healthz:
+    get:
+      operationId: getHealth
+      security: []
+      responses:
+        '200':
+          description: Process responds
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Health' }
+  /readyz:
+    get:
+      operationId: getReadiness
+      security: []
+      responses:
+        '200':
+          description: PostgreSQL reachable
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Health' }
+        default: { $ref: '#/components/responses/Error' }
+  /v1/projects:
+    post:
+      operationId: createProject
+      description: Administrator creates a project from a registered immutable source/profile pair.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreateProject' }
+      responses:
+        '201':
+          description: Project created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Project' }
+        default: { $ref: '#/components/responses/Error' }
+  /v1/projects/{id}/runs:
+    parameters:
+      - { $ref: '#/components/parameters/ID' }
+    post:
+      operationId: submitRun
+      parameters:
+        - { $ref: '#/components/parameters/IdempotencyKey' }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/Submit' }
+      responses:
+        '202':
+          description: Run accepted or original response replayed
+          headers:
+            Location: { schema: { type: string }, description: Relative run URL }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SubmitResult' }
+        default: { $ref: '#/components/responses/Error' }
+  /v1/runs/{id}:
+    parameters:
+      - { $ref: '#/components/parameters/ID' }
+    get:
+      operationId: getRun
+      responses:
+        '200': { $ref: '#/components/responses/Run' }
+        default: { $ref: '#/components/responses/Error' }
+  /v1/runs/{id}/snapshot:
+    parameters:
+      - { $ref: '#/components/parameters/ID' }
+    get:
+      operationId: getSnapshot
+      description: Fetch state and covered_seq atomically; reconnect SSE after covered_seq.
+      responses:
+        '200': { $ref: '#/components/responses/Run' }
+        default: { $ref: '#/components/responses/Error' }
+  /v1/runs/{id}/events:
+    parameters:
+      - { $ref: '#/components/parameters/ID' }
+    get:
+      operationId: watchRun
+      parameters:
+        - in: header
+          name: Last-Event-ID
+          required: false
+          schema: { type: string, pattern: '^[0-9]+$' }
+      responses:
+        '200':
+          description: |
+            SSE stream. id is the decimal Event.seq; event is Event.type; data
+            contains the JSON Event envelope. Comment-only heartbeats do not
+            advance the cursor. A disconnect can indicate backpressure or
+            credential expiry. Reconnect with Last-Event-ID; deduplicate seq.
+          content:
+            text/event-stream:
+              schema: { type: string }
+        '410':
+          description: Cursor is older than retained events; fetch snapshot and reconnect at covered_seq.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/APIError' }
+        default: { $ref: '#/components/responses/Error' }
+  /v1/runs/{id}/cancel:
+    parameters:
+      - { $ref: '#/components/parameters/ID' }
+    post:
+      operationId: cancelRun
+      responses:
+        '202': { $ref: '#/components/responses/Run' }
+        default: { $ref: '#/components/responses/Error' }
+  /v1/runs/{id}/resume:
+    parameters:
+      - { $ref: '#/components/parameters/ID' }
+    post:
+      operationId: resumeRun
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/Resume' }
+      responses:
+        '202': { $ref: '#/components/responses/Run' }
+        default: { $ref: '#/components/responses/Error' }
+  /v1/runs/{id}/messages:
+    parameters:
+      - { $ref: '#/components/parameters/ID' }
+    post:
+      operationId: addMessage
+      parameters:
+        - { $ref: '#/components/parameters/IdempotencyKey' }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AddMessage' }
+      responses:
+        '202':
+          description: Message accepted or original response replayed
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/MessageResult' }
+        default: { $ref: '#/components/responses/Error' }
+  /v1/approvals/{id}:
+    parameters:
+      - { $ref: '#/components/parameters/ID' }
+    get:
+      operationId: getApproval
+      responses:
+        '200':
+          description: Immutable pending operation binding and current decision
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Approval' }
+        default: { $ref: '#/components/responses/Error' }
+  /v1/approvals/{id}/decision:
+    parameters:
+      - { $ref: '#/components/parameters/ID' }
+    post:
+      operationId: decideApproval
+      description: The submitted binding must exactly match the reviewed pending operation.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ApprovalDecisionBody' }
+      responses:
+        '200': { $ref: '#/components/responses/Run' }
+        default: { $ref: '#/components/responses/Error' }
+  /v1/runs/{id}/artifacts:
+    parameters:
+      - { $ref: '#/components/parameters/ID' }
+    get:
+      operationId: listArtifacts
+      parameters:
+        - in: query
+          name: after
+          schema: { type: string }
+        - in: query
+          name: limit
+          schema: { type: integer, minimum: 1, maximum: 1000, default: 100 }
+      responses:
+        '200':
+          description: Ready artifacts ordered by ID; next page uses last returned ID as after.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Artifact' }
+        default: { $ref: '#/components/responses/Error' }
+  /v1/artifacts/{id}:
+    parameters:
+      - { $ref: '#/components/parameters/ID' }
+    get:
+      operationId: downloadArtifact
+      responses:
+        '200':
+          description: Authorized immutable artifact bytes
+          headers:
+            ETag: { schema: { type: string }, description: Quoted SHA-256 of artifact bytes }
+            Content-Length: { schema: { type: integer, format: int64 } }
+            Content-Disposition: { schema: { type: string } }
+          content:
+            application/octet-stream:
+              schema: { type: string, format: binary }
+        default: { $ref: '#/components/responses/Error' }
+components:
+  securitySchemes:
+    BearerAuth: { type: http, scheme: bearer }
+    TenantHeader: { type: apiKey, in: header, name: X-Forge-Tenant }
+  parameters:
+    ID:
+      name: id
+      in: path
+      required: true
+      schema: { $ref: '#/components/schemas/ID' }
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema: { type: string, minLength: 1, maxLength: 128 }
+  responses:
+    Error:
+      description: |
+        Structured failure. 400 invalid input; 403 authentication/permission;
+        404 unknown or inaccessible resource; 409 conflict; 410 reset required;
+        429 capacity; 503 dependency timeout; 500 internal failure.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/APIError' }
+    Run:
+      description: Current run snapshot; internal commands are omitted.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Run' }
+  schemas:
+    ID:
+      type: string
+      minLength: 1
+      maxLength: 128
+      pattern: '^[A-Za-z0-9_-]+$'
+    Counter:
+      type: integer
+      minimum: 0
+      x-go-type: uint64
+    Money:
+      type: integer
+      format: int64
+      minimum: 0
+      description: Integer micro-US dollars; 1 USD equals 1000000.
+    Health:
+      type: object
+      required: [status]
+      properties:
+        status: { type: string }
+    APIError:
+      type: object
+      required: [code, message, request_id, retryable]
+      properties:
+        code: { type: string }
+        message: { type: string }
+        request_id: { type: string }
+        retryable: { type: boolean }
+    CreateProject:
+      type: object
+      additionalProperties: false
+      required: [name, source_id, profile_id]
+      properties:
+        name: { type: string, minLength: 1, maxLength: 128 }
+        source_id: { type: string, minLength: 1 }
+        profile_id: { type: string, minLength: 1 }
+    Project:
+      type: object
+      required: [id, tenant_id, name, source_id, profile_id, created_at]
+      properties:
+        id: { $ref: '#/components/schemas/ID' }
+        tenant_id: { $ref: '#/components/schemas/ID' }
+        name: { type: string }
+        source_id: { type: string }
+        profile_id: { type: string }
+        created_at: { type: string, format: date-time }
+    Budget:
+      type: object
+      additionalProperties: false
+      description: Optional overrides may only reduce the named server configuration limits.
+      properties:
+        max_model_rounds: { type: integer, minimum: 1, maximum: 1000, x-go-type: uint64 }
+        max_tool_calls: { type: integer, minimum: 1, maximum: 10000, x-go-type: uint64 }
+        max_cost_microusd: { type: integer, format: int64, minimum: 1 }
+        max_runtime_seconds: { type: integer, format: int64, minimum: 1, maximum: 86400 }
+    Submit:
+      type: object
+      additionalProperties: false
+      required: [task, base_commit, config_id, budget]
+      properties:
+        task: { type: string, minLength: 1, maxLength: 64000 }
+        base_commit: { type: string, minLength: 1 }
+        config_id: { type: string, minLength: 1 }
+        budget: { $ref: '#/components/schemas/Budget' }
+    SubmitResult:
+      type: object
+      required: [run_id, reused]
+      properties:
+        run_id: { $ref: '#/components/schemas/ID' }
+        reused: { type: boolean }
+    Resume:
+      type: object
+      additionalProperties: false
+      required: [expected_version]
+      properties:
+        expected_version: { $ref: '#/components/schemas/Counter' }
+    AddMessage:
+      type: object
+      additionalProperties: false
+      required: [text]
+      properties:
+        text: { type: string, minLength: 1, maxLength: 16000 }
+    Message:
+      type: object
+      required: [seq, text]
+      properties:
+        seq: { $ref: '#/components/schemas/Counter' }
+        text: { type: string }
+        applied_step: { $ref: '#/components/schemas/Counter' }
+    MessageResult:
+      type: object
+      required: [message, reused]
+      properties:
+        message: { $ref: '#/components/schemas/Message' }
+        reused: { type: boolean }
+    ApprovalBinding:
+      type: object
+      additionalProperties: false
+      required: [effect_id, args_hash, workspace_revision, policy_version, version, granted]
+      properties:
+        effect_id: { $ref: '#/components/schemas/ID' }
+        args_hash: { type: string }
+        workspace_revision: { $ref: '#/components/schemas/Counter' }
+        policy_version: { type: string }
+        version: { $ref: '#/components/schemas/Counter' }
+        granted: { type: boolean }
+    Approval:
+      type: object
+      required: [id, run_id, binding, decision]
+      properties:
+        id: { $ref: '#/components/schemas/ID' }
+        run_id: { $ref: '#/components/schemas/ID' }
+        binding: { $ref: '#/components/schemas/ApprovalBinding' }
+        decision:
+          type: [string, 'null']
+          pattern: '^(allow|deny)$'
+    ApprovalDecisionBody:
+      type: object
+      additionalProperties: false
+      required: [binding, approve]
+      properties:
+        binding: { $ref: '#/components/schemas/ApprovalBinding' }
+        approve: { type: boolean }
+    Config:
+      type: object
+      required: [provider, model, max_model_rounds, max_tool_calls, max_cost_microusd, max_runtime_seconds]
+      properties:
+        provider: { type: string }
+        model: { type: string }
+        max_model_rounds: { $ref: '#/components/schemas/Counter' }
+        max_tool_calls: { $ref: '#/components/schemas/Counter' }
+        max_cost_microusd: { $ref: '#/components/schemas/Money' }
+        max_runtime_seconds: { type: integer, format: int64 }
+    RunStatus:
+      type: string
+      enum: [queued, running, waiting_approval, cancel_requested, cancelled, completed, failed, budget_exhausted, needs_reconciliation]
+    Stage:
+      type: string
+      enum: [initialize, adopt_workspace, build_context, model_step, validate_tool_calls, approval_gate, execute_effects, ingest_results, verify, finalize, reconcile, stopped]
+    Lease:
+      type: object
+      required: [owner, epoch, until]
+      properties:
+        owner: { type: string }
+        epoch: { $ref: '#/components/schemas/Counter' }
+        until: { type: string, format: date-time }
+    Limits:
+      type: object
+      required: [max_model_rounds, max_tool_calls, max_cost_microusd, deadline]
+      properties:
+        max_model_rounds: { $ref: '#/components/schemas/Counter' }
+        max_tool_calls: { $ref: '#/components/schemas/Counter' }
+        max_cost_microusd: { $ref: '#/components/schemas/Money' }
+        deadline: { type: string, format: date-time }
+    Effect:
+      type: object
+      required: [operation_id, kind, args, args_hash, expected_revision, dispatch_epoch, policy_version, requires_approval, status]
+      properties:
+        operation_id: { $ref: '#/components/schemas/ID' }
+        kind: { type: string }
+        args: { type: object, additionalProperties: true }
+        args_hash: { type: string }
+        expected_revision: { $ref: '#/components/schemas/Counter' }
+        dispatch_epoch: { $ref: '#/components/schemas/Counter' }
+        policy_version: { type: string }
+        requires_approval: { type: boolean }
+        status: { type: string, enum: [planned, in_flight, succeeded, failed, cancelled, unknown] }
+        receipt_ref: { type: string }
+    State:
+      type: object
+      required: [schema_version, run_id, tenant_id, version, status, stage, lease, step_seq, workspace_revision, verification_status, verification_revision, model_rounds, tool_calls, cost_microusd, limits]
+      properties:
+        schema_version: { type: integer, x-go-type: uint32 }
+        run_id: { $ref: '#/components/schemas/ID' }
+        tenant_id: { $ref: '#/components/schemas/ID' }
+        version: { $ref: '#/components/schemas/Counter' }
+        status: { $ref: '#/components/schemas/RunStatus' }
+        stage: { $ref: '#/components/schemas/Stage' }
+        resume_stage: { $ref: '#/components/schemas/Stage' }
+        lease: { $ref: '#/components/schemas/Lease' }
+        step_seq: { $ref: '#/components/schemas/Counter' }
+        workspace_revision: { $ref: '#/components/schemas/Counter' }
+        reconciliation_revision: { $ref: '#/components/schemas/Counter' }
+        pending_effect: { $ref: '#/components/schemas/Effect' }
+        remaining_effects:
+          type: array
+          items: { $ref: '#/components/schemas/Effect' }
+        approval: { $ref: '#/components/schemas/ApprovalBinding' }
+        output_ref: { type: string }
+        verification_status: { type: string, enum: [unverified, regression_only, verified] }
+        verification_report_ref: { type: string }
+        verification_revision: { $ref: '#/components/schemas/Counter' }
+        model_rounds: { $ref: '#/components/schemas/Counter' }
+        tool_calls: { $ref: '#/components/schemas/Counter' }
+        cost_microusd: { $ref: '#/components/schemas/Money' }
+        limits: { $ref: '#/components/schemas/Limits' }
+        failure_reason: { type: string }
+        stop_target: { $ref: '#/components/schemas/RunStatus' }
+    Run:
+      type: object
+      required: [tenant_id, id, project_id, principal_id, task, base_commit, runner_id, state, config, created_at, covered_seq]
+      properties:
+        tenant_id: { $ref: '#/components/schemas/ID' }
+        id: { $ref: '#/components/schemas/ID' }
+        project_id: { $ref: '#/components/schemas/ID' }
+        principal_id: { $ref: '#/components/schemas/ID' }
+        task: { type: string }
+        base_commit: { type: string }
+        runner_id: { type: string }
+        state: { $ref: '#/components/schemas/State' }
+        config: { $ref: '#/components/schemas/Config' }
+        created_at: { type: string, format: date-time }
+        covered_seq: { $ref: '#/components/schemas/Counter' }
+    Event:
+      type: object
+      required: [run_id, seq, type, schema_version, payload, created_at]
+      properties:
+        run_id: { $ref: '#/components/schemas/ID' }
+        seq: { $ref: '#/components/schemas/Counter' }
+        type: { type: string }
+        schema_version: { type: integer }
+        payload: { type: object, additionalProperties: true }
+        created_at: { type: string, format: date-time }
+    Artifact:
+      type: object
+      required: [tenant_id, id, run_id, kind, object_key, sha256, byte_size, state, created_at]
+      properties:
+        tenant_id: { $ref: '#/components/schemas/ID' }
+        id: { $ref: '#/components/schemas/ID' }
+        run_id: { $ref: '#/components/schemas/ID' }
+        kind: { type: string }
+        object_key: { type: string }
+        sha256: { type: string, pattern: '^[a-f0-9]{64}$' }
+        byte_size: { type: integer, format: int64, minimum: 0 }
+        state: { type: string, enum: [ready] }
+        created_at: { type: string, format: date-time }

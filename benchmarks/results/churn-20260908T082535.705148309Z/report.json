@@ -1,0 +1,247 @@
+{
+  "actual_elapsed_seconds": 0.692040384,
+  "baseline": {
+    "stage": "round_0_closed",
+    "at": "2026-09-08T01:25:36.027249276-07:00",
+    "heap_alloc_bytes": 4543072,
+    "heap_inuse_bytes": 6430720,
+    "goroutines": 6,
+    "fds": 42
+  },
+  "configuration": {
+    "api_pool_max": 16,
+    "connections_per_round": 50,
+    "max_elapsed_seconds": 25,
+    "max_fds_above_baseline": 4,
+    "max_goroutines_above_baseline": 8,
+    "post_close_settle_ms": 50,
+    "rounds": 5,
+    "server_cleanup_grace_seconds": 2,
+    "warmup_connections": 1,
+    "writer_pool_max": 16
+  },
+  "database_version": "PostgreSQL 17.11 on x86_64-pc-linux-musl, compiled by gcc (Alpine 15.2.0) 15.2.0, 64-bit",
+  "limitations": [
+    "Five rounds of 50 connections is finite lifecycle evidence, not proof of long-term absence of leaks.",
+    "API and clients share one Go process; heap, goroutines and FDs include both and the harness. PostgreSQL runs separately.",
+    "The baseline follows warmed database pools and one complete SSE lifecycle. Listener and pools remain open for every measurement.",
+    "FD/goroutine assertions allow fixed small process-level slack above baseline, but require zero actual TCP connections and zero SSE handlers after every round.",
+    "Heap is measured after GC but is reported without a leak assertion; runtime caches and the harness can retain allocations.",
+    "No event publication, long-lived slow-client backpressure, reconnect replay, models, effects or containers are exercised."
+  ],
+  "machine": {
+    "architecture": "amd64",
+    "cpu_model": "13th Gen Intel(R) Core(TM) i9-13900K",
+    "go_version": "go1.26.8",
+    "gomaxprocs": 32,
+    "host_memory": "129209084 kB",
+    "logical_cpus": 32,
+    "os": "linux"
+  },
+  "passed": true,
+  "profiles": [
+    "heap.pprof",
+    "goroutine.pprof"
+  ],
+  "rounds": [
+    {
+      "round": 1,
+      "expected_connections": 50,
+      "connected": 50,
+      "open_resources": {
+        "stage": "round_1_open",
+        "at": "2026-09-08T01:25:36.065478785-07:00",
+        "heap_alloc_bytes": 7932608,
+        "heap_inuse_bytes": 13705216,
+        "goroutines": 257,
+        "fds": 142
+      },
+      "closed_resources": {
+        "stage": "round_1_closed",
+        "at": "2026-09-08T01:25:36.127140831-07:00",
+        "heap_alloc_bytes": 5923904,
+        "heap_inuse_bytes": 10543104,
+        "goroutines": 6,
+        "fds": 42
+      },
+      "tcp_at_open": 50,
+      "handlers_at_open": 50,
+      "tcp_after_close": 0,
+      "handlers_after_close": 0,
+      "handler_starts": 50,
+      "handler_returns": 50,
+      "goroutine_delta": 0,
+      "fd_delta": 0,
+      "duration_seconds": 0.099885913,
+      "passed": true
+    },
+    {
+      "round": 2,
+      "expected_connections": 50,
+      "connected": 50,
+      "open_resources": {
+        "stage": "round_2_open",
+        "at": "2026-09-08T01:25:36.135646784-07:00",
+        "heap_alloc_bytes": 8132648,
+        "heap_inuse_bytes": 14540800,
+        "goroutines": 257,
+        "fds": 142
+      },
+      "closed_resources": {
+        "stage": "round_2_closed",
+        "at": "2026-09-08T01:25:36.19763769-07:00",
+        "heap_alloc_bytes": 6003824,
+        "heap_inuse_bytes": 10870784,
+        "goroutines": 6,
+        "fds": 42
+      },
+      "tcp_at_open": 50,
+      "handlers_at_open": 50,
+      "tcp_after_close": 0,
+      "handlers_after_close": 0,
+      "handler_starts": 50,
+      "handler_returns": 50,
+      "goroutine_delta": 0,
+      "fd_delta": 0,
+      "duration_seconds": 0.070488322,
+      "passed": true
+    },
+    {
+      "round": 3,
+      "expected_connections": 50,
+      "connected": 50,
+      "open_resources": {
+        "stage": "round_3_open",
+        "at": "2026-09-08T01:25:36.202154085-07:00",
+        "heap_alloc_bytes": 8197896,
+        "heap_inuse_bytes": 14647296,
+        "goroutines": 257,
+        "fds": 142
+      },
+      "closed_resources": {
+        "stage": "round_3_closed",
+        "at": "2026-09-08T01:25:36.263827048-07:00",
+        "heap_alloc_bytes": 6107408,
+        "heap_inuse_bytes": 11296768,
+        "goroutines": 6,
+        "fds": 42
+      },
+      "tcp_at_open": 50,
+      "handlers_at_open": 50,
+      "tcp_after_close": 0,
+      "handlers_after_close": 0,
+      "handler_starts": 50,
+      "handler_returns": 50,
+      "goroutine_delta": 0,
+      "fd_delta": 0,
+      "duration_seconds": 0.066183136,
+      "passed": true
+    },
+    {
+      "round": 4,
+      "expected_connections": 50,
+      "connected": 50,
+      "open_resources": {
+        "stage": "round_4_open",
+        "at": "2026-09-08T01:25:36.268453145-07:00",
+        "heap_alloc_bytes": 8224104,
+        "heap_inuse_bytes": 14999552,
+        "goroutines": 257,
+        "fds": 142
+      },
+      "closed_resources": {
+        "stage": "round_4_closed",
+        "at": "2026-09-08T01:25:36.330060586-07:00",
+        "heap_alloc_bytes": 6144832,
+        "heap_inuse_bytes": 11509760,
+        "goroutines": 6,
+        "fds": 42
+      },
+      "tcp_at_open": 50,
+      "handlers_at_open": 50,
+      "tcp_after_close": 0,
+      "handlers_after_close": 0,
+      "handler_starts": 50,
+      "handler_returns": 50,
+      "goroutine_delta": 0,
+      "fd_delta": 0,
+      "duration_seconds": 0.066226051,
+      "passed": true
+    },
+    {
+      "round": 5,
+      "expected_connections": 50,
+      "connected": 50,
+      "open_resources": {
+        "stage": "round_5_open",
+        "at": "2026-09-08T01:25:36.334198234-07:00",
+        "heap_alloc_bytes": 8298544,
+        "heap_inuse_bytes": 14893056,
+        "goroutines": 257,
+        "fds": 142
+      },
+      "closed_resources": {
+        "stage": "round_5_closed",
+        "at": "2026-09-08T01:25:36.395573094-07:00",
+        "heap_alloc_bytes": 6199096,
+        "heap_inuse_bytes": 11378688,
+        "goroutines": 6,
+        "fds": 42
+      },
+      "tcp_at_open": 50,
+      "handlers_at_open": 50,
+      "tcp_after_close": 0,
+      "handlers_after_close": 0,
+      "handler_starts": 50,
+      "handler_returns": 50,
+      "goroutine_delta": 0,
+      "fd_delta": 0,
+      "duration_seconds": 0.065505998,
+      "passed": true
+    }
+  ],
+  "schema_version": 1,
+  "scope": "Five finite actual TCP HTTP/1.1 SSE open/cancel cycles using real PostgreSQL auth/RLS API reads",
+  "source_sha256": {
+    "benchmarks/churn_test.go": "e8dc33d77fbd811a7f6b200657d0f589386d4c22eea571f298815901683d8f8f",
+    "benchmarks/sse_test.go": "a3fb78d3329cdc4c39eb433573084ec2d25451f8b477d66139affabc5fb0e3e2",
+    "go.mod": "61a96a6dbfdc546edcc7abab472adc49313db486443c47f2272ad75cdae21682",
+    "internal/eventstream/hub.go": "b68eb36971c13e0542421247304ff73d04f99e137b3a184e98492d242f6e8bd9",
+    "internal/httpapi/server.go": "6e592ac5c860084ee994fb353d33599fb992c9e521cef1df7e35c8c207f2301f",
+    "internal/httpapi/sse.go": "316cbf8689615ca9a83f4a2d42eea8e18efcdb47d31bd8fe69bb98bfef670bab",
+    "internal/persistence/identity.go": "7a4c65b48e6e6d5bfe139689ce248fd7df7977f0c823fe456c78281a9fc62151",
+    "internal/persistence/store.go": "a60c400be7d3ab9dff474f84066b598e8f6c915e4b73de55d6277e2340c72eb8"
+  },
+  "timestamp_utc": "2026-09-08T08:25:35.705148309Z",
+  "warmup": {
+    "round": 0,
+    "expected_connections": 1,
+    "connected": 1,
+    "open_resources": {
+      "stage": "round_0_open",
+      "at": "2026-09-08T01:25:35.966121603-07:00",
+      "heap_alloc_bytes": 21703216,
+      "heap_inuse_bytes": 23420928,
+      "goroutines": 12,
+      "fds": 44
+    },
+    "closed_resources": {
+      "stage": "round_0_closed",
+      "at": "2026-09-08T01:25:36.027249276-07:00",
+      "heap_alloc_bytes": 4543072,
+      "heap_inuse_bytes": 6430720,
+      "goroutines": 6,
+      "fds": 42
+    },
+    "tcp_at_open": 1,
+    "handlers_at_open": 1,
+    "tcp_after_close": 0,
+    "handlers_after_close": 0,
+    "handler_starts": 1,
+    "handler_returns": 1,
+    "goroutine_delta": 0,
+    "fd_delta": 0,
+    "duration_seconds": 0.066213755,
+    "passed": false
+  }
+}

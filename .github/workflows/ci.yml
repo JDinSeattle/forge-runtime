@@ -1,0 +1,46 @@
+name: Go protocol and persistence checks
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:17.11-alpine
+        env:
+          POSTGRES_USER: forge_admin
+          POSTGRES_PASSWORD: forge_ci_only
+          POSTGRES_DB: forge
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd 'pg_isready -U forge_admin -d forge'
+          --health-interval 2s --health-timeout 2s --health-retries 20
+    env:
+      FORGE_TEST_DATABASE_URL: postgres://forge_admin:forge_ci_only@127.0.0.1:5432/forge?sslmode=disable
+      FORGE_REVIEW_DATABASE_URL: postgres://forge_admin:forge_ci_only@127.0.0.1:5432/forge?sslmode=disable
+      FORGE_REVIEW_ALLOW_FIXTURES: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.26.8'
+          cache: true
+      - run: go build -o bin/ ./cmd/...
+      - run: go test ./...
+      - run: go test -race ./...
+      - run: go vet ./...
+      - name: Install pinned protoc compiler
+        run: |
+          curl --fail --location --retry 3 https://github.com/protocolbuffers/protobuf/releases/download/v36.1/protoc-36.1-linux-x86_64.zip -o "$RUNNER_TEMP/protoc.zip"
+          unzip -q "$RUNNER_TEMP/protoc.zip" -d "$RUNNER_TEMP/forge-protoc"
+          echo "$RUNNER_TEMP/forge-protoc/bin" >> "$GITHUB_PATH"
+      - run: make check-generated
+      - run: python3 -m unittest discover -s scripts/workspace-volumes -p 'test_*.py' -v
+      - run: python3 -m unittest discover -s cmd/forge-runner -p 'test_*.py' -v
+      # Actual rootless Docker/loop-mount tests are an explicit local operator
+      # gate, separate from these no-paid-model CI protocol fixtures.

@@ -1,0 +1,166 @@
+// Package domain contains protocol-independent business values. It performs no I/O.
+package domain
+
+import (
+	"errors"
+	"fmt"
+	"math"
+	"strings"
+	"time"
+)
+
+// ID is an opaque, case-sensitive identifier, never an authorization credential.
+// Generation belongs to the application, outside the deterministic state machine.
+type ID string
+
+func (id ID) Validate() error {
+	if len(id) == 0 || len(id) > 128 {
+		return fmt.Errorf("%w: identifier length must be 1..128", ErrInvalid)
+	}
+	for _, r := range id {
+		if !((r >= 'a' && r <= 'z') || (r >= 'A' && r <= 'Z') || (r >= '0' && r <= '9') || r == '-' || r == '_') {
+			return fmt.Errorf("%w: identifier contains unsupported characters", ErrInvalid)
+		}
+	}
+	return nil
+}
+
+type RunStatus string
+
+const (
+	StatusQueued              RunStatus = "queued"
+	StatusRunning             RunStatus = "running"
+	StatusWaitingApproval     RunStatus = "waiting_approval"
+	StatusCancelRequested     RunStatus = "cancel_requested"
+	StatusCancelled           RunStatus = "cancelled"
+	StatusCompleted           RunStatus = "completed"
+	StatusFailed              RunStatus = "failed"
+	StatusBudgetExhausted     RunStatus = "budget_exhausted"
+	StatusNeedsReconciliation RunStatus = "needs_reconciliation"
+)
+
+func (s RunStatus) Terminal() bool {
+	switch s {
+	case StatusCancelled, StatusCompleted, StatusFailed, StatusBudgetExhausted:
+		return true
+	default:
+		return false
+	}
+}
+
+func (s RunStatus) Valid() bool {
+	switch s {
+	case StatusQueued, StatusRunning, StatusWaitingApproval, StatusCancelRequested,
+		StatusCancelled, StatusCompleted, StatusFailed, StatusBudgetExhausted, StatusNeedsReconciliation:
+		return true
+	default:
+		return false
+	}
+}
+
+// Stage records execution progress independently of the externally visible status.
+type Stage string
+
+const (
+	StageInitialize     Stage = "initialize"
+	StageAdoptWorkspace Stage = "adopt_workspace"
+	StageBuildContext   Stage = "build_context"
+	StageModel          Stage = "model_step"
+	StageValidateTools  Stage = "validate_tool_calls"
+	StageApprovalGate   Stage = "approval_gate"
+	StageExecuteEffects Stage = "execute_effects"
+	StageIngestResults  Stage = "ingest_results"
+	StageVerify         Stage = "verify"
+	StageFinalize       Stage = "finalize"
+	StageReconcile      Stage = "reconcile"
+	StageStopped        Stage = "stopped"
+)
+
+func (s Stage) Valid() bool {
+	switch s {
+	case StageInitialize, StageAdoptWorkspace, StageBuildContext, StageModel,
+		StageValidateTools, StageApprovalGate, StageExecuteEffects, StageIngestResults,
+		StageVerify, StageFinalize, StageReconcile, StageStopped:
+		return true
+	default:
+		return false
+	}
+}
+
+type VerificationStatus string
+
+const (
+	VerificationUnverified     VerificationStatus = "unverified"
+	VerificationRegressionOnly VerificationStatus = "regression_only"
+	VerificationVerified       VerificationStatus = "verified"
+)
+
+type Lease struct {
+	Owner string    `json:"owner"`
+	Epoch uint64    `json:"epoch"`
+	Until time.Time `json:"until"`
+}
+
+// ValidAt uses time supplied by the authority (PostgreSQL), never a local clock.
+// The expiry boundary is exclusive: a lease expiring at t cannot act at t.
+func (l Lease) ValidAt(at time.Time) bool {
+	return strings.TrimSpace(l.Owner) != "" && l.Epoch > 0 && !at.IsZero() && at.Before(l.Until)
+}
+
+// Money is micro-US dollars: 1 USD = 1,000,000 Money. No floating point is used
+// in the billing ledger. Negative amounts are forbidden; refunds are explicit
+// ledger entries rather than negative usage.
+type Money int64
+
+const USD Money = 1_000_000
+
+func (m Money) Add(other Money) (Money, error) {
+	if m < 0 || other < 0 {
+		return 0, fmt.Errorf("%w: negative money", ErrInvalid)
+	}
+	if m > Money(math.MaxInt64)-other {
+		return 0, fmt.Errorf("%w: money addition", ErrOverflow)
+	}
+	return m + other, nil
+}
+
+// Cost rounds up fractional microdollars so a conservative reservation never
+// silently rounds a billable request down. Rate is microdollars per million tokens.
+func Cost(tokens int64, rate Money) (Money, error) {
+	if tokens < 0 || rate < 0 {
+		return 0, fmt.Errorf("%w: negative token count or price", ErrInvalid)
+	}
+	if tokens == 0 || rate == 0 {
+		return 0, nil
+	}
+	// Quotient/remainder decomposition avoids overflowing a product whose final
+	// scaled answer fits int64; math/big is unnecessary for the bounded remainder.
+	const unit = int64(1_000_000)
+	whole, rem := tokens/unit, tokens%unit
+	if whole > math.MaxInt64/int64(rate) {
+		return 0, fmt.Errorf("%w: token cost", ErrOverflow)
+	}
+	result := whole * int64(rate)
+	rateWhole, rateRem := int64(rate)/unit, int64(rate)%unit
+	// rem < 1e6, so rem*rateWhole and rem*rateRem fit int64 separately.
+	fraction := rem*rateWhole + (rem*rateRem+unit-1)/unit
+	if result > math.MaxInt64-fraction {
+		return 0, fmt.Errorf("%w: token cost", ErrOverflow)
+	}
+	return Money(result + fraction), nil
+}
+
+var (
+	ErrInvalid        = errors.New("invalid_argument")
+	ErrNotFound       = errors.New("not_found")
+	ErrForbidden      = errors.New("forbidden")
+	ErrConflict       = errors.New("conflict")
+	ErrFenced         = errors.New("lease_fenced")
+	ErrTerminal       = errors.New("terminal_run")
+	ErrTransition     = errors.New("invalid_transition")
+	ErrUntrusted      = errors.New("untrusted_evidence")
+	ErrReconciliation = errors.New("reconciliation_required")
+	ErrOverflow       = errors.New("numeric_overflow")
+	ErrCapacity       = errors.New("capacity_exhausted")
+	ErrReset          = errors.New("reset_required")
+)

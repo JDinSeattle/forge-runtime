@@ -1,0 +1,12 @@
+=== RUN   TestRealDockerRunnerIsolationQuotaAndCancellation
+    docker_integration_test.go:82: real fixture workspace docker-probe-019a934962103461 baseline 66ee6f4ae415b0735c6eb4d0645f5a8d72d33e7946d0219e319aa9158a375659
+    docker_integration_test.go:156: operation docker-probe-019a934962103461-op-1 receipt=db2a4b336465108d4101cdadc4c954e6f6c9785526dcdb4128de72bb0fcfeb0c output={"uid": 1000, "gid": 1000, "cap_eff": "0000000000000000", "no_new_privs": 1, "private_file_mode": "0o600", "cgroup_limits": {"memory.max": "268435456", "pids.max": "64", "cpu.max": "100000 100000"}}
+    docker_integration_test.go:208: same-ID write operation=docker-probe-019a934962103461-op-4 original_receipt=ff021463fb0586496ae36bae38d940f8d774bf8a87fa0e361eb9601fcce3c6a6 retry_receipt=ff021463fb0586496ae36bae38d940f8d774bf8a87fa0e361eb9601fcce3c6a6 count=1
+    docker_integration_test.go:156: operation docker-probe-019a934962103461-op-6 receipt=95836c44499ef38e8bdc47efaa107fe9d50fd9a69eb4670ab359310daaf28202 output={"pid_limit_eagain": true, "forked_children": 62, "pids_max_events_before": 0, "pids_max_events_after": 1}
+    docker_integration_test.go:257: memory ceiling operation=docker-probe-019a934962103461-op-7 exit=137 OOMKilled=true receipt=95b2b66dfcedbea3ee6a3e4ebedc29460d6e4480f873a31855c593f527ff6eb0
+    docker_integration_test.go:156: operation docker-probe-019a934962103461-op-8 receipt=0b5e40a0f4f93ad4a8065945d9e417e88f268024bfed690e9f16b724c3e209a5 output={"enospc": true, "allocated_bytes_before_enospc": 228589568, "filesystem_bytes": 234594304}
+    docker_integration_test.go:342: process-tree Stop pre_stop_tasks=3 remaining_tasks=0 cgroup_removed=true
+    docker_integration_test.go:346: real cancellation job=forge-09036bfe6b5208715f71eba936d8787daa36f194 exit=137 no_active=true stop_receipt=f14494d68dcfa47b03055acf61a69ee76ecd7058809b5f95c0e986e1a1c3186d
+--- PASS: TestRealDockerRunnerIsolationQuotaAndCancellation (5.02s)
+PASS
+ok  	github.com/JDinSeattle/forge-runtime/internal/runnerclient	5.027s

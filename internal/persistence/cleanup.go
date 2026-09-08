@@ -1,0 +1,129 @@
+package persistence
+
+import (
+	"context"
+	"encoding/json"
+	"math"
+	"time"
+
+	"github.com/JDinSeattle/forge-runtime/internal/domain"
+	"github.com/jackc/pgx/v5"
+)
+
+type WorkspaceCleanup struct {
+	TenantID          domain.ID `json:"tenant_id"`
+	RunID             domain.ID `json:"run_id"`
+	ID                domain.ID `json:"id"`
+	RunnerID          string    `json:"runner_id"`
+	TerminalVersion   uint64    `json:"terminal_version"`
+	WorkspaceRevision uint64    `json:"workspace_revision"`
+	RunnerEpoch       uint64    `json:"runner_epoch"`
+	Phase             string    `json:"phase"`
+	SnapshotRef       string    `json:"snapshot_ref"`
+	LeaseOwner        string    `json:"-"`
+	LeaseUntil        time.Time `json:"-"`
+}
+
+const cleanupColumns = `tenant_id,run_id,id,runner_id,terminal_version,workspace_revision,runner_epoch,phase,coalesce(snapshot_ref,''),lease_owner,lease_until`
+
+func scanCleanup(row pgx.Row) (WorkspaceCleanup, error) {
+	var c WorkspaceCleanup
+	err := row.Scan(&c.TenantID, &c.RunID, &c.ID, &c.RunnerID, &c.TerminalVersion, &c.WorkspaceRevision, &c.RunnerEpoch, &c.Phase, &c.SnapshotRef, &c.LeaseOwner, &c.LeaseUntil)
+	return c, err
+}
+
+// AcquireWorkspaceCleanup grants separate cleanup authority; it never extends
+// a run execution lease. Terminal runs cannot be resumed by the control API.
+func (s *Store) AcquireWorkspaceCleanup(ctx context.Context, tenant, id domain.ID, owner string, minAge time.Duration) (WorkspaceCleanup, error) {
+	if owner == "" || minAge < 0 {
+		return WorkspaceCleanup{}, domain.ErrInvalid
+	}
+	tx, err := s.Tx(ctx, tenant, pgx.TxOptions{})
+	if err != nil {
+		return WorkspaceCleanup{}, err
+	}
+	defer tx.Rollback(ctx)
+	r, err := getRun(ctx, tx, tenant, id, true)
+	if err != nil {
+		return WorkspaceCleanup{}, err
+	}
+	if !r.State.Status.Terminal() || r.RunnerID == "" || r.State.Lease.Epoch >= math.MaxInt64 {
+		return WorkspaceCleanup{}, domain.ErrTransition
+	}
+	var eligible bool
+	if err = tx.QueryRow(ctx, `SELECT updated_at<=clock_timestamp()-($3*interval '1 millisecond') AND NOT EXISTS(SELECT 1 FROM runner_allocations WHERE tenant_id=$1 AND run_id=$2 AND state!='released') AND NOT EXISTS(SELECT 1 FROM effects WHERE tenant_id=$1 AND run_id=$2 AND (status NOT IN ('planned','skipped','succeeded','failed','cancelled') OR (status IN ('succeeded','failed','cancelled') AND receipt_ref IS NULL))) FROM runs WHERE tenant_id=$1 AND id=$2`, tenant, id, minAge.Milliseconds()).Scan(&eligible); err != nil {
+		return WorkspaceCleanup{}, err
+	}
+	if !eligible {
+		return WorkspaceCleanup{}, domain.ErrReconciliation
+	}
+	if _, err = tx.Exec(ctx, `INSERT INTO workspace_cleanup(tenant_id,run_id,id,runner_id,terminal_version,workspace_revision,runner_epoch,phase,lease_owner,lease_until) VALUES($1,$2,$3,$4,$5,$6,$7,'requested',$8,clock_timestamp()+interval '30 seconds') ON CONFLICT(tenant_id,run_id) DO NOTHING`, tenant, id, NewID("cleanup"), r.RunnerID, r.State.Version, r.State.WorkspaceRevision, r.State.Lease.Epoch+1, owner); err != nil {
+		return WorkspaceCleanup{}, err
+	}
+	c, err := scanCleanup(tx.QueryRow(ctx, `SELECT `+cleanupColumns+` FROM workspace_cleanup WHERE tenant_id=$1 AND run_id=$2 FOR UPDATE`, tenant, id))
+	if err != nil {
+		return c, err
+	}
+	if c.TerminalVersion != r.State.Version || c.WorkspaceRevision != r.State.WorkspaceRevision || c.RunnerID != r.RunnerID {
+		return c, domain.ErrConflict
+	}
+	if c.Phase != "released" {
+		tag, err := tx.Exec(ctx, `UPDATE workspace_cleanup SET lease_owner=$3,lease_until=clock_timestamp()+interval '30 seconds' WHERE tenant_id=$1 AND run_id=$2 AND (lease_owner=$3 OR lease_until<=clock_timestamp())`, tenant, id, owner)
+		if err != nil {
+			return c, err
+		}
+		if tag.RowsAffected() != 1 {
+			return c, domain.ErrCapacity
+		}
+		c, err = scanCleanup(tx.QueryRow(ctx, `SELECT `+cleanupColumns+` FROM workspace_cleanup WHERE tenant_id=$1 AND run_id=$2`, tenant, id))
+		if err != nil {
+			return c, err
+		}
+	}
+	return c, tx.Commit(ctx)
+}
+
+func (s *Store) CleanupProof(ctx context.Context, c WorkspaceCleanup, release bool) (time.Time, time.Time, error) {
+	var until, now time.Time
+	err := s.Pool.QueryRow(ctx, `SELECT lease_until,clock_timestamp() FROM workspace_cleanup WHERE tenant_id=$1 AND run_id=$2 AND id=$3 AND lease_owner=$4 AND lease_until>clock_timestamp() AND (NOT $5 OR phase='sealed') AND phase!='released'`, c.TenantID, c.RunID, c.ID, c.LeaseOwner, release).Scan(&until, &now)
+	if err == pgx.ErrNoRows {
+		err = domain.ErrFenced
+	}
+	return until, now, err
+}
+func (s *Store) SealWorkspaceCleanup(ctx context.Context, c WorkspaceCleanup, ref string) error {
+	tag, err := s.Pool.Exec(ctx, `UPDATE workspace_cleanup SET snapshot_ref=$5,phase='sealed' WHERE tenant_id=$1 AND run_id=$2 AND id=$3 AND lease_owner=$4 AND lease_until>clock_timestamp() AND phase='requested' AND EXISTS(SELECT 1 FROM artifacts WHERE tenant_id=$1 AND run_id=$2 AND id=$5 AND kind='workspace_snapshot' AND state='ready')`, c.TenantID, c.RunID, c.ID, c.LeaseOwner, ref)
+	if err != nil {
+		return err
+	}
+	if tag.RowsAffected() != 1 {
+		return domain.ErrFenced
+	}
+	return nil
+}
+func (s *Store) CompleteWorkspaceCleanup(ctx context.Context, c WorkspaceCleanup) error {
+	tx, err := s.Tx(ctx, c.TenantID, pgx.TxOptions{})
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback(ctx)
+	// Match the global run -> cleanup lock order used by Acquire.
+	if _, err = getRun(ctx, tx, c.TenantID, c.RunID, true); err != nil {
+		return err
+	}
+	tag, err := tx.Exec(ctx, `UPDATE workspace_cleanup SET phase='released',released_at=clock_timestamp() WHERE tenant_id=$1 AND run_id=$2 AND id=$3 AND lease_owner=$4 AND lease_until>clock_timestamp() AND phase='sealed'`, c.TenantID, c.RunID, c.ID, c.LeaseOwner)
+	if err != nil {
+		return err
+	}
+	if tag.RowsAffected() != 1 {
+		return domain.ErrFenced
+	}
+	if _, err = tx.Exec(ctx, `UPDATE effects SET status='skipped' WHERE tenant_id=$1 AND run_id=$2 AND status='planned'`, c.TenantID, c.RunID); err != nil {
+		return err
+	}
+	body, _ := json.Marshal(map[string]any{"cleanup_id": c.ID, "snapshot_ref": c.SnapshotRef})
+	if _, err = appendEvent(ctx, tx, c.TenantID, c.RunID, "workspace.released", body); err != nil {
+		return err
+	}
+	return tx.Commit(ctx)
+}

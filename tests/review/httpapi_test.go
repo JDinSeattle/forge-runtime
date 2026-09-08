@@ -1,0 +1,256 @@
+package review_test
+
+import (
+	"bytes"
+	"context"
+	"crypto/rand"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"net/http/httptest"
+	"strings"
+	"sync"
+	"testing"
+	"time"
+
+	"github.com/JDinSeattle/forge-runtime/internal/artifact"
+	"github.com/JDinSeattle/forge-runtime/internal/domain"
+	"github.com/JDinSeattle/forge-runtime/internal/eventstream"
+	"github.com/JDinSeattle/forge-runtime/internal/httpapi"
+	"github.com/JDinSeattle/forge-runtime/internal/persistence"
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
+)
+
+func reviewAPIStore(t *testing.T) (context.Context, *persistence.Store, *persistence.Store) {
+	t.Helper()
+	ctx, admin := reviewDB(t)
+	role := pgx.Identifier{"review_http_" + strings.ToLower(rand.Text())}.Sanitize()
+	if _, err := admin.Exec(ctx, `CREATE ROLE `+role+` NOLOGIN NOSUPERUSER NOBYPASSRLS`); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() {
+		cleanupCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+		if _, err := admin.Exec(cleanupCtx, `DROP ROLE `+role); err != nil {
+			t.Errorf("clean up HTTP review role: %v", err)
+		}
+	})
+	_, owner := isolatedStore(t)
+	var schema string
+	if err := owner.Pool.QueryRow(ctx, `SELECT current_schema()`).Scan(&schema); err != nil {
+		t.Fatal(err)
+	}
+	schemaID := pgx.Identifier{schema}.Sanitize()
+	for _, sql := range []string{`GRANT USAGE ON SCHEMA ` + schemaID + ` TO ` + role, `GRANT SELECT,INSERT,UPDATE,DELETE ON ALL TABLES IN SCHEMA ` + schemaID + ` TO ` + role} {
+		if _, err := owner.Pool.Exec(ctx, sql); err != nil {
+			t.Fatal(err)
+		}
+	}
+	cfg := owner.Pool.Config()
+	cfg.MaxConns, cfg.MinConns = 4, 0
+	cfg.AfterConnect = func(ctx context.Context, conn *pgx.Conn) error {
+		_, err := conn.Exec(ctx, `SET ROLE `+role)
+		return err
+	}
+	pool, err := pgxpool.NewWithConfig(ctx, cfg)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(pool.Close)
+	api := &persistence.Store{Pool: pool}
+	if err := api.CheckAPIRole(ctx); err != nil {
+		t.Fatal(err)
+	}
+	return ctx, owner, api
+}
+
+type reviewCutoffSource struct {
+	*persistence.Store
+	once    sync.Once
+	advance func()
+}
+
+func (s *reviewCutoffSource) GetRun(ctx context.Context, tenant, id domain.ID) (persistence.Run, error) {
+	r, err := s.Store.GetRun(ctx, tenant, id)
+	if err == nil {
+		s.once.Do(s.advance)
+	}
+	return r, err
+}
+
+func TestReviewHTTPExpiredCursorRequiresSnapshotReset(t *testing.T) {
+	for _, duringSubscribe := range []bool{false, true} {
+		t.Run(fmt.Sprintf("cutoff_during_subscribe_%t", duringSubscribe), func(t *testing.T) {
+			ctx, owner, api := reviewAPIStore(t)
+			r := reviewRun(t, ctx, owner)
+			token, err := owner.IssueToken(ctx, r.PrincipalID, time.Hour)
+			if err != nil {
+				t.Fatal(err)
+			}
+			identity := persistence.Identity{TenantID: r.TenantID, PrincipalID: r.PrincipalID, Role: "developer"}
+			for i := range 3 {
+				if _, _, err := owner.AddMessage(ctx, identity, r.ID, fmt.Sprintf("review message %d", i), fmt.Sprintf("message-%d", i)); err != nil {
+					t.Fatal(err)
+				}
+			}
+			advance := func() {
+				// Isolate cursor behavior from the collector's eligibility policy.
+				// This emulates one atomic cutoff/delete only in our private schema.
+				tx, err := owner.Pool.Begin(ctx)
+				if err != nil {
+					t.Fatal(err)
+				}
+				defer tx.Rollback(ctx)
+				if _, err := tx.Exec(ctx, `UPDATE runs SET retained_from_seq=3 WHERE tenant_id=$1 AND id=$2`, r.TenantID, r.ID); err != nil {
+					t.Fatal(err)
+				}
+				if _, err := tx.Exec(ctx, `DELETE FROM run_events WHERE tenant_id=$1 AND run_id=$2 AND seq<3`, r.TenantID, r.ID); err != nil {
+					t.Fatal(err)
+				}
+				if err := tx.Commit(ctx); err != nil {
+					t.Fatal(err)
+				}
+			}
+			var source eventstream.Source = api
+			if duringSubscribe {
+				source = &reviewCutoffSource{Store: api, advance: advance}
+			} else {
+				advance()
+				if _, err := api.Events(ctx, r.TenantID, r.ID, 0, 10); !errors.Is(err, eventstream.ErrReset) {
+					t.Errorf("expired SQL history cursor was not rejected: %v", err)
+				}
+			}
+			streams := eventstream.New(ctx, source, eventstream.Config{PollInterval: time.Second})
+			t.Cleanup(streams.Close)
+			server := httpapi.Server{Store: api, Streams: streams}
+			sseCtx, cancel := context.WithTimeout(ctx, 100*time.Millisecond)
+			defer cancel()
+			req := httptest.NewRequest("GET", "/v1/runs/"+string(r.ID)+"/events", nil).WithContext(sseCtx)
+			req.Header.Set("Authorization", "Bearer "+token)
+			req.Header.Set("X-Forge-Tenant", string(r.TenantID))
+			w := httptest.NewRecorder()
+			server.Handler().ServeHTTP(w, req)
+			var failure httpapi.APIError
+			if w.Code != 410 || json.NewDecoder(w.Body).Decode(&failure) != nil || failure.Code != "reset_required" {
+				t.Fatalf("retained history gap silently accepted: status=%d body=%s", w.Code, w.Body.String())
+			}
+		})
+	}
+}
+
+func TestReviewHTTPUsesRealNonOwnerTenantScopeAndArtifactBytes(t *testing.T) {
+	ctx, owner, api := reviewAPIStore(t)
+	objects, err := artifact.NewLocalStore(t.TempDir(), 1<<20)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = objects.Close() })
+	runs := map[domain.ID]persistence.Run{}
+	for _, tenant := range []domain.ID{"review_http_a", "review_http_b"} {
+		if err := owner.BootstrapTenant(ctx, tenant, "shared_developer", "developer"); err != nil {
+			t.Fatal(err)
+		}
+		p, err := owner.CreateProject(ctx, tenant, "HTTP fixture", "fixture", "python")
+		if err != nil {
+			t.Fatal(err)
+		}
+		r, _, err := owner.Submit(ctx, persistence.SubmitRequest{TenantID: tenant, PrincipalID: "shared_developer", ProjectID: p.ID, Task: "HTTP review", BaseCommit: "fixture-base", Config: persistence.Config{Provider: "fake", Model: "fake", MaxModelRounds: 2, MaxToolCalls: 2, MaxRuntimeSeconds: 60}}, "fixture")
+		if err != nil {
+			t.Fatal(err)
+		}
+		runs[tenant] = r
+		ref, err := objects.Put(ctx, tenant, r.ID, "review_fixture", strings.NewReader("private bytes for "+string(tenant)))
+		if err != nil {
+			t.Fatal(err)
+		}
+		if err := owner.PublishArtifact(ctx, persistence.Artifact{TenantID: tenant, RunID: r.ID, ID: "shared_artifact_id", Kind: ref.Kind, ObjectKey: ref.ObjectKey, SHA256: ref.SHA256, ByteSize: ref.Size}); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if err := owner.BootstrapTenant(ctx, "review_http_a", "viewer", "viewer"); err != nil {
+		t.Fatal(err)
+	}
+	developer, err := owner.IssueToken(ctx, "shared_developer", time.Hour)
+	if err != nil {
+		t.Fatal(err)
+	}
+	viewer, err := owner.IssueToken(ctx, "viewer", time.Hour)
+	if err != nil {
+		t.Fatal(err)
+	}
+	streams := eventstream.New(ctx, api, eventstream.Config{PollInterval: 10 * time.Millisecond})
+	t.Cleanup(streams.Close)
+	server := httpapi.Server{Store: api, Artifacts: objects, Streams: streams}
+	handler := server.Handler()
+	request := func(method, path, token, tenant, body string) *httptest.ResponseRecorder {
+		t.Helper()
+		r := httptest.NewRequest(method, path, strings.NewReader(body))
+		if token != "" {
+			r.Header.Set("Authorization", "Bearer "+token)
+		}
+		r.Header.Set("X-Forge-Tenant", tenant)
+		if body != "" {
+			r.Header.Set("Content-Type", "application/json")
+		}
+		w := httptest.NewRecorder()
+		handler.ServeHTTP(w, r)
+		return w
+	}
+	runA := runs["review_http_a"]
+	for _, tc := range []struct {
+		name, method, path, token, tenant, body string
+		want                                    int
+	}{
+		{"missing bearer", "GET", "/v1/runs/" + string(runA.ID), "", "review_http_a", "", 403},
+		{"valid own run", "GET", "/v1/runs/" + string(runA.ID), developer, "review_http_a", "", 200},
+		{"same principal wrong tenant", "GET", "/v1/runs/" + string(runA.ID), developer, "review_http_b", "", 404},
+		{"missing membership", "GET", "/v1/runs/" + string(runA.ID), viewer, "review_http_b", "", 403},
+		{"viewer read", "GET", "/v1/runs/" + string(runA.ID), viewer, "review_http_a", "", 200},
+		{"viewer cancel", "POST", "/v1/runs/" + string(runA.ID) + "/cancel", viewer, "review_http_a", "", 403},
+		{"viewer message", "POST", "/v1/runs/" + string(runA.ID) + "/messages", viewer, "review_http_a", `{"text":"do not accept"}`, 403},
+		{"cross tenant artifact list", "GET", "/v1/runs/" + string(runA.ID) + "/artifacts", developer, "review_http_b", "", 404},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			w := request(tc.method, tc.path, tc.token, tc.tenant, tc.body)
+			if w.Code != tc.want {
+				t.Fatalf("status=%d want=%d body=%s", w.Code, tc.want, w.Body.String())
+			}
+		})
+	}
+	for tenant := range runs {
+		w := request("GET", "/v1/artifacts/shared_artifact_id", developer, string(tenant), "")
+		if w.Code != 200 || w.Body.String() != "private bytes for "+string(tenant) {
+			t.Fatalf("artifact scope/bytes: tenant=%s status=%d body=%s", tenant, w.Code, w.Body.String())
+		}
+	}
+	// This uses the actual HTTP SSE handler and a non-owner SQL pool. Its
+	// cancellation bounds the otherwise intentionally long-lived subscription.
+	sseCtx, cancel := context.WithTimeout(ctx, 100*time.Millisecond)
+	defer cancel()
+	r := httptest.NewRequest("GET", "/v1/runs/"+string(runA.ID)+"/events", nil).WithContext(sseCtx)
+	r.Header.Set("Authorization", "Bearer "+developer)
+	r.Header.Set("X-Forge-Tenant", string(runA.TenantID))
+	w := httptest.NewRecorder()
+	handler.ServeHTTP(w, r)
+	if w.Code != 200 || !strings.Contains(w.Body.String(), "id: 1\nevent: run.created\n") || !strings.Contains(w.Body.String(), "id: 2\nevent: artifact.ready\n") {
+		t.Fatalf("SSE did not replay scoped committed events: status=%d body=%s", w.Code, w.Body.String())
+	}
+	r = httptest.NewRequest("GET", "/v1/runs/"+string(runA.ID)+"/events", nil)
+	r.Header.Set("Authorization", "Bearer "+developer)
+	r.Header.Set("X-Forge-Tenant", string(runA.TenantID))
+	r.Header.Set("Last-Event-ID", "999999")
+	w = httptest.NewRecorder()
+	handler.ServeHTTP(w, r)
+	if w.Code != 409 {
+		t.Fatalf("future cursor status=%d body=%s", w.Code, w.Body.String())
+	}
+	if _, err := owner.Pool.Exec(ctx, `UPDATE api_tokens SET revoked_at=clock_timestamp()`); err != nil {
+		t.Fatal(err)
+	}
+	w = request("GET", "/v1/runs/"+string(runA.ID), developer, string(runA.TenantID), "")
+	var failure httpapi.APIError
+	if w.Code != 403 || json.NewDecoder(bytes.NewReader(w.Body.Bytes())).Decode(&failure) != nil || failure.RequestID == "" || w.Header().Get("X-Request-ID") != failure.RequestID {
+		t.Fatalf("revoked credential or error contract failed: status=%d body=%s", w.Code, w.Body.String())
+	}
+}

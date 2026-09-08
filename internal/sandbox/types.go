@@ -1,0 +1,93 @@
+// Package sandbox runs repository-controlled processes in a separate backend.
+// There is intentionally no host-shell fallback.
+package sandbox
+
+import (
+	"context"
+	"encoding/json"
+	"errors"
+	"time"
+)
+
+var ErrUnavailable = errors.New("sandbox_unavailable")
+var ErrJobNotFound = errors.New("sandbox_job_not_found")
+
+type Profile struct {
+	ID            string   `json:"id"`
+	Image         string   `json:"image"`
+	VerifyCommand []string `json:"verify_command"`
+	TargetCommand []string `json:"target_command,omitempty"`
+	// TrustedTestsDir is operator configured, never copied into the writable
+	// workspace or derived from model/tool arguments. Verification mounts it read-only.
+	// TmpfsExecutable permits compiled binaries only in the existing bounded /tmp.
+	// It is operator-owned profile policy; no request can supply mount flags/paths.
+	TmpfsExecutable     bool    `json:"tmpfs_executable,omitempty"`
+	TrustedTestsDir     string  `json:"trusted_tests_dir,omitempty"`
+	MemoryBytes         int64   `json:"memory_bytes"`
+	WorkspaceQuotaBytes int64   `json:"workspace_quota_bytes"`
+	CPUs                float64 `json:"cpus"`
+	PIDs                int64   `json:"pids"`
+	User                string  `json:"user"`
+}
+
+type JobSpec struct {
+	ID                  string
+	Workspace           string
+	Profile             Profile
+	Command             []string
+	Deadline            time.Time
+	TrustedVerification bool
+}
+
+type Job struct {
+	ID          string `json:"id"`
+	Running     bool   `json:"running"`
+	ExitCode    int    `json:"exit_code"`
+	Started     bool   `json:"started"`
+	Output      []byte `json:"output,omitempty"`
+	Truncated   bool   `json:"truncated"`
+	Error       string `json:"error,omitempty"`
+	Interrupted bool   `json:"interrupted,omitempty"`
+}
+
+type Backend interface {
+	Check(context.Context) error
+	Start(context.Context, JobSpec) (Job, error)
+	Inspect(context.Context, string) (Job, error)
+	Cancel(context.Context, string) (Job, error)
+}
+
+// WorkspaceQuotaVerifier must inspect an enforceable filesystem/volume quota.
+// Directory size scans and free-space observations do not implement this contract.
+type WorkspaceQuotaVerifier interface {
+	VerifyWorkspaceQuota(context.Context, string, int64) error
+}
+
+// TestBackend is a deterministic no-process fixture backend. It never executes
+// shell or repository code and cannot substantiate container isolation claims.
+// Construction is explicit in tests/local fake demos; deployment must use Docker.
+type TestBackend struct {
+	StartFunc   func(context.Context, JobSpec) (Job, error)
+	InspectFunc func(context.Context, string) (Job, error)
+	CancelFunc  func(context.Context, string) (Job, error)
+}
+
+func (b *TestBackend) Check(context.Context) error { return nil }
+func (b *TestBackend) Start(c context.Context, s JobSpec) (Job, error) {
+	if b.StartFunc != nil {
+		return b.StartFunc(c, s)
+	}
+	return Job{ID: s.ID, Started: true, ExitCode: 0, Output: json.RawMessage(`{"test_backend":true}`)}, nil
+}
+func (b *TestBackend) Inspect(c context.Context, id string) (Job, error) {
+	if b.InspectFunc != nil {
+		return b.InspectFunc(c, id)
+	}
+	return Job{}, ErrJobNotFound
+}
+func (b *TestBackend) Cancel(c context.Context, id string) (Job, error) {
+	if b.CancelFunc != nil {
+		return b.CancelFunc(c, id)
+	}
+	return b.Inspect(c, id)
+}

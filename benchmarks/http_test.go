@@ -1,0 +1,180 @@
+package benchmarks
+
+import (
+	"bytes"
+	"context"
+	"encoding/json"
+	"fmt"
+	"io"
+	"net/http"
+	"net/http/httptest"
+	"os"
+	"path/filepath"
+	"strings"
+	"sync"
+	"testing"
+	"time"
+
+	"github.com/JDinSeattle/forge-runtime/internal/artifact"
+	"github.com/JDinSeattle/forge-runtime/internal/eventstream"
+	"github.com/JDinSeattle/forge-runtime/internal/httpapi"
+	"github.com/JDinSeattle/forge-runtime/internal/persistence"
+	"github.com/JDinSeattle/forge-runtime/internal/testutil"
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
+)
+
+// TestHTTPMetadataEvidence measures fixed offered load through a real TCP API
+// and a nonowner RLS pool. It does not measure model or task completion latency.
+func TestHTTPMetadataEvidence(t *testing.T) {
+	if os.Getenv("FORGE_RUN_HTTP_BENCHMARK") != "1" {
+		t.Skip("opt-in fixed HTTP workload")
+	}
+	admin := testutil.Database(t)
+	ctx := context.Background()
+	var schema string
+	if err := admin.Pool.QueryRow(ctx, `SELECT current_schema()`).Scan(&schema); err != nil {
+		t.Fatal(err)
+	}
+	role := string(persistence.NewID("http_bench"))
+	quoted := pgx.Identifier{role}.Sanitize()
+	qs := pgx.Identifier{schema}.Sanitize()
+	if _, err := admin.Pool.Exec(ctx, "CREATE ROLE "+quoted+" NOLOGIN NOSUPERUSER NOBYPASSRLS"); err != nil {
+		t.Fatal(err)
+	}
+	// Registered before the pool cleanup so all API sessions are closed first.
+	t.Cleanup(func() {
+		_, _ = admin.Pool.Exec(context.Background(), "DROP OWNED BY "+quoted)
+		_, _ = admin.Pool.Exec(context.Background(), "DROP ROLE "+quoted)
+	})
+	if _, err := admin.Pool.Exec(ctx, "GRANT USAGE ON SCHEMA "+qs+" TO "+quoted); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := admin.Pool.Exec(ctx, "GRANT SELECT,INSERT,UPDATE,DELETE ON ALL TABLES IN SCHEMA "+qs+" TO "+quoted); err != nil {
+		t.Fatal(err)
+	}
+	cfg := admin.Pool.Config()
+	cfg.MaxConns = 16
+	cfg.AfterConnect = func(ctx context.Context, c *pgx.Conn) error { _, err := c.Exec(ctx, "SET ROLE "+quoted); return err }
+	pool, err := pgxpool.NewWithConfig(ctx, cfg)
+	if err != nil {
+		t.Fatal(err)
+	}
+	store := &persistence.Store{Pool: pool}
+	t.Cleanup(store.Close)
+	if err = store.CheckAPIRole(ctx); err != nil {
+		t.Fatal(err)
+	}
+	if err = admin.BootstrapTenant(ctx, "http-tenant", "http-user", "developer"); err != nil {
+		t.Fatal(err)
+	}
+	token, err := admin.IssueToken(ctx, "http-user", time.Hour)
+	if err != nil {
+		t.Fatal(err)
+	}
+	project, err := admin.CreateProject(ctx, "http-tenant", "http fixture", "fixture", "python")
+	if err != nil {
+		t.Fatal(err)
+	}
+	base := strings.Repeat("a", 64)
+	runConfig := persistence.Config{Provider: "fake", Model: "fake", MaxModelRounds: 8, MaxToolCalls: 20, MaxRuntimeSeconds: 60}
+	seed, _, err := admin.Submit(ctx, persistence.SubmitRequest{TenantID: "http-tenant", PrincipalID: "http-user", ProjectID: project.ID, Task: "metadata seed", BaseCommit: base, Config: runConfig}, "seed")
+	if err != nil {
+		t.Fatal(err)
+	}
+	objects, err := artifact.NewLocalStore(t.TempDir(), 1<<20)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer objects.Close()
+	streams := eventstream.New(ctx, store, eventstream.Config{})
+	defer streams.Close()
+	server := httptest.NewServer((&httpapi.Server{Store: store, Artifacts: objects, Streams: streams, Configs: map[string]persistence.Config{"fixture": runConfig}, Sources: map[string]httpapi.Source{"fixture": {BaseCommit: base, ProfileID: "python"}}}).Handler())
+	defer server.Close()
+	transport := &http.Transport{MaxIdleConns: 32, MaxIdleConnsPerHost: 16}
+	defer transport.CloseIdleConnections()
+	client := &http.Client{Transport: transport, Timeout: 3 * time.Second}
+	body, _ := json.Marshal(map[string]any{"task": "metadata admission fixture", "base_commit": base, "config_id": "fixture", "budget": map[string]any{}})
+	request := func(index int, write bool) (time.Duration, int, error) {
+		method, url := http.MethodGet, server.URL+"/v1/runs/"+string(seed.ID)
+		var input io.Reader
+		if write {
+			method, url = http.MethodPost, server.URL+"/v1/projects/"+string(project.ID)+"/runs"
+			input = bytes.NewReader(body)
+		}
+		r, err := http.NewRequest(method, url, input)
+		if err != nil {
+			return 0, 0, err
+		}
+		r.Header.Set("Authorization", "Bearer "+token)
+		r.Header.Set("X-Forge-Tenant", "http-tenant")
+		if write {
+			r.Header.Set("Content-Type", "application/json")
+			r.Header.Set("Idempotency-Key", fmt.Sprintf("http-load-%d", index))
+		}
+		at := time.Now()
+		response, err := client.Do(r)
+		if err != nil {
+			return time.Since(at), 0, err
+		}
+		_, copyErr := io.Copy(io.Discard, response.Body)
+		response.Body.Close()
+		return time.Since(at), response.StatusCode, copyErr
+	}
+	for i := range 100 {
+		if _, code, err := request(-i-1, false); err != nil || code != 200 {
+			t.Fatalf("warmup %d %v", code, err)
+		}
+	}
+	const count, rate = 1000, 50
+	var wg sync.WaitGroup
+	var mu sync.Mutex
+	latencies := make([]sample, count)
+	codes := make([]int, count)
+	failures := []string{}
+	limiter := make(chan struct{}, 16)
+	ticker := time.NewTicker(time.Second / rate)
+	defer ticker.Stop()
+	at := time.Now()
+	for i := range count {
+		<-ticker.C
+		limiter <- struct{}{}
+		wg.Go(func() {
+			defer func() { <-limiter }()
+			duration, code, err := request(i, i%10 == 0)
+			mu.Lock()
+			defer mu.Unlock()
+			latencies[i] = sample{Index: i, DurationMS: float64(duration) / float64(time.Millisecond)}
+			codes[i] = code
+			if err != nil || (i%10 == 0 && code != 202) || (i%10 != 0 && code != 200) {
+				failures = append(failures, fmt.Sprintf("request %d code %d err %v", i, code, err))
+			}
+		})
+	}
+	wg.Wait()
+	elapsed := time.Since(at)
+	results := makePhase(latencies, elapsed)
+	var persisted int
+	if err := admin.Pool.QueryRow(ctx, `SELECT count(*) FROM runs`).Scan(&persisted); err != nil {
+		t.Fatal(err)
+	}
+	report := map[string]any{"scope": "real TCP HTTP metadata read/admission; no models/execution", "machine": machine(), "source_sha256": sourceHashes(t), "offered_rps": rate, "window_seconds": 20, "warmup_reads": 100, "read_write_ratio": "90:10", "max_inflight": 16, "pool_max": 16, "nonowner_rls": true, "samples": results, "status_codes": codes, "failures": failures, "persisted_runs_including_seed": persisted}
+	raw, err := json.MarshalIndent(report, "", "  ")
+	if err != nil {
+		t.Fatal(err)
+	}
+	name := filepath.Join("results", "local", "http-"+time.Now().UTC().Format("20060102T150405Z")+".json")
+	if err = os.MkdirAll(filepath.Dir(name), 0700); err != nil {
+		t.Fatal(err)
+	}
+	if err = os.WriteFile(name, append(raw, '\n'), 0600); err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("raw=%s requests=%d offered=%d/s p95=%.3fms p99=%.3fms errors=%d", name, count, rate, results.Latency.P95MS, results.Latency.P99MS, len(failures))
+	if len(failures) != 0 || persisted != 101 {
+		t.Fatalf("HTTP/ledger mismatch: failures=%v runs=%d", failures, persisted)
+	}
+	if results.Latency.P95MS >= 200 || results.Latency.P99MS >= 1000 {
+		t.Fatal("measured metadata latency missed the declared reference target on this machine")
+	}
+}

@@ -1,0 +1,9 @@
+Fix ceilDiv in main.go so the CLI returns ceiling division for every valid int64
+numerator (nonnegative) and divisor (positive). Exact multiples and zero must not
+round up. Avoid addition overflow near MaxInt64. Preserve the existing CLI and
+invalid-input behavior: print "error" and exit 2 for negative numerators,
+nonpositive divisors, invalid integers or an incorrect argument count.
+
+The module uses only the Go standard library and must build without network
+access. Keep go.mod unchanged. Implement the smallest source change; verification
+uses independent operator-owned target and regression cases outside the repository.

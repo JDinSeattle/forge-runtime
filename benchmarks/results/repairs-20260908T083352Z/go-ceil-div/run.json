@@ -1,0 +1,47 @@
+{
+  "base_commit": "311a2366d106057309db99da33b85f9ef97a611e972433574bb79938e2ab8886",
+  "config": {
+    "max_cost_microusd": 1000000,
+    "max_model_rounds": 8,
+    "max_runtime_seconds": 300,
+    "max_tool_calls": 20,
+    "model": "fake",
+    "provider": "fake"
+  },
+  "covered_seq": 38,
+  "created_at": "2026-09-08T01:33:52.731042-07:00",
+  "id": "run_TZVQ2JBGYUBMQ7SW65XYIKPM5A",
+  "principal_id": "operator",
+  "project_id": "project_7AC5IDYJUMVXNUTDZ4VJM3RIXZ",
+  "runner_id": "local",
+  "state": {
+    "cost_microusd": 0,
+    "lease": {
+      "epoch": 1,
+      "owner": "recovery-worker-2-0",
+      "until": "2026-09-08T01:34:42.783007-07:00"
+    },
+    "limits": {
+      "deadline": "2026-09-08T01:38:52.729811-07:00",
+      "max_cost_microusd": 1000000,
+      "max_model_rounds": 8,
+      "max_tool_calls": 20
+    },
+    "model_rounds": 3,
+    "output_ref": "artifact_c470641593f050ba0218929f62a0a6b6a56a169538096b25a7d3434fc8361619",
+    "run_id": "run_TZVQ2JBGYUBMQ7SW65XYIKPM5A",
+    "schema_version": 1,
+    "stage": "stopped",
+    "status": "completed",
+    "step_seq": 3,
+    "tenant_id": "demo",
+    "tool_calls": 2,
+    "verification_report_ref": "artifact_3de3727ca58626809f9031cc87116a11fb4d2796a1d5cbec7f0feaa27a46ceb5",
+    "verification_revision": 2,
+    "verification_status": "verified",
+    "version": 17,
+    "workspace_revision": 2
+  },
+  "task": "Fix ceilDiv in main.go so the CLI returns ceiling division for every valid int64\nnumerator (nonnegative) and divisor (positive). Exact multiples and zero must not\nround up. Avoid addition overflow near MaxInt64. Preserve the existing CLI and\ninvalid-input behavior: print \"error\" and exit 2 for negative numerators,\nnonpositive divisors, invalid integers or an incorrect argument count.\n\nThe module uses only the Go standard library and must build without network\naccess. Keep go.mod unchanged. Implement the smallest source change; verification\nuses independent operator-owned target and regression cases outside the repository.\n",
+  "tenant_id": "demo"
+}

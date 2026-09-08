@@ -1,0 +1,6 @@
+Sep 08 01:08:52 postedism-ubuntu-system-selfuse systemd[2564]: Started forge-runtime-crash-worker.service - [systemd-run] "/home/postedism/Desktop/mini claude code/forge-runtime/bin/forge-worker" -config "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/platform.json" -id crash-worker -test-crash-after-model.
+Sep 08 01:08:52 postedism-ubuntu-system-selfuse forge-worker[2985695]: 2026/09/08 01:08:52 WARN deterministic fake model fixtures enabled; outputs are not model-quality evidence
+Sep 08 01:08:52 postedism-ubuntu-system-selfuse forge-worker[2985695]: 2026/09/08 01:08:52 INFO worker polling worker_id=crash-worker slots=2
+Sep 08 01:08:54 postedism-ubuntu-system-selfuse forge-worker[2985695]: 2026/09/08 01:08:54 ERROR deliberate fake-only process crash after durable model result exit_code=86
+Sep 08 01:08:54 postedism-ubuntu-system-selfuse systemd[2564]: forge-runtime-crash-worker.service: Main process exited, code=exited, status=86/n/a
+Sep 08 01:08:54 postedism-ubuntu-system-selfuse systemd[2564]: forge-runtime-crash-worker.service: Failed with result 'exit-code'.

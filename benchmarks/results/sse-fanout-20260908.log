@@ -1,0 +1,7 @@
+=== RUN   TestSSEFanoutEvidence
+    sse_test.go:480: evidence=/home/postedism/Desktop/mini claude code/forge-runtime/benchmarks/results/local/sse-20260908T082217.145386435Z.json
+    sse_test.go:481: healthy=180/180 deliveries=10800 p95=96.131ms p99=96.645ms durable=1200 payload=1024..1024B slow_early_returns=0 queue_overflows=0
+    sse_test.go:482: resources before={Stage:warm_services_before_connections At:2026-09-08 01:22:17.441019572 -0700 PDT m=+0.420192157 HeapAlloc:25503048 HeapInuse:27672576 Goroutines:6 FDs:42} after={Stage:warm_services_after_connections_closed At:2026-09-08 01:22:29.865191275 -0700 PDT m=+12.844363856 HeapAlloc:9578968 HeapInuse:17850368 Goroutines:6 FDs:42}
+--- PASS: TestSSEFanoutEvidence (12.91s)
+PASS
+ok  	github.com/JDinSeattle/forge-runtime/benchmarks	12.925s
