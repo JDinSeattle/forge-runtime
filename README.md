@@ -11,6 +11,8 @@ operation ID on the original runner before execution can continue.
 This is an engineering project with reproducible failure tests, not a claim of
 production adoption or prior employment. Current measured results and remaining
 acceptance work are recorded in [the evidence ledger](docs/evidence.md).
+See the [remaining acceptance boundaries](docs/open-acceptance.md) and
+[Chinese interview case study](docs/portfolio-zh.md) when evaluating its scope.
 
 ```mermaid
 flowchart LR

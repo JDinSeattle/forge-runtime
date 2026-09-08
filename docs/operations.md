@@ -84,6 +84,12 @@ workspace snapshots. Quiesce task admission and inspect operations before backin
 up live filesystem images. A point-in-time PostgreSQL restore alone cannot prove
 the fate of an external container command.
 
+The executed [SQL restore rehearsal](../benchmarks/results/database-restore-20260908.json)
+used a custom-format dump and `pg_restore --exit-on-error` into an empty
+disposable database, with no worker attached. Roles and grants were excluded.
+Its matching counts validate metadata restoration only; the journal, workspace
+images and artifact bytes still require the coordinated recovery set above.
+
 Schema upgrades use additive migrations. Migration 00005 cannot reconstruct
 byte-exact tool arguments previously reformatted by JSONB; such old pending runs
 need reconciliation using canonical effect bytes and authenticated receipts.

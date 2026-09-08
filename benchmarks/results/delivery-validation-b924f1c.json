@@ -1,0 +1,26 @@
+{
+  "tested_commit": "b924f1cc59583bfd0b812787aec98464cb997830",
+  "clean_checkout": "/tmp/forge-runtime-clean-b924f1c",
+  "go": "1.26.8",
+  "postgres": "17.11",
+  "protoc": "36.1",
+  "build": "pass",
+  "go_test": "pass",
+  "go_test_race_in_source_tree": "pass",
+  "go_vet_in_source_tree": "pass",
+  "generated_openapi_sqlc_protobuf": "pass",
+  "python_tests": 22,
+  "storage_plan_only": "pass; no images or mounts created",
+  "tracked_worktree_changes_after_checks": 0,
+  "scope": "Final code from an independent local Git clone passed build, 240 tests and generation with existing Go caches. The same code passed ordinary and race tests against an initially empty disposable PostgreSQL instance. Python/volume-plan checks are retained from the parent checkout; those Python/storage files did not change.",
+  "github_ci": {
+    "status": "completed",
+    "conclusion": "success",
+    "run_id": 34206855353,
+    "url": "https://github.com/JDinSeattle/forge-runtime/actions/runs/34206855353",
+    "tested_commit": "b924f1cc59583bfd0b812787aec98464cb997830"
+  },
+  "fresh_database_tests": "240 pass, zero failures",
+  "fresh_database_race": "240 pass, zero failures",
+  "fresh_database_resources": "disposable PostgreSQL 17.11, 512MiB/2CPU; Go GOMAXPROCS=2"
+}

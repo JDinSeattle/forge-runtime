@@ -13,9 +13,10 @@ environment details. Earlier tests were reported through agent tool output and
 the [independent review log](reviews/implementation-review.md); most original
 stdout files were not retained. Those records are labeled accordingly rather
 than reconstructed as raw logs. A retained race JSONL now records 233 passing test/subtest entries and zero
-failures. Newer execution/load evidence is linked below. The final validation
-of the corrected tree and clean-clone reproduction
-remain pending; earlier raw artifacts must not be relabeled as those checks.
+failures. Newer execution/load evidence is linked below. The corrected code
+commit is `b924f1cc59583bfd0b812787aec98464cb997830`. Its source and independent
+checkout checks are recorded in E13; earlier artifacts are not relabeled as
+those checks.
 
 | Record | What is supported | Evidence form | Main limitation |
 | --- | --- | --- | --- |
@@ -32,6 +33,7 @@ remain pending; earlier raw artifacts must not be relabeled as those checks.
 | E11 | Five rounds of 50 actual SSE open/cancel lifecycles | Per-round TCP/handler/FD/goroutine/heap counts and pprof | Subsecond sample; no long-term memory stability claim |
 | E12 | Actual Go repair with offline independent verification | CLI report, baseline/verification receipts and reapplied patch | Deterministic model and one Go fixture |
 | E13 | Final source validation before first commit | Full race JSONL, vet and three generator logs | Opt-in workloads have separate execution records |
+| E14 | Actual SQL backup and restoration | Custom-format backup checksum and restored record counts | SQL metadata only; no paired runner/workspace/object restoration |
 
 ## E01 — Schemas and generated code
 
@@ -64,13 +66,12 @@ The HTTP schema/client agent previously reported passing
 execution record, not a newly captured raw log. Typed protobuf source/bindings
 and RPC tests are under [`proto/runner/v1`](../proto/runner/v1) and
 [`internal/runnerclient`](../internal/runnerclient). The root integration agent subsequently reported `make check-generated`
-passing with protoc 36.1 after `go mod tidy`; its combined raw final validation
-log remains pending. A uniform generator check from a clean checkout remains
-a separate delivery gate. A new
+passing with protoc 36.1 after `go mod tidy`; the subsequent source and
+clean-checkout logs are retained in E13. A new
 [`proto/check-generated.sh`](../proto/check-generated.sh) and
 [CI workflow](../.github/workflows/ci.yml) cover regeneration, builds, tests,
-race/vet and helper checks. Workflow source is implementation evidence, not
-evidence that GitHub Actions or a clean-clone run has already passed.
+race/vet and helper checks. Actual execution results are recorded separately
+in E13 rather than inferred from workflow source.
 
 ## E02 — Core, providers, clients and telemetry
 
@@ -354,8 +355,9 @@ crash window, artifact orphan collection, or paired database/workspace restore.
 Idempotency keys remain beyond their declared minimum retention period; no
 automatic key deletion is claimed.
 
-The second Go RepoProfile, a native paid-model evaluation, full backup/restore
-rehearsal and remaining fault/load cases remain pending.
+The Go RepoProfile has actual execution evidence in E12; SQL-only restoration
+is recorded in E14. Native model evaluation, paired backup/restore and the
+remaining fault/load cases are still open.
 
 ## E07 — Actual operating-system worker crash and recovery
 
@@ -553,11 +555,68 @@ The first GitHub job also failed before checkout because the runner parsed the
 single-quoted Docker health command incorrectly. The workflow now uses double
 quotes. Neither initial failure is reported as a passing CI result.
 
+After isolation was corrected, the full
+[race rerun](../benchmarks/results/validation-isolated-race-20260908.jsonl)
+passed 240 tests/subtests with six opt-in skips while both live demo workers
+remained running. Vet and all generators also passed. An independent Git clone
+of `818d78f`, without local environment files, keys, journal or images, then
+passed build, [ordinary Go tests](../benchmarks/results/clean-checkout-tests-818d78f.jsonl),
+[all generators](../benchmarks/results/clean-checkout-generated-818d78f.log),
+[22 Python tests](../benchmarks/results/clean-checkout-python-818d78f.log), and
+[storage planning only](../benchmarks/results/clean-checkout-volume-plan-818d78f.json).
+It left no tracked changes. This reproduction reused installed Go caches and
+the existing isolated PostgreSQL service; it is not a fresh-machine container
+deployment. See the [delivery manifest](../benchmarks/results/delivery-validation-818d78f.json).
+
+All four retained demo workspaces were then sealed and released through the
+actual operator cleanup workflow. The [cleanup log](../benchmarks/results/demo-workspace-cleanup-20260908.log)
+retains their snapshot references; SQLite reported zero active volume leases
+and four configured slots. Receipts, artifacts, database run history, mounted
+images and source fixtures remain available.
+
+Hosted CI then exposed two rollback-only SQL review tests that still expected
+a pre-migrated public schema. Commit `b924f1c` gives those tests their own
+migrated schema and grants the temporary nonowner role access to that exact
+schema. Their original FK, tenant and transaction-rollback assertions remain.
+The fix was independently reviewed. A new, initially empty PostgreSQL 17.11
+instance limited to 512 MiB and two CPUs, with Go `GOMAXPROCS=2`, passed
+[ordinary tests](../benchmarks/results/fresh-database-tests-20260908.jsonl) and
+[race tests](../benchmarks/results/fresh-database-race-20260908.jsonl): 240 passes,
+zero failures in each. Vet also passed. An independent clone of `b924f1c`
+then passed build, [240 tests](../benchmarks/results/clean-checkout-tests-b924f1c.jsonl)
+and [all generation checks](../benchmarks/results/clean-checkout-generated-b924f1c.log),
+leaving zero tracked changes. The [final delivery manifest](../benchmarks/results/delivery-validation-b924f1c.json)
+distinguishes this from the earlier checkout and the hosted CI result.
+
+Hosted [GitHub Actions run 34206855353](https://github.com/JDinSeattle/forge-runtime/actions/runs/34206855353)
+completed successfully for exact commit `b924f1cc59583bfd0b812787aec98464cb997830`:
+build, ordinary tests, race tests, vet, all three generators and both Python
+helper suites passed. The [captured job/step result](../benchmarks/results/github-ci-b924f1c.json)
+retains the conclusion, timestamps and commit identity. Subsequent delivery
+changes only add documentation and captured evidence; runtime and test code
+remain identical to that tested commit.
+
+## E14 — SQL metadata backup and restore
+
+An actual `pg_dump --format=custom --no-owner --no-acl` of the idle demo database
+was restored with `pg_restore --exit-on-error` into the empty disposable
+PostgreSQL instance. The [retained report](../benchmarks/results/database-restore-20260908.json)
+records the dump's byte size/checksum and matching source/restored counts:
+five runs, 87 audit snapshots, 208 events, 30 effects, 15 model attempts,
+101 artifact records, five cleanup records and zero reserved allocations.
+The private dump remains in ignored local backup storage; its contents were
+not committed. The disposable restore instance was then removed.
+
+No worker was connected to the restored database. Roles/ACLs were excluded,
+and runner journals, volume images and artifact bytes were not restored.
+This validates SQL restoration and its metadata relationships, not complete
+execution recovery or artifact readability after host loss.
+
 ## Updating this record
 
-Current delivery fields: `tested_commit: pending`;
-`final_tree_validation: pending`; `clean_clone_reproduction: pending`;
-`github_actions_execution: pending`; `native_provider_evaluation: pending`.
+Current delivery fields: `tested_commit: b924f1c`;
+`final_tree_validation: pass`; `clean_clone_reproduction: pass (bounded scope above)`;
+`github_actions_execution: success (34206855353)`; `native_provider_evaluation: pending`.
 The earlier generator command reported by the integration agent and retained
 raw workload reports are listed separately above.
 

@@ -1,0 +1,21 @@
+{
+  "tested_commit": "818d78f30b2fb0be3ccb75a2754e59206f3f3898",
+  "clean_checkout": "/tmp/forge-runtime-clean-818d78f",
+  "go": "1.26.8",
+  "postgres": "17.11",
+  "protoc": "36.1",
+  "build": "pass",
+  "go_test": "pass",
+  "go_test_race_in_source_tree": "pass",
+  "go_vet_in_source_tree": "pass",
+  "generated_openapi_sqlc_protobuf": "pass",
+  "python_tests": 22,
+  "storage_plan_only": "pass; no images or mounts created",
+  "tracked_worktree_changes_after_checks": 0,
+  "scope": "Independent local Git clone using existing Go module/build caches and the existing isolated loopback PostgreSQL service; not a fresh machine or full mounted-volume deployment.",
+  "github_ci": {
+    "conclusion": "failure",
+    "run_id": 34206128801,
+    "reason": "Two rollback-only SQL review fixtures depended on a migrated public schema; fixed in b924f1c."
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "scope": "Actual PostgreSQL custom-format backup restored into an empty disposable instance; SQL metadata only. Roles/ACLs excluded. No runner journal, workspace images or artifact bytes restored; no executor was attached to the restored database.",
+  "postgres": "17.11",
+  "backup_bytes": 104523,
+  "backup_sha256": "47f3859bddf68bc5d80848a5c749423046b2b7a0ec6f9193798ce77a39d54f98",
+  "table_counts": {
+    "source": {
+      "runs": 5,
+      "snapshots": 87,
+      "events": 208,
+      "effects": 30,
+      "attempts": 15,
+      "artifacts": 101,
+      "cleanup": 5,
+      "ready_snapshots": 5,
+      "unreleased_allocations": 0
+    },
+    "restored": {
+      "runs": 5,
+      "snapshots": 87,
+      "events": 208,
+      "effects": 30,
+      "attempts": 15,
+      "artifacts": 101,
+      "cleanup": 5,
+      "ready_snapshots": 5,
+      "unreleased_allocations": 0
+    }
+  },
+  "restored_counts_match": true,
+  "private_dump_retained": "var/local/backups/control-plane-20260908.dump"
+}
