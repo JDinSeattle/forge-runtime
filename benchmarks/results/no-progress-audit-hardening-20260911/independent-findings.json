@@ -1,0 +1,18 @@
+[
+  {
+    "mutation": "actual receipt-backed read effect SQL status set unknown",
+    "unexpected_accept": true
+  },
+  {
+    "mutation": "middle committed context predecessor counter reset without matching previous committed snapshot",
+    "before_counters": [
+      1,
+      2
+    ],
+    "unexpected_accept": true
+  },
+  {
+    "mutation": "final current run projection changed to completed while latest snapshot remains budget_exhausted",
+    "unexpected_accept": true
+  }
+]

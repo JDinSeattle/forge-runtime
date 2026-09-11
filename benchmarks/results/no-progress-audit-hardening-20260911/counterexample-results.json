@@ -1,0 +1,38 @@
+[
+  {
+    "auditor": "before",
+    "case": "sql-effect-status",
+    "accepted": true,
+    "error": null
+  },
+  {
+    "auditor": "before",
+    "case": "middle-progress-chain",
+    "accepted": true,
+    "error": null
+  },
+  {
+    "auditor": "before",
+    "case": "final-run-status",
+    "accepted": true,
+    "error": null
+  },
+  {
+    "auditor": "after",
+    "case": "sql-effect-status",
+    "accepted": false,
+    "error": "receipt/SQL terminal status mismatch"
+  },
+  {
+    "auditor": "after",
+    "case": "middle-progress-chain",
+    "accepted": false,
+    "error": "input is not the preceding committed snapshot"
+  },
+  {
+    "auditor": "after",
+    "case": "final-run-status",
+    "accepted": false,
+    "error": "current run differs from its final snapshot"
+  }
+]

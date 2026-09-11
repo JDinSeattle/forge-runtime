@@ -1,0 +1,123 @@
+test_all_final_original_reports (test_audit.ProgressAuditRegression.test_all_final_original_reports) ... ok
+test_changed_counter_rejected (test_audit.ProgressAuditRegression.test_changed_counter_rejected) ... ok
+test_final_current_run_must_match_last_snapshot (test_audit.ProgressAuditRegression.test_final_current_run_must_match_last_snapshot) ... 
+  test_final_current_run_must_match_last_snapshot (test_audit.ProgressAuditRegression.test_final_current_run_must_match_last_snapshot) (key='status') ... FAIL
+  test_final_current_run_must_match_last_snapshot (test_audit.ProgressAuditRegression.test_final_current_run_must_match_last_snapshot) (key='progress') ... FAIL
+  test_final_current_run_must_match_last_snapshot (test_audit.ProgressAuditRegression.test_final_current_run_must_match_last_snapshot) (key='version') ... FAIL
+test_ledger_argument_change_rejected (test_audit.ProgressAuditRegression.test_ledger_argument_change_rejected) ... ok
+test_middle_counter_cannot_replace_committed_predecessor (test_audit.ProgressAuditRegression.test_middle_counter_cannot_replace_committed_predecessor) ... FAIL
+test_non_context_transition_cannot_change_progress (test_audit.ProgressAuditRegression.test_non_context_transition_cannot_change_progress) ... FAIL
+test_only_heartbeat_lease_until_may_differ (test_audit.ProgressAuditRegression.test_only_heartbeat_lease_until_may_differ) ... 
+  test_only_heartbeat_lease_until_may_differ (test_audit.ProgressAuditRegression.test_only_heartbeat_lease_until_may_differ) (key='owner') ... FAIL
+  test_only_heartbeat_lease_until_may_differ (test_audit.ProgressAuditRegression.test_only_heartbeat_lease_until_may_differ) (key='epoch') ... FAIL
+test_receipt_and_sql_terminal_status_must_match (test_audit.ProgressAuditRegression.test_receipt_and_sql_terminal_status_must_match) ... 
+  test_receipt_and_sql_terminal_status_must_match (test_audit.ProgressAuditRegression.test_receipt_and_sql_terminal_status_must_match) (status='unknown') ... FAIL
+  test_receipt_and_sql_terminal_status_must_match (test_audit.ProgressAuditRegression.test_receipt_and_sql_terminal_status_must_match) (status='in_flight') ... FAIL
+  test_receipt_and_sql_terminal_status_must_match (test_audit.ProgressAuditRegression.test_receipt_and_sql_terminal_status_must_match) (status='failed') ... FAIL
+  test_receipt_and_sql_terminal_status_must_match (test_audit.ProgressAuditRegression.test_receipt_and_sql_terminal_status_must_match) (status='cancelled') ... FAIL
+test_receipt_change_rejected (test_audit.ProgressAuditRegression.test_receipt_change_rejected) ... ok
+test_valid_fixture (test_audit.ProgressAuditRegression.test_valid_fixture) ... ok
+
+======================================================================
+FAIL: test_final_current_run_must_match_last_snapshot (test_audit.ProgressAuditRegression.test_final_current_run_must_match_last_snapshot) (key='status')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/feature-worktrees/progress/scripts/progress/test_audit.py", line 81, in test_final_current_run_must_match_last_snapshot
+    with self.assertRaises(AssertionError):
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: AssertionError not raised
+
+======================================================================
+FAIL: test_final_current_run_must_match_last_snapshot (test_audit.ProgressAuditRegression.test_final_current_run_must_match_last_snapshot) (key='progress')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/feature-worktrees/progress/scripts/progress/test_audit.py", line 81, in test_final_current_run_must_match_last_snapshot
+    with self.assertRaises(AssertionError):
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: AssertionError not raised
+
+======================================================================
+FAIL: test_final_current_run_must_match_last_snapshot (test_audit.ProgressAuditRegression.test_final_current_run_must_match_last_snapshot) (key='version')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/feature-worktrees/progress/scripts/progress/test_audit.py", line 81, in test_final_current_run_must_match_last_snapshot
+    with self.assertRaises(AssertionError):
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: AssertionError not raised
+
+======================================================================
+FAIL: test_middle_counter_cannot_replace_committed_predecessor (test_audit.ProgressAuditRegression.test_middle_counter_cannot_replace_committed_predecessor)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/feature-worktrees/progress/scripts/progress/test_audit.py", line 59, in test_middle_counter_cannot_replace_committed_predecessor
+    with self.assertRaises(AssertionError):
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: AssertionError not raised
+
+======================================================================
+FAIL: test_non_context_transition_cannot_change_progress (test_audit.ProgressAuditRegression.test_non_context_transition_cannot_change_progress)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/feature-worktrees/progress/scripts/progress/test_audit.py", line 72, in test_non_context_transition_cannot_change_progress
+    with self.assertRaises(AssertionError):
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: AssertionError not raised
+
+======================================================================
+FAIL: test_only_heartbeat_lease_until_may_differ (test_audit.ProgressAuditRegression.test_only_heartbeat_lease_until_may_differ) (key='owner')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/feature-worktrees/progress/scripts/progress/test_audit.py", line 92, in test_only_heartbeat_lease_until_may_differ
+    with self.assertRaises(AssertionError):
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: AssertionError not raised
+
+======================================================================
+FAIL: test_only_heartbeat_lease_until_may_differ (test_audit.ProgressAuditRegression.test_only_heartbeat_lease_until_may_differ) (key='epoch')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/feature-worktrees/progress/scripts/progress/test_audit.py", line 92, in test_only_heartbeat_lease_until_may_differ
+    with self.assertRaises(AssertionError):
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: AssertionError not raised
+
+======================================================================
+FAIL: test_receipt_and_sql_terminal_status_must_match (test_audit.ProgressAuditRegression.test_receipt_and_sql_terminal_status_must_match) (status='unknown')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/feature-worktrees/progress/scripts/progress/test_audit.py", line 50, in test_receipt_and_sql_terminal_status_must_match
+    with self.assertRaises(AssertionError):
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: AssertionError not raised
+
+======================================================================
+FAIL: test_receipt_and_sql_terminal_status_must_match (test_audit.ProgressAuditRegression.test_receipt_and_sql_terminal_status_must_match) (status='in_flight')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/feature-worktrees/progress/scripts/progress/test_audit.py", line 50, in test_receipt_and_sql_terminal_status_must_match
+    with self.assertRaises(AssertionError):
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: AssertionError not raised
+
+======================================================================
+FAIL: test_receipt_and_sql_terminal_status_must_match (test_audit.ProgressAuditRegression.test_receipt_and_sql_terminal_status_must_match) (status='failed')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/feature-worktrees/progress/scripts/progress/test_audit.py", line 50, in test_receipt_and_sql_terminal_status_must_match
+    with self.assertRaises(AssertionError):
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: AssertionError not raised
+
+======================================================================
+FAIL: test_receipt_and_sql_terminal_status_must_match (test_audit.ProgressAuditRegression.test_receipt_and_sql_terminal_status_must_match) (status='cancelled')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/feature-worktrees/progress/scripts/progress/test_audit.py", line 50, in test_receipt_and_sql_terminal_status_must_match
+    with self.assertRaises(AssertionError):
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: AssertionError not raised
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.017s
+
+FAILED (failures=11)
