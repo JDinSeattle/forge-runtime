@@ -26,7 +26,7 @@ func (s *Store) BeginPricedAttempt(ctx context.Context, r Run, requestRef, price
 		Model        string `json:"model"`
 		PriceVersion string `json:"price_version"`
 	}
-	if json.Unmarshal(pricing, &metadata) != nil || metadata.Provider != r.Config.Provider || metadata.Model != r.Config.Model || metadata.PriceVersion != priceVersion {
+	if json.Unmarshal(pricing, &metadata) != nil || metadata.Provider == "" || metadata.Model == "" || metadata.PriceVersion != priceVersion {
 		return ModelAttempt{}, nil, domain.ErrInvalid
 	}
 	tx, err := s.Tx(ctx, r.TenantID, pgx.TxOptions{})
@@ -71,6 +71,18 @@ func (s *Store) BeginPricedAttempt(ctx context.Context, r Run, requestRef, price
 		if now.Before(policy.NotBefore) {
 			return ModelAttempt{}, nil, domain.ErrCapacity
 		}
+		var first time.Time
+		if err = tx.QueryRow(ctx, `SELECT min(started_at) FROM model_attempts WHERE tenant_id=$1 AND run_id=$2 AND step_seq=$3`, r.TenantID, r.ID, r.State.StepSeq).Scan(&first); err != nil {
+			return ModelAttempt{}, nil, err
+		}
+		if !now.Before(first.Add(2 * time.Minute)) {
+			return ModelAttempt{}, nil, domain.ErrCapacity
+		}
+	}
+	route := ModelRoute{Provider: metadata.Provider, Model: metadata.Model}
+	switching, err := validateModelRoute(ctx, tx, current, latest, route)
+	if err != nil {
+		return ModelAttempt{}, nil, err
 	}
 	number := latest.Number + 1
 	if number > 3 {
@@ -86,9 +98,15 @@ func (s *Store) BeginPricedAttempt(ctx context.Context, r Run, requestRef, price
 	if !now.Before(deadline) {
 		return ModelAttempt{}, nil, domain.ErrCapacity
 	}
-	a, err := scanAttempt(tx.QueryRow(ctx, `INSERT INTO model_attempts(tenant_id,run_id,step_seq,attempt,attempt_id,provider,model_id,status,request_ref,price_version,deadline,pricing) VALUES($1,$2,$3,$4,$5,$6,$7,'prepared',$8,$9,$10,$11) RETURNING `+attemptColumns, r.TenantID, r.ID, r.State.StepSeq, number, NewID("attempt"), r.Config.Provider, r.Config.Model, requestRef, priceVersion, deadline, pricing))
+	a, err := scanAttempt(tx.QueryRow(ctx, `INSERT INTO model_attempts(tenant_id,run_id,step_seq,attempt,attempt_id,provider,model_id,status,request_ref,price_version,deadline,pricing) VALUES($1,$2,$3,$4,$5,$6,$7,'prepared',$8,$9,$10,$11) RETURNING `+attemptColumns, r.TenantID, r.ID, r.State.StepSeq, number, NewID("attempt"), route.Provider, route.Model, requestRef, priceVersion, deadline, pricing))
 	if err != nil {
 		return a, nil, err
+	}
+	if switching {
+		body, _ := json.Marshal(map[string]any{"from_attempt_id": latest.ID, "to_attempt_id": a.ID, "from": latest.Route(), "to": route, "step_seq": a.StepSeq, "request_ref": requestRef, "reason": latest.ErrorCode, "policy": "single-fallback-v1"})
+		if _, err = appendEvent(ctx, tx, r.TenantID, r.ID, "model.handoff_prepared", body); err != nil {
+			return a, nil, err
+		}
 	}
 	payload, _ := json.Marshal(map[string]any{"attempt_id": a.ID, "step_seq": a.StepSeq, "price_version": a.PriceVersion})
 	if _, err = appendEvent(ctx, tx, r.TenantID, r.ID, "model.started", payload); err != nil {

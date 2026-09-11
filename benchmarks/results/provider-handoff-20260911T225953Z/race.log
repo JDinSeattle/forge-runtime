@@ -1,0 +1,28 @@
+{"Time":"2026-09-11T15:59:56.373332926-07:00","Action":"start","Package":"github.com/JDinSeattle/forge-runtime/internal/application"}
+{"Time":"2026-09-11T15:59:56.3734388-07:00","Action":"start","Package":"github.com/JDinSeattle/forge-runtime/internal/persistence"}
+{"Time":"2026-09-11T15:59:56.373469904-07:00","Action":"start","Package":"github.com/JDinSeattle/forge-runtime/internal/configuration"}
+{"Time":"2026-09-11T15:59:56.388033859-07:00","Action":"output","Package":"github.com/JDinSeattle/forge-runtime/internal/persistence","Output":"testing: warning: no tests to run\n"}
+{"Time":"2026-09-11T15:59:56.388091361-07:00","Action":"output","Package":"github.com/JDinSeattle/forge-runtime/internal/persistence","Output":"PASS\n"}
+{"Time":"2026-09-11T15:59:56.398543691-07:00","Action":"run","Package":"github.com/JDinSeattle/forge-runtime/internal/application","Test":"TestDriverTerminalHeartbeatBoundary"}
+{"Time":"2026-09-11T15:59:56.39856852-07:00","Action":"output","Package":"github.com/JDinSeattle/forge-runtime/internal/application","Test":"TestDriverTerminalHeartbeatBoundary","Output":"=== RUN   TestDriverTerminalHeartbeatBoundary\n"}
+{"Time":"2026-09-11T15:59:56.39858299-07:00","Action":"run","Package":"github.com/JDinSeattle/forge-runtime/internal/application","Test":"TestDriverTerminalHeartbeatBoundary/completed"}
+{"Time":"2026-09-11T15:59:56.398584896-07:00","Action":"output","Package":"github.com/JDinSeattle/forge-runtime/internal/application","Test":"TestDriverTerminalHeartbeatBoundary/completed","Output":"=== RUN   TestDriverTerminalHeartbeatBoundary/completed\n"}
+{"Time":"2026-09-11T15:59:56.402627835-07:00","Action":"output","Package":"github.com/JDinSeattle/forge-runtime/internal/configuration","Output":"testing: warning: no tests to run\n"}
+{"Time":"2026-09-11T15:59:56.402655448-07:00","Action":"output","Package":"github.com/JDinSeattle/forge-runtime/internal/configuration","Output":"PASS\n"}
+{"Time":"2026-09-11T15:59:57.393433024-07:00","Action":"output","Package":"github.com/JDinSeattle/forge-runtime/internal/persistence","Output":"ok  \tgithub.com/JDinSeattle/forge-runtime/internal/persistence\t1.020s [no tests to run]\n"}
+{"Time":"2026-09-11T15:59:57.393529827-07:00","Action":"pass","Package":"github.com/JDinSeattle/forge-runtime/internal/persistence","Elapsed":1.02}
+{"Time":"2026-09-11T15:59:57.405408165-07:00","Action":"output","Package":"github.com/JDinSeattle/forge-runtime/internal/configuration","Output":"ok  \tgithub.com/JDinSeattle/forge-runtime/internal/configuration\t1.032s [no tests to run]\n"}
+{"Time":"2026-09-11T15:59:57.405444444-07:00","Action":"pass","Package":"github.com/JDinSeattle/forge-runtime/internal/configuration","Elapsed":1.032}
+{"Time":"2026-09-11T16:00:00.084001013-07:00","Action":"output","Package":"github.com/JDinSeattle/forge-runtime/internal/application","Test":"TestDriverTerminalHeartbeatBoundary/completed","Output":"    heartbeat_boundary_integration_test.go:48: committed inactive state returned error: context canceled\n"}
+{"Time":"2026-09-11T16:00:00.145669668-07:00","Action":"output","Package":"github.com/JDinSeattle/forge-runtime/internal/application","Test":"TestDriverTerminalHeartbeatBoundary/completed","Output":"--- FAIL: TestDriverTerminalHeartbeatBoundary/completed (3.75s)\n"}
+{"Time":"2026-09-11T16:00:00.145702964-07:00","Action":"fail","Package":"github.com/JDinSeattle/forge-runtime/internal/application","Test":"TestDriverTerminalHeartbeatBoundary/completed","Elapsed":3.75}
+{"Time":"2026-09-11T16:00:00.14578207-07:00","Action":"run","Package":"github.com/JDinSeattle/forge-runtime/internal/application","Test":"TestDriverTerminalHeartbeatBoundary/waiting_approval"}
+{"Time":"2026-09-11T16:00:00.145788387-07:00","Action":"output","Package":"github.com/JDinSeattle/forge-runtime/internal/application","Test":"TestDriverTerminalHeartbeatBoundary/waiting_approval","Output":"=== RUN   TestDriverTerminalHeartbeatBoundary/waiting_approval\n"}
+{"Time":"2026-09-11T16:00:03.001807127-07:00","Action":"output","Package":"github.com/JDinSeattle/forge-runtime/internal/application","Test":"TestDriverTerminalHeartbeatBoundary/waiting_approval","Output":"    heartbeat_boundary_integration_test.go:48: committed inactive state returned error: context canceled\n"}
+{"Time":"2026-09-11T16:00:03.060965831-07:00","Action":"output","Package":"github.com/JDinSeattle/forge-runtime/internal/application","Test":"TestDriverTerminalHeartbeatBoundary/waiting_approval","Output":"--- FAIL: TestDriverTerminalHeartbeatBoundary/waiting_approval (2.92s)\n"}
+{"Time":"2026-09-11T16:00:03.061001845-07:00","Action":"fail","Package":"github.com/JDinSeattle/forge-runtime/internal/application","Test":"TestDriverTerminalHeartbeatBoundary/waiting_approval","Elapsed":2.92}
+{"Time":"2026-09-11T16:00:03.061014067-07:00","Action":"output","Package":"github.com/JDinSeattle/forge-runtime/internal/application","Test":"TestDriverTerminalHeartbeatBoundary","Output":"--- FAIL: TestDriverTerminalHeartbeatBoundary (6.66s)\n"}
+{"Time":"2026-09-11T16:00:03.061018591-07:00","Action":"fail","Package":"github.com/JDinSeattle/forge-runtime/internal/application","Test":"TestDriverTerminalHeartbeatBoundary","Elapsed":6.66}
+{"Time":"2026-09-11T16:00:03.061201188-07:00","Action":"output","Package":"github.com/JDinSeattle/forge-runtime/internal/application","Output":"FAIL\n"}
+{"Time":"2026-09-11T16:00:03.069096968-07:00","Action":"output","Package":"github.com/JDinSeattle/forge-runtime/internal/application","Output":"FAIL\tgithub.com/JDinSeattle/forge-runtime/internal/application\t6.695s\n"}
+{"Time":"2026-09-11T16:00:03.069113795-07:00","Action":"fail","Package":"github.com/JDinSeattle/forge-runtime/internal/application","Elapsed":6.696}

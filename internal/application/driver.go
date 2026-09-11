@@ -154,6 +154,17 @@ func (d *Driver) Drive(parent context.Context, claimed persistence.Run) error {
 			case <-ticker.C:
 				hctx, end := context.WithTimeout(ctx, 3*time.Second)
 				_, err := d.Store.Heartbeat(hctx, claimed.TenantID, claimed.ID, claimed.State.Lease.Owner, claimed.State.Lease.Epoch, d.leaseDuration())
+				if errors.Is(err, domain.ErrFenced) && ctx.Err() == nil {
+					// A transition can commit an inactive state between the last
+					// Advance and the next loop read. Its expected heartbeat refusal
+					// must not turn a completed/approval result into context.Canceled.
+					fresh, readErr := d.Store.GetRun(hctx, claimed.TenantID, claimed.ID)
+					if readErr == nil && fresh.State.Lease.Epoch == claimed.State.Lease.Epoch &&
+						(fresh.State.Status.Terminal() || fresh.State.Status == domain.StatusWaitingApproval || fresh.State.Status == domain.StatusQueued) {
+						end()
+						return
+					}
+				}
 				end()
 				if err != nil {
 					cancel()
@@ -207,6 +218,9 @@ func (d *Driver) Drive(parent context.Context, claimed persistence.Run) error {
 			}
 			continue
 		} else if err != nil {
+			return err
+		}
+		if err = d.fault("after_advance_before_reload"); err != nil {
 			return err
 		}
 	}

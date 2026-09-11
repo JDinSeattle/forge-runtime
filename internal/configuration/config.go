@@ -85,10 +85,16 @@ func Load(path string) (Config, error) {
 		if err := run.Validate(); err != nil {
 			return c, fmt.Errorf("config %s: %w", id, err)
 		}
-		spec, ok := c.Models[run.Provider+"/"+run.Model]
-		caps, registered := c.Providers[run.Provider][run.Model]
-		if !ok || !registered || !caps.ToolCalling || spec.CredentialGroup == "" || spec.PriceVersion == "" || spec.ContextTokens <= 0 || spec.MaxOutputTokens <= 0 || spec.RequestTimeout <= 0 || spec.MaxOutputTokens > caps.MaxOutputTokens {
-			return c, fmt.Errorf("config %s has no valid exact model registration", id)
+		routes := []persistence.ModelRoute{run.PrimaryRoute()}
+		if run.Fallback != nil {
+			routes = append(routes, *run.Fallback)
+		}
+		for index, route := range routes {
+			spec, ok := c.Models[route.Key()]
+			caps, registered := c.Providers[route.Provider][route.Model]
+			if !ok || !registered || !caps.ToolCalling || spec.CredentialGroup == "" || spec.PriceVersion == "" || spec.ContextTokens <= 0 || spec.MaxOutputTokens <= 0 || spec.RequestTimeout <= 0 || spec.MaxOutputTokens > caps.MaxOutputTokens || (index > 0 && caps.ContextWindow <= spec.MaxOutputTokens) {
+				return c, fmt.Errorf("config %s has no valid exact model registration for route %d", id, index)
+			}
 		}
 	}
 	return c, nil

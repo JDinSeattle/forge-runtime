@@ -1,0 +1,40 @@
+[
+  {
+    "argv": [
+      "go",
+      "test",
+      "-race",
+      "-json",
+      "-count=1",
+      "./internal/application",
+      "./internal/persistence",
+      "./internal/configuration",
+      "-run",
+      "Test(NativeProviderHandoff|PortableHandoff|Fallback|AttemptPricing|ModelRetry|DurableRepair|CompletedModel)"
+    ],
+    "elapsed_seconds": 34.05023848597193,
+    "exit_code": 0,
+    "name": "race"
+  },
+  {
+    "argv": [
+      "go",
+      "vet",
+      "./internal/application",
+      "./internal/persistence",
+      "./internal/configuration"
+    ],
+    "elapsed_seconds": 0.5588446840411052,
+    "exit_code": 0,
+    "name": "vet"
+  },
+  {
+    "argv": [
+      "sh",
+      "api/check-generated.sh"
+    ],
+    "elapsed_seconds": 0.1311136800213717,
+    "exit_code": 0,
+    "name": "generated"
+  }
+]

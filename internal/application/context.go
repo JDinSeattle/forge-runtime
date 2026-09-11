@@ -24,6 +24,9 @@ type contextEnvelope struct {
 	Summary           string                `json:"summary,omitempty"`
 	AppliedMessageSeq uint64                `json:"applied_message_seq"`
 	Tools             []provider.Tool       `json:"tools"`
+	// PortableMessages is the complete public representation at this exact
+	// message watermark. It never contains adapter-owned opaque state.
+	PortableMessages []provider.Message `json:"portable_messages,omitempty"`
 }
 
 func toolSchemas() []provider.Tool {
@@ -61,6 +64,7 @@ func (d *Driver) buildContext(ctx context.Context, r persistence.Run) (flow.Even
 		envelope.AppliedMessageSeq = m.Seq
 	}
 	var summary strings.Builder
+	var nativeMessages []provider.Message
 	start := max(0, len(history)-4)
 	for i, a := range history {
 		var turn provider.ModelTurn
@@ -126,25 +130,28 @@ func (d *Driver) buildContext(ctx context.Context, r persistence.Run) (flow.Even
 				return flow.Event{}, err
 			}
 			envelope.NativeState = turn.NativeState
-			envelope.Messages = results
+			nativeMessages = append([]provider.Message(nil), results...)
 			for _, m := range messages {
 				if m.Seq > old.AppliedMessageSeq {
-					envelope.Messages = append(envelope.Messages, provider.Message{Role: "user", Text: m.Text})
+					nativeMessages = append(nativeMessages, provider.Message{Role: "user", Text: m.Text})
 				}
 			}
 		}
 	}
-	if envelope.NativeState == nil {
-		envelope.Summary = summary.String()
-		if envelope.Summary != "" {
-			envelope.Messages = append(envelope.Messages[:2], append([]provider.Message{{Role: "user", Text: "Earlier committed execution summary:\n" + envelope.Summary}}, envelope.Messages[2:]...)...)
-		}
-		for _, m := range messages {
-			envelope.Messages = append(envelope.Messages, provider.Message{Role: "user", Text: m.Text})
-		}
+	envelope.Summary = summary.String()
+	if envelope.Summary != "" {
+		envelope.Messages = append(envelope.Messages[:2], append([]provider.Message{{Role: "user", Text: "Earlier committed execution summary:\n" + envelope.Summary}}, envelope.Messages[2:]...)...)
+	}
+	for _, m := range messages {
+		envelope.Messages = append(envelope.Messages, provider.Message{Role: "user", Text: m.Text})
 	}
 	if feedback != "" {
 		envelope.Messages = append(envelope.Messages, provider.Message{Role: "user", Text: feedback})
+		nativeMessages = append(nativeMessages, provider.Message{Role: "user", Text: feedback})
+	}
+	if envelope.NativeState != nil {
+		envelope.PortableMessages = envelope.Messages
+		envelope.Messages = nativeMessages
 	}
 	// Wire bytes are bounded separately from the model's conservative token
 	// reservation. Native state is compacted only at closed tool-batch boundaries.

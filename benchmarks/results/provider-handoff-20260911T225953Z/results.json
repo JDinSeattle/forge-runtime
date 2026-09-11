@@ -1,0 +1,40 @@
+[
+  {
+    "argv": [
+      "go",
+      "test",
+      "-race",
+      "-json",
+      "-count=1",
+      "./internal/application",
+      "./internal/persistence",
+      "./internal/configuration",
+      "-run",
+      "TestDriverTerminalHeartbeatBoundary"
+    ],
+    "elapsed_seconds": 9.790032410994172,
+    "exit_code": 1,
+    "name": "race"
+  },
+  {
+    "argv": [
+      "go",
+      "vet",
+      "./internal/application",
+      "./internal/persistence",
+      "./internal/configuration"
+    ],
+    "elapsed_seconds": 0.3664085239870474,
+    "exit_code": 0,
+    "name": "vet"
+  },
+  {
+    "argv": [
+      "sh",
+      "api/check-generated.sh"
+    ],
+    "elapsed_seconds": 0.08786611096002162,
+    "exit_code": 0,
+    "name": "generated"
+  }
+]

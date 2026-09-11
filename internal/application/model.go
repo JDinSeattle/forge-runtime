@@ -54,17 +54,50 @@ func (d *Driver) callModel(ctx context.Context, r persistence.Run) (flow.Event, 
 	if a.Status == "prepared" {
 		frozen, err = d.Store.AttemptPricing(ctx, a)
 	} else {
-		spec, ok := d.Models[r.Config.Provider+"/"+r.Config.Model]
+		route, routeErr := d.Store.ActiveModelRoute(ctx, r)
+		if routeErr != nil {
+			return flow.Event{}, routeErr
+		}
+		route, portable, routeErr := d.fallbackContext(ctx, r, a, route)
+		if routeErr != nil {
+			return flow.Event{}, routeErr
+		}
+		spec, ok := d.Models[route.Key()]
 		if !ok {
 			return flow.Event{}, domain.ErrInvalid
 		}
-		pricing, freezeErr := freezePricing(r.Config.Provider, r.Config.Model, spec)
+		pricing, freezeErr := freezePricing(route.Provider, route.Model, spec)
 		if freezeErr != nil {
 			return flow.Event{}, freezeErr
 		}
+		requestRef := r.State.OutputRef
+		if a.Status == "failed" {
+			requestRef = a.RequestRef
+		}
+		if portable != nil {
+			cost, err := pricing.reserveCost()
+			if err != nil {
+				return flow.Event{}, err
+			}
+			exposure, err := d.Store.RunCost(ctx, r.TenantID, r.ID)
+			if err != nil {
+				return flow.Event{}, err
+			}
+			total, err := max(exposure, r.State.Cost).Add(cost)
+			if err != nil {
+				return flow.Event{}, err
+			}
+			if r.State.Limits.MaxCost > 0 && total > r.State.Limits.MaxCost {
+				return flow.Event{Kind: flow.EventBudgetReached, Reason: "fallback reservation would exceed run budget including unknown obligations"}, nil
+			}
+			requestRef, err = d.put(ctx, r, "context", portable)
+			if err != nil {
+				return flow.Event{}, err
+			}
+		}
 		frozen, err = json.Marshal(pricing)
 		if err == nil {
-			a, frozen, err = d.Store.BeginPricedAttempt(ctx, r, r.State.OutputRef, spec.PriceVersion, spec.RequestTimeout, frozen)
+			a, frozen, err = d.Store.BeginPricedAttempt(ctx, r, requestRef, spec.PriceVersion, spec.RequestTimeout, frozen)
 		}
 	}
 	if err != nil {
@@ -150,10 +183,7 @@ func (d *Driver) callModel(ctx context.Context, r persistence.Run) (flow.Event, 
 	if !ok || current.CredentialGroup != pricing.CredentialGroup {
 		return flow.Event{}, domain.ErrReconciliation
 	}
-	p := d.Providers[a.Provider]
-	if d.ProviderFactory != nil {
-		p = d.ProviderFactory(r)
-	}
+	p := d.selectedProvider(r, a.Route())
 	if p == nil {
 		return flow.Event{}, domain.ErrInvalid
 	}
@@ -164,7 +194,7 @@ func (d *Driver) callModel(ctx context.Context, r persistence.Run) (flow.Event, 
 	req := provider.ModelRequest{RunID: string(r.ID), StepID: fmt.Sprint(a.StepSeq), AttemptID: string(a.ID), ModelID: a.Model, Messages: input.Messages, NativeState: input.NativeState, Tools: input.Tools, MaxOutputTokens: pricing.MaxOutputTokens, Deadline: a.Deadline}
 	inputBound, boundErr := provider.InputTokenUpperBound(req)
 	caps, capsErr := p.Capabilities(ctx, a.Model)
-	if boundErr != nil || capsErr != nil || inputBound > pricing.ContextTokens || (caps.ContextWindow > 0 && (pricing.MaxOutputTokens > caps.ContextWindow || inputBound > caps.ContextWindow-pricing.MaxOutputTokens)) {
+	if boundErr != nil || capsErr != nil || (len(req.Tools) > 0 && !caps.ToolCalling) || (caps.MaxOutputTokens > 0 && pricing.MaxOutputTokens > caps.MaxOutputTokens) || inputBound > pricing.ContextTokens || (caps.ContextWindow > 0 && (pricing.MaxOutputTokens > caps.ContextWindow || inputBound > caps.ContextWindow-pricing.MaxOutputTokens)) {
 		if err = d.Quota.AbandonBeforeDispatch(ctx, string(r.TenantID), string(a.ID)); err != nil {
 			return flow.Event{}, err
 		}

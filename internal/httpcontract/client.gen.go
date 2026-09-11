@@ -233,6 +233,12 @@ type Budget struct {
 
 // Config defines model for Config.
 type Config struct {
+	// Fallback Operator-selected one-way fallback frozen at submission; shares the existing retry and run budgets.
+	Fallback *struct {
+		Model    string `json:"model"`
+		Provider string `json:"provider"`
+	} `json:"fallback,omitempty"`
+
 	// MaxCostMicrousd Integer micro-US dollars; 1 USD equals 1000000.
 	MaxCostMicrousd   Money   `json:"max_cost_microusd"`
 	MaxModelRounds    Counter `json:"max_model_rounds"`

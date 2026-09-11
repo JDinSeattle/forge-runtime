@@ -61,8 +61,11 @@ func (s *Store) Tx(ctx context.Context, tenant domain.ID, options pgx.TxOptions)
 }
 
 type Config struct {
-	Provider          string       `json:"provider"`
-	Model             string       `json:"model"`
+	Provider string `json:"provider"`
+	Model    string `json:"model"`
+	// Fallback is an operator-selected, one-way route frozen at submission.
+	// It is not a credential, a model-family alias, or a new retry budget.
+	Fallback          *ModelRoute  `json:"fallback,omitempty"`
 	MaxModelRounds    uint64       `json:"max_model_rounds"`
 	MaxToolCalls      uint64       `json:"max_tool_calls"`
 	MaxCost           domain.Money `json:"max_cost_microusd"`
@@ -74,6 +77,9 @@ func (c Config) Validate() error {
 		c.MaxModelRounds > 1000 || c.MaxToolCalls > 10000 || c.MaxCost < 0 ||
 		c.MaxRuntimeSeconds < 1 || c.MaxRuntimeSeconds > 86400 {
 		return fmt.Errorf("%w: invalid run limits", domain.ErrInvalid)
+	}
+	if c.Fallback != nil && (c.Fallback.Provider == "" || c.Fallback.Model == "" || *c.Fallback == c.PrimaryRoute() || c.MaxCost <= 0) {
+		return fmt.Errorf("%w: fallback requires a different exact model and a finite positive run cost limit", domain.ErrInvalid)
 	}
 	return nil
 }

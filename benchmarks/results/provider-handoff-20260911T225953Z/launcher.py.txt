@@ -1,0 +1,27 @@
+import datetime, hashlib, json, os, pathlib, shlex, subprocess, sys, time
+repo=pathlib.Path('/home/postedism/Desktop/mini claude code/forge-runtime')
+out=repo/'benchmarks/results'/('provider-handoff-'+datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%SZ'))
+out.mkdir(mode=0o700)
+env={k:v for k,v in os.environ.items() if not k.startswith('FORGE_')}
+for line in (repo/'var/local/review-database.env').read_text().splitlines():
+    k,sep,v=line.partition('=')
+    if sep and k=='FORGE_REVIEW_DATABASE_URL': env['FORGE_TEST_DATABASE_URL']=shlex.split(v)[0]
+env.update(GOCACHE=str(repo/'var/local/go-build-cache'),GOTMPDIR=str(repo/'var/local/integration-go-tmp'),TMPDIR='/tmp',GOPROXY='off',GOSUMDB='off',GOENV='off',GOTOOLCHAIN='local',FORGE_HANDOFF_EVIDENCE_DIR=str(out/'records'))
+def dump(n,v): (out/n).write_text(json.dumps(v,indent=2,sort_keys=True)+'\n')
+def snapshot():
+    names=subprocess.check_output(['rg','--files','--hidden','-g','!.git','-g','!benchmarks/results','-g','!var','-g','!bin'],cwd=repo,text=True).splitlines()
+    return {n:hashlib.sha256((repo/n).read_bytes()).hexdigest() for n in sorted(names) if pathlib.Path(n).suffix in ('.go','.mod','.sum','.sql','.yaml','.yml','.proto','.py','.sh') or n=='Makefile'}
+(out/'launcher.py.txt').write_text(pathlib.Path(__file__).read_text())
+before=snapshot();dump('source-before.json',before)
+dump('identity.json',{'base_commit':subprocess.check_output(['git','rev-parse','HEAD'],cwd=repo,text=True).strip(),'source':'working tree','go':subprocess.check_output(['go','version'],text=True).strip(),'scope':'targeted race tests, private PG schemas, native SDK local HTTP fixtures, production Driver and SQLite TestBackend, no paid models/live services/mount changes'})
+print(json.dumps({'output':str(out)}),flush=True)
+results=[]
+checks=[('race',['go','test','-race','-json','-count=1','./internal/application','./internal/persistence','./internal/configuration','-run','TestDriverTerminalHeartbeatBoundary']),('vet',['go','vet','./internal/application','./internal/persistence','./internal/configuration']),('generated',['sh','api/check-generated.sh'])]
+for name,argv in checks:
+    start=time.monotonic()
+    with (out/(name+'.log')).open('xb') as log: p=subprocess.run(argv,cwd=repo,env=env,stdout=log,stderr=subprocess.STDOUT)
+    row={'name':name,'argv':argv,'exit_code':p.returncode,'elapsed_seconds':time.monotonic()-start}
+    results.append(row);dump('results.json',results);print(json.dumps(row),flush=True)
+after=snapshot();dump('source-after.json',after);dump('source-comparison.json',{'unchanged':before==after,'changes':[n for n in sorted(before.keys()|after.keys()) if before.get(n)!=after.get(n)]})
+dump('manifest.json',{str(p.relative_to(out)):hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(out.rglob('*')) if p.is_file() and p.name!='manifest.json'})
+sys.exit(0 if before==after and all(r['exit_code']==0 for r in results) else 1)

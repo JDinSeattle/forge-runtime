@@ -52,6 +52,10 @@ func (s *Store) BeginAttempt(ctx context.Context, r Run, requestRef, priceVersio
 	if err != nil {
 		return ModelAttempt{}, err
 	}
+	if current.Config.Fallback != nil {
+		// The legacy unpriced API cannot represent routed request accounting.
+		return ModelAttempt{}, domain.ErrInvalid
+	}
 	var now time.Time
 	if err = tx.QueryRow(ctx, `SELECT clock_timestamp()`).Scan(&now); err != nil {
 		return ModelAttempt{}, err

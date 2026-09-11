@@ -45,6 +45,9 @@ func toolScript(id, name, args string) provider.Script {
 	return provider.Script{Chunks: []provider.Chunk{{Kind: "tool_start", CallID: id, Name: name}, {Kind: "tool_delta", CallID: id, Delta: args}, {Kind: "tool_end", CallID: id}}, FinishReason: "tool_calls", Usage: provider.Usage{Input: provider.TokenCount{Value: 100, Known: true}, Output: provider.TokenCount{Value: 50, Known: true}}}
 }
 func repairSetup(t *testing.T) (*Driver, persistence.Run, *scriptedRepair, string) {
+	return repairSetupConfigured(t, nil)
+}
+func repairSetupConfigured(t *testing.T, configure func(*persistence.Config)) (*Driver, persistence.Run, *scriptedRepair, string) {
 	t.Helper()
 	ctx := context.Background()
 	s := testutil.Database(t)
@@ -106,7 +109,11 @@ func repairSetup(t *testing.T) (*Driver, persistence.Run, *scriptedRepair, strin
 	p := &scriptedRepair{scripts: []provider.Script{toolScript("read", "read_file", `{"path":"clamp.py"}`), toolScript("patch", "apply_patch", string(patch)), {Chunks: []provider.Chunk{{Kind: "text", Delta: "The repair is ready for independent verification."}}, FinishReason: "stop", Usage: provider.Usage{Input: provider.TokenCount{Known: true, Value: 100}, Output: provider.TokenCount{Known: true, Value: 20}}}}}
 	d := &Driver{Store: s, Quota: q, Runner: engine, Signer: signer, Artifacts: artifacts, Providers: map[string]provider.Provider{"fake": p}, Models: map[string]ModelSpec{"fake/fake": {CredentialGroup: "fake", PriceVersion: "fixture-zero-v1", ContextTokens: 8192, MaxOutputTokens: 1024, RequestTimeout: 5 * time.Second}}, Sources: map[string]SourceSpec{"fixture": {Hash: sourceHash, HasTarget: true}}, TrustedVerification: true, LeaseDuration: 3 * time.Second}
 	d.Logger = slog.New(slog.NewTextHandler(os.Stderr, nil))
-	r, _, err := s.Submit(ctx, persistence.SubmitRequest{TenantID: "tenant", PrincipalID: "developer", ProjectID: project.ID, Task: "Fix clamp boundary behavior.", BaseCommit: sourceHash, Config: persistence.Config{Provider: "fake", Model: "fake", MaxModelRounds: 8, MaxToolCalls: 20, MaxCost: 1_000_000, MaxRuntimeSeconds: 60}}, "repair")
+	cfg := persistence.Config{Provider: "fake", Model: "fake", MaxModelRounds: 8, MaxToolCalls: 20, MaxCost: 1_000_000, MaxRuntimeSeconds: 60}
+	if configure != nil {
+		configure(&cfg)
+	}
+	r, _, err := s.Submit(ctx, persistence.SubmitRequest{TenantID: "tenant", PrincipalID: "developer", ProjectID: project.ID, Task: "Fix clamp boundary behavior.", BaseCommit: sourceHash, Config: cfg}, "repair")
 	if err != nil {
 		t.Fatal(err)
 	}

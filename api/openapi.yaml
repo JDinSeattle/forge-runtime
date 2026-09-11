@@ -416,6 +416,14 @@ components:
       properties:
         provider: { type: string }
         model: { type: string }
+        fallback:
+          type: object
+          additionalProperties: false
+          required: [provider, model]
+          description: Operator-selected one-way fallback frozen at submission; shares the existing retry and run budgets.
+          properties:
+            provider: { type: string }
+            model: { type: string }
         max_model_rounds: { $ref: '#/components/schemas/Counter' }
         max_tool_calls: { $ref: '#/components/schemas/Counter' }
         max_cost_microusd: { $ref: '#/components/schemas/Money' }
