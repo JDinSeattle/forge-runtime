@@ -97,6 +97,16 @@ Migration 00007 adds exact transition inputs; preexisting NULL inputs remain
 unavailable, not reconstructed history. Review role grants for any newly added
 table before exposing it through a service.
 
+Migration 00009 adds reserved priority metadata (default zero; dispatch remains
+FIFO). Migration 00010 adds the fixed membership-lock function used by approval
+decisions. Existing deployments must run the owner migration and grant the
+configured API role EXECUTE on that one schema-qualified function before using
+the new approval binary; membership tables remain read-only to the API. See the
+[exact upgrade and permission procedure](approval-authority-evidence.md#deployment-and-reproduction).
+The [current additive rehearsal](integration-checks-20260911.md#current-additive-upgrade-coverage)
+upgrades a private v6 fixture to v10 twice without changing its original records.
+It does not migrate the running deployment or prove rolling compatibility.
+
 ## Diagnostics
 
 The API exposes `/healthz`, `/readyz`, `/metrics`; worker metrics have a separate

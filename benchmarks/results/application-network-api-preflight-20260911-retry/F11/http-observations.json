@@ -1,0 +1,99 @@
+[
+  {
+    "at": "2026-09-11T20:35:36.865198542Z",
+    "method": "GET",
+    "path": "/readyz",
+    "response": {
+      "status": "ready"
+    },
+    "status": 200
+  },
+  {
+    "at": "2026-09-11T20:35:36.870971998Z",
+    "method": "POST",
+    "path": "/v1/runs/run_32LMDLPOOM5KKAZYDMQNK34L5P/messages",
+    "response": {
+      "message": {
+        "seq": 1,
+        "text": "Isolated API privilege preflight."
+      },
+      "reused": false
+    },
+    "status": 202
+  },
+  {
+    "at": "2026-09-11T20:35:36.985188749Z",
+    "method": "POST",
+    "path": "/v1/projects/project_C36ZWEMF5G74PIXFXADJ3LXE54/runs",
+    "response": {
+      "code": "internal",
+      "message": "request could not be completed",
+      "request_id": "request_5Z5HIZZFRD36KKFX7GLVRZUCBF",
+      "retryable": false
+    },
+    "status": 500
+  },
+  {
+    "at": "2026-09-11T20:35:36.985590849Z",
+    "method": "GET",
+    "path": "/v1/runs/run_32LMDLPOOM5KKAZYDMQNK34L5P",
+    "response": {
+      "code": "internal",
+      "message": "request could not be completed",
+      "request_id": "request_QPP2CAOJZD2EQQQ2GZ4OLZMP22",
+      "retryable": false
+    },
+    "status": 500
+  },
+  {
+    "at": "2026-09-11T20:35:37.086289746Z",
+    "method": "GET",
+    "path": "/v1/runs/run_32LMDLPOOM5KKAZYDMQNK34L5P",
+    "response": {
+      "tenant_id": "app-fault-y74qci463rjyjmrd32jxor6yuu",
+      "id": "run_32LMDLPOOM5KKAZYDMQNK34L5P",
+      "project_id": "project_C36ZWEMF5G74PIXFXADJ3LXE54",
+      "principal_id": "fixture-operator",
+      "task": "Execute only the literal approved fixture commands and repair clamp; deterministic fake model.",
+      "base_commit": "66ee6f4ae415b0735c6eb4d0645f5a8d72d33e7946d0219e319aa9158a375659",
+      "runner_id": "",
+      "state": {
+        "schema_version": 1,
+        "run_id": "run_32LMDLPOOM5KKAZYDMQNK34L5P",
+        "tenant_id": "app-fault-y74qci463rjyjmrd32jxor6yuu",
+        "version": 1,
+        "status": "queued",
+        "stage": "initialize",
+        "lease": {
+          "owner": "",
+          "epoch": 0,
+          "until": "0001-01-01T00:00:00Z"
+        },
+        "step_seq": 0,
+        "workspace_revision": 0,
+        "verification_status": "unverified",
+        "verification_revision": 0,
+        "model_rounds": 0,
+        "tool_calls": 0,
+        "cost_microusd": 0,
+        "limits": {
+          "max_model_rounds": 8,
+          "max_tool_calls": 20,
+          "max_cost_microusd": 1000000,
+          "deadline": "2026-09-11T13:37:11.756641-07:00"
+        }
+      },
+      "config": {
+        "provider": "fake",
+        "model": "fake",
+        "max_model_rounds": 8,
+        "max_tool_calls": 20,
+        "max_cost_microusd": 1000000,
+        "max_runtime_seconds": 95
+      },
+      "created_at": "2026-09-11T13:35:36.757698-07:00",
+      "covered_seq": 2
+    },
+    "status": 200
+  }
+]

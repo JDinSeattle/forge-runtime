@@ -15,6 +15,7 @@ import (
 	"path"
 	"path/filepath"
 
+	"github.com/JDinSeattle/forge-runtime/internal/dependency"
 	"github.com/JDinSeattle/forge-runtime/internal/domain"
 )
 
@@ -81,6 +82,10 @@ func NewLocalStore(directory string, maxBytes int64) (*LocalStore, error) {
 func (s *LocalStore) Close() error { return s.root.Close() }
 
 func (s *LocalStore) Put(ctx context.Context, tenant, run domain.ID, kind string, input io.Reader) (Ref, error) {
+	ctx, cancel := dependency.Artifact(ctx)
+	defer cancel()
+	stop := interruptInputOnCancel(ctx, input)
+	defer stop()
 	var ref Ref
 	err := WithPublication(ctx, s, func(locked context.Context) error {
 		var err error
@@ -91,6 +96,9 @@ func (s *LocalStore) Put(ctx context.Context, tenant, run domain.ID, kind string
 }
 
 func (s *LocalStore) put(ctx context.Context, tenant, run domain.ID, kind string, input io.Reader) (Ref, error) {
+	if err := ctx.Err(); err != nil {
+		return Ref{}, err
+	}
 	if err := tenant.Validate(); err != nil {
 		return Ref{}, err
 	}
@@ -123,6 +131,9 @@ func (s *LocalStore) put(ctx context.Context, tenant, run domain.ID, kind string
 		copyErr = f.Sync()
 	}
 	closeErr := f.Close()
+	if err := ctx.Err(); err != nil {
+		return Ref{}, err
+	}
 	if copyErr != nil {
 		return Ref{}, copyErr
 	}
@@ -166,6 +177,13 @@ func (s *LocalStore) put(ctx context.Context, tenant, run domain.ID, kind string
 }
 
 func (s *LocalStore) Open(ctx context.Context, tenant, run domain.ID, ref Ref) (io.ReadCloser, error) {
+	ctx, cancel := dependency.Artifact(ctx)
+	transferred := false
+	defer func() {
+		if !transferred {
+			cancel()
+		}
+	}()
 	if err := binding(tenant, run, ref); err != nil {
 		return nil, err
 	}
@@ -176,28 +194,33 @@ func (s *LocalStore) Open(ctx context.Context, tenant, run domain.ID, ref Ref) (
 	if err != nil {
 		return nil, err
 	}
+	reader := deadlineReader(ctx, cancel, f)
+	defer func() {
+		if !transferred {
+			_ = reader.Close()
+		}
+	}()
 	info, err := f.Stat()
 	if err != nil || !info.Mode().IsRegular() || info.Size() != ref.Size || info.Size() > s.maxBytes {
-		_ = f.Close()
 		return nil, fmt.Errorf("%w: object type or length mismatch", domain.ErrConflict)
 	}
 	h := sha256.New()
-	if _, err = io.Copy(h, contextReader{ctx, f}); err != nil {
-		_ = f.Close()
+	if _, err = io.Copy(h, reader); err != nil {
 		return nil, err
 	}
 	if hex.EncodeToString(h.Sum(nil)) != ref.SHA256 {
-		_ = f.Close()
 		return nil, fmt.Errorf("%w: artifact digest mismatch", domain.ErrConflict)
 	}
 	if _, err = f.Seek(0, io.SeekStart); err != nil {
-		_ = f.Close()
 		return nil, err
 	}
-	return f, nil
+	transferred = true
+	return reader, nil
 }
 
 func (s *LocalStore) Stat(ctx context.Context, tenant, run domain.ID, ref Ref) (Ref, error) {
+	ctx, cancel := dependency.Artifact(ctx)
+	defer cancel()
 	f, err := s.Open(ctx, tenant, run, ref)
 	if err != nil {
 		return Ref{}, err
@@ -214,6 +237,8 @@ func (s *LocalStore) Stat(ctx context.Context, tenant, run domain.ID, ref Ref) (
 }
 
 func (s *LocalStore) Delete(ctx context.Context, tenant, run domain.ID, ref Ref) error {
+	ctx, cancel := dependency.Artifact(ctx)
+	defer cancel()
 	if err := binding(tenant, run, ref); err != nil {
 		return err
 	}

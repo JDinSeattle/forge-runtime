@@ -1,0 +1,11 @@
+=== RUN   TestNativeStreamInterruptedLedgerEvidence
+=== RUN   TestNativeStreamInterruptedLedgerEvidence/openai
+    model_stream_fault_test.go:511: passed=true native=openai attempt_incomplete=true effects=0 retained_microusd=10240 retained_tokens=9216 lease_expiry_no_refund=true request_slot_expirations=1/0
+    model_stream_fault_test.go:309: evidence=/home/postedism/Desktop/mini claude code/forge-runtime/benchmarks/results/local/model-stream-interrupted-openai-20260911T202817.952133210Z
+=== RUN   TestNativeStreamInterruptedLedgerEvidence/anthropic
+    model_stream_fault_test.go:511: passed=true native=anthropic attempt_incomplete=true effects=0 retained_microusd=10240 retained_tokens=9216 lease_expiry_no_refund=true request_slot_expirations=1/0
+    model_stream_fault_test.go:309: evidence=/home/postedism/Desktop/mini claude code/forge-runtime/benchmarks/results/local/model-stream-interrupted-anthropic-20260911T202826.363552405Z
+--- PASS: TestNativeStreamInterruptedLedgerEvidence (16.87s)
+    --- PASS: TestNativeStreamInterruptedLedgerEvidence/openai (8.41s)
+    --- PASS: TestNativeStreamInterruptedLedgerEvidence/anthropic (8.46s)
+PASS

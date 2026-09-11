@@ -1,0 +1,717 @@
+package applicationfaults
+
+import (
+	"context"
+	"crypto/rand"
+	"crypto/sha256"
+	"database/sql"
+	"encoding/hex"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"net/url"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"reflect"
+	"strings"
+	"syscall"
+	"testing"
+	"time"
+
+	migrations "github.com/JDinSeattle/forge-runtime/db"
+	"github.com/JDinSeattle/forge-runtime/internal/artifact"
+	"github.com/JDinSeattle/forge-runtime/internal/domain"
+	"github.com/JDinSeattle/forge-runtime/internal/persistence"
+	"github.com/JDinSeattle/forge-runtime/internal/quota"
+	"github.com/JDinSeattle/forge-runtime/internal/runner"
+	"github.com/JDinSeattle/forge-runtime/internal/runnerclient"
+	flow "github.com/JDinSeattle/forge-runtime/internal/runtime"
+	"github.com/jackc/pgx/v5"
+)
+
+// This second matrix intentionally leaves the executed F05/F07/F08 harness
+// unchanged. It shares fixture, role, ledger and process helpers only.
+type continuationRunner struct {
+	runner.Service
+	s     settings
+	owner string
+}
+
+func patchOperation(s settings) domain.ID { return domain.ID(string(s.RunID) + "_step_3_op_0") }
+
+func pauseContinuation(s settings, phase string, detail any) {
+	if err := save(filepath.Join(s.Evidence, "worker1-paused.json"), map[string]any{"pid": os.Getpid(), "at": time.Now().UTC(), "phase": phase, "detail": detail}); err != nil {
+		os.Exit(87)
+	}
+	select {} // Parent observes the durable boundary and sends real SIGKILL.
+}
+
+func (c *continuationRunner) observe(op runner.Operation, err error) (runner.Operation, error) {
+	if c.owner == "worker1" && c.s.Mode == "F06" && op.Request.OperationID == patchOperation(c.s) && err == nil && op.Status == runner.Succeeded && op.Receipt.ObjectKey != "" {
+		pauseContinuation(c.s, "patch_receipt_durable_before_driver_return", op)
+	}
+	return op, err
+}
+func (c *continuationRunner) StartOperation(ctx context.Context, r runner.OperationRequest) (runner.Operation, error) {
+	return c.observe(c.Service.StartOperation(ctx, r))
+}
+func (c *continuationRunner) InspectOperation(ctx context.Context, r runner.InspectRequest) (runner.Operation, error) {
+	return c.observe(c.Service.InspectOperation(ctx, r))
+}
+
+func TestApplicationContinuationWorkerProcess(t *testing.T) {
+	path := os.Getenv("FORGE_APP_CONTINUATION_SETTINGS")
+	if path == "" {
+		t.Skip("private subprocess entry point only")
+	}
+	var s settings
+	var c runnerSettings
+	if err := readJSON(path, &s); err != nil {
+		t.Fatal(err)
+	}
+	if err := readJSON(s.RunnerConfig, &c); err != nil {
+		t.Fatal(err)
+	}
+	dsn, owner := os.Getenv("FORGE_APP_FIXTURE_DSN"), os.Getenv("FORGE_APP_WORKER_ID")
+	u, err := url.Parse(dsn)
+	if err != nil || u.Hostname() != "127.0.0.1" || u.Path != "/forge" || !strings.HasPrefix(u.Query().Get("search_path"), "appfault_") || (owner != "worker1" && owner != "worker2") || (s.Mode != "F02" && s.Mode != "F06" && s.Mode != "F09" && s.Mode != "recovery") {
+		t.Fatal("exact isolated continuation fixture required")
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Second)
+	defer cancel()
+	client, err := runnerclient.Dial(ctx, runnerclient.ClientConfig{UnixSocket: s.Socket, RPCTimeout: 2 * time.Second, ReconcileTimeout: time.Second})
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer client.Close()
+	d, closeDriver, err := driver(ctx, s, c, dsn, &continuationRunner{Service: client, s: s, owner: owner})
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer closeDriver()
+	if err = save(filepath.Join(s.Evidence, owner+"-ready.json"), map[string]any{"pid": os.Getpid(), "at": time.Now().UTC(), "owner": owner}); err != nil {
+		t.Fatal(err)
+	}
+	if s.Mode == "F02" && owner == "worker1" {
+		// Exactly the production RunWorker claim call, with no call to Drive.
+		// Therefore no heartbeat, runner Prepare, model or effect can precede
+		// this marker. The parent must kill before this five-second lease expires.
+		r, err := d.Store.ClaimOnRunner(ctx, "worker1-0", d.LeaseDuration, d.RunnerID)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if r.ID != s.RunID || r.State.WorkspaceRevision != 0 || r.State.StepSeq != 0 || r.State.PendingEffect != nil {
+			t.Fatal("unexpected claimed fixture state")
+		}
+		pauseContinuation(s, "claimed_before_drive_or_external_work", r.State)
+	}
+	err = d.RunWorker(ctx, owner, 1)
+	if err != nil && !errors.Is(err, context.Canceled) && !errors.Is(err, context.DeadlineExceeded) {
+		t.Fatal(err)
+	}
+}
+
+type continuationDescriptor struct {
+	Version         int      `json:"version"`
+	Schema          string   `json:"schema"`
+	ConfigSHA256    string   `json:"config_sha256"`
+	JournalIdentity string   `json:"journal_identity"`
+	Settings        settings `json:"settings"`
+}
+
+func (h *harness) continuationWorker(owner string) *process {
+	p := h.launch(os.Args[0], []string{"-test.run=^TestApplicationContinuationWorkerProcess$", "-test.v"}, []string{"FORGE_APP_CONTINUATION_SETTINGS=" + h.workerSettings, "FORGE_APP_FIXTURE_DSN=" + h.workerDSN, "FORGE_APP_WORKER_ID=" + owner}, owner)
+	h.workers = append(h.workers, p)
+	h.wait(func() bool { _, err := os.Stat(filepath.Join(h.dir, owner+"-ready.json")); return err == nil }, 10*time.Second, "continuation worker ready")
+	return p
+}
+
+func continuationInputs(t *testing.T) (string, string, string, *url.URL, runnerSettings) {
+	t.Helper()
+	config, binary, output := os.Getenv("FORGE_APP_FAULT_RUNNER_CONFIG"), os.Getenv("FORGE_APP_FAULT_RUNNER_BINARY"), os.Getenv("FORGE_APP_FAULT_EVIDENCE")
+	if config == "" {
+		t.Skip("operator opt-in requires quiesced original runner/pool")
+	}
+	if !filepath.IsAbs(config) || !filepath.IsAbs(binary) || !filepath.IsAbs(output) {
+		t.Fatal("absolute config/binary/evidence paths required")
+	}
+	u, err := url.Parse(os.Getenv("FORGE_TEST_DATABASE_URL"))
+	if err != nil || u.Hostname() != "127.0.0.1" || u.Path != "/forge" {
+		t.Fatal("isolated loopback /forge required")
+	}
+	var c runnerSettings
+	if err = readJSON(config, &c); err != nil {
+		t.Fatal(err)
+	}
+	if c.AllowTestBackend || c.DockerHost == "" || len(c.VolumeSlots) == 0 || !strings.Contains(c.Profiles["python-clamp"].Image, "@sha256:") {
+		t.Fatal("real fixed-volume Docker with pinned python-clamp required")
+	}
+	if _, err = scripts("F05", c.Sources["clamp"]); err != nil {
+		t.Fatal(err)
+	}
+	if err = os.MkdirAll(output, 0700); err != nil {
+		t.Fatal(err)
+	}
+	if info, err := os.Stat(output); err != nil || info.Mode().Perm()&0077 != 0 {
+		t.Fatal("owner-only evidence root required")
+	}
+	return config, binary, output, u, c
+}
+
+func (h *harness) openContinuationJournal() {
+	q := url.Values{"mode": {"ro"}, "_pragma": {"busy_timeout(5000)", "query_only(1)"}}
+	u := url.URL{Scheme: "file", Path: h.c.JournalPath, RawQuery: q.Encode()}
+	var err error
+	h.journal, err = sql.Open("sqlite", u.String())
+	h.fatal(err)
+	h.journal.SetMaxOpenConns(1)
+	var version int
+	h.fatal(h.journal.QueryRow(`PRAGMA user_version`).Scan(&version))
+	if version != 4 {
+		h.t.Fatal("existing authoritative journal v4 required")
+	}
+}
+
+func (h *harness) privateContinuationConfig(config string) {
+	var err error
+	h.private, err = os.MkdirTemp("/tmp", "app-continuation-")
+	h.fatal(err)
+	h.s.Socket, h.s.Evidence = filepath.Join(h.private, "runner.sock"), h.dir
+	h.workerSettings = filepath.Join(h.private, "worker.json")
+	h.fatal(save(h.workerSettings, h.s))
+	raw, err := os.ReadFile(config)
+	h.fatal(err)
+	var copied map[string]json.RawMessage
+	h.fatal(json.Unmarshal(raw, &copied))
+	copied["server"], err = json.Marshal(runnerclient.ServerConfig{UnixSocket: h.s.Socket})
+	h.fatal(err)
+	h.localRunner = filepath.Join(h.private, "runner.json")
+	h.fatal(save(h.localRunner, copied))
+}
+
+func newContinuation(t *testing.T, ctx context.Context, mode, config, binary, output string, u *url.URL, c runnerSettings) *harness {
+	t.Helper()
+	h := &harness{t: t, ctx: ctx, c: c, binary: binary, dir: filepath.Join(output, mode)}
+	h.fatal(os.Mkdir(h.dir, 0700))
+	// Named schema/role and journal survive every failure. Only our child
+	// processes are stopped by cleanup; no volume or receipt is erased.
+	t.Cleanup(h.stopAll)
+	h.schema = "appfault_" + strings.ToLower(rand.Text())
+	admin, err := pgx.Connect(ctx, u.String())
+	h.fatal(err)
+	_, err = admin.Exec(ctx, "CREATE SCHEMA "+pgx.Identifier{h.schema}.Sanitize())
+	h.fatal(err)
+	h.fatal(admin.Close(ctx))
+	scoped := *u
+	q := scoped.Query()
+	q.Set("search_path", h.schema)
+	scoped.RawQuery = q.Encode()
+	h.dsn = scoped.String()
+	h.fatal(migrations.Migrate(ctx, h.dsn))
+	h.db, err = persistence.Open(ctx, h.dsn)
+	h.fatal(err)
+	t.Cleanup(h.db.Close)
+	h.workerDSN, h.workerRole, err = restrictedWorker(ctx, h.db, scoped, h.schema)
+	h.fatal(err)
+	role, err := preflightWorkerRole(ctx, h.workerDSN, h.workerRole, h.schema)
+	h.fatal(err)
+	h.fatal(save(filepath.Join(h.dir, "worker-role-preflight.json"), role))
+	h.openContinuationJournal()
+	t.Cleanup(func() { h.journal.Close() })
+	tenant := domain.ID("app-fault-" + strings.ToLower(rand.Text()))
+	h.fatal(h.db.BootstrapTenant(ctx, tenant, "fixture-operator", "admin"))
+	project, err := h.db.CreateProject(ctx, tenant, "application continuation fixture", "clamp", "python-clamp")
+	h.fatal(err)
+	h.fatal(h.db.RegisterRunner(ctx, "application-fault-runner", "private-uds", 1))
+	h.fatal(quota.New(h.db.Pool).Configure(ctx, quota.Config{CredentialGroup: "application-faults-fake", MaxConcurrent: 2, MaxTokens: 1_000_000, MaxCost: 100_000_000, WindowDuration: time.Hour, FailureThreshold: 3, BreakerCooldown: time.Second}))
+	hash, err := runner.ComputeSourceHash(ctx, c.Sources["clamp"], 0, 0)
+	h.fatal(err)
+	generated, err := scripts("F05", c.Sources["clamp"])
+	h.fatal(err)
+	r, _, err := h.db.Submit(ctx, persistence.SubmitRequest{TenantID: tenant, PrincipalID: "fixture-operator", ProjectID: project.ID, Task: "Execute only the literal approved fixture commands and repair clamp; deterministic fake model.", BaseCommit: hash, Config: persistence.Config{Provider: "fake", Model: "fake", MaxModelRounds: 8, MaxToolCalls: 20, MaxCost: 1_000_000, MaxRuntimeSeconds: 95}}, "continuation-"+mode)
+	h.fatal(err)
+	h.s = settings{RunnerConfig: config, SourceHash: hash, Mode: mode, RunID: r.ID, Tenant: tenant, TargetOp: domain.ID(string(r.ID) + "_step_1_op_0"), Scripts: generated}
+	h.privateContinuationConfig(config)
+	raw, err := os.ReadFile(config)
+	h.fatal(err)
+	sum := sha256.Sum256(raw)
+	var identity string
+	h.fatal(h.journal.QueryRow(`SELECT id FROM journal_identity WHERE singleton=1`).Scan(&identity))
+	h.fatal(save(filepath.Join(h.dir, "recovery-descriptor.json"), continuationDescriptor{Version: 1, Schema: h.schema, ConfigSHA256: hex.EncodeToString(sum[:]), JournalIdentity: identity, Settings: h.s}))
+	h.fatal(save(filepath.Join(h.dir, "fixture.json"), map[string]any{"mode": mode, "schema": h.schema, "tenant_id": tenant, "run_id": r.ID, "target_operation": h.s.TargetOp, "patch_operation": patchOperation(h.s), "source_hash": hash, "synthetic_expected_total_microusd": 570, "private_settings": h.workerSettings, "model": "deterministic fake; no provider request/payment"}))
+	return h
+}
+
+func TestRealApplicationContinuationMatrix(t *testing.T) {
+	config, binary, output, u, c := continuationInputs(t)
+	for _, mode := range []string{"F02", "F06", "F09"} {
+		if !t.Run(mode, func(t *testing.T) {
+			ctx, cancel := context.WithTimeout(context.Background(), 100*time.Second)
+			defer cancel()
+			h := newContinuation(t, ctx, mode, config, binary, output, u, c)
+			h.runContinuation()
+		}) {
+			return
+		}
+	}
+}
+
+func (h *harness) killContinuation(p *process) time.Time {
+	at := time.Now().UTC()
+	h.fatal(p.cmd.Process.Kill())
+	err := <-p.done
+	p.exited = true
+	var exit *exec.ExitError
+	if !errors.As(err, &exit) || exit.ProcessState.Sys().(syscall.WaitStatus).Signal() != syscall.SIGKILL {
+		h.t.Fatalf("actual SIGKILL not observed: %v", err)
+	}
+	return at
+}
+
+func (h *harness) countPG(table string) int {
+	var count int
+	h.fatal(h.db.Pool.QueryRow(h.ctx, "SELECT count(*) FROM "+table+" WHERE tenant_id=$1 AND run_id=$2", h.s.Tenant, h.s.RunID).Scan(&count))
+	return count
+}
+
+func (h *harness) noExternalWork() map[string]any {
+	counts := map[string]any{}
+	for _, table := range []string{"effects", "model_attempts", "quota_reservations", "artifacts", "approvals"} {
+		n := h.countPG(table)
+		counts["pg_"+table] = n
+		if n != 0 {
+			h.t.Fatalf("F02 claim already produced %s=%d", table, n)
+		}
+	}
+	for _, item := range []struct{ table, column string }{{"workspaces", "id"}, {"operations", "workspace_id"}, {"volume_leases", "workspace_id"}} {
+		var n int
+		h.fatal(h.journal.QueryRow("SELECT count(*) FROM "+item.table+" WHERE "+item.column+"=?", h.s.RunID).Scan(&n))
+		counts["sqlite_"+item.table] = n
+		if n != 0 {
+			h.t.Fatalf("F02 claim already produced local %s=%d", item.table, n)
+		}
+	}
+	return counts
+}
+
+func (h *harness) inspectContinuation(id domain.ID, epoch uint64) runner.Operation {
+	key, err := os.ReadFile(h.c.SigningKeyFile)
+	h.fatal(err)
+	signer, err := runner.NewSigner(key)
+	h.fatal(err)
+	now := time.Now()
+	c := runner.Claims{TenantID: h.s.Tenant, RunID: h.s.RunID, WorkspaceID: h.s.RunID, Epoch: epoch, IssuedAt: now, ExpiresAt: now.Add(time.Minute), Permissions: []string{"inspect"}}
+	grant, err := signer.Sign(c, now.Add(2*time.Minute))
+	h.fatal(err)
+	op, err := h.client.InspectOperation(h.ctx, runner.InspectRequest{WorkspaceRequest: runner.WorkspaceRequest{TenantID: h.s.Tenant, RunID: h.s.RunID, WorkspaceID: h.s.RunID, Epoch: epoch, Grant: grant}, OperationID: id})
+	h.fatal(err)
+	return op
+}
+
+func (h *harness) checkoutContinuation() string {
+	var slot string
+	h.fatal(h.journal.QueryRow(`SELECT slot_id FROM volume_leases WHERE workspace_id=? AND released=0`, h.s.RunID).Scan(&slot))
+	for _, spec := range h.c.VolumeSlots {
+		if spec.ID == slot {
+			return filepath.Join(spec.MountPath, "workspace-"+string(h.s.RunID), "checkout")
+		}
+	}
+	h.t.Fatal("unknown active volume slot")
+	return ""
+}
+
+func (h *harness) patchBoundary() runner.Operation {
+	r := h.getRun()
+	op := h.inspectContinuation(patchOperation(h.s), r.State.Lease.Epoch)
+	var status, receipt string
+	h.fatal(h.db.Pool.QueryRow(h.ctx, `SELECT status,coalesce(receipt_ref,'') FROM effects WHERE tenant_id=$1 AND operation_id=$2`, h.s.Tenant, patchOperation(h.s)).Scan(&status, &receipt))
+	if status != "in_flight" || receipt != "" || op.Status != runner.Succeeded || op.Receipt.ObjectKey == "" || op.BeforeHash == op.AfterHash || op.AfterHash != op.ExpectedAfterHash || op.AfterRevision != op.Request.ExpectedRevision+1 {
+		h.t.Fatalf("wrong patch durable/PG gap: pg=%s receipt=%q op=%+v", status, receipt, op)
+	}
+	var persisted string
+	h.fatal(h.journal.QueryRow(`SELECT receipt_json FROM operations WHERE id=? AND status='succeeded'`, patchOperation(h.s)).Scan(&persisted))
+	var receiptBinding artifact.Ref
+	h.fatal(json.Unmarshal([]byte(persisted), &receiptBinding))
+	if receiptBinding != op.Receipt {
+		h.t.Fatal("SQLite committed receipt differs from RPC receipt")
+	}
+	receiptBytes, err := os.ReadFile(filepath.Join(h.c.ArtifactRoot, op.Receipt.ObjectKey))
+	h.fatal(err)
+	receiptDigest := sha256.Sum256(receiptBytes)
+	if int64(len(receiptBytes)) != op.Receipt.Size || hex.EncodeToString(receiptDigest[:]) != op.Receipt.SHA256 {
+		h.t.Fatal("committed patch receipt bytes unavailable or corrupt")
+	}
+	actual, err := os.ReadFile(filepath.Join(h.checkoutContinuation(), "app.py"))
+	h.fatal(err)
+	expected, err := os.ReadFile(filepath.Join(filepath.Dir(h.c.Sources["clamp"]), "expected", "app.py"))
+	h.fatal(err)
+	if string(actual) != string(expected) {
+		h.t.Fatal("published patch does not match complete oracle")
+	}
+	h.fatal(save(filepath.Join(h.dir, "patch-before-death.json"), op))
+	h.fatal(save(filepath.Join(h.dir, "patch-journal-receipt-before-death.json"), receiptBinding))
+	h.fatal(os.WriteFile(filepath.Join(h.dir, "patch-before-death-app.py"), actual, 0600))
+	return op
+}
+
+func (h *harness) approvalSurvives(before persistence.Run) map[string]any {
+	after := h.getRun()
+	if before.State.Approval == nil || after.State.Approval == nil || before.State.Version != after.State.Version || *before.State.Approval != *after.State.Approval || before.State.WorkspaceRevision != after.State.WorkspaceRevision || after.State.Status != domain.StatusWaitingApproval {
+		h.t.Fatal("restart altered pending approval binding/version/workspace")
+	}
+	var revision uint64
+	h.fatal(h.journal.QueryRow(`SELECT revision FROM workspaces WHERE id=?`, h.s.RunID).Scan(&revision))
+	if revision != before.State.WorkspaceRevision {
+		h.t.Fatal("restart lost workspace revision")
+	}
+	var n int
+	h.fatal(h.journal.QueryRow(`SELECT count(*) FROM operations WHERE id=?`, h.s.TargetOp).Scan(&n))
+	if n != 0 {
+		h.t.Fatal("unapproved original command executed")
+	}
+	b := *before.State.Approval
+	mutations := map[string]flow.ApprovalBinding{}
+	x := b
+	x.ArgsHash = strings.Repeat("0", 64)
+	mutations["args_hash"] = x
+	x = b
+	x.WorkspaceRevision++
+	mutations["workspace_revision"] = x
+	x = b
+	x.PolicyVersion += "-wrong"
+	mutations["policy_version"] = x
+	x = b
+	x.Version++
+	mutations["approval_version"] = x
+	x = b
+	x.EffectID = domain.ID(string(x.EffectID) + "_wrong")
+	mutations["effect_id"] = x
+	proof := map[string]any{"binding": b, "run_version_before": before.State.Version, "workspace_revision": revision, "operation_count_before_approval": n}
+	for name, bad := range mutations {
+		_, err := h.db.Decide(h.ctx, persistence.Identity{TenantID: h.s.Tenant, PrincipalID: "fixture-operator", Role: "admin"}, domain.ID(string(b.EffectID)+"_approval"), bad, true)
+		if !errors.Is(err, domain.ErrConflict) {
+			h.t.Fatalf("wrong %s accepted: %v", name, err)
+		}
+		proof[name+"_rejected"] = true
+	}
+	fresh := h.getRun()
+	a, err := h.db.GetApproval(h.ctx, h.s.Tenant, domain.ID(string(b.EffectID)+"_approval"))
+	h.fatal(err)
+	if fresh.State.Version != before.State.Version || a.Decision != nil || a.Binding != b {
+		h.t.Fatal("rejected bindings mutated approval")
+	}
+	h.fatal(save(filepath.Join(h.dir, "approval-after-restart.json"), proof))
+	return proof
+}
+
+func (h *harness) runContinuation() {
+	h.runnerStart("")
+	one := h.continuationWorker("worker1")
+	proof := map[string]any{"mode": h.s.Mode, "schema": h.schema}
+	var patchBefore runner.Operation
+	var approvalWorkspaceHash string
+	if h.s.Mode == "F02" {
+		h.wait(func() bool { _, err := os.Stat(filepath.Join(h.dir, "worker1-paused.json")); return err == nil }, 5*time.Second, "claim before any external work")
+		proof["zero_external_work"] = h.noExternalWork()
+	} else if h.s.Mode == "F06" {
+		h.wait(func() bool {
+			r := h.getRun()
+			if r.State.Status == domain.StatusWaitingApproval {
+				h.approve(r)
+			}
+			_, err := os.Stat(filepath.Join(h.dir, "worker1-paused.json"))
+			return err == nil
+		}, 30*time.Second, "real patch receipt before PG settlement")
+		patchBefore = h.patchBoundary()
+	} else {
+		h.wait(func() bool { return h.getRun().State.Status == domain.StatusWaitingApproval }, 20*time.Second, "durable approval before restart")
+		var err error
+		approvalWorkspaceHash, err = runner.ComputeSourceHash(h.ctx, h.checkoutContinuation(), 0, 0)
+		h.fatal(err)
+	}
+	before := h.getRun()
+	var beforeTenantActive, beforeRunnerSlots int
+	var beforeAllocation string
+	h.fatal(h.db.Pool.QueryRow(h.ctx, `SELECT active_count FROM tenant_runtime WHERE tenant_id=$1`, h.s.Tenant).Scan(&beforeTenantActive))
+	h.fatal(h.db.Pool.QueryRow(h.ctx, `SELECT reserved_slots FROM runners WHERE id='application-fault-runner'`).Scan(&beforeRunnerSlots))
+	h.fatal(h.db.Pool.QueryRow(h.ctx, `SELECT state FROM runner_allocations WHERE tenant_id=$1 AND run_id=$2`, h.s.Tenant, h.s.RunID).Scan(&beforeAllocation))
+	wantCapacity, wantAllocation := 1, "reserved"
+	if h.s.Mode == "F09" {
+		wantCapacity, wantAllocation = 0, "released"
+	}
+	if beforeTenantActive != wantCapacity || beforeRunnerSlots != wantCapacity || beforeAllocation != wantAllocation {
+		h.t.Fatal("pre-death capacity/placement disagrees with durable boundary")
+	}
+	proof["predeath_tenant_active"], proof["predeath_runner_slots"], proof["predeath_allocation"] = beforeTenantActive, beforeRunnerSlots, beforeAllocation
+	h.capture("before-worker-death")
+	killed := h.killContinuation(one)
+	proof["worker1_sigkill_at"] = killed
+	atDeath := h.getRun()
+	h.capture("after-worker1-sigkill")
+	if before.State.Lease.Epoch != atDeath.State.Lease.Epoch {
+		h.t.Fatal("epoch changed before confirmed worker death")
+	}
+	proof["original_epoch"] = atDeath.State.Lease.Epoch
+	if h.s.Mode != "F09" {
+		proof["original_lease_until"] = atDeath.State.Lease.Until
+		if !killed.Before(atDeath.State.Lease.Until) {
+			h.t.Fatal("fault missed live original lease window")
+		}
+	} else {
+		proof["recovery_trigger"] = "durable approval decision after process restart"
+	}
+	if h.s.Mode == "F09" {
+		proof["runner1_pid"] = h.runner.cmd.Process.Pid
+		proof["runner_sigkill_at"] = h.killContinuation(h.runner)
+		h.runnerStart("")
+		proof["runner2_pid"] = h.runner.cmd.Process.Pid
+	}
+	two := h.continuationWorker("worker2")
+	if h.s.Mode == "F09" {
+		time.Sleep(200 * time.Millisecond)
+		proof["approval_preserved"] = h.approvalSurvives(before)
+		afterHash, err := runner.ComputeSourceHash(h.ctx, h.checkoutContinuation(), 0, 0)
+		h.fatal(err)
+		if afterHash != approvalWorkspaceHash {
+			h.t.Fatal("pending approval workspace content changed on restart")
+		}
+		proof["approval_workspace_hash_before"], proof["approval_workspace_hash_after"] = approvalWorkspaceHash, afterHash
+		h.capture("approval-after-restart")
+		h.approve(h.getRun())
+	}
+	h.wait(func() bool { return h.getRun().State.Lease.Epoch > atDeath.State.Lease.Epoch }, 12*time.Second, "replacement claim after expiry or exact approval")
+	var raw, claimedOwner string
+	var claimedEpoch uint64
+	h.fatal(h.db.Pool.QueryRow(h.ctx, `SELECT input_event->>'at',input_event->>'owner',(input_event->>'epoch')::bigint FROM run_snapshots WHERE tenant_id=$1 AND run_id=$2 AND input_event->>'kind'='claimed' AND (input_event->>'epoch')::bigint>$3 ORDER BY version LIMIT 1`, h.s.Tenant, h.s.RunID, atDeath.State.Lease.Epoch).Scan(&raw, &claimedOwner, &claimedEpoch))
+	claim, err := time.Parse(time.RFC3339Nano, raw)
+	h.fatal(err)
+	if claimedOwner != "worker2-0" || claimedEpoch != atDeath.State.Lease.Epoch+1 {
+		h.t.Fatal("replacement claim did not come from the second OS worker")
+	}
+	if h.s.Mode != "F09" && claim.Before(atDeath.State.Lease.Until) {
+		h.t.Fatal("replacement claim predates natural expiry")
+	}
+	proof["replacement_claim_db_time"], proof["first_replacement_epoch"] = claim, claimedEpoch
+	h.capture("after-worker2-claim")
+	h.wait(func() bool {
+		r := h.getRun()
+		if r.State.Status == domain.StatusWaitingApproval {
+			h.approve(r)
+		}
+		return r.State.Status.Terminal()
+	}, 40*time.Second, "verified continuation terminal")
+	final := h.getRun()
+	if final.State.Status != domain.StatusCompleted || final.State.Verification != domain.VerificationVerified {
+		h.t.Fatalf("continuation failed: %s/%s: %s", final.State.Status, final.State.Verification, final.State.FailureReason)
+	}
+	h.stop(two)
+	var commandEpoch uint64
+	h.fatal(h.db.Pool.QueryRow(h.ctx, `SELECT epoch FROM effects WHERE tenant_id=$1 AND operation_id=$2`, h.s.Tenant, h.s.TargetOp).Scan(&commandEpoch))
+	for k, v := range h.verifyLedgers(final, commandEpoch) {
+		proof[k] = v
+	}
+	if h.s.Mode == "F06" {
+		patchAfter := h.inspectContinuation(patchOperation(h.s), final.State.Lease.Epoch)
+		if !reflect.DeepEqual(patchBefore, patchAfter) {
+			h.t.Fatal("original patch operation/receipt/hash/revision changed across worker restart")
+		}
+		var n int
+		var status, ref, hash string
+		var epoch uint64
+		h.fatal(h.db.Pool.QueryRow(h.ctx, `SELECT count(*) FROM effects WHERE tenant_id=$1 AND operation_id=$2`, h.s.Tenant, patchOperation(h.s)).Scan(&n))
+		h.fatal(h.db.Pool.QueryRow(h.ctx, `SELECT status,receipt_ref,args_hash,epoch FROM effects WHERE tenant_id=$1 AND operation_id=$2`, h.s.Tenant, patchOperation(h.s)).Scan(&status, &ref, &hash, &epoch))
+		if n != 1 || status != "succeeded" || ref == "" || hash != patchBefore.Request.ArgsHash || epoch != patchBefore.Request.Epoch {
+			h.t.Fatal("patch PG settlement changed immutable dispatch")
+		}
+		h.fatal(save(filepath.Join(h.dir, "patch-after-recovery.json"), patchAfter))
+		proof["patch_operation"], proof["patch_dispatch_epoch"], proof["patch_original_receipt_preserved"], proof["patch_before_revision"], proof["patch_after_revision"] = patchOperation(h.s), epoch, true, patchBefore.Request.ExpectedRevision, patchBefore.AfterRevision
+	}
+	_, err = h.db.Heartbeat(h.ctx, h.s.Tenant, h.s.RunID, "worker1-0", before.State.Lease.Epoch, 5*time.Second)
+	if !errors.Is(err, domain.ErrFenced) {
+		h.t.Fatalf("old heartbeat accepted: %v", err)
+	}
+	proof["old_epoch_heartbeat_fenced"] = true
+	proof["worker1_pid"], proof["worker2_pid"] = one.cmd.Process.Pid, two.cmd.Process.Pid
+	h.capture("completed")
+	h.finishContinuation(proof)
+}
+
+func (h *harness) finishContinuation(proof map[string]any) {
+	d, closeDriver, err := driver(h.ctx, h.s, h.c, h.workerDSN, h.client)
+	h.fatal(err)
+	defer closeDriver()
+	cleanup, err := d.CleanupWorkspace(h.ctx, h.s.Tenant, h.s.RunID, "continuation-cleanup", 0)
+	h.fatal(err)
+	if cleanup.Phase != "released" || cleanup.SnapshotRef == "" {
+		h.t.Fatal("cleanup did not preserve snapshot before volume release")
+	}
+	proof["cleanup"], proof["passed"] = cleanup, true
+	h.capture("cleanup-released")
+	h.archiveArtifacts()
+	h.fatal(save(filepath.Join(h.dir, "acceptance.json"), proof))
+}
+
+func TestApplicationContinuationPreflight(t *testing.T) {
+	source, err := filepath.Abs("../../../testdata/repairs/clamp/source")
+	if err != nil {
+		t.Fatal(err)
+	}
+	generated, err := scripts("F05", source)
+	if err != nil {
+		t.Fatal(err)
+	}
+	s := settings{Mode: "F06", RunID: "fixture-run", TargetOp: "fixture-run_step_1_op_0", Scripts: generated}
+	raw, err := json.Marshal(continuationDescriptor{Version: 1, Schema: "appfault_preflight", Settings: s})
+	if err != nil {
+		t.Fatal(err)
+	}
+	var restored continuationDescriptor
+	if err = json.Unmarshal(raw, &restored); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(restored.Settings, s) || patchOperation(s) != "fixture-run_step_3_op_0" || generated[2].Chunks[0].Name != "apply_patch" {
+		t.Fatal("continuation settings/script ordinal round trip changed")
+	}
+	var patch runner.PatchArgs
+	if err = json.Unmarshal([]byte(generated[2].Chunks[1].Delta), &patch); err != nil {
+		t.Fatal(err)
+	}
+	expected, err := os.ReadFile(filepath.Join(filepath.Dir(source), "expected", "app.py"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(patch.Files) != 1 || patch.Files[0].Content == nil || *patch.Files[0].Content != string(expected) {
+		t.Fatal("continuation repair omitted trusted oracle")
+	}
+}
+
+// Recovery is a separately selected operator action. It never turns a failed
+// acceptance into PASS, submits a replacement run, rewrites a deadline/lease,
+// approves a command or deletes an uncertain workspace. It requests ordinary
+// cancellation of the exact retained run and lets the real Driver reconcile.
+func TestRecoverApplicationContinuation(t *testing.T) {
+	path := os.Getenv("FORGE_APP_CONTINUATION_RECOVER")
+	if path == "" {
+		t.Skip("explicit retained recovery-descriptor.json required")
+	}
+	config, binary, output, u, c := continuationInputs(t)
+	info, err := os.Lstat(path)
+	if err != nil || !info.Mode().IsRegular() || info.Mode().Perm()&0077 != 0 || info.Size() > 1<<20 {
+		t.Fatal("owner-only regular recovery descriptor <=1MiB required")
+	}
+	var descriptor continuationDescriptor
+	if err = readJSON(path, &descriptor); err != nil {
+		t.Fatal(err)
+	}
+	if descriptor.Version != 1 || !strings.HasPrefix(descriptor.Schema, "appfault_") || descriptor.Settings.Tenant.Validate() != nil || descriptor.Settings.RunID.Validate() != nil || descriptor.Settings.RunnerConfig != config || (descriptor.Settings.Mode != "F02" && descriptor.Settings.Mode != "F06" && descriptor.Settings.Mode != "F09") {
+		t.Fatal("exact continuation descriptor required")
+	}
+	raw, err := os.ReadFile(config)
+	if err != nil {
+		t.Fatal(err)
+	}
+	sum := sha256.Sum256(raw)
+	if hex.EncodeToString(sum[:]) != descriptor.ConfigSHA256 {
+		t.Fatal("runner configuration changed; retained fixture requires original reviewed config")
+	}
+	expectedScripts, err := scripts("F05", c.Sources["clamp"])
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(expectedScripts, descriptor.Settings.Scripts) {
+		t.Fatal("retained scripts differ from fixed source/oracle fixture")
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Second)
+	defer cancel()
+	h := &harness{t: t, ctx: ctx, c: c, binary: binary, dir: filepath.Join(output, "recovery"), schema: descriptor.Schema, s: descriptor.Settings}
+	h.fatal(os.Mkdir(h.dir, 0700))
+	defer h.stopAll()
+	scoped := *u
+	q := scoped.Query()
+	q.Set("search_path", h.schema)
+	scoped.RawQuery = q.Encode()
+	h.dsn = scoped.String()
+	h.db, err = persistence.Open(ctx, h.dsn)
+	h.fatal(err)
+	defer h.db.Close()
+	// Require exactly the named single-run fixture schema before any mutation.
+	var runCount int
+	h.fatal(h.db.Pool.QueryRow(ctx, `SELECT count(*) FROM runs`).Scan(&runCount))
+	r := h.getRun()
+	validPlacement := r.RunnerID == "application-fault-runner" || (r.RunnerID == "" && r.State.Lease.Epoch == 0 && r.State.WorkspaceRevision == 0)
+	if runCount != 1 || r.BaseCommit != h.s.SourceHash || !validPlacement {
+		t.Fatal("retained fixture identity mismatch")
+	}
+	h.openContinuationJournal()
+	defer h.journal.Close()
+	var identity string
+	h.fatal(h.journal.QueryRow(`SELECT id FROM journal_identity WHERE singleton=1`).Scan(&identity))
+	if identity != descriptor.JournalIdentity {
+		t.Fatal("authoritative runner journal was replaced")
+	}
+	h.workerDSN, h.workerRole, err = restrictedWorker(ctx, h.db, scoped, h.schema)
+	h.fatal(err)
+	role, err := preflightWorkerRole(ctx, h.workerDSN, h.workerRole, h.schema)
+	h.fatal(err)
+	h.fatal(save(filepath.Join(h.dir, "worker-role-preflight.json"), role))
+	h.s.Mode = "recovery"
+	h.privateContinuationConfig(config)
+	h.capture("retained-before-recovery")
+	h.runnerStart("")
+	if !r.State.Status.Terminal() {
+		_, err = h.db.Cancel(ctx, persistence.Identity{TenantID: h.s.Tenant, PrincipalID: "fixture-operator", Role: "admin"}, h.s.RunID)
+		h.fatal(err)
+		worker := h.continuationWorker("worker2")
+		h.wait(func() bool { return h.getRun().State.Status.Terminal() }, 70*time.Second, "same-run cancellation and actual effect reconciliation")
+		h.stop(worker)
+	}
+	final := h.getRun()
+	var unsettled, allocations, tenantActive, runnerSlots int
+	h.fatal(h.db.Pool.QueryRow(ctx, `SELECT count(*) FROM effects WHERE tenant_id=$1 AND run_id=$2 AND status IN ('in_flight','unknown')`, h.s.Tenant, h.s.RunID).Scan(&unsettled))
+	h.fatal(h.db.Pool.QueryRow(ctx, `SELECT count(*) FROM runner_allocations WHERE tenant_id=$1 AND run_id=$2 AND state!='released'`, h.s.Tenant, h.s.RunID).Scan(&allocations))
+	h.fatal(h.db.Pool.QueryRow(ctx, `SELECT active_count FROM tenant_runtime WHERE tenant_id=$1`, h.s.Tenant).Scan(&tenantActive))
+	h.fatal(h.db.Pool.QueryRow(ctx, `SELECT reserved_slots FROM runners WHERE id='application-fault-runner'`).Scan(&runnerSlots))
+	if unsettled != 0 || allocations != 0 || tenantActive != 0 || runnerSlots != 0 {
+		t.Fatal("recovery left uncertain effect/capacity; workspace retained")
+	}
+	proof := map[string]any{"recovery_only": true, "original_acceptance_passed": false, "source_descriptor": path, "schema": h.schema, "run_id": h.s.RunID, "terminal_status": final.State.Status, "replacement_run_submitted": false, "unknown_effects": unsettled, "unreleased_allocations": allocations}
+	if final.State.WorkspaceRevision == 0 {
+		// Claim-before-initialize may have no local workspace to snapshot/release.
+		// Prove both local records absent; never infer it from PG alone.
+		for _, table := range []string{"workspaces", "volume_leases"} {
+			column := "workspace_id"
+			if table == "workspaces" {
+				column = "id"
+			}
+			var count int
+			h.fatal(h.journal.QueryRow("SELECT count(*) FROM "+table+" WHERE "+column+"=?", h.s.RunID).Scan(&count))
+			if count != 0 {
+				t.Fatalf("zero PG revision but retained %s; explicit reconciliation required", table)
+			}
+		}
+		proof["workspace_cleanup"] = "not applicable: no workspace or volume lease exists"
+	} else {
+		d, closeDriver, err := driver(ctx, h.s, h.c, h.workerDSN, h.client)
+		h.fatal(err)
+		defer closeDriver()
+		var cleanup persistence.WorkspaceCleanup
+		until := time.Now().Add(35 * time.Second)
+		for {
+			cleanup, err = d.CleanupWorkspace(ctx, h.s.Tenant, h.s.RunID, "continuation-recovery", 0)
+			if !errors.Is(err, domain.ErrCapacity) || time.Now().After(until) {
+				break
+			}
+			time.Sleep(250 * time.Millisecond)
+		}
+		h.fatal(err)
+		if cleanup.Phase != "released" || cleanup.SnapshotRef == "" {
+			t.Fatal("recovery did not preserve snapshot before release")
+		}
+		proof["cleanup"] = cleanup
+	}
+	h.capture("recovery-completed")
+	h.archiveArtifacts()
+	h.fatal(save(filepath.Join(h.dir, "recovery.json"), proof))
+	t.Log(fmt.Sprintf("Recovered original run %s to %s; this does not pass the failed acceptance", h.s.RunID, final.State.Status))
+}

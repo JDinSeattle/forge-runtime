@@ -1,0 +1,283 @@
+package persistence
+
+import (
+	"context"
+	"crypto/sha256"
+	"encoding/hex"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"strings"
+
+	"github.com/JDinSeattle/forge-runtime/internal/dependency"
+	"github.com/JDinSeattle/forge-runtime/internal/domain"
+	flow "github.com/JDinSeattle/forge-runtime/internal/runtime"
+	"github.com/jackc/pgx/v5"
+)
+
+func (s *Store) Cancel(ctx context.Context, identity Identity, id domain.ID) (Run, error) {
+	ctx, cancel := dependency.Database(ctx)
+	defer cancel()
+	if !identity.CanWrite() {
+		return Run{}, domain.ErrForbidden
+	}
+	tx, err := s.Tx(ctx, identity.TenantID, pgx.TxOptions{})
+	if err != nil {
+		return Run{}, err
+	}
+	defer tx.Rollback(ctx)
+	if err = lockTenant(ctx, tx, identity.TenantID); err != nil {
+		return Run{}, err
+	}
+	r, err := getRun(ctx, tx, identity.TenantID, id, true)
+	if err != nil {
+		return r, err
+	}
+	if r.State.Status.Terminal() || r.State.Status == domain.StatusCancelRequested {
+		return r, tx.Commit(ctx)
+	}
+	event := flow.Event{Kind: flow.EventCancelRequested, ExpectedVersion: r.State.Version}
+	if err = tx.QueryRow(ctx, `SELECT clock_timestamp()`).Scan(&event.At); err != nil {
+		return r, err
+	}
+	next, commands, err := flow.Transition(r.State, event)
+	if err != nil {
+		return r, err
+	}
+	if err = persistTransition(ctx, tx, r.State, next, commands, event, "run.cancel_requested"); err != nil {
+		return r, err
+	}
+	r, err = getRun(ctx, tx, identity.TenantID, id, false)
+	if err != nil {
+		return r, err
+	}
+	if err = tx.Commit(ctx); err != nil {
+		return r, err
+	}
+	s.wake(ctx, id)
+	return r, nil
+}
+
+func (s *Store) Resume(ctx context.Context, identity Identity, id domain.ID, version uint64) (Run, error) {
+	ctx, cancel := dependency.Database(ctx)
+	defer cancel()
+	if !identity.CanWrite() {
+		return Run{}, domain.ErrForbidden
+	}
+	return s.apply(ctx, identity.TenantID, id, flow.Event{Kind: flow.EventResumeRequested, ExpectedVersion: version})
+}
+
+type Approval struct {
+	ID       domain.ID            `json:"id"`
+	RunID    domain.ID            `json:"run_id"`
+	Binding  flow.ApprovalBinding `json:"binding"`
+	Decision *string              `json:"decision"`
+}
+
+func (s *Store) GetApproval(ctx context.Context, tenant, id domain.ID) (Approval, error) {
+	ctx, cancel := dependency.Database(ctx)
+	defer cancel()
+	tx, err := s.Tx(ctx, tenant, pgx.TxOptions{AccessMode: pgx.ReadOnly})
+	if err != nil {
+		return Approval{}, err
+	}
+	defer tx.Rollback(ctx)
+	a, err := getApproval(ctx, tx, tenant, id, false)
+	if err != nil {
+		return a, err
+	}
+	return a, tx.Commit(ctx)
+}
+func getApproval(ctx context.Context, tx pgx.Tx, tenant, id domain.ID, lock bool) (Approval, error) {
+	q := `SELECT id,run_id,effect_id,args_hash,workspace_revision,policy_version,version,decision FROM approvals WHERE tenant_id=$1 AND id=$2`
+	if lock {
+		q += " FOR UPDATE"
+	}
+	var a Approval
+	err := tx.QueryRow(ctx, q, tenant, id).Scan(&a.ID, &a.RunID, &a.Binding.EffectID, &a.Binding.ArgsHash, &a.Binding.WorkspaceRevision, &a.Binding.PolicyVersion, &a.Binding.Version, &a.Decision)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return a, domain.ErrNotFound
+	}
+	return a, err
+}
+func (s *Store) Decide(ctx context.Context, identity Identity, id domain.ID, binding flow.ApprovalBinding, allow bool) (Run, error) {
+	ctx, cancel := dependency.Database(ctx)
+	defer cancel()
+	if !identity.CanWrite() {
+		return Run{}, domain.ErrForbidden
+	}
+	tx, err := s.Tx(ctx, identity.TenantID, pgx.TxOptions{})
+	if err != nil {
+		return Run{}, err
+	}
+	defer tx.Rollback(ctx)
+	if err = lockTenant(ctx, tx, identity.TenantID); err != nil {
+		return Run{}, err
+	}
+	a, err := getApproval(ctx, tx, identity.TenantID, id, false)
+	if err != nil {
+		return Run{}, err
+	}
+	r, err := getRun(ctx, tx, identity.TenantID, a.RunID, true)
+	if err != nil {
+		return r, err
+	}
+	a, err = getApproval(ctx, tx, identity.TenantID, id, true)
+	if err != nil {
+		return r, err
+	}
+	if a.Binding != binding {
+		return r, domain.ErrConflict
+	}
+	decision := "deny"
+	if allow {
+		decision = "allow"
+	}
+	if a.Decision != nil {
+		if *a.Decision != decision {
+			return r, domain.ErrConflict
+		}
+		return r, tx.Commit(ctx)
+	}
+	event := flow.Event{Kind: flow.EventApprovalDecided, ExpectedVersion: r.State.Version, Approval: &flow.ApprovalDecision{Binding: binding, Approve: allow}}
+	if err = tx.QueryRow(ctx, `SELECT clock_timestamp()`).Scan(&event.At); err != nil {
+		return r, err
+	}
+	next, commands, err := flow.Transition(r.State, event)
+	if err != nil {
+		return r, err
+	}
+	if _, err = tx.Exec(ctx, `UPDATE approvals SET decision=$3,principal_id=$4,decided_at=$5 WHERE tenant_id=$1 AND id=$2`, identity.TenantID, id, decision, identity.PrincipalID, event.At); err != nil {
+		return r, err
+	}
+	if err = persistTransition(ctx, tx, r.State, next, commands, event, "approval.decided"); err != nil {
+		return r, err
+	}
+	r, err = getRun(ctx, tx, identity.TenantID, a.RunID, false)
+	if err != nil {
+		return r, err
+	}
+	if err = tx.Commit(ctx); err != nil {
+		return r, err
+	}
+	s.wake(ctx, r.ID)
+	return r, nil
+}
+
+type Message struct {
+	Seq         uint64  `json:"seq"`
+	Text        string  `json:"text"`
+	AppliedStep *uint64 `json:"applied_step,omitempty"`
+}
+
+func (s *Store) AddMessage(ctx context.Context, identity Identity, id domain.ID, text, key string) (Message, bool, error) {
+	ctx, cancel := dependency.Database(ctx)
+	defer cancel()
+	if !identity.CanWrite() {
+		return Message{}, false, domain.ErrForbidden
+	}
+	if strings.TrimSpace(text) == "" || len(text) > 16000 || len(key) < 1 || len(key) > 128 {
+		return Message{}, false, domain.ErrInvalid
+	}
+	tx, err := s.Tx(ctx, identity.TenantID, pgx.TxOptions{})
+	if err != nil {
+		return Message{}, false, err
+	}
+	defer tx.Rollback(ctx)
+	if err = lockTenant(ctx, tx, identity.TenantID); err != nil {
+		return Message{}, false, err
+	}
+	r, err := getRun(ctx, tx, identity.TenantID, id, true)
+	if err != nil {
+		return Message{}, false, err
+	}
+	hash := sha256.Sum256([]byte(text))
+	digest := hex.EncodeToString(hash[:])
+	route := "/v1/runs/" + string(id) + "/messages"
+	var oldHash string
+	var old []byte
+	err = tx.QueryRow(ctx, `SELECT request_hash,response FROM idempotency_keys WHERE tenant_id=$1 AND principal_id=$2 AND route=$3 AND key=$4`, identity.TenantID, identity.PrincipalID, route, key).Scan(&oldHash, &old)
+	if err == nil {
+		if oldHash != digest {
+			return Message{}, false, domain.ErrConflict
+		}
+		var m Message
+		err = json.Unmarshal(old, &m)
+		if err != nil {
+			return m, false, err
+		}
+		return m, true, tx.Commit(ctx)
+	}
+	if !errors.Is(err, pgx.ErrNoRows) {
+		return Message{}, false, err
+	}
+	if r.State.Status.Terminal() {
+		return Message{}, false, domain.ErrTerminal
+	}
+	var count, bytes int64
+	if err = tx.QueryRow(ctx, `SELECT count(*),coalesce(sum(octet_length(body)),0) FROM run_messages WHERE tenant_id=$1 AND run_id=$2`, identity.TenantID, id).Scan(&count, &bytes); err != nil {
+		return Message{}, false, err
+	}
+	if count >= 64 || bytes+int64(len(text)) > 256<<10 {
+		return Message{}, false, domain.ErrCapacity
+	}
+	var m Message
+	m.Text = text
+	if err = tx.QueryRow(ctx, `SELECT coalesce(max(seq),0)+1 FROM run_messages WHERE tenant_id=$1 AND run_id=$2`, identity.TenantID, id).Scan(&m.Seq); err != nil {
+		return m, false, err
+	}
+	if _, err = tx.Exec(ctx, `INSERT INTO run_messages(tenant_id,run_id,seq,principal_id,body) VALUES($1,$2,$3,$4,$5)`, identity.TenantID, id, m.Seq, identity.PrincipalID, text); err != nil {
+		return m, false, err
+	}
+	body, _ := json.Marshal(m)
+	if _, err = tx.Exec(ctx, `INSERT INTO idempotency_keys(tenant_id,principal_id,route,key,request_hash,resource_id,response,expires_at) VALUES($1,$2,$3,$4,$5,$6,$7,clock_timestamp()+interval '24 hours')`, identity.TenantID, identity.PrincipalID, route, key, digest, fmt.Sprint(m.Seq), body); err != nil {
+		return m, false, err
+	}
+	if _, err = appendEvent(ctx, tx, identity.TenantID, id, "run.message_added", body); err != nil {
+		return m, false, err
+	}
+	return m, false, tx.Commit(ctx)
+}
+
+// ConsumeMessages is called only at a complete tool-batch context boundary.
+// Re-reading at the same step is deterministic after a worker crash.
+func (s *Store) ConsumeMessages(ctx context.Context, tenant, id domain.ID, owner string, epoch, step uint64) ([]Message, error) {
+	ctx, cancel := dependency.Database(ctx)
+	defer cancel()
+	tx, err := s.Tx(ctx, tenant, pgx.TxOptions{})
+	if err != nil {
+		return nil, err
+	}
+	defer tx.Rollback(ctx)
+	r, err := getRun(ctx, tx, tenant, id, true)
+	if err != nil {
+		return nil, err
+	}
+	var valid bool
+	if err = tx.QueryRow(ctx, `SELECT lease_owner=$3 AND lease_epoch=$4 AND lease_until>clock_timestamp() FROM runs WHERE tenant_id=$1 AND id=$2`, tenant, id, owner, epoch).Scan(&valid); err != nil {
+		return nil, err
+	}
+	if !valid || r.State.Stage != domain.StageBuildContext || r.State.StepSeq != step {
+		return nil, domain.ErrFenced
+	}
+	if _, err = tx.Exec(ctx, `UPDATE run_messages SET applied_step=$3 WHERE tenant_id=$1 AND run_id=$2 AND applied_step IS NULL`, tenant, id, step); err != nil {
+		return nil, err
+	}
+	rows, err := tx.Query(ctx, `SELECT seq,body,applied_step FROM run_messages WHERE tenant_id=$1 AND run_id=$2 AND applied_step<=$3 ORDER BY seq`, tenant, id, step)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	result := []Message{}
+	for rows.Next() {
+		var m Message
+		if err = rows.Scan(&m.Seq, &m.Text, &m.AppliedStep); err != nil {
+			return nil, err
+		}
+		result = append(result, m)
+	}
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+	return result, tx.Commit(ctx)
+}

@@ -6,6 +6,7 @@ import (
 	"math"
 	"time"
 
+	"github.com/JDinSeattle/forge-runtime/internal/dependency"
 	"github.com/JDinSeattle/forge-runtime/internal/domain"
 	"github.com/jackc/pgx/v5"
 )
@@ -35,6 +36,8 @@ func scanCleanup(row pgx.Row) (WorkspaceCleanup, error) {
 // AcquireWorkspaceCleanup grants separate cleanup authority; it never extends
 // a run execution lease. Terminal runs cannot be resumed by the control API.
 func (s *Store) AcquireWorkspaceCleanup(ctx context.Context, tenant, id domain.ID, owner string, minAge time.Duration) (WorkspaceCleanup, error) {
+	ctx, cancel := dependency.Database(ctx)
+	defer cancel()
 	if owner == "" || minAge < 0 {
 		return WorkspaceCleanup{}, domain.ErrInvalid
 	}
@@ -84,6 +87,8 @@ func (s *Store) AcquireWorkspaceCleanup(ctx context.Context, tenant, id domain.I
 }
 
 func (s *Store) CleanupProof(ctx context.Context, c WorkspaceCleanup, release bool) (time.Time, time.Time, error) {
+	ctx, cancel := dependency.Database(ctx)
+	defer cancel()
 	var until, now time.Time
 	err := s.Pool.QueryRow(ctx, `SELECT lease_until,clock_timestamp() FROM workspace_cleanup WHERE tenant_id=$1 AND run_id=$2 AND id=$3 AND lease_owner=$4 AND lease_until>clock_timestamp() AND (NOT $5 OR phase='sealed') AND phase!='released'`, c.TenantID, c.RunID, c.ID, c.LeaseOwner, release).Scan(&until, &now)
 	if err == pgx.ErrNoRows {
@@ -92,6 +97,8 @@ func (s *Store) CleanupProof(ctx context.Context, c WorkspaceCleanup, release bo
 	return until, now, err
 }
 func (s *Store) SealWorkspaceCleanup(ctx context.Context, c WorkspaceCleanup, ref string) error {
+	ctx, cancel := dependency.Database(ctx)
+	defer cancel()
 	tag, err := s.Pool.Exec(ctx, `UPDATE workspace_cleanup SET snapshot_ref=$5,phase='sealed' WHERE tenant_id=$1 AND run_id=$2 AND id=$3 AND lease_owner=$4 AND lease_until>clock_timestamp() AND phase='requested' AND EXISTS(SELECT 1 FROM artifacts WHERE tenant_id=$1 AND run_id=$2 AND id=$5 AND kind='workspace_snapshot' AND state='ready')`, c.TenantID, c.RunID, c.ID, c.LeaseOwner, ref)
 	if err != nil {
 		return err
@@ -102,6 +109,8 @@ func (s *Store) SealWorkspaceCleanup(ctx context.Context, c WorkspaceCleanup, re
 	return nil
 }
 func (s *Store) CompleteWorkspaceCleanup(ctx context.Context, c WorkspaceCleanup) error {
+	ctx, cancel := dependency.Database(ctx)
+	defer cancel()
 	tx, err := s.Tx(ctx, c.TenantID, pgx.TxOptions{})
 	if err != nil {
 		return err

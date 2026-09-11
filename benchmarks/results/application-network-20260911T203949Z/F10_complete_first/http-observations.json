@@ -1,0 +1,117 @@
+[
+  {
+    "at": "2026-09-11T20:39:56.942945022Z",
+    "method": "GET",
+    "path": "/readyz",
+    "response": {
+      "status": "ready"
+    },
+    "status": 200
+  },
+  {
+    "at": "2026-09-11T20:40:01.908507651Z",
+    "method": "POST",
+    "path": "/v1/runs/run_FXTWIJ6BFK52VNWTEVFZJOEUUH/cancel",
+    "response": {
+      "tenant_id": "app-fault-un226pdb6e3pmlgob2h3lkzs3e",
+      "id": "run_FXTWIJ6BFK52VNWTEVFZJOEUUH",
+      "project_id": "project_6UHB2F4X4H3MEHPLE5R4YBIVKT",
+      "principal_id": "fixture-operator",
+      "task": "Execute only the literal approved fixture commands and repair clamp; deterministic fake model.",
+      "base_commit": "66ee6f4ae415b0735c6eb4d0645f5a8d72d33e7946d0219e319aa9158a375659",
+      "runner_id": "application-fault-runner",
+      "state": {
+        "schema_version": 1,
+        "run_id": "run_FXTWIJ6BFK52VNWTEVFZJOEUUH",
+        "tenant_id": "app-fault-un226pdb6e3pmlgob2h3lkzs3e",
+        "version": 28,
+        "status": "completed",
+        "stage": "stopped",
+        "lease": {
+          "owner": "worker1-0",
+          "epoch": 3,
+          "until": "2026-09-11T13:40:05.609621-07:00"
+        },
+        "step_seq": 4,
+        "workspace_revision": 4,
+        "output_ref": "artifact_bb97423bc1b69333f967556cef0982f4ffafd7293a1a6fa67aa6dfbe87df75ce",
+        "verification_status": "verified",
+        "verification_report_ref": "artifact_57621c91f2a398e66224a21d46134846658442494b04ee599b4914216b995d46",
+        "verification_revision": 4,
+        "model_rounds": 4,
+        "tool_calls": 3,
+        "cost_microusd": 570,
+        "limits": {
+          "max_model_rounds": 8,
+          "max_tool_calls": 20,
+          "max_cost_microusd": 1000000,
+          "deadline": "2026-09-11T13:41:30.869884-07:00"
+        }
+      },
+      "config": {
+        "provider": "fake",
+        "model": "fake",
+        "max_model_rounds": 8,
+        "max_tool_calls": 20,
+        "max_cost_microusd": 1000000,
+        "max_runtime_seconds": 95
+      },
+      "created_at": "2026-09-11T13:39:55.871037-07:00",
+      "covered_seq": 59
+    },
+    "status": 202
+  },
+  {
+    "at": "2026-09-11T20:40:01.915505948Z",
+    "method": "POST",
+    "path": "/v1/runs/run_FXTWIJ6BFK52VNWTEVFZJOEUUH/cancel",
+    "response": {
+      "tenant_id": "app-fault-un226pdb6e3pmlgob2h3lkzs3e",
+      "id": "run_FXTWIJ6BFK52VNWTEVFZJOEUUH",
+      "project_id": "project_6UHB2F4X4H3MEHPLE5R4YBIVKT",
+      "principal_id": "fixture-operator",
+      "task": "Execute only the literal approved fixture commands and repair clamp; deterministic fake model.",
+      "base_commit": "66ee6f4ae415b0735c6eb4d0645f5a8d72d33e7946d0219e319aa9158a375659",
+      "runner_id": "application-fault-runner",
+      "state": {
+        "schema_version": 1,
+        "run_id": "run_FXTWIJ6BFK52VNWTEVFZJOEUUH",
+        "tenant_id": "app-fault-un226pdb6e3pmlgob2h3lkzs3e",
+        "version": 28,
+        "status": "completed",
+        "stage": "stopped",
+        "lease": {
+          "owner": "worker1-0",
+          "epoch": 3,
+          "until": "2026-09-11T13:40:05.609621-07:00"
+        },
+        "step_seq": 4,
+        "workspace_revision": 4,
+        "output_ref": "artifact_bb97423bc1b69333f967556cef0982f4ffafd7293a1a6fa67aa6dfbe87df75ce",
+        "verification_status": "verified",
+        "verification_report_ref": "artifact_57621c91f2a398e66224a21d46134846658442494b04ee599b4914216b995d46",
+        "verification_revision": 4,
+        "model_rounds": 4,
+        "tool_calls": 3,
+        "cost_microusd": 570,
+        "limits": {
+          "max_model_rounds": 8,
+          "max_tool_calls": 20,
+          "max_cost_microusd": 1000000,
+          "deadline": "2026-09-11T13:41:30.869884-07:00"
+        }
+      },
+      "config": {
+        "provider": "fake",
+        "model": "fake",
+        "max_model_rounds": 8,
+        "max_tool_calls": 20,
+        "max_cost_microusd": 1000000,
+        "max_runtime_seconds": 95
+      },
+      "created_at": "2026-09-11T13:39:55.871037-07:00",
+      "covered_seq": 59
+    },
+    "status": 202
+  }
+]

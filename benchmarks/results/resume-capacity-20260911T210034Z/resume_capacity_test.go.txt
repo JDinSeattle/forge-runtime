@@ -1,0 +1,395 @@
+package review_test
+
+import (
+	"bytes"
+	"context"
+	"crypto/sha256"
+	"encoding/hex"
+	"encoding/json"
+	"errors"
+	"io"
+	"net/http"
+	"net/http/httptest"
+	"os"
+	osexec "os/exec"
+	"path/filepath"
+	"reflect"
+	"strconv"
+	"strings"
+	"sync"
+	"testing"
+	"time"
+
+	"github.com/JDinSeattle/forge-runtime/internal/artifact"
+	"github.com/JDinSeattle/forge-runtime/internal/domain"
+	"github.com/JDinSeattle/forge-runtime/internal/httpapi"
+	"github.com/JDinSeattle/forge-runtime/internal/persistence"
+	flow "github.com/JDinSeattle/forge-runtime/internal/runtime"
+)
+
+// These are transaction/control fixtures. No model, runner, Docker operation or
+// actual unknown external outcome exists. The explicit evidence bytes below are
+// not a trusted grader report; the tests exercise Store's declarative events.
+type resumeControlFixture struct {
+	t           *testing.T
+	ctx         context.Context
+	store       *persistence.Store
+	run         persistence.Run
+	sentinel    persistence.Run
+	ref         string
+	server      *httptest.Server
+	token       string
+	evidenceDir string
+}
+
+func newResumeControlFixture(t *testing.T, label string) *resumeControlFixture {
+	t.Helper()
+	ctx, owner, api := reviewAPIStore(t)
+	f := &resumeControlFixture{t: t, ctx: ctx, store: owner}
+	if directory := os.Getenv("FORGE_REVIEW_RESUME_EVIDENCE"); directory != "" {
+		f.evidenceDir = filepath.Join(directory, label)
+		if err := os.MkdirAll(directory, 0700); err != nil {
+			t.Fatal(err)
+		}
+		if err := os.Mkdir(f.evidenceDir, 0700); err != nil {
+			t.Fatal("use a fresh evidence directory; previous records are retained:", err)
+		}
+	}
+	f.run = reviewRun(t, ctx, owner)
+	var err error
+	f.token, err = owner.IssueToken(ctx, f.run.PrincipalID, time.Hour)
+	if err != nil {
+		t.Fatal(err)
+	}
+	f.server = httptest.NewServer((&httpapi.Server{Store: api}).Handler())
+	t.Cleanup(f.server.Close)
+	var role, session string
+	var super, bypass bool
+	if err := api.Pool.QueryRow(ctx, `SELECT current_user,session_user,rolsuper,rolbypassrls FROM pg_roles WHERE rolname=current_user`).Scan(&role, &session, &super, &bypass); err != nil {
+		t.Fatal(err)
+	}
+	if super || bypass {
+		t.Fatal("HTTP fixture did not retain its non-superuser NOBYPASSRLS role")
+	}
+	f.record("role.json", map[string]any{"current_user": role, "session_user": session, "current_role_superuser": super, "current_role_bypassrls": bypass, "production_CheckAPIRole": "passed", "scope": "existing review helper uses SET ROLE from administrator connection; not a separate restricted LOGIN"})
+	f.run, err = owner.ClaimOnRunner(ctx, "resume-original", time.Minute, "review_runner")
+	if err != nil {
+		t.Fatal(err)
+	}
+	objects, err := artifact.NewLocalStore(t.TempDir(), 4096)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = objects.Close() })
+	proof := []byte(`{"scope":"control_transaction_fixture","no_runner_or_model_executed":true}`)
+	ref, err := objects.Put(ctx, f.run.TenantID, f.run.ID, "control_fixture", bytes.NewReader(proof))
+	if err != nil {
+		t.Fatal(err)
+	}
+	f.ref = recoveryPublish(t, ctx, owner, ref)
+	f.record("control-fixture-artifact.json", map[string]any{"ref": ref, "bytes": string(proof)})
+	f.advance(flow.Event{Kind: flow.EventWorkspaceReady, WorkspaceRevision: 1, OutputRef: f.ref})
+	f.advance(flow.Event{Kind: flow.EventContextBuilt, OutputRef: f.ref})
+	f.advance(flow.Event{Kind: flow.EventModelCompleted, Complete: true, OutputRef: f.ref})
+	args := json.RawMessage(`{"path":"control-fixture.py"}`)
+	hash := sha256.Sum256(args)
+	f.advance(flow.Event{Kind: flow.EventToolsValidated, Complete: true, OutputRef: f.ref, Effects: []flow.Effect{{ID: domain.ID(string(f.run.ID) + "_original_effect"), Kind: "read_file", Args: args, ArgsHash: hex.EncodeToString(hash[:]), ExpectedRevision: 1, PolicyVersion: "control-fixture-v1", Status: flow.EffectPlanned}}})
+	f.advance(flow.Event{Kind: flow.EventEffectUncertain, Reason: "explicit control fixture; no external execution"})
+	// Hold a second allocation to expose a double decrement even if an
+	// implementation were to mask underflow with max(counter-1, 0).
+	f.sentinel, _, err = owner.Submit(ctx, persistence.SubmitRequest{TenantID: f.run.TenantID, PrincipalID: f.run.PrincipalID, ProjectID: f.run.ProjectID, Task: "sentinel capacity remains owned", BaseCommit: f.run.BaseCommit, Config: f.run.Config}, "resume-capacity-sentinel")
+	if err != nil {
+		t.Fatal(err)
+	}
+	claimed, err := owner.ClaimOnRunner(ctx, "resume-sentinel", time.Minute, "review_runner")
+	if err != nil || claimed.ID != f.sentinel.ID {
+		t.Fatalf("sentinel claim: id=%s err=%v", claimed.ID, err)
+	}
+	f.sentinel = claimed
+	f.capacity(2)
+	f.capture("before-resume")
+	return f
+}
+
+func (f *resumeControlFixture) record(name string, value any) {
+	f.t.Helper()
+	if f.evidenceDir == "" {
+		return
+	}
+	raw, err := json.MarshalIndent(value, "", "  ")
+	if err != nil {
+		f.t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(f.evidenceDir, name), append(raw, '\n'), 0600); err != nil {
+		f.t.Fatal(err)
+	}
+}
+
+func (f *resumeControlFixture) advance(event flow.Event) {
+	f.t.Helper()
+	event.ExpectedVersion, event.Owner, event.Epoch = f.run.State.Version, f.run.State.Lease.Owner, f.run.State.Lease.Epoch
+	r, err := f.store.Advance(f.ctx, f.run.TenantID, f.run.ID, event)
+	if err != nil {
+		f.t.Fatal(event.Kind, err)
+	}
+	f.run = r
+}
+
+func (f *resumeControlFixture) refresh() {
+	f.t.Helper()
+	r, err := f.store.GetRun(f.ctx, f.run.TenantID, f.run.ID)
+	if err != nil {
+		f.t.Fatal(err)
+	}
+	f.run = r
+}
+
+func (f *resumeControlFixture) capacity(want int) {
+	f.t.Helper()
+	var active, reserved, allocated, sentinel int
+	err := f.store.Pool.QueryRow(f.ctx, `SELECT
+	 (SELECT active_count FROM tenant_runtime WHERE tenant_id=$1),
+	 (SELECT reserved_slots FROM runners WHERE id='review_runner'),
+	 (SELECT coalesce(sum(slots),0) FROM runner_allocations WHERE state!='released'),
+	 (SELECT count(*) FROM runner_allocations WHERE run_id=$2 AND state!='released')`, f.run.TenantID, f.sentinel.ID).Scan(&active, &reserved, &allocated, &sentinel)
+	if err != nil || active != want || reserved != want || allocated != want || sentinel != 1 {
+		f.t.Fatalf("capacity active=%d reserved=%d allocation_sum=%d sentinel=%d want=%d err=%v", active, reserved, allocated, sentinel, want, err)
+	}
+}
+
+func (f *resumeControlFixture) capture(name string) json.RawMessage {
+	f.t.Helper()
+	// One SQL statement uses one MVCC snapshot for this control fixture.
+	var raw json.RawMessage
+	if err := f.store.Pool.QueryRow(f.ctx, `SELECT jsonb_build_object(
+	 'runs',(SELECT jsonb_agg(to_jsonb(r) ORDER BY id) FROM runs r),
+	 'effects',(SELECT jsonb_agg(to_jsonb(e) ORDER BY operation_id) FROM effects e),
+	 'runner_allocations',(SELECT jsonb_agg(to_jsonb(a) ORDER BY run_id) FROM runner_allocations a),
+	 'tenant_runtime',(SELECT jsonb_agg(to_jsonb(t)) FROM tenant_runtime t),
+	 'runners',(SELECT jsonb_agg(to_jsonb(n)) FROM runners n),
+	 'run_events',(SELECT jsonb_agg(to_jsonb(v) ORDER BY run_id,seq) FROM run_events v),
+	 'run_snapshots',(SELECT jsonb_agg(to_jsonb(s) ORDER BY run_id,version) FROM run_snapshots s))`).Scan(&raw); err != nil {
+		f.t.Fatal(err)
+	}
+	f.record(name+"-postgres.json", raw)
+	return raw
+}
+
+func (f *resumeControlFixture) request(version uint64) (int, json.RawMessage, error) {
+	raw, _ := json.Marshal(map[string]uint64{"expected_version": version})
+	req, err := http.NewRequestWithContext(f.ctx, "POST", f.server.URL+"/v1/runs/"+string(f.run.ID)+"/resume", bytes.NewReader(raw))
+	if err != nil {
+		return 0, nil, err
+	}
+	req.Header.Set("Authorization", "Bearer "+f.token)
+	req.Header.Set("X-Forge-Tenant", string(f.run.TenantID))
+	req.Header.Set("Content-Type", "application/json")
+	response, err := f.server.Client().Do(req)
+	if err != nil {
+		return 0, nil, err
+	}
+	defer response.Body.Close()
+	body, err := io.ReadAll(io.LimitReader(response.Body, 1<<20))
+	return response.StatusCode, body, err
+}
+
+func (f *resumeControlFixture) deferOriginal() {
+	f.t.Helper()
+	// Normal Store API ends the owner lease. No SQL lease/deadline mutation and
+	// no natural-expiry or stopped-container observation is claimed here.
+	if err := f.store.Defer(f.ctx, f.run, time.Now(), "run.reconciliation_wait"); err != nil {
+		f.t.Fatal(err)
+	}
+	f.refresh()
+}
+
+func (f *resumeControlFixture) assertSameUnknown(before persistence.Run) {
+	f.t.Helper()
+	f.refresh()
+	if f.run.ID != before.ID || f.run.RunnerID != before.RunnerID || f.run.State.Status != domain.StatusNeedsReconciliation || f.run.State.Version != before.State.Version+1 || f.run.State.Lease.Epoch != before.State.Lease.Epoch || !reflect.DeepEqual(f.run.State.PendingEffect, before.State.PendingEffect) {
+		f.t.Fatal("Resume changed original placement/effect identity or skipped reconciliation")
+	}
+	if len(f.run.Commands) != 0 || f.run.State.Lease.Owner != "" {
+		f.t.Fatal("Resume dispatched an operation or retained a driver owner")
+	}
+	f.capacity(2)
+}
+
+func TestReviewHTTPResumePreservesIdentityAndCapacity(t *testing.T) {
+	f := newResumeControlFixture(t, "http-resume")
+	status, body, err := f.request(f.run.State.Version)
+	if err != nil || status != 409 {
+		t.Fatalf("active owner Resume: status=%d body=%s err=%v", status, body, err)
+	}
+	f.record("active-owner-response.json", map[string]any{"status": status, "body": body})
+	f.deferOriginal()
+	before := f.run
+	f.capture("eligible")
+	const duplicates = 12
+	type result struct {
+		Status int             `json:"status"`
+		Body   json.RawMessage `json:"body"`
+		Err    error           `json:"-"`
+	}
+	results := make(chan result, duplicates)
+	start := make(chan struct{})
+	var wg sync.WaitGroup
+	for range duplicates {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			<-start
+			status, body, err := f.request(before.State.Version)
+			results <- result{status, body, err}
+		}()
+	}
+	close(start)
+	wg.Wait()
+	close(results)
+	var responses []result
+	accepted, rejected := 0, 0
+	for response := range results {
+		responses = append(responses, response)
+		if response.Err != nil {
+			t.Fatal(response.Err)
+		}
+		switch response.Status {
+		case 202:
+			accepted++
+		case 409:
+			rejected++
+		default:
+			t.Fatalf("unexpected Resume status: %d %s", response.Status, response.Body)
+		}
+	}
+	if accepted != 1 || rejected != duplicates-1 {
+		t.Fatalf("Resume CAS accepted=%d conflicts=%d", accepted, rejected)
+	}
+	f.record("concurrent-resume-responses.json", responses)
+	f.assertSameUnknown(before)
+	f.capture("after-concurrent-resume")
+	// A newly reviewed version may express another Resume intent; neither that
+	// success nor repeated stale requests may consume or release capacity.
+	before = f.run
+	status, body, err = f.request(before.State.Version)
+	if err != nil || status != 202 {
+		t.Fatalf("new reviewed Resume version: %d %s %v", status, body, err)
+	}
+	f.record("reviewed-repeat-response.json", map[string]any{"status": status, "body": body})
+	f.assertSameUnknown(before)
+	var resumed int
+	if err := f.store.Pool.QueryRow(f.ctx, `SELECT count(*) FROM run_events WHERE run_id=$1 AND type='run.resume_requested'`, f.run.ID).Scan(&resumed); err != nil || resumed != 2 {
+		t.Fatalf("Resume events=%d err=%v", resumed, err)
+	}
+	f.capture("final")
+	f.record("summary.json", map[string]any{"passed": true, "scope": "real TCP API and PG transaction control fixture; no external effects executed", "run_id": f.run.ID, "original_runner": f.run.RunnerID, "operation_id": f.run.State.PendingEffect.ID, "same_version_requests": duplicates, "accepted": accepted, "conflicts": rejected, "reviewed_repeat_accepted": true, "capacity_before_after": []int{2, 2}, "sentinel_still_reserved": true})
+}
+
+func TestReviewConcurrentFinalizeDoesNotReleaseSentinelCapacity(t *testing.T) {
+	f := newResumeControlFixture(t, "finalize")
+	f.deferOriginal()
+	before := f.run
+	status, body, err := f.request(before.State.Version)
+	if err != nil || status != 202 {
+		t.Fatalf("Resume: %d %s %v", status, body, err)
+	}
+	f.assertSameUnknown(before)
+	f.run, err = f.store.ClaimOnRunner(f.ctx, "resume-replacement", time.Minute, "review_runner")
+	if err != nil || f.run.ID != before.ID || f.run.State.Lease.Epoch != before.State.Lease.Epoch+1 || f.run.State.Stage != domain.StageAdoptWorkspace {
+		t.Fatalf("control re-claim: run=%s stage=%s err=%v", f.run.ID, f.run.State.Stage, err)
+	}
+	f.capacity(2)
+	f.advance(flow.Event{Kind: flow.EventWorkspaceAdopted, Stop: &flow.StopReceipt{Ref: f.ref, NoActiveOperations: true, WorkspaceRevision: 1}})
+	effect := f.run.State.PendingEffect
+	f.advance(flow.Event{Kind: flow.EventReconciled, Receipt: &flow.EffectReceipt{EffectID: effect.ID, ArgsHash: effect.ArgsHash, Epoch: effect.DispatchEpoch, BeforeRevision: 1, AfterRevision: 1, Ref: f.ref, Settled: true, Status: flow.EffectSucceeded}})
+	f.advance(flow.Event{Kind: flow.EventResultsIngested, OutputRef: f.ref})
+	f.advance(flow.Event{Kind: flow.EventContextBuilt, OutputRef: f.ref})
+	f.advance(flow.Event{Kind: flow.EventModelCompleted, Complete: true, Finish: true, OutputRef: f.ref})
+	f.advance(flow.Event{Kind: flow.EventVerificationCompleted, Verification: &flow.VerificationEvidence{Trusted: true, ReportRef: f.ref, WorkspaceRevision: 1, BaselineTargetFailed: true, TargetPassed: true, RegressionPassed: true}})
+	f.capture("before-finalize")
+	event := flow.Event{Kind: flow.EventFinalized, ExpectedVersion: f.run.State.Version, Owner: f.run.State.Lease.Owner, Epoch: f.run.State.Lease.Epoch, OutputRef: f.ref}
+	const duplicates = 12
+	results := make(chan error, duplicates)
+	start := make(chan struct{})
+	for range duplicates {
+		go func() {
+			<-start
+			_, err := f.store.Advance(f.ctx, f.run.TenantID, f.run.ID, event)
+			results <- err
+		}()
+	}
+	close(start)
+	accepted, rejected := 0, 0
+	for range duplicates {
+		err := <-results
+		if err == nil {
+			accepted++
+		} else if errors.Is(err, domain.ErrConflict) || errors.Is(err, domain.ErrTerminal) {
+			rejected++
+		} else {
+			t.Fatal(err)
+		}
+	}
+	if accepted != 1 || rejected != duplicates-1 {
+		t.Fatalf("Finalize accepted=%d rejected=%d", accepted, rejected)
+	}
+	f.refresh()
+	if f.run.State.Status != domain.StatusCompleted {
+		t.Fatal("run did not complete")
+	}
+	f.capacity(1)
+	terminal := f.capture("after-finalize")
+	// Repeat both stale and current-version finalization/Resume after terminal.
+	for _, version := range []uint64{event.ExpectedVersion, f.run.State.Version} {
+		event.ExpectedVersion = version
+		if _, err := f.store.Advance(f.ctx, f.run.TenantID, f.run.ID, event); !errors.Is(err, domain.ErrConflict) && !errors.Is(err, domain.ErrTerminal) {
+			t.Fatalf("terminal Finalize returned %v", err)
+		}
+		status, body, err := f.request(version)
+		if err != nil || status != 409 {
+			t.Fatalf("terminal Resume status=%d body=%s err=%v", status, body, err)
+		}
+	}
+	f.capacity(1)
+	if !bytes.Equal(terminal, f.capture("after-terminal-repeats")) {
+		t.Fatal("terminal repeats changed rows, ledger counters, snapshots or event history")
+	}
+	var finishes int
+	if err := f.store.Pool.QueryRow(f.ctx, `SELECT count(*) FROM run_events WHERE run_id=$1 AND type='run.finished'`, f.run.ID).Scan(&finishes); err != nil || finishes != 1 {
+		t.Fatalf("terminal event count=%d err=%v", finishes, err)
+	}
+	f.record("summary.json", map[string]any{"passed": true, "scope": "declarative control fixture receipts; no actual runner, verifier or model", "run_id": f.run.ID, "finalize_requests": duplicates, "accepted": accepted, "conflicts": rejected, "capacity_before_after_repeats": []int{2, 1, 1}, "sentinel_run": f.sentinel.ID, "sentinel_still_reserved": true, "terminal_event_count": finishes})
+}
+
+func TestReviewCLIResumeSucceedsThroughRealHTTP(t *testing.T) {
+	binary := os.Getenv("FORGE_REVIEW_FORGE_BINARY")
+	if binary == "" {
+		t.Skip("set FORGE_REVIEW_FORGE_BINARY to a freshly built cmd/forge executable")
+	}
+	f := newResumeControlFixture(t, "cli-resume")
+	f.deferOriginal()
+	before := f.run
+	args := []string{"--api-url", f.server.URL, "--tenant", string(f.run.TenantID), "--state-dir", t.TempDir(), "--timeout", "5s", "run", "resume", string(f.run.ID), "--version", strconv.FormatUint(before.State.Version, 10)}
+	command := osexec.CommandContext(f.ctx, binary, args...)
+	for _, item := range os.Environ() {
+		key, _, _ := strings.Cut(item, "=")
+		if !strings.HasPrefix(key, "FORGE_") && !strings.Contains(key, "DATABASE") {
+			command.Env = append(command.Env, item)
+		}
+	}
+	command.Env = append(command.Env, "FORGE_TOKEN="+f.token)
+	var stdout, stderr bytes.Buffer
+	command.Stdout, command.Stderr = &stdout, &stderr
+	if err := command.Run(); err != nil {
+		t.Fatalf("real CLI failed: %v stderr=%s", err, stderr.String())
+	}
+	var response persistence.Run
+	if err := json.Unmarshal(stdout.Bytes(), &response); err != nil || response.ID != f.run.ID || response.State.Version != before.State.Version+1 || response.State.Status != domain.StatusNeedsReconciliation {
+		t.Fatalf("CLI response=%s err=%v", stdout.String(), err)
+	}
+	f.assertSameUnknown(before)
+	f.capture("after-cli-resume")
+	f.record("cli.json", map[string]any{"argv": append([]string{binary}, args...), "pid": command.Process.Pid, "exit_code": command.ProcessState.ExitCode(), "stdout": json.RawMessage(stdout.Bytes()), "stderr": stderr.String()})
+	f.record("summary.json", map[string]any{"passed": true, "scope": "actual CLI process, real TCP HTTP and private PG; no runner execution", "run_id": f.run.ID, "version_before_after": []uint64{before.State.Version, f.run.State.Version}, "capacity_before_after": []int{2, 2}, "runner_unchanged": true, "operation_unchanged": true})
+	t.Logf("actual CLI pid=%d exit=0 accepted run=%s reviewed_version=%d", command.Process.Pid, f.run.ID, before.State.Version)
+}

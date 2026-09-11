@@ -1,0 +1,1230 @@
+{
+  "runs": [
+    {
+      "id": "run_4L66XTOGCHSHKCEJXEQXF3CYGS",
+      "task": "test control-plane lease authority",
+      "state": "needs_reconciliation",
+      "version": 8,
+      "priority": 0,
+      "snapshot": {
+        "lease": {
+          "epoch": 1,
+          "owner": "",
+          "until": "2026-09-11T21:09:10.817671Z"
+        },
+        "stage": "reconcile",
+        "limits": {
+          "deadline": "2026-09-11T21:11:10.717787Z",
+          "max_tool_calls": 3,
+          "max_model_rounds": 2,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_4L66XTOGCHSHKCEJXEQXF3CYGS",
+        "status": "needs_reconciliation",
+        "version": 8,
+        "step_seq": 1,
+        "tenant_id": "review_tenant",
+        "output_ref": "artifact_d9bb77cedd396e854e1dd2baaa05377ef6b930344712bfe38b67d0119dc8d7c1",
+        "tool_calls": 1,
+        "model_rounds": 1,
+        "resume_stage": "execute_effects",
+        "cost_microusd": 0,
+        "failure_reason": "explicit control fixture; no external execution",
+        "pending_effect": {
+          "args": {
+            "path": "control-fixture.py"
+          },
+          "kind": "read_file",
+          "status": "unknown",
+          "args_hash": "258a35fdf3c44a1aef0c35f2b442fe4eb4cfecb1daaaeece35811ca3de607465",
+          "operation_id": "run_4L66XTOGCHSHKCEJXEQXF3CYGS_original_effect",
+          "dispatch_epoch": 1,
+          "policy_version": "control-fixture-v1",
+          "expected_revision": 1,
+          "requires_approval": false
+        },
+        "schema_version": 1,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "runner_id": "review_runner",
+      "tenant_id": "review_tenant",
+      "created_at": "2026-09-11T21:09:10.719115+00:00",
+      "not_before": "2026-09-11T21:09:10.801731+00:00",
+      "project_id": "project_DU5HNSBEAM7TSGZEQU5VZ4B4O2",
+      "updated_at": "2026-09-11T21:09:10.818461+00:00",
+      "base_commit": "fixed-fixture-base",
+      "lease_epoch": 1,
+      "lease_owner": "",
+      "lease_until": "2026-09-11T21:09:10.817671+00:00",
+      "traceparent": "",
+      "principal_id": "review_principal",
+      "workspace_id": "run_4L66XTOGCHSHKCEJXEQXF3CYGS",
+      "parent_run_id": null,
+      "input_snapshot": "{\"schema_version\":1,\"project_id\":\"project_DU5HNSBEAM7TSGZEQU5VZ4B4O2\",\"task\":\"test control-plane lease authority\",\"base_commit\":\"fixed-fixture-base\",\"source_id\":\"local-fixture\",\"profile_id\":\"python\"}",
+      "next_event_seq": 11,
+      "config_snapshot": {
+        "model": "fixture",
+        "provider": "fake",
+        "max_tool_calls": 3,
+        "max_model_rounds": 2,
+        "max_cost_microusd": 1000000,
+        "max_runtime_seconds": 120
+      },
+      "pending_commands": [],
+      "retained_from_seq": 1
+    },
+    {
+      "id": "run_NRW46XBJ3I62YMFO5KWOA3DILI",
+      "task": "sentinel capacity remains owned",
+      "state": "running",
+      "version": 2,
+      "priority": 0,
+      "snapshot": {
+        "lease": {
+          "epoch": 1,
+          "owner": "resume-sentinel",
+          "until": "2026-09-11T21:10:10.785316Z"
+        },
+        "stage": "initialize",
+        "limits": {
+          "deadline": "2026-09-11T21:11:10.781091Z",
+          "max_tool_calls": 3,
+          "max_model_rounds": 2,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_NRW46XBJ3I62YMFO5KWOA3DILI",
+        "status": "running",
+        "version": 2,
+        "step_seq": 0,
+        "tenant_id": "review_tenant",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 0,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "runner_id": "review_runner",
+      "tenant_id": "review_tenant",
+      "created_at": "2026-09-11T21:09:10.781986+00:00",
+      "not_before": "-infinity",
+      "project_id": "project_DU5HNSBEAM7TSGZEQU5VZ4B4O2",
+      "updated_at": "2026-09-11T21:09:10.788651+00:00",
+      "base_commit": "fixed-fixture-base",
+      "lease_epoch": 1,
+      "lease_owner": "resume-sentinel",
+      "lease_until": "2026-09-11T21:10:10.785316+00:00",
+      "traceparent": "",
+      "principal_id": "review_principal",
+      "workspace_id": "run_NRW46XBJ3I62YMFO5KWOA3DILI",
+      "parent_run_id": null,
+      "input_snapshot": "{\"schema_version\":1,\"project_id\":\"project_DU5HNSBEAM7TSGZEQU5VZ4B4O2\",\"task\":\"sentinel capacity remains owned\",\"base_commit\":\"fixed-fixture-base\",\"source_id\":\"local-fixture\",\"profile_id\":\"python\"}",
+      "next_event_seq": 3,
+      "config_snapshot": {
+        "model": "fixture",
+        "provider": "fake",
+        "max_tool_calls": 3,
+        "max_model_rounds": 2,
+        "max_cost_microusd": 1000000,
+        "max_runtime_seconds": 120
+      },
+      "pending_commands": [
+        {
+          "kind": "initialize_workspace"
+        }
+      ],
+      "retained_from_seq": 1
+    }
+  ],
+  "effects": [
+    {
+      "args": {
+        "path": "control-fixture.py"
+      },
+      "kind": "read_file",
+      "epoch": 1,
+      "run_id": "run_4L66XTOGCHSHKCEJXEQXF3CYGS",
+      "status": "unknown",
+      "ordinal": 0,
+      "step_seq": 1,
+      "args_hash": "258a35fdf3c44a1aef0c35f2b442fe4eb4cfecb1daaaeece35811ca3de607465",
+      "tenant_id": "review_tenant",
+      "receipt_ref": null,
+      "operation_id": "run_4L66XTOGCHSHKCEJXEQXF3CYGS_original_effect",
+      "canonical_args": "\\x7b2270617468223a22636f6e74726f6c2d666978747572652e7079227d",
+      "policy_version": "control-fixture-v1",
+      "expected_revision": 1
+    }
+  ],
+  "runners": [
+    {
+      "id": "review_runner",
+      "enabled": true,
+      "endpoint": "http://runner.invalid",
+      "max_slots": 2,
+      "reserved_slots": 2
+    }
+  ],
+  "run_events": [
+    {
+      "seq": 1,
+      "type": "run.created",
+      "run_id": "run_4L66XTOGCHSHKCEJXEQXF3CYGS",
+      "payload": {
+        "lease": {
+          "epoch": 0,
+          "owner": "",
+          "until": "0001-01-01T00:00:00Z"
+        },
+        "stage": "initialize",
+        "limits": {
+          "deadline": "2026-09-11T21:11:10.717787Z",
+          "max_tool_calls": 3,
+          "max_model_rounds": 2,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_4L66XTOGCHSHKCEJXEQXF3CYGS",
+        "status": "queued",
+        "version": 1,
+        "step_seq": 0,
+        "tenant_id": "review_tenant",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 0,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "step_seq": null,
+      "tenant_id": "review_tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T21:09:10.720543+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 2,
+      "type": "run.claimed",
+      "run_id": "run_4L66XTOGCHSHKCEJXEQXF3CYGS",
+      "payload": {
+        "stage": "initialize",
+        "state": "running",
+        "reason": "",
+        "version": 2,
+        "step_seq": 0,
+        "output_ref": "",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "workspace_revision": 0,
+        "verification_status": "unverified",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "review_tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T21:09:10.733964+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 3,
+      "type": "artifact.ready",
+      "run_id": "run_4L66XTOGCHSHKCEJXEQXF3CYGS",
+      "payload": {
+        "id": "artifact_d9bb77cedd396e854e1dd2baaa05377ef6b930344712bfe38b67d0119dc8d7c1",
+        "kind": "control_fixture",
+        "state": "ready",
+        "run_id": "run_4L66XTOGCHSHKCEJXEQXF3CYGS",
+        "sha256": "d9bb77cedd396e854e1dd2baaa05377ef6b930344712bfe38b67d0119dc8d7c1",
+        "byte_size": 74,
+        "tenant_id": "review_tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "review_tenant/run_4L66XTOGCHSHKCEJXEQXF3CYGS/d9bb77cedd396e854e1dd2baaa05377ef6b930344712bfe38b67d0119dc8d7c1"
+      },
+      "step_seq": null,
+      "tenant_id": "review_tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T21:09:10.744764+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 4,
+      "type": "workspace.prepared",
+      "run_id": "run_4L66XTOGCHSHKCEJXEQXF3CYGS",
+      "payload": {
+        "stage": "build_context",
+        "state": "running",
+        "reason": "",
+        "version": 3,
+        "step_seq": 0,
+        "output_ref": "artifact_d9bb77cedd396e854e1dd2baaa05377ef6b930344712bfe38b67d0119dc8d7c1",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "review_tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T21:09:10.753205+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 5,
+      "type": "step.started",
+      "run_id": "run_4L66XTOGCHSHKCEJXEQXF3CYGS",
+      "payload": {
+        "stage": "model_step",
+        "state": "running",
+        "reason": "",
+        "version": 4,
+        "step_seq": 1,
+        "output_ref": "artifact_d9bb77cedd396e854e1dd2baaa05377ef6b930344712bfe38b67d0119dc8d7c1",
+        "tool_calls": 0,
+        "model_rounds": 1,
+        "cost_microusd": 0,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "review_tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T21:09:10.758231+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 6,
+      "type": "model.completed",
+      "run_id": "run_4L66XTOGCHSHKCEJXEQXF3CYGS",
+      "payload": {
+        "stage": "validate_tool_calls",
+        "state": "running",
+        "reason": "",
+        "version": 5,
+        "step_seq": 1,
+        "output_ref": "artifact_d9bb77cedd396e854e1dd2baaa05377ef6b930344712bfe38b67d0119dc8d7c1",
+        "tool_calls": 0,
+        "model_rounds": 1,
+        "cost_microusd": 0,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "review_tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T21:09:10.763591+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 7,
+      "type": "tool.planned",
+      "run_id": "run_4L66XTOGCHSHKCEJXEQXF3CYGS",
+      "payload": {
+        "stage": "execute_effects",
+        "state": "running",
+        "reason": "",
+        "version": 6,
+        "step_seq": 1,
+        "args_hash": "258a35fdf3c44a1aef0c35f2b442fe4eb4cfecb1daaaeece35811ca3de607465",
+        "output_ref": "artifact_d9bb77cedd396e854e1dd2baaa05377ef6b930344712bfe38b67d0119dc8d7c1",
+        "tool_calls": 1,
+        "model_rounds": 1,
+        "operation_id": "run_4L66XTOGCHSHKCEJXEQXF3CYGS_original_effect",
+        "cost_microusd": 0,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "review_tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T21:09:10.772155+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 8,
+      "type": "run.effect_uncertain",
+      "run_id": "run_4L66XTOGCHSHKCEJXEQXF3CYGS",
+      "payload": {
+        "stage": "reconcile",
+        "state": "needs_reconciliation",
+        "reason": "explicit control fixture; no external execution",
+        "version": 7,
+        "step_seq": 1,
+        "args_hash": "258a35fdf3c44a1aef0c35f2b442fe4eb4cfecb1daaaeece35811ca3de607465",
+        "output_ref": "artifact_d9bb77cedd396e854e1dd2baaa05377ef6b930344712bfe38b67d0119dc8d7c1",
+        "tool_calls": 1,
+        "model_rounds": 1,
+        "operation_id": "run_4L66XTOGCHSHKCEJXEQXF3CYGS_original_effect",
+        "cost_microusd": 0,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "review_tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T21:09:10.777939+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 9,
+      "type": "run.reconciliation_wait",
+      "run_id": "run_4L66XTOGCHSHKCEJXEQXF3CYGS",
+      "payload": {
+        "not_before": "2026-09-11T21:09:10.801731645Z"
+      },
+      "step_seq": null,
+      "tenant_id": "review_tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T21:09:10.802759+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 10,
+      "type": "run.resume_requested",
+      "run_id": "run_4L66XTOGCHSHKCEJXEQXF3CYGS",
+      "payload": {
+        "stage": "reconcile",
+        "state": "needs_reconciliation",
+        "reason": "explicit control fixture; no external execution",
+        "version": 8,
+        "step_seq": 1,
+        "args_hash": "258a35fdf3c44a1aef0c35f2b442fe4eb4cfecb1daaaeece35811ca3de607465",
+        "output_ref": "artifact_d9bb77cedd396e854e1dd2baaa05377ef6b930344712bfe38b67d0119dc8d7c1",
+        "tool_calls": 1,
+        "model_rounds": 1,
+        "operation_id": "run_4L66XTOGCHSHKCEJXEQXF3CYGS_original_effect",
+        "cost_microusd": 0,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "review_tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T21:09:10.824206+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 1,
+      "type": "run.created",
+      "run_id": "run_NRW46XBJ3I62YMFO5KWOA3DILI",
+      "payload": {
+        "lease": {
+          "epoch": 0,
+          "owner": "",
+          "until": "0001-01-01T00:00:00Z"
+        },
+        "stage": "initialize",
+        "limits": {
+          "deadline": "2026-09-11T21:11:10.781091Z",
+          "max_tool_calls": 3,
+          "max_model_rounds": 2,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_NRW46XBJ3I62YMFO5KWOA3DILI",
+        "status": "queued",
+        "version": 1,
+        "step_seq": 0,
+        "tenant_id": "review_tenant",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 0,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "step_seq": null,
+      "tenant_id": "review_tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T21:09:10.782709+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 2,
+      "type": "run.claimed",
+      "run_id": "run_NRW46XBJ3I62YMFO5KWOA3DILI",
+      "payload": {
+        "stage": "initialize",
+        "state": "running",
+        "reason": "",
+        "version": 2,
+        "step_seq": 0,
+        "output_ref": "",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "workspace_revision": 0,
+        "verification_status": "unverified",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "review_tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T21:09:10.78997+00:00",
+      "schema_version": 1
+    }
+  ],
+  "run_snapshots": [
+    {
+      "body": {
+        "lease": {
+          "epoch": 0,
+          "owner": "",
+          "until": "0001-01-01T00:00:00Z"
+        },
+        "stage": "initialize",
+        "limits": {
+          "deadline": "2026-09-11T21:11:10.717787Z",
+          "max_tool_calls": 3,
+          "max_model_rounds": 2,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_4L66XTOGCHSHKCEJXEQXF3CYGS",
+        "status": "queued",
+        "version": 1,
+        "step_seq": 0,
+        "tenant_id": "review_tenant",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 0,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_4L66XTOGCHSHKCEJXEQXF3CYGS",
+      "version": 1,
+      "step_seq": 0,
+      "tenant_id": "review_tenant",
+      "created_at": "2026-09-11T21:09:10.719704+00:00",
+      "input_event": null,
+      "input_state": null,
+      "schema_version": 1
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "resume-original",
+          "until": "2026-09-11T21:10:10.725874Z"
+        },
+        "stage": "initialize",
+        "limits": {
+          "deadline": "2026-09-11T21:11:10.717787Z",
+          "max_tool_calls": 3,
+          "max_model_rounds": 2,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_4L66XTOGCHSHKCEJXEQXF3CYGS",
+        "status": "running",
+        "version": 2,
+        "step_seq": 0,
+        "tenant_id": "review_tenant",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 0,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_4L66XTOGCHSHKCEJXEQXF3CYGS",
+      "version": 2,
+      "step_seq": 0,
+      "tenant_id": "review_tenant",
+      "created_at": "2026-09-11T21:09:10.732671+00:00",
+      "input_event": {
+        "at": "2026-09-11T21:09:10.725874Z",
+        "kind": "claimed",
+        "epoch": 1,
+        "lease": {
+          "epoch": 1,
+          "owner": "resume-original",
+          "until": "2026-09-11T21:10:10.725874Z"
+        },
+        "owner": "resume-original",
+        "expected_version": 1
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 0,
+          "owner": "",
+          "until": "0001-01-01T00:00:00Z"
+        },
+        "stage": "initialize",
+        "limits": {
+          "deadline": "2026-09-11T21:11:10.717787Z",
+          "max_tool_calls": 3,
+          "max_model_rounds": 2,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_4L66XTOGCHSHKCEJXEQXF3CYGS",
+        "status": "queued",
+        "version": 1,
+        "step_seq": 0,
+        "tenant_id": "review_tenant",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 0,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 1
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "resume-original",
+          "until": "2026-09-11T21:10:10.725874Z"
+        },
+        "stage": "build_context",
+        "limits": {
+          "deadline": "2026-09-11T21:11:10.717787Z",
+          "max_tool_calls": 3,
+          "max_model_rounds": 2,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_4L66XTOGCHSHKCEJXEQXF3CYGS",
+        "status": "running",
+        "version": 3,
+        "step_seq": 0,
+        "tenant_id": "review_tenant",
+        "output_ref": "artifact_d9bb77cedd396e854e1dd2baaa05377ef6b930344712bfe38b67d0119dc8d7c1",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_4L66XTOGCHSHKCEJXEQXF3CYGS",
+      "version": 3,
+      "step_seq": 0,
+      "tenant_id": "review_tenant",
+      "created_at": "2026-09-11T21:09:10.75235+00:00",
+      "input_event": {
+        "at": "2026-09-11T21:09:10.749843Z",
+        "kind": "workspace_ready",
+        "epoch": 1,
+        "owner": "resume-original",
+        "output_ref": "artifact_d9bb77cedd396e854e1dd2baaa05377ef6b930344712bfe38b67d0119dc8d7c1",
+        "expected_version": 2,
+        "workspace_revision": 1
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "resume-original",
+          "until": "2026-09-11T21:10:10.725874Z"
+        },
+        "stage": "initialize",
+        "limits": {
+          "deadline": "2026-09-11T21:11:10.717787Z",
+          "max_tool_calls": 3,
+          "max_model_rounds": 2,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_4L66XTOGCHSHKCEJXEQXF3CYGS",
+        "status": "running",
+        "version": 2,
+        "step_seq": 0,
+        "tenant_id": "review_tenant",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 0,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 1
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "resume-original",
+          "until": "2026-09-11T21:10:10.725874Z"
+        },
+        "stage": "model_step",
+        "limits": {
+          "deadline": "2026-09-11T21:11:10.717787Z",
+          "max_tool_calls": 3,
+          "max_model_rounds": 2,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_4L66XTOGCHSHKCEJXEQXF3CYGS",
+        "status": "running",
+        "version": 4,
+        "step_seq": 1,
+        "tenant_id": "review_tenant",
+        "output_ref": "artifact_d9bb77cedd396e854e1dd2baaa05377ef6b930344712bfe38b67d0119dc8d7c1",
+        "tool_calls": 0,
+        "model_rounds": 1,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_4L66XTOGCHSHKCEJXEQXF3CYGS",
+      "version": 4,
+      "step_seq": 1,
+      "tenant_id": "review_tenant",
+      "created_at": "2026-09-11T21:09:10.757383+00:00",
+      "input_event": {
+        "at": "2026-09-11T21:09:10.7565Z",
+        "kind": "context_built",
+        "epoch": 1,
+        "owner": "resume-original",
+        "output_ref": "artifact_d9bb77cedd396e854e1dd2baaa05377ef6b930344712bfe38b67d0119dc8d7c1",
+        "expected_version": 3
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "resume-original",
+          "until": "2026-09-11T21:10:10.725874Z"
+        },
+        "stage": "build_context",
+        "limits": {
+          "deadline": "2026-09-11T21:11:10.717787Z",
+          "max_tool_calls": 3,
+          "max_model_rounds": 2,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_4L66XTOGCHSHKCEJXEQXF3CYGS",
+        "status": "running",
+        "version": 3,
+        "step_seq": 0,
+        "tenant_id": "review_tenant",
+        "output_ref": "artifact_d9bb77cedd396e854e1dd2baaa05377ef6b930344712bfe38b67d0119dc8d7c1",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 1
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "resume-original",
+          "until": "2026-09-11T21:10:10.725874Z"
+        },
+        "stage": "validate_tool_calls",
+        "limits": {
+          "deadline": "2026-09-11T21:11:10.717787Z",
+          "max_tool_calls": 3,
+          "max_model_rounds": 2,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_4L66XTOGCHSHKCEJXEQXF3CYGS",
+        "status": "running",
+        "version": 5,
+        "step_seq": 1,
+        "tenant_id": "review_tenant",
+        "output_ref": "artifact_d9bb77cedd396e854e1dd2baaa05377ef6b930344712bfe38b67d0119dc8d7c1",
+        "tool_calls": 0,
+        "model_rounds": 1,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_4L66XTOGCHSHKCEJXEQXF3CYGS",
+      "version": 5,
+      "step_seq": 1,
+      "tenant_id": "review_tenant",
+      "created_at": "2026-09-11T21:09:10.762739+00:00",
+      "input_event": {
+        "at": "2026-09-11T21:09:10.761735Z",
+        "kind": "model_completed",
+        "epoch": 1,
+        "owner": "resume-original",
+        "complete": true,
+        "output_ref": "artifact_d9bb77cedd396e854e1dd2baaa05377ef6b930344712bfe38b67d0119dc8d7c1",
+        "expected_version": 4
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "resume-original",
+          "until": "2026-09-11T21:10:10.725874Z"
+        },
+        "stage": "model_step",
+        "limits": {
+          "deadline": "2026-09-11T21:11:10.717787Z",
+          "max_tool_calls": 3,
+          "max_model_rounds": 2,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_4L66XTOGCHSHKCEJXEQXF3CYGS",
+        "status": "running",
+        "version": 4,
+        "step_seq": 1,
+        "tenant_id": "review_tenant",
+        "output_ref": "artifact_d9bb77cedd396e854e1dd2baaa05377ef6b930344712bfe38b67d0119dc8d7c1",
+        "tool_calls": 0,
+        "model_rounds": 1,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 1
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "resume-original",
+          "until": "2026-09-11T21:10:10.725874Z"
+        },
+        "stage": "execute_effects",
+        "limits": {
+          "deadline": "2026-09-11T21:11:10.717787Z",
+          "max_tool_calls": 3,
+          "max_model_rounds": 2,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_4L66XTOGCHSHKCEJXEQXF3CYGS",
+        "status": "running",
+        "version": 6,
+        "step_seq": 1,
+        "tenant_id": "review_tenant",
+        "output_ref": "artifact_d9bb77cedd396e854e1dd2baaa05377ef6b930344712bfe38b67d0119dc8d7c1",
+        "tool_calls": 1,
+        "model_rounds": 1,
+        "cost_microusd": 0,
+        "pending_effect": {
+          "args": {
+            "path": "control-fixture.py"
+          },
+          "kind": "read_file",
+          "status": "in_flight",
+          "args_hash": "258a35fdf3c44a1aef0c35f2b442fe4eb4cfecb1daaaeece35811ca3de607465",
+          "operation_id": "run_4L66XTOGCHSHKCEJXEQXF3CYGS_original_effect",
+          "dispatch_epoch": 1,
+          "policy_version": "control-fixture-v1",
+          "expected_revision": 1,
+          "requires_approval": false
+        },
+        "schema_version": 1,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_4L66XTOGCHSHKCEJXEQXF3CYGS",
+      "version": 6,
+      "step_seq": 1,
+      "tenant_id": "review_tenant",
+      "created_at": "2026-09-11T21:09:10.771033+00:00",
+      "input_event": {
+        "at": "2026-09-11T21:09:10.768169Z",
+        "kind": "tools_validated",
+        "epoch": 1,
+        "owner": "resume-original",
+        "effects": [
+          {
+            "args": {
+              "path": "control-fixture.py"
+            },
+            "kind": "read_file",
+            "status": "planned",
+            "args_hash": "258a35fdf3c44a1aef0c35f2b442fe4eb4cfecb1daaaeece35811ca3de607465",
+            "operation_id": "run_4L66XTOGCHSHKCEJXEQXF3CYGS_original_effect",
+            "dispatch_epoch": 0,
+            "policy_version": "control-fixture-v1",
+            "expected_revision": 1,
+            "requires_approval": false
+          }
+        ],
+        "complete": true,
+        "output_ref": "artifact_d9bb77cedd396e854e1dd2baaa05377ef6b930344712bfe38b67d0119dc8d7c1",
+        "expected_version": 5
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "resume-original",
+          "until": "2026-09-11T21:10:10.725874Z"
+        },
+        "stage": "validate_tool_calls",
+        "limits": {
+          "deadline": "2026-09-11T21:11:10.717787Z",
+          "max_tool_calls": 3,
+          "max_model_rounds": 2,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_4L66XTOGCHSHKCEJXEQXF3CYGS",
+        "status": "running",
+        "version": 5,
+        "step_seq": 1,
+        "tenant_id": "review_tenant",
+        "output_ref": "artifact_d9bb77cedd396e854e1dd2baaa05377ef6b930344712bfe38b67d0119dc8d7c1",
+        "tool_calls": 0,
+        "model_rounds": 1,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 1
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "resume-original",
+          "until": "2026-09-11T21:10:10.725874Z"
+        },
+        "stage": "reconcile",
+        "limits": {
+          "deadline": "2026-09-11T21:11:10.717787Z",
+          "max_tool_calls": 3,
+          "max_model_rounds": 2,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_4L66XTOGCHSHKCEJXEQXF3CYGS",
+        "status": "needs_reconciliation",
+        "version": 7,
+        "step_seq": 1,
+        "tenant_id": "review_tenant",
+        "output_ref": "artifact_d9bb77cedd396e854e1dd2baaa05377ef6b930344712bfe38b67d0119dc8d7c1",
+        "tool_calls": 1,
+        "model_rounds": 1,
+        "resume_stage": "execute_effects",
+        "cost_microusd": 0,
+        "failure_reason": "explicit control fixture; no external execution",
+        "pending_effect": {
+          "args": {
+            "path": "control-fixture.py"
+          },
+          "kind": "read_file",
+          "status": "unknown",
+          "args_hash": "258a35fdf3c44a1aef0c35f2b442fe4eb4cfecb1daaaeece35811ca3de607465",
+          "operation_id": "run_4L66XTOGCHSHKCEJXEQXF3CYGS_original_effect",
+          "dispatch_epoch": 1,
+          "policy_version": "control-fixture-v1",
+          "expected_revision": 1,
+          "requires_approval": false
+        },
+        "schema_version": 1,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_4L66XTOGCHSHKCEJXEQXF3CYGS",
+      "version": 7,
+      "step_seq": 1,
+      "tenant_id": "review_tenant",
+      "created_at": "2026-09-11T21:09:10.777062+00:00",
+      "input_event": {
+        "at": "2026-09-11T21:09:10.775663Z",
+        "kind": "effect_uncertain",
+        "epoch": 1,
+        "owner": "resume-original",
+        "reason": "explicit control fixture; no external execution",
+        "expected_version": 6
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "resume-original",
+          "until": "2026-09-11T21:10:10.725874Z"
+        },
+        "stage": "execute_effects",
+        "limits": {
+          "deadline": "2026-09-11T21:11:10.717787Z",
+          "max_tool_calls": 3,
+          "max_model_rounds": 2,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_4L66XTOGCHSHKCEJXEQXF3CYGS",
+        "status": "running",
+        "version": 6,
+        "step_seq": 1,
+        "tenant_id": "review_tenant",
+        "output_ref": "artifact_d9bb77cedd396e854e1dd2baaa05377ef6b930344712bfe38b67d0119dc8d7c1",
+        "tool_calls": 1,
+        "model_rounds": 1,
+        "cost_microusd": 0,
+        "pending_effect": {
+          "args": {
+            "path": "control-fixture.py"
+          },
+          "kind": "read_file",
+          "status": "in_flight",
+          "args_hash": "258a35fdf3c44a1aef0c35f2b442fe4eb4cfecb1daaaeece35811ca3de607465",
+          "operation_id": "run_4L66XTOGCHSHKCEJXEQXF3CYGS_original_effect",
+          "dispatch_epoch": 1,
+          "policy_version": "control-fixture-v1",
+          "expected_revision": 1,
+          "requires_approval": false
+        },
+        "schema_version": 1,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 1
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "",
+          "until": "2026-09-11T21:09:10.817671Z"
+        },
+        "stage": "reconcile",
+        "limits": {
+          "deadline": "2026-09-11T21:11:10.717787Z",
+          "max_tool_calls": 3,
+          "max_model_rounds": 2,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_4L66XTOGCHSHKCEJXEQXF3CYGS",
+        "status": "needs_reconciliation",
+        "version": 8,
+        "step_seq": 1,
+        "tenant_id": "review_tenant",
+        "output_ref": "artifact_d9bb77cedd396e854e1dd2baaa05377ef6b930344712bfe38b67d0119dc8d7c1",
+        "tool_calls": 1,
+        "model_rounds": 1,
+        "resume_stage": "execute_effects",
+        "cost_microusd": 0,
+        "failure_reason": "explicit control fixture; no external execution",
+        "pending_effect": {
+          "args": {
+            "path": "control-fixture.py"
+          },
+          "kind": "read_file",
+          "status": "unknown",
+          "args_hash": "258a35fdf3c44a1aef0c35f2b442fe4eb4cfecb1daaaeece35811ca3de607465",
+          "operation_id": "run_4L66XTOGCHSHKCEJXEQXF3CYGS_original_effect",
+          "dispatch_epoch": 1,
+          "policy_version": "control-fixture-v1",
+          "expected_revision": 1,
+          "requires_approval": false
+        },
+        "schema_version": 1,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_4L66XTOGCHSHKCEJXEQXF3CYGS",
+      "version": 8,
+      "step_seq": 1,
+      "tenant_id": "review_tenant",
+      "created_at": "2026-09-11T21:09:10.821346+00:00",
+      "input_event": {
+        "at": "2026-09-11T21:09:10.817671Z",
+        "kind": "resume_requested",
+        "epoch": 0,
+        "owner": "",
+        "expected_version": 7
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "resume-original",
+          "until": "2026-09-11T21:09:10.802454Z"
+        },
+        "stage": "reconcile",
+        "limits": {
+          "deadline": "2026-09-11T21:11:10.717787Z",
+          "max_tool_calls": 3,
+          "max_model_rounds": 2,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_4L66XTOGCHSHKCEJXEQXF3CYGS",
+        "status": "needs_reconciliation",
+        "version": 7,
+        "step_seq": 1,
+        "tenant_id": "review_tenant",
+        "output_ref": "artifact_d9bb77cedd396e854e1dd2baaa05377ef6b930344712bfe38b67d0119dc8d7c1",
+        "tool_calls": 1,
+        "model_rounds": 1,
+        "resume_stage": "execute_effects",
+        "cost_microusd": 0,
+        "failure_reason": "explicit control fixture; no external execution",
+        "pending_effect": {
+          "args": {
+            "path": "control-fixture.py"
+          },
+          "kind": "read_file",
+          "status": "unknown",
+          "args_hash": "258a35fdf3c44a1aef0c35f2b442fe4eb4cfecb1daaaeece35811ca3de607465",
+          "operation_id": "run_4L66XTOGCHSHKCEJXEQXF3CYGS_original_effect",
+          "dispatch_epoch": 1,
+          "policy_version": "control-fixture-v1",
+          "expected_revision": 1,
+          "requires_approval": false
+        },
+        "schema_version": 1,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 1
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 0,
+          "owner": "",
+          "until": "0001-01-01T00:00:00Z"
+        },
+        "stage": "initialize",
+        "limits": {
+          "deadline": "2026-09-11T21:11:10.781091Z",
+          "max_tool_calls": 3,
+          "max_model_rounds": 2,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_NRW46XBJ3I62YMFO5KWOA3DILI",
+        "status": "queued",
+        "version": 1,
+        "step_seq": 0,
+        "tenant_id": "review_tenant",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 0,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_NRW46XBJ3I62YMFO5KWOA3DILI",
+      "version": 1,
+      "step_seq": 0,
+      "tenant_id": "review_tenant",
+      "created_at": "2026-09-11T21:09:10.782276+00:00",
+      "input_event": null,
+      "input_state": null,
+      "schema_version": 1
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "resume-sentinel",
+          "until": "2026-09-11T21:10:10.785316Z"
+        },
+        "stage": "initialize",
+        "limits": {
+          "deadline": "2026-09-11T21:11:10.781091Z",
+          "max_tool_calls": 3,
+          "max_model_rounds": 2,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_NRW46XBJ3I62YMFO5KWOA3DILI",
+        "status": "running",
+        "version": 2,
+        "step_seq": 0,
+        "tenant_id": "review_tenant",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 0,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_NRW46XBJ3I62YMFO5KWOA3DILI",
+      "version": 2,
+      "step_seq": 0,
+      "tenant_id": "review_tenant",
+      "created_at": "2026-09-11T21:09:10.789176+00:00",
+      "input_event": {
+        "at": "2026-09-11T21:09:10.785316Z",
+        "kind": "claimed",
+        "epoch": 1,
+        "lease": {
+          "epoch": 1,
+          "owner": "resume-sentinel",
+          "until": "2026-09-11T21:10:10.785316Z"
+        },
+        "owner": "resume-sentinel",
+        "expected_version": 1
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 0,
+          "owner": "",
+          "until": "0001-01-01T00:00:00Z"
+        },
+        "stage": "initialize",
+        "limits": {
+          "deadline": "2026-09-11T21:11:10.781091Z",
+          "max_tool_calls": 3,
+          "max_model_rounds": 2,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_NRW46XBJ3I62YMFO5KWOA3DILI",
+        "status": "queued",
+        "version": 1,
+        "step_seq": 0,
+        "tenant_id": "review_tenant",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 0,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 1
+    }
+  ],
+  "tenant_runtime": [
+    {
+      "tenant_id": "review_tenant",
+      "max_active": 2,
+      "active_count": 2,
+      "last_dispatched_at": "2026-09-11T21:09:10.785316+00:00"
+    }
+  ],
+  "runner_allocations": [
+    {
+      "slots": 1,
+      "state": "reserved",
+      "run_id": "run_4L66XTOGCHSHKCEJXEQXF3CYGS",
+      "runner_id": "review_runner",
+      "tenant_id": "review_tenant",
+      "lease_epoch": 1,
+      "memory_bytes": 0
+    },
+    {
+      "slots": 1,
+      "state": "reserved",
+      "run_id": "run_NRW46XBJ3I62YMFO5KWOA3DILI",
+      "runner_id": "review_runner",
+      "tenant_id": "review_tenant",
+      "lease_epoch": 1,
+      "memory_bytes": 0
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+[
+  {
+    "at": "2026-09-11T20:31:06.578505488Z",
+    "method": "GET",
+    "path": "/readyz",
+    "response": {
+      "status": "ready"
+    },
+    "status": 200
+  },
+  {
+    "at": "2026-09-11T20:31:06.58318984Z",
+    "method": "POST",
+    "path": "/v1/runs/run_IK64GPO2OUWNMCDNQ43DTKP657/messages",
+    "response": {
+      "message": {
+        "seq": 1,
+        "text": "Isolated API privilege preflight."
+      },
+      "reused": false
+    },
+    "status": 202
+  },
+  {
+    "at": "2026-09-11T20:31:06.694193659Z",
+    "method": "POST",
+    "path": "/v1/projects/project_YEMZMJZYT4Y2Q72BXUGJWP7JCQ/runs",
+    "response": {
+      "code": "internal",
+      "message": "request could not be completed",
+      "request_id": "request_ZJSW26QCZZZSCC4U62TZL3VGC6",
+      "retryable": false
+    },
+    "status": 500
+  },
+  {
+    "at": "2026-09-11T20:31:06.694810594Z",
+    "method": "GET",
+    "path": "/v1/runs/run_IK64GPO2OUWNMCDNQ43DTKP657",
+    "response": {
+      "code": "internal",
+      "message": "request could not be completed",
+      "request_id": "request_ECPCB7MGVEKQOIDD3HSGWUUBHT",
+      "retryable": false
+    },
+    "status": 500
+  }
+]

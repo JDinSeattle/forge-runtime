@@ -311,8 +311,8 @@ func (d *Driver) failModel(ctx context.Context, r persistence.Run, a persistence
 	if err != nil {
 		return flow.Event{}, err
 	}
-	var now time.Time
-	if err = d.Store.Pool.QueryRow(ctx, `SELECT clock_timestamp()`).Scan(&now); err != nil {
+	now, err := d.Store.DatabaseTime(ctx)
+	if err != nil {
 		return flow.Event{}, err
 	}
 	decision, err := (quota.RetryPolicy{MaxAttempts: 3, BaseDelay: time.Second, MaxDelay: 30 * time.Second, TotalBudget: 2 * time.Minute}).Next(quota.RetryInput{Now: now, FirstAttemptAt: first, Deadline: r.State.Limits.Deadline, CompletedAttempts: a.Number, Retryable: retryable, RetryAfter: retryAfter, Jitter: rand.Float64()})

@@ -1,0 +1,18 @@
+test_copy_tree_never_traverses_symlink (test_recovery.RecoveryTests.test_copy_tree_never_traverses_symlink) ... ok
+test_manifest_detects_tamper_extra_and_symlink (test_recovery.RecoveryTests.test_manifest_detects_tamper_extra_and_symlink) ... ok
+test_partial_freeze_only_thaws_known_frozen_set (test_recovery.RecoveryTests.test_partial_freeze_only_thaws_known_frozen_set) ... ok
+test_pg_environment_requires_loopback_and_has_no_shell (test_recovery.RecoveryTests.test_pg_environment_requires_loopback_and_has_no_shell) ... ok
+test_prepare_has_private_scope_even_under_umask_022 (test_recovery.RecoveryTests.test_prepare_has_private_scope_even_under_umask_022) ... ok
+test_private_path_rejects_writable_scope_and_symlinks (test_recovery.RecoveryTests.test_private_path_rejects_writable_scope_and_symlinks) ... ok
+test_registry_refuses_wrong_durable_identity (test_recovery.RecoveryTests.test_registry_refuses_wrong_durable_identity) ... ok
+test_registry_relocation_preserves_durable_id_and_source_copy (test_recovery.RecoveryTests.test_registry_relocation_preserves_durable_id_and_source_copy) ... ok
+test_scope_never_accepts_absolute_traversal_or_shell_text (test_recovery.RecoveryTests.test_scope_never_accepts_absolute_traversal_or_shell_text) ... ok
+test_thaw_failure_still_attempts_every_mount_and_close (test_recovery.RecoveryTests.test_thaw_failure_still_attempts_every_mount_and_close) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.004s
+
+OK
+Source fixture prepared; current live four-volume pool was not touched.
+Next: sudo /usr/bin/python3 -I '/tmp/tmpon6czori/rehearsals/rfixture/source/scripts/workspace-volumes/mount.py' mount
+Then: python3 -I scripts/recovery/rehearse.py source-config --id rfixture

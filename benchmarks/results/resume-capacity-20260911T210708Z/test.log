@@ -1,0 +1,10 @@
+=== RUN   TestReviewHTTPResumePreservesIdentityAndCapacity
+    resume_capacity_test.go:226: failed to connect to `user=forge_admin database=forge`: 127.0.0.1:32773 (127.0.0.1): dial error: dial tcp 127.0.0.1:32773: socket: operation not permitted
+--- FAIL: TestReviewHTTPResumePreservesIdentityAndCapacity (0.00s)
+=== RUN   TestReviewConcurrentFinalizeDoesNotReleaseSentinelCapacity
+    resume_capacity_test.go:296: failed to connect to `user=forge_admin database=forge`: 127.0.0.1:32773 (127.0.0.1): dial error: dial tcp 127.0.0.1:32773: socket: operation not permitted
+--- FAIL: TestReviewConcurrentFinalizeDoesNotReleaseSentinelCapacity (0.00s)
+=== RUN   TestReviewCLIResumeSucceedsThroughRealHTTP
+    resume_capacity_test.go:376: failed to connect to `user=forge_admin database=forge`: 127.0.0.1:32773 (127.0.0.1): dial error: dial tcp 127.0.0.1:32773: socket: operation not permitted
+--- FAIL: TestReviewCLIResumeSucceedsThroughRealHTTP (0.00s)
+FAIL

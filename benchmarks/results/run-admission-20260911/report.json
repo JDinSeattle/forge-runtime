@@ -1,0 +1,33 @@
+{
+  "command": [
+    "go",
+    "test",
+    "-race",
+    "./cmd/forge",
+    "./internal/persistence",
+    "./tests/review",
+    "-run",
+    "TestSubmitParentBindingIsIncludedInIdempotencyReceipt|TestSubmitWithoutParentPreservesPreRetryIdempotencyHashInput|TestReviewReservedPriorityIsBoundedAndPreservesFIFO|TestReviewWholeTaskRetryCreatesOneChildWithoutReopeningParent",
+    "-count=1",
+    "-timeout=90s",
+    "-v"
+  ],
+  "exit_code": 0,
+  "baseline_commit": "224a6b64ce0cc41c564ce2c9bfd2e74b4b9ccc0a",
+  "scope": "Working-tree admission/priority/retry in real private PG and TCP API; fake control stop proof, no container execution",
+  "source_sha256": {
+    "db/migrations/00009_run_priority.sql": "8d3a5a4503f2ceb88bdff7e5812c622024d1d91be928e63c016d5ba1af3bdb5f",
+    "internal/persistence/store.go": "412c26a96b422b855dc098720e71824bce2386933637650724222b633f2a81c0",
+    "internal/persistence/input.go": "f3a1604046922edbb40e54f0044031af2e38e2030e4114fd3a13d30f91021598",
+    "internal/httpapi/server.go": "e2d0d7e5404df1111644bedc1738acdfffb3021ebee2ed6b7b3337f5c665b5dc",
+    "internal/httpapi/submit.go": "fab65f6c1e180fdc022e16d1f53f89446f995d6ff65d863b17616fd9389821a2",
+    "cmd/forge/commands.go": "730b31a687781c1862ddaf9c51bd2c9df198c9653256fce20f6ec23cedcf75c6",
+    "api/openapi.yaml": "26d3fa4295f535b1ec9effc18cdfb5129539a33ad66e51efeaeaf59531a2bb99",
+    "internal/httpcontract/client.gen.go": "fa795b14a24493340547a109217281c23205c97f1b52976cb41532e4d7113162",
+    "tests/review/priority_test.go": "1f73589b175495de6a15dd7a29650d0a540476618b478b195d3e9119464f0810",
+    "tests/review/retry_test.go": "32e0850cd702d94d93fd21f31cfa60b5710f90f593cc980766bf905d5abb0061",
+    "cmd/forge/retry_test.go": "cce9943e9ad934a5528f7c4e7fd090757b32b656ac2b89219a076d5a4856e8f5",
+    "internal/persistence/submit_test.go": "2130b6c34d1695264e837db3d1b073ce077902b0d5b4817ca8a43d484579c5d3"
+  },
+  "source_unchanged": true
+}

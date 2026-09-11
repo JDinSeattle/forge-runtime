@@ -1,0 +1,176 @@
+[
+  {
+    "at": "2026-09-11T20:39:50.516480811Z",
+    "method": "GET",
+    "path": "/readyz",
+    "response": {
+      "status": "ready"
+    },
+    "status": 200
+  },
+  {
+    "at": "2026-09-11T20:39:55.48377372Z",
+    "method": "POST",
+    "path": "/v1/runs/run_BLLHRTO2C5FNPBQGC6XOBKCIVC/cancel",
+    "response": {
+      "tenant_id": "app-fault-6fbutqbusxbzagvsvgh4pcpfdt",
+      "id": "run_BLLHRTO2C5FNPBQGC6XOBKCIVC",
+      "project_id": "project_JL2ZWOM7G3ZF5ELVQAS2XEMJQM",
+      "principal_id": "fixture-operator",
+      "task": "Execute only the literal approved fixture commands and repair clamp; deterministic fake model.",
+      "base_commit": "66ee6f4ae415b0735c6eb4d0645f5a8d72d33e7946d0219e319aa9158a375659",
+      "runner_id": "application-fault-runner",
+      "state": {
+        "schema_version": 1,
+        "run_id": "run_BLLHRTO2C5FNPBQGC6XOBKCIVC",
+        "tenant_id": "app-fault-6fbutqbusxbzagvsvgh4pcpfdt",
+        "version": 28,
+        "status": "cancel_requested",
+        "stage": "finalize",
+        "lease": {
+          "owner": "worker1-0",
+          "epoch": 3,
+          "until": "2026-09-11T13:39:59.179409-07:00"
+        },
+        "step_seq": 4,
+        "workspace_revision": 4,
+        "output_ref": "artifact_1e1b05729bdf93126b176d169254629d490d45efd48abbe6c1894f059c8e721b",
+        "verification_status": "verified",
+        "verification_report_ref": "artifact_f2ff68e48c8169b2020a602c1a2cd0d7ca7f44e4e46040d63db29436fc55f6f4",
+        "verification_revision": 4,
+        "model_rounds": 4,
+        "tool_calls": 3,
+        "cost_microusd": 570,
+        "limits": {
+          "max_model_rounds": 8,
+          "max_tool_calls": 20,
+          "max_cost_microusd": 1000000,
+          "deadline": "2026-09-11T13:41:24.437748-07:00"
+        },
+        "failure_reason": "cancellation requested",
+        "stop_target": "cancelled"
+      },
+      "config": {
+        "provider": "fake",
+        "model": "fake",
+        "max_model_rounds": 8,
+        "max_tool_calls": 20,
+        "max_cost_microusd": 1000000,
+        "max_runtime_seconds": 95
+      },
+      "created_at": "2026-09-11T13:39:49.438489-07:00",
+      "covered_seq": 56
+    },
+    "status": 202
+  },
+  {
+    "at": "2026-09-11T20:39:55.577654167Z",
+    "method": "POST",
+    "path": "/v1/runs/run_BLLHRTO2C5FNPBQGC6XOBKCIVC/cancel",
+    "response": {
+      "tenant_id": "app-fault-6fbutqbusxbzagvsvgh4pcpfdt",
+      "id": "run_BLLHRTO2C5FNPBQGC6XOBKCIVC",
+      "project_id": "project_JL2ZWOM7G3ZF5ELVQAS2XEMJQM",
+      "principal_id": "fixture-operator",
+      "task": "Execute only the literal approved fixture commands and repair clamp; deterministic fake model.",
+      "base_commit": "66ee6f4ae415b0735c6eb4d0645f5a8d72d33e7946d0219e319aa9158a375659",
+      "runner_id": "application-fault-runner",
+      "state": {
+        "schema_version": 1,
+        "run_id": "run_BLLHRTO2C5FNPBQGC6XOBKCIVC",
+        "tenant_id": "app-fault-6fbutqbusxbzagvsvgh4pcpfdt",
+        "version": 29,
+        "status": "cancelled",
+        "stage": "stopped",
+        "lease": {
+          "owner": "worker1-0",
+          "epoch": 3,
+          "until": "2026-09-11T13:39:59.179409-07:00"
+        },
+        "step_seq": 4,
+        "workspace_revision": 4,
+        "output_ref": "artifact_24e527d773ea37cd4ea5a854913bd26273c3295d9f59d59bce05cb59a7717ff2",
+        "verification_status": "verified",
+        "verification_report_ref": "artifact_f2ff68e48c8169b2020a602c1a2cd0d7ca7f44e4e46040d63db29436fc55f6f4",
+        "verification_revision": 4,
+        "model_rounds": 4,
+        "tool_calls": 3,
+        "cost_microusd": 570,
+        "limits": {
+          "max_model_rounds": 8,
+          "max_tool_calls": 20,
+          "max_cost_microusd": 1000000,
+          "deadline": "2026-09-11T13:41:24.437748-07:00"
+        },
+        "failure_reason": "cancellation requested",
+        "stop_target": "cancelled"
+      },
+      "config": {
+        "provider": "fake",
+        "model": "fake",
+        "max_model_rounds": 8,
+        "max_tool_calls": 20,
+        "max_cost_microusd": 1000000,
+        "max_runtime_seconds": 95
+      },
+      "created_at": "2026-09-11T13:39:49.438489-07:00",
+      "covered_seq": 61
+    },
+    "status": 202
+  },
+  {
+    "at": "2026-09-11T20:39:55.580644956Z",
+    "method": "POST",
+    "path": "/v1/runs/run_BLLHRTO2C5FNPBQGC6XOBKCIVC/cancel",
+    "response": {
+      "tenant_id": "app-fault-6fbutqbusxbzagvsvgh4pcpfdt",
+      "id": "run_BLLHRTO2C5FNPBQGC6XOBKCIVC",
+      "project_id": "project_JL2ZWOM7G3ZF5ELVQAS2XEMJQM",
+      "principal_id": "fixture-operator",
+      "task": "Execute only the literal approved fixture commands and repair clamp; deterministic fake model.",
+      "base_commit": "66ee6f4ae415b0735c6eb4d0645f5a8d72d33e7946d0219e319aa9158a375659",
+      "runner_id": "application-fault-runner",
+      "state": {
+        "schema_version": 1,
+        "run_id": "run_BLLHRTO2C5FNPBQGC6XOBKCIVC",
+        "tenant_id": "app-fault-6fbutqbusxbzagvsvgh4pcpfdt",
+        "version": 29,
+        "status": "cancelled",
+        "stage": "stopped",
+        "lease": {
+          "owner": "worker1-0",
+          "epoch": 3,
+          "until": "2026-09-11T13:39:59.179409-07:00"
+        },
+        "step_seq": 4,
+        "workspace_revision": 4,
+        "output_ref": "artifact_24e527d773ea37cd4ea5a854913bd26273c3295d9f59d59bce05cb59a7717ff2",
+        "verification_status": "verified",
+        "verification_report_ref": "artifact_f2ff68e48c8169b2020a602c1a2cd0d7ca7f44e4e46040d63db29436fc55f6f4",
+        "verification_revision": 4,
+        "model_rounds": 4,
+        "tool_calls": 3,
+        "cost_microusd": 570,
+        "limits": {
+          "max_model_rounds": 8,
+          "max_tool_calls": 20,
+          "max_cost_microusd": 1000000,
+          "deadline": "2026-09-11T13:41:24.437748-07:00"
+        },
+        "failure_reason": "cancellation requested",
+        "stop_target": "cancelled"
+      },
+      "config": {
+        "provider": "fake",
+        "model": "fake",
+        "max_model_rounds": 8,
+        "max_tool_calls": 20,
+        "max_cost_microusd": 1000000,
+        "max_runtime_seconds": 95
+      },
+      "created_at": "2026-09-11T13:39:49.438489-07:00",
+      "covered_seq": 61
+    },
+    "status": 202
+  }
+]

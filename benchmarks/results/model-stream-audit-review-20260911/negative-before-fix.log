@@ -1,0 +1,174 @@
+test_actual_native_evidence_is_accepted (test_audit_model_stream.ModelStreamAuditTests.test_actual_native_evidence_is_accepted) ... ok
+test_attempt_from_another_run_is_rejected (test_audit_model_stream.ModelStreamAuditTests.test_attempt_from_another_run_is_rejected) ... 
+  test_attempt_from_another_run_is_rejected (test_audit_model_stream.ModelStreamAuditTests.test_attempt_from_another_run_is_rejected) (native='openai') ... FAIL
+  test_attempt_from_another_run_is_rejected (test_audit_model_stream.ModelStreamAuditTests.test_attempt_from_another_run_is_rejected) (native='anthropic') ... FAIL
+test_durable_failure_for_another_attempt_is_rejected (test_audit_model_stream.ModelStreamAuditTests.test_durable_failure_for_another_attempt_is_rejected) ... 
+  test_durable_failure_for_another_attempt_is_rejected (test_audit_model_stream.ModelStreamAuditTests.test_durable_failure_for_another_attempt_is_rejected) (native='openai') ... FAIL
+  test_durable_failure_for_another_attempt_is_rejected (test_audit_model_stream.ModelStreamAuditTests.test_durable_failure_for_another_attempt_is_rejected) (native='anthropic') ... FAIL
+test_fake_model_ledger_for_native_request_is_rejected (test_audit_model_stream.ModelStreamAuditTests.test_fake_model_ledger_for_native_request_is_rejected) ... 
+  test_fake_model_ledger_for_native_request_is_rejected (test_audit_model_stream.ModelStreamAuditTests.test_fake_model_ledger_for_native_request_is_rejected) (native='openai') ... FAIL
+  test_fake_model_ledger_for_native_request_is_rejected (test_audit_model_stream.ModelStreamAuditTests.test_fake_model_ledger_for_native_request_is_rejected) (native='anthropic') ... FAIL
+test_observed_tool_payload_not_sent_on_wire_is_rejected (test_audit_model_stream.ModelStreamAuditTests.test_observed_tool_payload_not_sent_on_wire_is_rejected) ... 
+  test_observed_tool_payload_not_sent_on_wire_is_rejected (test_audit_model_stream.ModelStreamAuditTests.test_observed_tool_payload_not_sent_on_wire_is_rejected) (native='openai') ... FAIL
+  test_observed_tool_payload_not_sent_on_wire_is_rejected (test_audit_model_stream.ModelStreamAuditTests.test_observed_tool_payload_not_sent_on_wire_is_rejected) (native='anthropic') ... FAIL
+test_summary_cannot_claim_unexpired_database_lease_expired (test_audit_model_stream.ModelStreamAuditTests.test_summary_cannot_claim_unexpired_database_lease_expired) ... 
+  test_summary_cannot_claim_unexpired_database_lease_expired (test_audit_model_stream.ModelStreamAuditTests.test_summary_cannot_claim_unexpired_database_lease_expired) (native='openai') ... FAIL
+  test_summary_cannot_claim_unexpired_database_lease_expired (test_audit_model_stream.ModelStreamAuditTests.test_summary_cannot_claim_unexpired_database_lease_expired) (native='anthropic') ... FAIL
+test_summary_cannot_invent_second_claim_owner_or_epoch (test_audit_model_stream.ModelStreamAuditTests.test_summary_cannot_invent_second_claim_owner_or_epoch) ... 
+  test_summary_cannot_invent_second_claim_owner_or_epoch (test_audit_model_stream.ModelStreamAuditTests.test_summary_cannot_invent_second_claim_owner_or_epoch) (native='openai') ... FAIL
+  test_summary_cannot_invent_second_claim_owner_or_epoch (test_audit_model_stream.ModelStreamAuditTests.test_summary_cannot_invent_second_claim_owner_or_epoch) (native='anthropic') ... FAIL
+test_unrelated_quota_group_is_rejected (test_audit_model_stream.ModelStreamAuditTests.test_unrelated_quota_group_is_rejected) ... 
+  test_unrelated_quota_group_is_rejected (test_audit_model_stream.ModelStreamAuditTests.test_unrelated_quota_group_is_rejected) (native='openai') ... FAIL
+  test_unrelated_quota_group_is_rejected (test_audit_model_stream.ModelStreamAuditTests.test_unrelated_quota_group_is_rejected) (native='anthropic') ... FAIL
+test_wire_without_observed_text_is_rejected (test_audit_model_stream.ModelStreamAuditTests.test_wire_without_observed_text_is_rejected) ... 
+  test_wire_without_observed_text_is_rejected (test_audit_model_stream.ModelStreamAuditTests.test_wire_without_observed_text_is_rejected) (native='openai') ... FAIL
+  test_wire_without_observed_text_is_rejected (test_audit_model_stream.ModelStreamAuditTests.test_wire_without_observed_text_is_rejected) (native='anthropic') ... FAIL
+
+======================================================================
+FAIL: test_attempt_from_another_run_is_rejected (test_audit_model_stream.ModelStreamAuditTests.test_attempt_from_another_run_is_rejected) (native='openai')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/postedism/Desktop/mini claude code/forge-runtime/scripts/faults/test_audit_model_stream.py", line 26, in check_mutation_rejected
+    with self.assertRaises(AssertionError):
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: AssertionError not raised
+
+======================================================================
+FAIL: test_attempt_from_another_run_is_rejected (test_audit_model_stream.ModelStreamAuditTests.test_attempt_from_another_run_is_rejected) (native='anthropic')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/postedism/Desktop/mini claude code/forge-runtime/scripts/faults/test_audit_model_stream.py", line 26, in check_mutation_rejected
+    with self.assertRaises(AssertionError):
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: AssertionError not raised
+
+======================================================================
+FAIL: test_durable_failure_for_another_attempt_is_rejected (test_audit_model_stream.ModelStreamAuditTests.test_durable_failure_for_another_attempt_is_rejected) (native='openai')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/postedism/Desktop/mini claude code/forge-runtime/scripts/faults/test_audit_model_stream.py", line 26, in check_mutation_rejected
+    with self.assertRaises(AssertionError):
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: AssertionError not raised
+
+======================================================================
+FAIL: test_durable_failure_for_another_attempt_is_rejected (test_audit_model_stream.ModelStreamAuditTests.test_durable_failure_for_another_attempt_is_rejected) (native='anthropic')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/postedism/Desktop/mini claude code/forge-runtime/scripts/faults/test_audit_model_stream.py", line 26, in check_mutation_rejected
+    with self.assertRaises(AssertionError):
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: AssertionError not raised
+
+======================================================================
+FAIL: test_fake_model_ledger_for_native_request_is_rejected (test_audit_model_stream.ModelStreamAuditTests.test_fake_model_ledger_for_native_request_is_rejected) (native='openai')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/postedism/Desktop/mini claude code/forge-runtime/scripts/faults/test_audit_model_stream.py", line 26, in check_mutation_rejected
+    with self.assertRaises(AssertionError):
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: AssertionError not raised
+
+======================================================================
+FAIL: test_fake_model_ledger_for_native_request_is_rejected (test_audit_model_stream.ModelStreamAuditTests.test_fake_model_ledger_for_native_request_is_rejected) (native='anthropic')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/postedism/Desktop/mini claude code/forge-runtime/scripts/faults/test_audit_model_stream.py", line 26, in check_mutation_rejected
+    with self.assertRaises(AssertionError):
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: AssertionError not raised
+
+======================================================================
+FAIL: test_observed_tool_payload_not_sent_on_wire_is_rejected (test_audit_model_stream.ModelStreamAuditTests.test_observed_tool_payload_not_sent_on_wire_is_rejected) (native='openai')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/postedism/Desktop/mini claude code/forge-runtime/scripts/faults/test_audit_model_stream.py", line 26, in check_mutation_rejected
+    with self.assertRaises(AssertionError):
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: AssertionError not raised
+
+======================================================================
+FAIL: test_observed_tool_payload_not_sent_on_wire_is_rejected (test_audit_model_stream.ModelStreamAuditTests.test_observed_tool_payload_not_sent_on_wire_is_rejected) (native='anthropic')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/postedism/Desktop/mini claude code/forge-runtime/scripts/faults/test_audit_model_stream.py", line 26, in check_mutation_rejected
+    with self.assertRaises(AssertionError):
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: AssertionError not raised
+
+======================================================================
+FAIL: test_summary_cannot_claim_unexpired_database_lease_expired (test_audit_model_stream.ModelStreamAuditTests.test_summary_cannot_claim_unexpired_database_lease_expired) (native='openai')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/postedism/Desktop/mini claude code/forge-runtime/scripts/faults/test_audit_model_stream.py", line 26, in check_mutation_rejected
+    with self.assertRaises(AssertionError):
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: AssertionError not raised
+
+======================================================================
+FAIL: test_summary_cannot_claim_unexpired_database_lease_expired (test_audit_model_stream.ModelStreamAuditTests.test_summary_cannot_claim_unexpired_database_lease_expired) (native='anthropic')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/postedism/Desktop/mini claude code/forge-runtime/scripts/faults/test_audit_model_stream.py", line 26, in check_mutation_rejected
+    with self.assertRaises(AssertionError):
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: AssertionError not raised
+
+======================================================================
+FAIL: test_summary_cannot_invent_second_claim_owner_or_epoch (test_audit_model_stream.ModelStreamAuditTests.test_summary_cannot_invent_second_claim_owner_or_epoch) (native='openai')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/postedism/Desktop/mini claude code/forge-runtime/scripts/faults/test_audit_model_stream.py", line 26, in check_mutation_rejected
+    with self.assertRaises(AssertionError):
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: AssertionError not raised
+
+======================================================================
+FAIL: test_summary_cannot_invent_second_claim_owner_or_epoch (test_audit_model_stream.ModelStreamAuditTests.test_summary_cannot_invent_second_claim_owner_or_epoch) (native='anthropic')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/postedism/Desktop/mini claude code/forge-runtime/scripts/faults/test_audit_model_stream.py", line 26, in check_mutation_rejected
+    with self.assertRaises(AssertionError):
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: AssertionError not raised
+
+======================================================================
+FAIL: test_unrelated_quota_group_is_rejected (test_audit_model_stream.ModelStreamAuditTests.test_unrelated_quota_group_is_rejected) (native='openai')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/postedism/Desktop/mini claude code/forge-runtime/scripts/faults/test_audit_model_stream.py", line 26, in check_mutation_rejected
+    with self.assertRaises(AssertionError):
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: AssertionError not raised
+
+======================================================================
+FAIL: test_unrelated_quota_group_is_rejected (test_audit_model_stream.ModelStreamAuditTests.test_unrelated_quota_group_is_rejected) (native='anthropic')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/postedism/Desktop/mini claude code/forge-runtime/scripts/faults/test_audit_model_stream.py", line 26, in check_mutation_rejected
+    with self.assertRaises(AssertionError):
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: AssertionError not raised
+
+======================================================================
+FAIL: test_wire_without_observed_text_is_rejected (test_audit_model_stream.ModelStreamAuditTests.test_wire_without_observed_text_is_rejected) (native='openai')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/postedism/Desktop/mini claude code/forge-runtime/scripts/faults/test_audit_model_stream.py", line 26, in check_mutation_rejected
+    with self.assertRaises(AssertionError):
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: AssertionError not raised
+
+======================================================================
+FAIL: test_wire_without_observed_text_is_rejected (test_audit_model_stream.ModelStreamAuditTests.test_wire_without_observed_text_is_rejected) (native='anthropic')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/postedism/Desktop/mini claude code/forge-runtime/scripts/faults/test_audit_model_stream.py", line 26, in check_mutation_rejected
+    with self.assertRaises(AssertionError):
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: AssertionError not raised
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.018s
+
+FAILED (failures=16)

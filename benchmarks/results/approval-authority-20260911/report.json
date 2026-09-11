@@ -1,0 +1,55 @@
+{
+  "evidence_id": "E32",
+  "date": "2026-09-11",
+  "passed": true,
+  "scope": "Real private PostgreSQL schemas, production HTTP handler over loopback TCP, restricted nonowner current_user via SET ROLE; synthetic READY control evidence; no runner/model/container/filesystem effect.",
+  "before_fix": {
+    "downgrade": {
+      "http": 200,
+      "decisions": 1,
+      "decision_events": 1,
+      "state": "queued",
+      "version": 7,
+      "expected_unchanged_version": 6
+    },
+    "remove": {
+      "http": 200,
+      "decisions": 1,
+      "decision_events": 1,
+      "state": "queued",
+      "version": 7,
+      "expected_unchanged_version": 6
+    }
+  },
+  "after_fix": {
+    "top_level_tests": 4,
+    "leaf_cases": 5,
+    "race": true,
+    "package_seconds": 2.91,
+    "membership_downgrade_or_removal": {
+      "http": 403,
+      "decisions": 0,
+      "decision_events": 0,
+      "state": "waiting_approval",
+      "version_unchanged": true
+    },
+    "locked_until_commit": true,
+    "helper_scope_and_privileges": true,
+    "approval_and_denial_duplicates": true,
+    "terminal_duplicates": true
+  },
+  "execution": {
+    "command": "go test -race ./tests/review -run ^TestReviewApproval -count=1 -v",
+    "explicit_local_GOCACHE": "/tmp/forge-runtime-gocache",
+    "GOPROXY": "off",
+    "database_selection": "FORGE_REVIEW_DATABASE_URL and FORGE_REVIEW_ALLOW_FIXTURES=1 from private operator env, credentials omitted"
+  },
+  "limitations": [
+    "No live-service or public-schema migration was performed.",
+    "Source snapshots were copied after passing execution; this is not a retained executable or whole-tree commit attestation.",
+    "PostgreSQL assertions are recorded in the test source and original output; no historical database export is claimed.",
+    "The generic review helper uses administrator sessions with a restricted SET ROLE current_user, not a separate restricted LOGIN.",
+    "The sandbox package check passed localsetup/persistence but could not create the HTTP loopback socket; the unchanged HTTP package passed in a separate authorized loopback execution."
+  ],
+  "source_git_head": "224a6b64ce0cc41c564ce2c9bfd2e74b4b9ccc0a"
+}

@@ -1,0 +1,26 @@
+=== RUN   TestDatabaseDefaultDeadlineReleasesBlockedRead
+    deadline_integration_test.go:41: timed-out read leaked pool connection
+--- FAIL: TestDatabaseDefaultDeadlineReleasesBlockedRead (3.26s)
+=== RUN   TestDatabaseDeadlineBoundsWorkerPoolAcquisition
+--- PASS: TestDatabaseDeadlineBoundsWorkerPoolAcquisition (3.34s)
+=== RUN   TestTransactionDeadlineCannotResetAndRollbackUsesCleanupContext
+    deadline_integration_test.go:94: rollback after cancellation leaked connection
+--- FAIL: TestTransactionDeadlineCannotResetAndRollbackUsesCleanupContext (0.32s)
+=== RUN   TestQuotaLockDeadlineLeavesLedgerUsable
+--- PASS: TestQuotaLockDeadlineLeavesLedgerUsable (0.29s)
+FAIL
+FAIL	github.com/JDinSeattle/forge-runtime/internal/persistence	7.233s
+=== RUN   TestSSESurvivesIndependentDatabaseDeadline
+--- PASS: TestSSESurvivesIndependentDatabaseDeadline (3.43s)
+PASS
+ok  	github.com/JDinSeattle/forge-runtime/internal/httpapi	4.451s
+=== RUN   TestExternalModelAndRunnerWaitsHoldNoSQLTransaction
+=== RUN   TestExternalModelAndRunnerWaitsHoldNoSQLTransaction/model
+=== RUN   TestExternalModelAndRunnerWaitsHoldNoSQLTransaction/runner
+    deadline_integration_test.go:126: lease_fenced
+--- FAIL: TestExternalModelAndRunnerWaitsHoldNoSQLTransaction (9.94s)
+    --- PASS: TestExternalModelAndRunnerWaitsHoldNoSQLTransaction/model (5.48s)
+    --- FAIL: TestExternalModelAndRunnerWaitsHoldNoSQLTransaction/runner (4.46s)
+FAIL
+FAIL	github.com/JDinSeattle/forge-runtime/internal/application	9.972s
+FAIL

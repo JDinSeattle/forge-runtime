@@ -7,6 +7,7 @@ import (
 	"math"
 	"time"
 
+	"github.com/JDinSeattle/forge-runtime/internal/dependency"
 	"github.com/JDinSeattle/forge-runtime/internal/domain"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -20,6 +21,8 @@ type Store struct{ Pool *pgxpool.Pool }
 func New(pool *pgxpool.Pool) *Store { return &Store{Pool: pool} }
 
 func (s *Store) Configure(ctx context.Context, c Config) error {
+	ctx, cancel := dependency.Database(ctx)
+	defer cancel()
 	if c.CredentialGroup == "" || len(c.CredentialGroup) > 128 || c.MaxConcurrent <= 0 || c.MaxTokens < 0 || c.MaxCost < 0 || c.WindowDuration < time.Millisecond || c.WindowDuration > 365*24*time.Hour || c.FailureThreshold <= 0 || c.BreakerCooldown < time.Millisecond || c.BreakerCooldown > 24*time.Hour {
 		return ErrInvalid
 	}
@@ -52,9 +55,13 @@ func scanReservation(row pgx.Row) (Reservation, error) {
 }
 
 func (s *Store) Get(ctx context.Context, tenant, id string) (Reservation, error) {
+	ctx, cancel := dependency.Database(ctx)
+	defer cancel()
 	return scanReservation(s.Pool.QueryRow(ctx, `SELECT `+reservationColumns+` FROM quota_reservations WHERE tenant_id=$1 AND id=$2`, tenant, id))
 }
 func (s *Store) Snapshot(ctx context.Context, group string) (Snapshot, error) {
+	ctx, cancel := dependency.Database(ctx)
+	defer cancel()
 	return scanQuota(s.Pool.QueryRow(ctx, `SELECT `+quotaColumns+` FROM provider_quotas WHERE credential_group=$1`, group))
 }
 
@@ -124,11 +131,13 @@ func expireSlots(ctx context.Context, tx pgx.Tx, q *Snapshot, now time.Time) (in
 }
 
 func (s *Store) Reserve(ctx context.Context, request Request) (Reservation, error) {
+	ctx, cancel := dependency.Database(ctx)
+	defer cancel()
 	req, tokens, hash, err := request.normalized()
 	if err != nil {
 		return Reservation{}, err
 	}
-	tx, err := s.Pool.Begin(ctx)
+	tx, err := dependency.BeginTx(ctx, s.Pool, pgx.TxOptions{})
 	if err != nil {
 		return Reservation{}, err
 	}
@@ -210,13 +219,15 @@ func (s *Store) Reserve(ctx context.Context, request Request) (Reservation, erro
 type mutation func(pgx.Tx, *Snapshot, *Reservation, time.Time) error
 
 func (s *Store) mutate(ctx context.Context, tenant, id string, fn mutation) error {
+	ctx, cancel := dependency.Database(ctx)
+	defer cancel()
 	// Reservation group is immutable. Reading it before the transaction does not
 	// grant a right to mutate; identity is checked again under both row locks.
 	r, err := s.Get(ctx, tenant, id)
 	if err != nil {
 		return err
 	}
-	tx, err := s.Pool.Begin(ctx)
+	tx, err := dependency.BeginTx(ctx, s.Pool, pgx.TxOptions{})
 	if err != nil {
 		return err
 	}
@@ -243,6 +254,8 @@ func (s *Store) mutate(ctx context.Context, tenant, id string, fn mutation) erro
 // between this marker and the network write. Create a new attempt only through
 // the application's bounded retry/reconciliation policy.
 func (s *Store) MarkDispatched(ctx context.Context, tenant, id string) error {
+	ctx, cancel := dependency.Database(ctx)
+	defer cancel()
 	return s.mutate(ctx, tenant, id, func(tx pgx.Tx, q *Snapshot, r *Reservation, now time.Time) error {
 		if r.DispatchedAt != nil {
 			return ErrAlreadyDispatched
@@ -256,6 +269,8 @@ func (s *Store) MarkDispatched(ctx context.Context, tenant, id string) error {
 }
 
 func (s *Store) MarkUnknown(ctx context.Context, tenant, id string) error {
+	ctx, cancel := dependency.Database(ctx)
+	defer cancel()
 	return s.mutate(ctx, tenant, id, func(tx pgx.Tx, q *Snapshot, r *Reservation, now time.Time) error {
 		if r.Status == "settled" {
 			return ErrConflict
@@ -266,6 +281,8 @@ func (s *Store) MarkUnknown(ctx context.Context, tenant, id string) error {
 }
 
 func (s *Store) Settle(ctx context.Context, tenant, id string, actual Settlement) error {
+	ctx, cancel := dependency.Database(ctx)
+	defer cancel()
 	if actual.Tokens < 0 || actual.Cost < 0 {
 		return ErrInvalid
 	}
@@ -275,9 +292,13 @@ func (s *Store) Settle(ctx context.Context, tenant, id string, actual Settlement
 // AbandonBeforeDispatch is the only zero-cost release without provider usage.
 // A persisted dispatch marker makes this operation unsafe and therefore invalid.
 func (s *Store) AbandonBeforeDispatch(ctx context.Context, tenant, id string) error {
+	ctx, cancel := dependency.Database(ctx)
+	defer cancel()
 	return s.settle(ctx, tenant, id, Settlement{}, "not_dispatched")
 }
 func (s *Store) settle(ctx context.Context, tenant, id string, actual Settlement, kind string) error {
+	ctx, cancel := dependency.Database(ctx)
+	defer cancel()
 	return s.mutate(ctx, tenant, id, func(tx pgx.Tx, q *Snapshot, r *Reservation, now time.Time) error {
 		if r.Status == "settled" {
 			if r.SettlementKind != nil && *r.SettlementKind == kind && r.ActualTokens != nil && *r.ActualTokens == actual.Tokens && r.ActualCost != nil && *r.ActualCost == actual.Cost {
@@ -332,6 +353,8 @@ func reopen(q *Snapshot, now time.Time) {
 // Use failure for transient credential-group/provider errors; permanent invalid
 // inputs and caller cancellation are neutral. Success can have unknown billing.
 func (s *Store) RecordOutcome(ctx context.Context, tenant, id, outcome string) error {
+	ctx, cancel := dependency.Database(ctx)
+	defer cancel()
 	if outcome != "success" && outcome != "failure" && outcome != "neutral" {
 		return ErrInvalid
 	}
@@ -374,7 +397,9 @@ func (s *Store) RecordOutcome(ctx context.Context, tenant, id, outcome string) e
 // ExpireRequestSlots releases only concurrency; token/cost reserves survive
 // deadlines and window rotation until definitive usage or non-dispatch proof.
 func (s *Store) ExpireRequestSlots(ctx context.Context, group string) (int, error) {
-	tx, err := s.Pool.Begin(ctx)
+	ctx, cancel := dependency.Database(ctx)
+	defer cancel()
+	tx, err := dependency.BeginTx(ctx, s.Pool, pgx.TxOptions{})
 	if err != nil {
 		return 0, err
 	}

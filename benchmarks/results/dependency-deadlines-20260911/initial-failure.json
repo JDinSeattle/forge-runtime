@@ -1,0 +1,16 @@
+{
+  "actual_failures": [
+    "Immediate AcquiredConns assertion after blocked GetRun",
+    "Immediate AcquiredConns assertion after rollback",
+    "Expired pre-signed runner lease proof after 3.15s pause with 3s fixture lease"
+  ],
+  "production_change_to_fix": false,
+  "source_evidence": {
+    "pgx": "v5.10.0 pgxpool.Conn.Release destroys closed connection",
+    "puddle": "v2.2.2 Resource.Destroy uses goroutine; pool accounting updates after destructor"
+  },
+  "planned_test_correction": [
+    "Bounded asynchronous pool destruction observation, still require zero and reusable pool",
+    "Use production 30s lease for the independent >3s SQL deadline test; do not bypass runner authorization"
+  ]
+}

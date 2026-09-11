@@ -1,0 +1,198 @@
+{
+  "approvals": [],
+  "artifacts": [],
+  "effects": [],
+  "model_attempts": [],
+  "provider_quotas": [
+    {
+      "max_tokens": 1000000,
+      "max_microusd": 100000000,
+      "breaker_until": null,
+      "max_concurrent": 2,
+      "window_ends_at": "2026-09-11T21:35:36.754387+00:00",
+      "active_requests": 0,
+      "probe_tenant_id": null,
+      "reserved_tokens": 0,
+      "committed_tokens": 0,
+      "credential_group": "application-faults-fake",
+      "failure_threshold": 3,
+      "reserved_microusd": 0,
+      "window_generation": 1,
+      "committed_microusd": 0,
+      "window_duration_ms": 3600000,
+      "breaker_cooldown_ms": 1000,
+      "consecutive_failures": 0,
+      "probe_reservation_id": null
+    }
+  ],
+  "quota_reservations": [],
+  "run_events": [
+    {
+      "seq": 1,
+      "type": "run.created",
+      "run_id": "run_32LMDLPOOM5KKAZYDMQNK34L5P",
+      "payload": {
+        "lease": {
+          "epoch": 0,
+          "owner": "",
+          "until": "0001-01-01T00:00:00Z"
+        },
+        "stage": "initialize",
+        "limits": {
+          "deadline": "2026-09-11T13:37:11.756641-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_32LMDLPOOM5KKAZYDMQNK34L5P",
+        "status": "queued",
+        "version": 1,
+        "step_seq": 0,
+        "tenant_id": "app-fault-y74qci463rjyjmrd32jxor6yuu",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 0,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "step_seq": null,
+      "tenant_id": "app-fault-y74qci463rjyjmrd32jxor6yuu",
+      "attempt_id": null,
+      "created_at": "2026-09-11T20:35:36.759196+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 2,
+      "type": "run.message_added",
+      "run_id": "run_32LMDLPOOM5KKAZYDMQNK34L5P",
+      "payload": {
+        "seq": 1,
+        "text": "Isolated API privilege preflight."
+      },
+      "step_seq": null,
+      "tenant_id": "app-fault-y74qci463rjyjmrd32jxor6yuu",
+      "attempt_id": null,
+      "created_at": "2026-09-11T20:35:36.880968+00:00",
+      "schema_version": 1
+    }
+  ],
+  "run_snapshots": [
+    {
+      "body": {
+        "lease": {
+          "epoch": 0,
+          "owner": "",
+          "until": "0001-01-01T00:00:00Z"
+        },
+        "stage": "initialize",
+        "limits": {
+          "deadline": "2026-09-11T13:37:11.756641-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_32LMDLPOOM5KKAZYDMQNK34L5P",
+        "status": "queued",
+        "version": 1,
+        "step_seq": 0,
+        "tenant_id": "app-fault-y74qci463rjyjmrd32jxor6yuu",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 0,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_32LMDLPOOM5KKAZYDMQNK34L5P",
+      "version": 1,
+      "step_seq": 0,
+      "tenant_id": "app-fault-y74qci463rjyjmrd32jxor6yuu",
+      "created_at": "2026-09-11T20:35:36.758329+00:00",
+      "input_event": null,
+      "input_state": null,
+      "schema_version": 1
+    }
+  ],
+  "runner_allocations": [],
+  "runners": [
+    {
+      "id": "application-fault-runner",
+      "enabled": true,
+      "endpoint": "private-uds",
+      "max_slots": 1,
+      "reserved_slots": 0
+    }
+  ],
+  "runs": [
+    {
+      "id": "run_32LMDLPOOM5KKAZYDMQNK34L5P",
+      "task": "Execute only the literal approved fixture commands and repair clamp; deterministic fake model.",
+      "state": "queued",
+      "version": 1,
+      "snapshot": {
+        "lease": {
+          "epoch": 0,
+          "owner": "",
+          "until": "0001-01-01T00:00:00Z"
+        },
+        "stage": "initialize",
+        "limits": {
+          "deadline": "2026-09-11T13:37:11.756641-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_32LMDLPOOM5KKAZYDMQNK34L5P",
+        "status": "queued",
+        "version": 1,
+        "step_seq": 0,
+        "tenant_id": "app-fault-y74qci463rjyjmrd32jxor6yuu",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 0,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "runner_id": null,
+      "tenant_id": "app-fault-y74qci463rjyjmrd32jxor6yuu",
+      "created_at": "2026-09-11T20:35:36.757698+00:00",
+      "not_before": "-infinity",
+      "project_id": "project_C36ZWEMF5G74PIXFXADJ3LXE54",
+      "updated_at": "2026-09-11T20:35:36.757698+00:00",
+      "base_commit": "66ee6f4ae415b0735c6eb4d0645f5a8d72d33e7946d0219e319aa9158a375659",
+      "lease_epoch": 0,
+      "lease_owner": "",
+      "lease_until": null,
+      "traceparent": "",
+      "principal_id": "fixture-operator",
+      "workspace_id": "",
+      "parent_run_id": null,
+      "input_snapshot": "",
+      "next_event_seq": 3,
+      "config_snapshot": {
+        "model": "fake",
+        "provider": "fake",
+        "max_tool_calls": 20,
+        "max_model_rounds": 8,
+        "max_cost_microusd": 1000000,
+        "max_runtime_seconds": 95
+      },
+      "pending_commands": [],
+      "retained_from_seq": 1
+    }
+  ],
+  "tenant_runtime": [
+    {
+      "tenant_id": "app-fault-y74qci463rjyjmrd32jxor6yuu",
+      "max_active": 2,
+      "active_count": 0,
+      "last_dispatched_at": "-infinity"
+    }
+  ],
+  "workspace_cleanup": []
+}

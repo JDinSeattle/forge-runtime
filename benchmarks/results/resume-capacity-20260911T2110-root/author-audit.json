@@ -1,0 +1,68 @@
+{
+  "capture_semantics": "each exported capture is one PostgreSQL statement/MVCC snapshot; captures from different phases are separate",
+  "cases": {
+    "cli-resume": {
+      "capacity_before_after": [
+        2,
+        2
+      ],
+      "captures_checked": 2,
+      "final_all_events_including_sentinel": 12,
+      "final_run_epoch": 1,
+      "final_status": "needs_reconciliation",
+      "final_target_events": 10,
+      "original_effect_dispatch_epoch": 1,
+      "run_id": "run_4L66XTOGCHSHKCEJXEQXF3CYGS",
+      "sentinel_run_id": "run_NRW46XBJ3I62YMFO5KWOA3DILI",
+      "version_before_after": [
+        7,
+        8
+      ]
+    },
+    "finalize": {
+      "capacity_before_after": [
+        2,
+        1
+      ],
+      "captures_checked": 4,
+      "final_all_events_including_sentinel": 20,
+      "final_run_epoch": 2,
+      "final_status": "completed",
+      "final_target_events": 18,
+      "original_effect_dispatch_epoch": 1,
+      "run_id": "run_HYOODT743ILNO6ZYWCURCDS2C5",
+      "sentinel_run_id": "run_EBM4A4JFXCREEKG62WVJKCUTGJ",
+      "version_before_after": [
+        7,
+        16
+      ]
+    },
+    "http-resume": {
+      "capacity_before_after": [
+        2,
+        2
+      ],
+      "captures_checked": 4,
+      "final_all_events_including_sentinel": 13,
+      "final_run_epoch": 1,
+      "final_status": "needs_reconciliation",
+      "final_target_events": 11,
+      "original_effect_dispatch_epoch": 1,
+      "run_id": "run_OUEGA4ROYE6U6RSJE6GH3XOCFJ",
+      "sentinel_run_id": "run_3XWXFCYAHNYDI3CHQ32ZDIQ2EP",
+      "version_before_after": [
+        7,
+        9
+      ]
+    }
+  },
+  "evidence": "E31",
+  "go_source_hash_count": 177,
+  "limits": [
+    "Finalize concurrent rejection counts are retained Go assertions; only one committed terminal event exists in saved PG records",
+    "Artifact content explicitly declares no runner/model execution; declared stop/verification receipts are semantic fixtures",
+    "Effective API role is SET ROLE from administrator session; not a separately restricted LOGIN"
+  ],
+  "passed": true,
+  "scope": "author recomputation of saved control fixture records; no additional execution or independent implementation review"
+}

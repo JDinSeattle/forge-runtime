@@ -1,0 +1,64 @@
+{
+  "at": "2026-09-11T20:39:55.462791292Z",
+  "operation": {
+    "request": {
+      "tenant_id": "app-fault-6fbutqbusxbzagvsvgh4pcpfdt",
+      "run_id": "run_BLLHRTO2C5FNPBQGC6XOBKCIVC",
+      "workspace_id": "run_BLLHRTO2C5FNPBQGC6XOBKCIVC",
+      "epoch": 3,
+      "grant": "",
+      "operation_id": "run_BLLHRTO2C5FNPBQGC6XOBKCIVC_4_final_diff",
+      "expected_revision": 4,
+      "kind": "get_diff",
+      "args": {},
+      "args_hash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "policy_version": "trusted-profile-v1",
+      "deadline": "2026-09-11T20:41:24.437748Z"
+    },
+    "status": "succeeded",
+    "job_id": "forge-629196fb02ef074a32839b7ca1aae5ff793cb792",
+    "before_hash": "f2b640019bb89806d0b3dbce3b38729462833f94571830005338812c7d705c3b",
+    "after_hash": "f2b640019bb89806d0b3dbce3b38729462833f94571830005338812c7d705c3b",
+    "after_revision": 4,
+    "result": {
+      "base_hash": "66ee6f4ae415b0735c6eb4d0645f5a8d72d33e7946d0219e319aa9158a375659",
+      "files": [
+        {
+          "path": "app-counter.txt",
+          "after_sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+          "after": "1\n",
+          "before_executable": false,
+          "after_executable": false
+        },
+        {
+          "path": "app.py",
+          "before_sha256": "74dbba6926c7c09da1cbaf9063c78e47eef6bd461e3341bed825ee8b1f34027b",
+          "after_sha256": "8b7013ab7602c3a420096a953e9b55aa7d8d852abbb55f2190cd4933bdb05d30",
+          "before": "def clamp(value, low, high):\n    if low \u003e high:\n        raise ValueError(\"inverted bounds\")\n    return min(low, max(value, high))\n",
+          "after": "def clamp(value, low, high):\n    if low \u003e high:\n        raise ValueError(\"inverted bounds\")\n    return max(low, min(value, high))\n",
+          "before_executable": false,
+          "after_executable": false
+        },
+        {
+          "path": "new-writer.txt",
+          "after_sha256": "39052ab377ccb98710aac39bcb45456ae8fffdd3affec759fceb08008ab4bfbd",
+          "after": "1789159193087362318\n",
+          "before_executable": false,
+          "after_executable": false
+        }
+      ],
+      "workspace_hash": "f2b640019bb89806d0b3dbce3b38729462833f94571830005338812c7d705c3b"
+    },
+    "receipt": {
+      "tenant_id": "app-fault-6fbutqbusxbzagvsvgh4pcpfdt",
+      "run_id": "run_BLLHRTO2C5FNPBQGC6XOBKCIVC",
+      "kind": "operation_receipt",
+      "object_key": "app-fault-6fbutqbusxbzagvsvgh4pcpfdt/run_BLLHRTO2C5FNPBQGC6XOBKCIVC/47542110e1ccfd29abd52248a06b72b80b14177fe90f36c7d92cfcb2335bf126",
+      "sha256": "47542110e1ccfd29abd52248a06b72b80b14177fe90f36c7d92cfcb2335bf126",
+      "size": 1902
+    },
+    "cancel_requested": false
+  },
+  "phase": "final_diff_durable_before_driver_return",
+  "pid": 953068
+}

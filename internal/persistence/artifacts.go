@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/JDinSeattle/forge-runtime/internal/dependency"
 	"github.com/JDinSeattle/forge-runtime/internal/domain"
 	"github.com/jackc/pgx/v5"
 )
@@ -27,6 +28,8 @@ type Artifact struct {
 // PublishArtifact is service-only. The caller must first durably write and
 // verify bytes in ArtifactStore; clients never supply ready-object metadata.
 func (s *Store) PublishArtifact(ctx context.Context, a Artifact) error {
+	ctx, cancel := dependency.Database(ctx)
+	defer cancel()
 	if a.TenantID.Validate() != nil || a.RunID.Validate() != nil || a.ID.Validate() != nil || a.Kind == "" || a.ByteSize < 0 || len(a.SHA256) != 64 || !strings.HasPrefix(a.ObjectKey, string(a.TenantID)+"/"+string(a.RunID)+"/") {
 		return domain.ErrInvalid
 	}
@@ -61,6 +64,8 @@ func (s *Store) PublishArtifact(ctx context.Context, a Artifact) error {
 	return tx.Commit(ctx)
 }
 func (s *Store) GetArtifact(ctx context.Context, tenant, id domain.ID) (Artifact, error) {
+	ctx, cancel := dependency.Database(ctx)
+	defer cancel()
 	tx, err := s.Tx(ctx, tenant, pgx.TxOptions{AccessMode: pgx.ReadOnly})
 	if err != nil {
 		return Artifact{}, err
@@ -77,6 +82,8 @@ func (s *Store) GetArtifact(ctx context.Context, tenant, id domain.ID) (Artifact
 	return a, tx.Commit(ctx)
 }
 func (s *Store) ListArtifacts(ctx context.Context, tenant, id domain.ID, after string, limit int) ([]Artifact, error) {
+	ctx, cancel := dependency.Database(ctx)
+	defer cancel()
 	if limit < 1 || limit > 1000 {
 		return nil, domain.ErrInvalid
 	}

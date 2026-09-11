@@ -1,0 +1,11 @@
+=== RUN   TestReviewApprovalRejectsMembershipChangedAfterAuthentication
+=== RUN   TestReviewApprovalRejectsMembershipChangedAfterAuthentication/downgrade
+    approval_authority_test.go:160: stale authority after downgrade: HTTP=200 decisions=1 decision_events=1 state=queued version=7 want=6 err=<nil>
+=== RUN   TestReviewApprovalRejectsMembershipChangedAfterAuthentication/remove
+    approval_authority_test.go:160: stale authority after remove: HTTP=200 decisions=1 decision_events=1 state=queued version=7 want=6 err=<nil>
+--- FAIL: TestReviewApprovalRejectsMembershipChangedAfterAuthentication (0.71s)
+    --- FAIL: TestReviewApprovalRejectsMembershipChangedAfterAuthentication/downgrade (0.35s)
+    --- FAIL: TestReviewApprovalRejectsMembershipChangedAfterAuthentication/remove (0.36s)
+FAIL
+FAIL	github.com/JDinSeattle/forge-runtime/tests/review	0.749s
+FAIL

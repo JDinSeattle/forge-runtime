@@ -1,0 +1,24 @@
+=== RUN   TestDatabaseDefaultDeadlineReleasesBlockedRead
+    deadline_integration_test.go:56: pool acquired=0 after 3.153708ms cleanup observation
+--- PASS: TestDatabaseDefaultDeadlineReleasesBlockedRead (3.25s)
+=== RUN   TestDatabaseDeadlineBoundsWorkerPoolAcquisition
+--- PASS: TestDatabaseDeadlineBoundsWorkerPoolAcquisition (3.47s)
+=== RUN   TestTransactionDeadlineCannotResetAndRollbackUsesCleanupContext
+    deadline_integration_test.go:107: pool acquired=0 after 3.576204ms cleanup observation
+--- PASS: TestTransactionDeadlineCannotResetAndRollbackUsesCleanupContext (0.33s)
+=== RUN   TestQuotaLockDeadlineLeavesLedgerUsable
+--- PASS: TestQuotaLockDeadlineLeavesLedgerUsable (0.29s)
+PASS
+ok  	github.com/JDinSeattle/forge-runtime/internal/persistence	8.361s
+=== RUN   TestSSESurvivesIndependentDatabaseDeadline
+--- PASS: TestSSESurvivesIndependentDatabaseDeadline (3.44s)
+PASS
+ok  	github.com/JDinSeattle/forge-runtime/internal/httpapi	4.470s
+=== RUN   TestExternalModelAndRunnerWaitsHoldNoSQLTransaction
+=== RUN   TestExternalModelAndRunnerWaitsHoldNoSQLTransaction/model
+=== RUN   TestExternalModelAndRunnerWaitsHoldNoSQLTransaction/runner
+--- PASS: TestExternalModelAndRunnerWaitsHoldNoSQLTransaction (11.22s)
+    --- PASS: TestExternalModelAndRunnerWaitsHoldNoSQLTransaction/model (5.66s)
+    --- PASS: TestExternalModelAndRunnerWaitsHoldNoSQLTransaction/runner (5.56s)
+PASS
+ok  	github.com/JDinSeattle/forge-runtime/internal/application	12.258s

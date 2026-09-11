@@ -12,6 +12,7 @@ import (
 	"sync/atomic"
 	"time"
 
+	"github.com/JDinSeattle/forge-runtime/internal/dependency"
 	"github.com/JDinSeattle/forge-runtime/internal/domain"
 	"golang.org/x/sys/unix"
 )
@@ -36,7 +37,9 @@ func WithPublication(ctx context.Context, store Store, publish func(context.Cont
 	if held, ok := ctx.Value(publicationKey{}).(*publicationLock); ok && held.store == local && held.active.Load() {
 		return publish(ctx)
 	}
-	unlock, err := local.lockCollection(ctx, false)
+	lockCtx, cancel := dependency.Artifact(ctx)
+	unlock, err := local.lockCollection(lockCtx, false)
+	cancel()
 	if err != nil {
 		return err
 	}
@@ -109,6 +112,8 @@ type CollectionResult struct {
 // Failure to read either authority aborts before any deletion. All publishers
 // must use WithPublication; this local protocol is not a distributed S3 lock.
 func (s *LocalStore) Collect(ctx context.Context, options CollectionOptions, references func(context.Context) (map[string]bool, error)) (CollectionResult, error) {
+	ctx, cancel := dependency.Artifact(ctx)
+	defer cancel()
 	result := CollectionResult{Apply: options.Apply, Cutoff: time.Now().UTC().Add(-options.MinAge), Objects: []CollectedObject{}}
 	if options.MinAge < time.Hour || options.Limit < 1 || options.Limit > 10000 || references == nil {
 		return result, domain.ErrInvalid

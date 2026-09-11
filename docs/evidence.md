@@ -41,6 +41,16 @@ those checks.
 | [E22](../benchmarks/results/evaluation-oracle-v2-20260911/report.json) | Fixed eval-v2 source/oracle target and regression checks | All 16 actual isolated container outcomes match trusted grader assertions | Corpus validation only; no real-model quality or paid usage result |
 | [E23](../benchmarks/results/delivery-validation-20260911/report.json) | Continuation whole-tree checks | Build, ordinary/race tests, vet, generated bindings and helper tests | Local working tree; original exact-commit CI remains separately identified |
 | [E24](api-response-loss-evidence.md) | HTTP acceptance response lost after real PG commit, followed by same-key retry | Actual two-leg loopback TCP, four unchanged PG snapshots, raw responses and independent audit | One fixture proxy cut; no worker, runner or model execution |
+| [E25](application-continuation-evidence.md) | Claim, patch and approval process faults F02/F06/F09 | Real process deaths, original receipts, 79 checked READY artifacts and independent audit | Fake models; sequential PG exports; no database outage claim |
+| [E26](model-stream-fault-evidence.md) | Native stream interruption F03 retains unknown quota without executing fragments | Four actual local native-SDK/Driver/PG cases, natural lease/slot expiry and strengthened audit | Synthetic native streams/prices; recording runner; no paid inference |
+| [E27](application-network-evidence.md) | Both cancellation orders, PG connectivity cut and original-runner outage | Four real process/PG/rootless Docker cases; 107 checked artifacts and strengthened independent audit | Original command already finished at the F11/F12 cut; fake models/prices; sequential PG exports |
+| [E28](task-retry.md) | Immutable admission input, terminal-parent child retry and bounded reserved priority | Real TCP/RLS PG admission, concurrency/identity/FIFO/constraint tests and CLI receipt regression | Control fixtures; no execution proof; priority remains metadata |
+| [E29](dependency-deadlines.md) | Independent SQL/artifact deadlines preserve external work and SSE lifetimes | Real PG lock/pool/rollback tests, TCP SSE and slow Driver dependencies; artifact race tests | Bounded local tests; arbitrary nonclosable reader/kernel I/O is not forcibly interruptible |
+| [E30](runner-capacity-evidence.md) | Initial runner refusal safely returns capacity and delays the same run | Real private-PG/race, duplicate-return sentinel and actual SQLite/file engine | Deterministic refusal and TestBackend; no real pool saturation |
+| [E31](resume-capacity-evidence.md) | Successful HTTP/CLI Resume and single Finalize capacity release | Real TCP/private-PG/race, separate CLI process, competing controls and unchanged sentinel | Explicit control metadata; no external unknown operation executed |
+| [E32](approval-authority-evidence.md) | Approval checks current membership inside its decision transaction | Real TCP/PG lock ordering, downgrade/removal regressions and narrow-function privileges under race | Private migration10/control fixtures; original services not claimed upgraded |
+| [E33](k6-metadata-evidence.md) | Actual 1,000-request k6 metadata workload with fixed 90:10 mix | Raw JSONL, exact status/count checks, independently recomputed percentiles; first failure retained | Real authenticated handler/PG without telemetry; no task execution or complete build/config/profile attestation |
+| [E34](integration-checks-20260911.md) | Integrated admission, capacity, approval and dependency changes | Frozen 260-input working tree; build, 368 ordinary/race passing entries each, vet, generation and five Python suites | 27 opt-in skips per Go run; separate from current CI and full runtime/operational acceptance |
 
 ## E01 — Schemas and generated code
 
@@ -91,6 +101,21 @@ proofs, terminal monotonicity and malformed snapshots. Independent review
 reproduced and verified fixes for the adoption bypass and invalid stop target
 (IR-01/IR-02). Fuzz entrypoints exist for malformed snapshots, terminal behavior,
 money and paths; the presence of seeds is not a claim of a long fuzz campaign.
+
+On 2026-09-11, [cursor seeds](../cmd/forge/cursor_fuzz_test.go) and
+[tool-argument seeds](../internal/provider/arguments_fuzz_test.go) add eight and
+ten cases respectively. The [original ordinary log](../benchmarks/results/fuzz-seeds-20260911/ordinary.log)
+and [independent race log](../benchmarks/results/fuzz-seeds-20260911/race.log)
+each contain all 18 passing seeds. The independent command is
+`go test -race ./cmd/forge ./internal/provider -run '^Fuzz(EventCursor|ToolArgument)' -count=1 -v`.
+It checks printed/contiguous cursor acknowledgement, run identity, JSON object
+round trips, duplicate keys and depth bounds. The [independent audit](../benchmarks/results/k6-metadata-20260911T211355Z/independent-audit.json)
+records that command and the four test/implementation source hashes. Original
+log SHA-256 values are `482bbfb700c1791f87a4c8a00455aed11b0f07294148fe4fdb0120b3af84ecf2`
+(ordinary) and `b6f24abead613fa2a9a557175fe637201b6b2996bdaee7bc582e75ab8c6693eb`
+(race). These are unchanged copies of the original temporary logs, not a new
+execution or a long fuzz campaign.
+
 
 The native OpenAI Responses and Anthropic Messages adapter tests use local
 `httptest` servers and the pinned SDKs. They exercise fragmented/interleaved
@@ -854,9 +879,12 @@ TestBackend and is not container-isolation evidence.
 
 A distinct ordinary-user process extracted from the official digest-pinned
 OpenTelemetry Collector image received and persisted four correlated spans from
-the production OTLP exporter. The collector file proves API→run→model/effect
-topology and excludes the fixture's sensitive-data canaries. No model or command
-was dispatched for this telemetry test. Paired database/journal/object/workspace
+the production OTLP exporter. The fixture manually calls four telemetry hooks
+and restores a traceparent string: the collector file proves those hooks' parent
+relationships and delivery, and excludes the fixture's sensitive-data canaries.
+It does not exercise Store, Driver or PostgreSQL asynchronous trace propagation.
+No model or command was dispatched for this telemetry test. This scope correction
+on 2026-09-11 supersedes the earlier unqualified API→Driver topology description. Paired database/journal/object/workspace
 restore has a reviewed executable harness and new source images; its first host
 mount still awaits the operator, so full paired recovery is not yet claimed.
 
@@ -909,7 +937,12 @@ and the local PG fixture; it is not a fresh-machine deployment. Its
 passes the Go checks but fails the evaluation helper step: candidate preparation
 times out while an explicitly hard-coded temporary cache bypasses CI's warmed
 default cache. The [failed log](../benchmarks/results/clean-clone-0a2cb15/github-actions-failure.log)
-is preserved; cache inheritance and child-process cleanup are being corrected.
+is preserved. The cache inheritance and process cleanup correction was committed
+as `224a6b64ce0cc41c564ce2c9bfd2e74b4b9ccc0a`. Its
+[GitHub Actions run 34643905860](https://github.com/JDinSeattle/forge-runtime/actions/runs/34643905860)
+passes all Go, generation, evaluation-helper and audit checks; the
+[exact-commit execution and manifest](../benchmarks/results/github-actions-224a6b6/manifest.json)
+are retained. Later working-tree changes are not covered by that CI result.
 
 ## E25 — Claim, patch and approval process faults, 2026-09-11
 
@@ -932,13 +965,186 @@ PostgreSQL captures are sequential non-atomic table reads. This result does not
 claim PostgreSQL outage, native model billing or execution of the separate
 failed-fixture recovery entry point. The original E21 harness is unchanged.
 
+## E26 — Native stream interruption and unknown obligation, 2026-09-11
+
+The [F03 record](model-stream-fault-evidence.md) retains two OpenAI Responses
+and two Anthropic Messages loopback TCP truncations through their native SDKs,
+production Driver and private PostgreSQL schemas. Both original and
+binary-identified repeat cases pass under the race detector. In each case the
+single dispatched attempt fails with `stream_interrupted`; provisional text and
+partial tools yield zero effects and no complete model-response artifact.
+Natural worker lease expiry does not release the provider request slot early.
+At its own deadline the slot expires exactly once, while 9,216 tokens and
+10,240 synthetic microUSD remain reserved as unknown and cannot be refunded as
+an undispatched request. Five snapshots per case preserve the same obligation.
+
+Independent review corrected three audit-binding omissions and retains the
+16 previously accepted altered reports as regression evidence. All four original
+reports pass the strengthened audit, and nine F03 plus six existing application
+auditor tests pass. Earlier raw/audit files remain unchanged. This is native
+protocol and application accounting evidence with a recording runner, not real
+model quality, billing reconciliation or container execution.
+
+## E27 — Cancellation, database connectivity and runner faults, 2026-09-11
+
+The [network matrix](application-network-evidence.md) passes all four cases in
+35.56 seconds on production `224a6b6` plus the frozen test harness. F10 preserves
+completed effects and commits exactly one legal cancelled/completed terminal
+version for the two forced commit orders; repeated HTTP Cancel does not change
+it or double-release capacity. F11 cuts existing and new application SQL
+connections for 2.008678248 seconds; failed admission creates nothing, all saved
+PG records remain unchanged, and the replacement worker claims 35.634 ms after
+natural lease expiry and reconciles the original receipt. F12 keeps the original
+unknown operation/allocation while the runner is dead, serves HTTP control/reads
+and an actual 19-event SSE prefix, then reuses the same journal and receipt.
+Its claim follows normal persisted Defer eligibility, 48.549 ms after not_before.
+
+All 107 READY objects and four final quota/capacity ledgers pass independent
+saved-record recomputation. Six negative variants originally exposed missing
+auditor bindings; the failure log, corrected source and passing regressions are
+retained separately. Neither the original evidence nor older failed API preflight
+was overwritten. F11/F12 begin after the real command's native receipt is already
+durable, while PG remains in flight; this is not an active-writer interruption.
+All four original services were restored and their API readiness rechecked.
+
+## E28 — Admission snapshots, child retry and reserved priority, 2026-09-11
+
+The [implementation and retained tests](task-retry.md) add normal versioned input
+capture and terminal-parent retry in the atomic admission transaction. Twelve
+concurrent HTTP submissions create one child, preserving the parent and copying
+its actual accepted input record. New state/counters/deadline belong to the child;
+the parent's terminal state and unknown charges are not reopened or erased.
+Existing ordinary idempotency request bytes remain compatible. The same real
+private-PG/RLS/TCP suite verifies bounded priority in API/SQL, default-zero replay
+and unchanged FIFO ordering. The CLI's parent-bound persisted receipt test passes.
+This is control-plane evidence with a labeled fixture stop receipt, distinct
+from E27's actual runner cancellation. New schema 9 is exercised in private tests,
+not silently reported as deployed to the original running services.
+
+## E29 — Independent dependency budgets, 2026-09-11
+
+The [deadline record](dependency-deadlines.md) covers SQL operations/transactions
+at three seconds, artifact operations at ten seconds and detached rollback
+cleanup at one second, preserving earlier caller deadlines. Real PostgreSQL
+blocked reads and exhausted pools reach their own SQL deadline and recover usable
+connections. Quota lock cancellation does not damage the ledger. Actual TCP SSE
+and model/runner waits exceed the SQL budget and continue normally without an
+application transaction or run/tenant/quota row lock held across the wait.
+
+All six integration tests plus the two external-wait subcases pass under race
+detection. The initial failed test observations and source are preserved: pgx's
+asynchronous connection destruction needed a bounded final-zero observation,
+and the slow runner test needed a valid production lease for its deliberately
+paused pre-signed proof. Neither correction weakens production authorization.
+Independent read-only review found no reachable P1/P2. Artifact cancellation
+checks separately cover pipe closure, staging cleanup and lock reacquisition.
+
+A subsequent API boundary correction distinguishes actual transport loss as
+`503/dependency_unavailable` from deadline expiry and permanent internal/config
+errors. The [retained real TCP and classification race tests](../benchmarks/results/api-dependency-errors-20260911/execution.log)
+pass and preserve request IDs without exposing diagnostics. This does not change
+E27's older recorded 500 responses or authorize blind retries of mutations.
+
+## E30 — Initial runner capacity refusal, 2026-09-11
+
+The [capacity record](runner-capacity-evidence.md) retains four top-level tests
+with five leaf cases against real private PostgreSQL under race detection
+(package 5.557 s). The main case rejects initial Prepare twice, atomically queues
+the original run with a one-second database-time delay, releases only its own
+allocation, and preserves placement through epochs 1, 2 and 3. An immediate
+claim is refused; eight duplicate returns cannot decrement a separately held
+sentinel allocation. Existing durable effects/model attempts and post-adoption
+uncertainty prevent this special requeue path. A failed requeue transaction
+causes the Driver to yield rather than assume its commit outcome.
+
+The refusal is deterministic and occurs before runner work; the later successful
+path uses the production Driver, actual SQLite/files and TestBackend. It is not
+real Docker/ext4 pool saturation. Seven task-owned source snapshots match their
+frozen hashes, but the temporary test executable and full historical PG exports
+were not retained. This scoped transaction evidence closes S08.4 and contributes
+to S08.6; it is not an execution-plane performance measurement.
+
+## E31 — Successful Resume and duplicate Finalize, 2026-09-11
+
+The [Resume record](resume-capacity-evidence.md) preserves three passing
+private-PG/real-TCP race cases and a separately executed production CLI. Twelve
+same-version HTTP Resume requests produce one 202 and eleven conflicts; another
+newly reviewed version can record a second intent. The original run, runner,
+operation, dispatch epoch and unknown effect remain unchanged. Resume keeps the
+target and sentinel allocations at 2/2. Twelve competing Finalize calls produce
+one terminal commit and reduce them to 1/1; stale/current terminal controls
+cannot release the sentinel or add another terminal event. The CLI exits zero
+and prints the original run at version 8 after reviewing version 7.
+
+The retained [author recomputation](../benchmarks/results/resume-capacity-20260911T2110-root/author-audit.json)
+checks ten single-statement phase captures, 39 target events/45 including the
+sentinels, original CLI output and exact effect/capacity bindings. The supplied
+role is an effective nonowner/NOBYPASSRLS role under an administrator test
+session, not a separate restricted login. The 0.44/0.60/0.37 s case durations
+are acceptance elapsed times, not latency percentiles.
+
+No runner, model, Docker command or trusted verifier executes. Explicit control
+metadata allows legal transitions; successful Resume acknowledges intent and
+preserves uncertainty, not successful physical recovery. The compilation
+intermediate-state failure and later sandbox socket denial are retained as
+failures before the actual root-run PASS. Stable pre/post source hashes and the
+fixed test/CLI binary identities are recorded; an older copied
+`source-identity.json` exit field belongs to the sandbox attempt, while the
+actual `execution.json` is authoritative for this successful run.
+
+## E32 — Current authority at approval commit, 2026-09-11
+
+The [approval record](approval-authority-evidence.md) preserves the original
+TOCTOU failure: a request authenticated before membership downgrade/removal
+could commit approval after waiting for a database lock. Four targeted tests,
+five leaf cases, now pass under race detection against real private PG and TCP
+(package 2.910 s). The decision transaction locks current membership through
+commit after the tenant lock; downgrade/removal now returns 403 without a
+version/decision/event change. Reverse lock ordering blocks an administrative
+role update until the decision commits. Exact repeats, changed decisions, late
+terminal repeats and permission failures retain their defined outcomes.
+
+Schema10 supplies a narrowly granted, schema-qualified SECURITY DEFINER helper
+that locks and returns only current membership. Cross/no-tenant calls, absent
+membership, temporary-table shadowing, absent function grant and direct
+membership writes are tested. API roles receive no blanket membership UPDATE
+privilege. This supplements E25's actual process restart and five rejected
+approval bindings; the new test's READY stop/verification metadata is explicitly
+synthetic. The private migration/function grant is verified; the original live
+services are not claimed migrated. Existing deployments need migration10 and
+the documented explicit function grant to their actual API role. Source/log
+snapshots do not constitute a retained executable or full build attestation.
+
+## E33 — Actual k6 metadata workload, 2026-09-11
+
+The [k6 record](k6-metadata-evidence.md) retains the failed first count threshold
+and its corrected, independently audited repeat. At 50 scheduled iterations/s
+for 20 seconds, the corrected script dispatches exactly 1,000 HTTP requests:
+900 reads return 200 and 100 admissions return 202, with zero failed requests,
+checks or dropped iterations. A retained extra boundary iteration dispatches no
+request. The resulting PG run/key/created-event counts are each 101 including the
+seed; model attempts/effects are zero. The original 1,001-request/101-admission
+failure remains unchanged.
+
+The measured `http_req_duration` p95/p99 are 6.74039745/11.37764899 ms,
+independently interpolated from all raw points. That metric excludes initial
+connection/blocked time. Real authentication/TCP and a nonowner RLS pool of at
+most 16 connections are used, with a handler hosted by httptest without
+telemetry. No worker, runner, model or task container executes. Script selection
+is deterministic, so no random seed is used. k6 binary identity, source
+snapshots, arguments and the reported Go binary hash are retained; the temporary
+Go executable, complete DB configuration and GC/pprof record are not. E33 adds
+actual k6 evidence for the selected toolchain and P01; it does not erase the
+older E08 sample or close all S17.6 provenance requirements.
+
 ## Updating this record
 
 Last committed delivery fields: `tested_commit: b924f1c`;
 `final_tree_validation: pass`; `clean_clone_reproduction: pass (bounded scope above)`;
 `github_actions_execution: success (34206855353)`; `native_provider_evaluation: pending`.
-The 2026-09-11 continuation is recorded separately in E23, including its passing
-local clone and the failed GitHub Actions evaluation-helper step at `0a2cb15`.
+The 2026-09-11 continuation is recorded separately in E23, including the passing
+local clone, failed evaluation-helper CI step at `0a2cb15`, and corrected all-green
+GitHub Actions run at `224a6b6`. Later changes remain working-tree evidence.
 The earlier generator command reported by the integration agent and retained
 raw workload reports are listed separately above.
 
@@ -951,3 +1157,23 @@ matching its full scope; a measured scheduling result or passing protocol
 fixture must not be reused as proof of unrelated container, load or billing
 behavior. No fictional employer, production incident, user count or model
 performance belongs in the project narrative.
+
+## E34 — Integrated continuation checks, 2026-09-11
+
+[The frozen local check](integration-checks-20260911.md) passes build, ordinary
+and race suites (368 passing test/subtest entries, zero failures and 27 explicit
+opt-in skips each), vet, generated contracts and five Python helper suites.
+The 260 recorded source/build inputs stay identical throughout execution.
+A freshly built CLI participates in the successful Resume test. Private PG
+fixtures upgrade schema 6→10 twice, preserving original rows/snapshot bytes and
+checking the additive priority default independently.
+
+The original ordinary-test failure is retained: a transaction timeout could be
+reported as context cancellation when its parent callback beat the operation
+timer. Explicit cancellation now propagates separately from deadline expiry;
+an independent review and the final real-PG suites verify the correction.
+[First failed results](../benchmarks/results/integration-checks-20260911T212356Z/results.json)
+and [final passing results](../benchmarks/results/integration-checks-20260911T212636Z/results.json)
+remain distinct. These checks do not deploy the live services, rerun all opt-in
+experiments or close the remaining runtime, operations, paired restore and
+paid-model requirements.

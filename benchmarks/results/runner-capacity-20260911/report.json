@@ -1,0 +1,55 @@
+{
+  "evidence": "E30",
+  "source": "postgres-race.log",
+  "passed": true,
+  "package_seconds": 5.557,
+  "top_level_cases": 4,
+  "leaf_cases": 5,
+  "primary_case_seconds": 3.35,
+  "run_id": "run_TOBHCPBZA6J4GTSWTD5BM7BDWS",
+  "requeues": [
+    {
+      "kind": "capacity_rejected",
+      "expected_version": 2,
+      "owner": "capacity-worker",
+      "epoch": 1,
+      "at": "2026-09-11T14:07:04.796129-07:00",
+      "not_before": "2026-09-11T14:07:05.796129-07:00"
+    },
+    {
+      "kind": "capacity_rejected",
+      "expected_version": 4,
+      "owner": "retry-worker",
+      "epoch": 2,
+      "at": "2026-09-11T14:07:05.81728-07:00",
+      "not_before": "2026-09-11T14:07:06.81728-07:00"
+    }
+  ],
+  "claim_epochs": [
+    1,
+    2,
+    3
+  ],
+  "terminal_status": "completed",
+  "fake_model_calls": 3,
+  "contiguous_run_events": 43,
+  "final_tenant_active": 0,
+  "final_runner_reserved_slots": 0,
+  "assertions_in_frozen_test": [
+    "initial rejection releases allocation and active count",
+    "not_before denies early claim",
+    "sentinel active allocation retained across eight concurrent stale requeues",
+    "second rejection releases only the retried allocation",
+    "original runner/workspace identity retained",
+    "reclaim increments epoch and completion occurs once",
+    "durable system effect prevents requeue without mutation",
+    "generic Advance rejects capacity event",
+    "non-capacity and post-adoption paths preserved"
+  ],
+  "limits": [
+    "Local targeted race acceptance, not a latency distribution or whole-tree/CI result",
+    "Go test assertions are retained in source and log; no historical full-table PG export or executable is retained",
+    "Explicit runner rejection fixture; successful work uses SQLite/files and no-process TestBackend",
+    "No paid API/model quality/container saturation claim"
+  ]
+}

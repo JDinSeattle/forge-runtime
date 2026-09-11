@@ -1,0 +1,329 @@
+// Package persistence implements transactional control-plane boundaries.
+package persistence
+
+import (
+	"context"
+	"crypto/rand"
+	"crypto/sha256"
+	"encoding/hex"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"strings"
+	"time"
+
+	"github.com/JDinSeattle/forge-runtime/internal/domain"
+	"github.com/JDinSeattle/forge-runtime/internal/persistence/sqlgen"
+	flow "github.com/JDinSeattle/forge-runtime/internal/runtime"
+	"github.com/JDinSeattle/forge-runtime/internal/telemetry"
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
+)
+
+type Store struct{ Pool *pgxpool.Pool }
+
+func Open(ctx context.Context, url string) (*Store, error) {
+	cfg, err := pgxpool.ParseConfig(url)
+	if err != nil {
+		return nil, err
+	}
+	cfg.MaxConns = 16
+	cfg.MinConns = 1
+	pool, err := pgxpool.NewWithConfig(ctx, cfg)
+	if err != nil {
+		return nil, err
+	}
+	if err = pool.Ping(ctx); err != nil {
+		pool.Close()
+		return nil, err
+	}
+	return &Store{Pool: pool}, nil
+}
+func (s *Store) Close() { s.Pool.Close() }
+
+// Tx establishes transaction-local tenant scope, including on reused connections.
+func (s *Store) Tx(ctx context.Context, tenant domain.ID, options pgx.TxOptions) (pgx.Tx, error) {
+	if err := tenant.Validate(); err != nil {
+		return nil, err
+	}
+	tx, err := s.Pool.BeginTx(ctx, options)
+	if err != nil {
+		return nil, err
+	}
+	if _, err = tx.Exec(ctx, `SELECT set_config('forge.tenant_id',$1,true)`, string(tenant)); err != nil {
+		_ = tx.Rollback(ctx)
+		return nil, err
+	}
+	return tx, nil
+}
+
+type Config struct {
+	Provider          string       `json:"provider"`
+	Model             string       `json:"model"`
+	MaxModelRounds    uint64       `json:"max_model_rounds"`
+	MaxToolCalls      uint64       `json:"max_tool_calls"`
+	MaxCost           domain.Money `json:"max_cost_microusd"`
+	MaxRuntimeSeconds int64        `json:"max_runtime_seconds"`
+}
+
+func (c Config) Validate() error {
+	if c.Provider == "" || c.Model == "" || c.MaxModelRounds == 0 || c.MaxToolCalls == 0 ||
+		c.MaxModelRounds > 1000 || c.MaxToolCalls > 10000 || c.MaxCost < 0 ||
+		c.MaxRuntimeSeconds < 1 || c.MaxRuntimeSeconds > 86400 {
+		return fmt.Errorf("%w: invalid run limits", domain.ErrInvalid)
+	}
+	return nil
+}
+
+type SubmitRequest struct {
+	TenantID    domain.ID `json:"tenant_id"`
+	PrincipalID domain.ID `json:"principal_id"`
+	ProjectID   domain.ID `json:"project_id"`
+	ParentRunID domain.ID `json:"parent_run_id,omitempty"`
+	Task        string    `json:"task"`
+	BaseCommit  string    `json:"base_commit"`
+	Config      Config    `json:"config"`
+}
+
+type Run struct {
+	TenantID        domain.ID      `json:"tenant_id"`
+	ID              domain.ID      `json:"id"`
+	ProjectID       domain.ID      `json:"project_id"`
+	ParentRunID     domain.ID      `json:"parent_run_id,omitempty"`
+	PrincipalID     domain.ID      `json:"principal_id"`
+	Task            string         `json:"task"`
+	BaseCommit      string         `json:"base_commit"`
+	RunnerID        string         `json:"runner_id"`
+	Commands        []flow.Command `json:"commands,omitempty"`
+	State           flow.State     `json:"state"`
+	Config          Config         `json:"config"`
+	CreatedAt       time.Time      `json:"created_at"`
+	CoveredSeq      uint64         `json:"covered_seq"`
+	RetainedFromSeq uint64         `json:"-"`
+	Traceparent     string         `json:"-"`
+}
+
+type Event struct {
+	RunID         domain.ID       `json:"run_id"`
+	Seq           uint64          `json:"seq"`
+	Type          string          `json:"type"`
+	SchemaVersion int             `json:"schema_version"`
+	Payload       json.RawMessage `json:"payload"`
+	CreatedAt     time.Time       `json:"created_at"`
+}
+
+func NewID(prefix string) domain.ID { return domain.ID(prefix + "_" + rand.Text()) }
+
+func (s *Store) Submit(ctx context.Context, req SubmitRequest, key string) (Run, bool, error) {
+	for _, id := range []domain.ID{req.TenantID, req.PrincipalID, req.ProjectID} {
+		if err := id.Validate(); err != nil {
+			return Run{}, false, err
+		}
+	}
+	if req.ParentRunID != "" {
+		if err := req.ParentRunID.Validate(); err != nil {
+			return Run{}, false, err
+		}
+	}
+	if len(key) < 1 || len(key) > 128 || strings.TrimSpace(req.Task) == "" || len(req.Task) > 64000 || req.BaseCommit == "" {
+		return Run{}, false, domain.ErrInvalid
+	}
+	if err := req.Config.Validate(); err != nil {
+		return Run{}, false, err
+	}
+	body, err := json.Marshal(req)
+	if err != nil {
+		return Run{}, false, err
+	}
+	hash := sha256.Sum256(body)
+	requestHash := hex.EncodeToString(hash[:])
+	route := "/v1/projects/" + string(req.ProjectID) + "/runs"
+	id := NewID("run")
+	tx, err := s.Tx(ctx, req.TenantID, pgx.TxOptions{})
+	if err != nil {
+		return Run{}, false, err
+	}
+	defer tx.Rollback(ctx)
+	var inputSnapshot string
+	if req.ParentRunID != "" {
+		// A retry is a new run from the same immutable input, with its own
+		// budget, workspace and operation IDs. Never reopen the parent's state.
+		var project domain.ID
+		var status domain.RunStatus
+		var task, base string
+		err = tx.QueryRow(ctx, `SELECT project_id,state,task,base_commit,input_snapshot FROM runs
+		 WHERE tenant_id=$1 AND id=$2 FOR SHARE`, req.TenantID, req.ParentRunID).
+			Scan(&project, &status, &task, &base, &inputSnapshot)
+		if errors.Is(err, pgx.ErrNoRows) {
+			return Run{}, false, domain.ErrNotFound
+		}
+		if err != nil {
+			return Run{}, false, err
+		}
+		if project != req.ProjectID || task != req.Task || base != req.BaseCommit || !status.Terminal() {
+			return Run{}, false, fmt.Errorf("%w: retry requires the same project, task and base of a terminal parent", domain.ErrConflict)
+		}
+	}
+	var now time.Time
+	if err = tx.QueryRow(ctx, `SELECT clock_timestamp()`).Scan(&now); err != nil {
+		return Run{}, false, err
+	}
+	result, err := tx.Exec(ctx, `INSERT INTO idempotency_keys
+		(tenant_id,principal_id,route,key,request_hash,resource_id,response,expires_at)
+		VALUES($1,$2,$3,$4,$5,$6,$7,$8) ON CONFLICT DO NOTHING`,
+		req.TenantID, req.PrincipalID, route, key, requestHash, id,
+		json.RawMessage(fmt.Sprintf(`{"run_id":%q}`, id)), now.Add(24*time.Hour))
+	if err != nil {
+		return Run{}, false, err
+	}
+	if result.RowsAffected() == 0 {
+		var existingHash string
+		if err = tx.QueryRow(ctx, `SELECT request_hash,resource_id FROM idempotency_keys
+		 WHERE tenant_id=$1 AND principal_id=$2 AND route=$3 AND key=$4`, req.TenantID, req.PrincipalID, route, key).Scan(&existingHash, &id); err != nil {
+			return Run{}, false, err
+		}
+		if existingHash != requestHash {
+			return Run{}, false, fmt.Errorf("%w: idempotency key has different request", domain.ErrConflict)
+		}
+		run, err := getRun(ctx, tx, req.TenantID, id, false)
+		if err != nil {
+			return Run{}, false, err
+		}
+		return run, true, tx.Commit(ctx)
+	}
+	state := flow.NewState(req.TenantID, id, flow.Limits{MaxModelRounds: req.Config.MaxModelRounds,
+		MaxToolCalls: req.Config.MaxToolCalls, MaxCost: req.Config.MaxCost, Deadline: now.Add(time.Duration(req.Config.MaxRuntimeSeconds) * time.Second)})
+	snapshot, _ := json.Marshal(state)
+	config, _ := json.Marshal(req.Config)
+	_, err = tx.Exec(ctx, `INSERT INTO runs(tenant_id,id,project_id,principal_id,task,base_commit,state,version,snapshot,config_snapshot,traceparent,parent_run_id,input_snapshot)
+	 VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,NULLIF($12,''),$13)`, req.TenantID, id, req.ProjectID, req.PrincipalID, req.Task, req.BaseCommit, state.Status, state.Version, snapshot, config, telemetry.Traceparent(ctx), req.ParentRunID, inputSnapshot)
+	if err != nil {
+		return Run{}, false, err
+	}
+	if err = writeSnapshot(ctx, tx, state); err != nil {
+		return Run{}, false, err
+	}
+	if _, err = appendEvent(ctx, tx, req.TenantID, id, "run.created", snapshot); err != nil {
+		return Run{}, false, err
+	}
+	run, err := getRun(ctx, tx, req.TenantID, id, false)
+	if err != nil {
+		return Run{}, false, err
+	}
+	if err = tx.Commit(ctx); err != nil {
+		return Run{}, false, err
+	}
+	s.wake(ctx, id)
+	return run, false, nil
+}
+
+type querier interface {
+	QueryRow(context.Context, string, ...any) pgx.Row
+}
+
+func getRun(ctx context.Context, q querier, tenant, id domain.ID, lock bool) (Run, error) {
+	query := `SELECT tenant_id,id,project_id,principal_id,task,base_commit,coalesce(runner_id,''),snapshot,config_snapshot,created_at,next_event_seq-1,pending_commands,lease_owner,lease_epoch,lease_until,retained_from_seq,coalesce(traceparent,''),coalesce(parent_run_id,'') FROM runs WHERE tenant_id=$1 AND id=$2`
+	if lock {
+		query += " FOR UPDATE"
+	}
+	var r Run
+	var snapshot, config, commands []byte
+	var lease domain.Lease
+	var until *time.Time
+	err := q.QueryRow(ctx, query, tenant, id).Scan(&r.TenantID, &r.ID, &r.ProjectID, &r.PrincipalID, &r.Task, &r.BaseCommit, &r.RunnerID, &snapshot, &config, &r.CreatedAt, &r.CoveredSeq, &commands, &lease.Owner, &lease.Epoch, &until, &r.RetainedFromSeq, &r.Traceparent, &r.ParentRunID)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return r, domain.ErrNotFound
+	}
+	if err != nil {
+		return r, err
+	}
+	if err = json.Unmarshal(snapshot, &r.State); err != nil {
+		return r, err
+	}
+	if until != nil {
+		lease.Until = *until
+	}
+	r.State.Lease = lease
+	if err = json.Unmarshal(commands, &r.Commands); err != nil {
+		return r, err
+	}
+	err = json.Unmarshal(config, &r.Config)
+	return r, err
+}
+
+func (s *Store) GetRun(ctx context.Context, tenant, id domain.ID) (Run, error) {
+	tx, err := s.Tx(ctx, tenant, pgx.TxOptions{IsoLevel: pgx.RepeatableRead, AccessMode: pgx.ReadOnly})
+	if err != nil {
+		return Run{}, err
+	}
+	defer tx.Rollback(ctx)
+	r, err := getRun(ctx, tx, tenant, id, false)
+	if err != nil {
+		return r, err
+	}
+	return r, tx.Commit(ctx)
+}
+
+func writeSnapshot(ctx context.Context, tx pgx.Tx, state flow.State) error {
+	body, err := json.Marshal(state)
+	if err != nil {
+		return err
+	}
+	_, err = tx.Exec(ctx, `INSERT INTO run_snapshots(tenant_id,run_id,version,step_seq,schema_version,body) VALUES($1,$2,$3,$4,$5,$6)`, state.TenantID, state.RunID, state.Version, state.StepSeq, state.SchemaVersion, body)
+	return err
+}
+
+func appendEvent(ctx context.Context, tx pgx.Tx, tenant, id domain.ID, kind string, payload json.RawMessage) (uint64, error) {
+	var seq uint64
+	err := tx.QueryRow(ctx, `UPDATE runs SET next_event_seq=next_event_seq+1 WHERE tenant_id=$1 AND id=$2 RETURNING next_event_seq-1`, tenant, id).Scan(&seq)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return 0, domain.ErrNotFound
+	}
+	if err != nil {
+		return 0, err
+	}
+	_, err = tx.Exec(ctx, `INSERT INTO run_events(tenant_id,run_id,seq,type,payload) VALUES($1,$2,$3,$4,$5)`, tenant, id, seq, kind, payload)
+	return seq, err
+}
+
+func (s *Store) wake(ctx context.Context, id domain.ID) {
+	// Delivery is deliberately outside the business transaction. A full NOTIFY
+	// queue cannot roll back an accepted task; polling remains authoritative.
+	_, _ = s.Pool.Exec(ctx, `SELECT pg_notify('forge_wake',$1)`, string(id))
+}
+
+// Events rejects a future cursor instead of silently hiding later completion.
+func (s *Store) Events(ctx context.Context, tenant, id domain.ID, after uint64, limit int) ([]Event, error) {
+	if limit < 1 || limit > 1000 {
+		return nil, domain.ErrInvalid
+	}
+	tx, err := s.Tx(ctx, tenant, pgx.TxOptions{IsoLevel: pgx.RepeatableRead, AccessMode: pgx.ReadOnly})
+	if err != nil {
+		return nil, err
+	}
+	defer tx.Rollback(ctx)
+	r, err := getRun(ctx, tx, tenant, id, false)
+	if err != nil {
+		return nil, err
+	}
+	if after > r.CoveredSeq {
+		return nil, fmt.Errorf("%w: future event cursor", domain.ErrConflict)
+	}
+	if r.RetainedFromSeq > 0 && after < r.RetainedFromSeq-1 {
+		return nil, domain.ErrReset
+	}
+	rows, err := sqlgen.New(tx).PageRunEvents(ctx, sqlgen.PageRunEventsParams{
+		TenantID: string(tenant), RunID: string(id), AfterSeq: int64(after), PageLimit: int32(limit),
+	})
+	if err != nil {
+		return nil, err
+	}
+	result := make([]Event, 0, len(rows))
+	for _, row := range rows {
+		result = append(result, Event{
+			RunID: domain.ID(row.RunID), Seq: uint64(row.Seq), Type: row.Type,
+			SchemaVersion: int(row.SchemaVersion), Payload: row.Payload, CreatedAt: row.CreatedAt,
+		})
+	}
+	return result, tx.Commit(ctx)
+}

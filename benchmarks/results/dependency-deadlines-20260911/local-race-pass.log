@@ -1,0 +1,24 @@
+=== RUN   TestDependencyBudgetsDoNotCancelParent
+--- PASS: TestDependencyBudgetsDoNotCancelParent (0.00s)
+PASS
+ok  	github.com/JDinSeattle/forge-runtime/internal/dependency	1.011s
+=== RUN   TestPutDeadlineUnblocksClosableInputAndReleasesPublication
+--- PASS: TestPutDeadlineUnblocksClosableInputAndReleasesPublication (0.04s)
+=== RUN   TestArtifactReaderCancellationClosesOnceAndUnblocksRead
+--- PASS: TestArtifactReaderCancellationClosesOnceAndUnblocksRead (0.03s)
+=== RUN   TestLocalOpenBudgetLivesUntilReaderClose
+--- PASS: TestLocalOpenBudgetLivesUntilReaderClose (0.07s)
+=== RUN   TestJournalRegistrationIsAtomicAndRefusesOmittedAuthorities
+--- PASS: TestJournalRegistrationIsAtomicAndRefusesOmittedAuthorities (0.01s)
+=== RUN   TestImmutableConcurrentPutOwnershipAndCorruption
+--- PASS: TestImmutableConcurrentPutOwnershipAndCorruption (0.00s)
+=== RUN   TestArtifactByteLimitAndContextDoNotPublishObjects
+--- PASS: TestArtifactByteLimitAndContextDoNotPublishObjects (0.00s)
+=== RUN   TestCollectionExcludesOldDeduplicatingPublisherAndPreservesCommittedReference
+--- PASS: TestCollectionExcludesOldDeduplicatingPublisherAndPreservesCommittedReference (0.06s)
+=== RUN   TestCollectionFailsClosedAndCollectsOnlyAgedRecognizedNames
+--- PASS: TestCollectionFailsClosedAndCollectsOnlyAgedRecognizedNames (0.01s)
+=== RUN   TestPublicationLockSurvivesAcrossProcessesAndReleasesOnDeath
+--- PASS: TestPublicationLockSurvivesAcrossProcessesAndReleasesOnDeath (0.09s)
+PASS
+ok  	github.com/JDinSeattle/forge-runtime/internal/artifact	1.333s

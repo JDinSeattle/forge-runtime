@@ -1,0 +1,57 @@
+
+
+  █ THRESHOLDS 
+
+    checks
+    ✓ 'rate==1' rate=100.00%
+
+    dropped_iterations
+    ✓ 'count==0' count=0
+
+    http_req_duration
+    ✓ 'p(95)<200' p(95)=6.74ms
+    ✓ 'p(99)<1000' p(99)=11.37ms
+
+    http_req_failed
+    ✓ 'rate==0' rate=0.00%
+
+    http_reqs
+    ✓ 'count==1000' count=1000
+
+    metadata_admissions
+    ✓ 'count==100' count=100
+
+    metadata_reads
+    ✓ 'count==900' count=900
+
+
+  █ TOTAL RESULTS 
+
+    checks_total.......: 1000    49.998313/s
+    checks_succeeded...: 100.00% 1000 out of 1000
+    checks_failed......: 0.00%   0 out of 1000
+
+
+    CUSTOM
+    metadata_admissions............: 100    4.999831/s
+    metadata_reads.................: 900    44.998481/s
+
+    HTTP
+    http_req_duration..............: min=553.92µs med=1.33ms max=20.87ms p(95)=6.74ms p(99)=11.37ms
+      { expected_response:true }...: min=553.92µs med=1.33ms max=20.87ms p(95)=6.74ms p(99)=11.37ms
+    http_req_failed................: 0.00%  0 out of 1000
+    http_reqs......................: 1000   49.998313/s
+
+    EXECUTION
+    dropped_iterations.............: 0      0/s
+    iteration_duration.............: min=29.41µs  med=1.55ms max=21.28ms p(95)=7.14ms p(99)=11.67ms
+    iterations.....................: 1001   50.048311/s
+    vus............................: 0      min=0         max=0 
+    vus_max........................: 16     min=16        max=16
+
+    NETWORK
+    data_received..................: 1.0 MB 52 kB/s
+    data_sent......................: 244 kB 12 kB/s
+
+
+

@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/JDinSeattle/forge-runtime/internal/dependency"
 	"github.com/JDinSeattle/forge-runtime/internal/domain"
 	"github.com/jackc/pgx/v5"
 )
@@ -13,10 +14,12 @@ import (
 // Boundary advancement and deletion share a run lock and one transaction.
 // It is an explicit operator maintenance action, not request-path work.
 func (s *Store) TrimEvents(ctx context.Context, before time.Time, keepTail, batch int) (int64, error) {
+	ctx, cancel := dependency.Database(ctx)
+	defer cancel()
 	if keepTail < 1 || keepTail > 10000 || batch < 1 || batch > 128 || before.IsZero() {
 		return 0, domain.ErrInvalid
 	}
-	tx, err := s.Pool.Begin(ctx)
+	tx, err := dependency.BeginTx(ctx, s.Pool, pgx.TxOptions{})
 	if err != nil {
 		return 0, err
 	}

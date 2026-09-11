@@ -240,13 +240,27 @@ components:
       name: Idempotency-Key
       in: header
       required: true
+      description: |
+        Scoped to authenticated tenant, principal and route. The normalized
+        request, including an optional parent_run_id, is bound to this key;
+        a different request returns 409. Accepted keys are retained for at
+        least 24 hours. This release keeps them indefinitely and never deletes
+        them automatically; the stored expires_at is not permission to reuse a
+        key. A future documented deletion policy may make an expired key a new
+        submission after deletion. Reconcile uncertain older submissions before
+        using a new key; elapsed time alone does not prove the old run is absent.
       schema: { type: string, minLength: 1, maxLength: 128 }
   responses:
     Error:
       description: |
         Structured failure. 400 invalid input; 403 authentication/permission;
         404 unknown or inaccessible resource; 409 conflict; 410 reset required;
-        429 capacity; 503 dependency timeout; 500 internal failure.
+        429 capacity; 503 dependency timeout or unavailable transport; 500 internal
+        or permanent configuration failure. dependency_timeout and
+        dependency_unavailable are distinct codes. retryable describes transient
+        availability, not whether a mutation committed: repeat submissions only
+        with their original idempotency key, and reconcile other mutation results
+        using the current run/version before deciding what to do next.
       content:
         application/json:
           schema: { $ref: '#/components/schemas/APIError' }
@@ -310,11 +324,21 @@ components:
         max_tool_calls: { type: integer, minimum: 1, maximum: 10000, x-go-type: uint64 }
         max_cost_microusd: { type: integer, format: int64, minimum: 1 }
         max_runtime_seconds: { type: integer, format: int64, minimum: 1, maximum: 86400 }
+    Priority:
+      type: integer
+      minimum: -2
+      maximum: 2
+      default: 0
+      description: Bounded reserved metadata. This release continues tenant rotation and FIFO within each tenant; priority does not change dispatch order.
     Submit:
       type: object
       additionalProperties: false
       required: [task, base_commit, config_id, budget]
       properties:
+        priority: { $ref: '#/components/schemas/Priority' }
+        parent_run_id:
+          allOf: [{ $ref: '#/components/schemas/ID' }]
+          description: Optional terminal parent for a whole-task retry. Same tenant, project, task and base are required; the new run has fresh state, workspace and budget. Omit for an unrelated task.
         task: { type: string, minLength: 1, maxLength: 64000 }
         base_commit: { type: string, minLength: 1 }
         config_id: { type: string, minLength: 1 }
@@ -457,6 +481,8 @@ components:
       type: object
       required: [tenant_id, id, project_id, principal_id, task, base_commit, runner_id, state, config, created_at, covered_seq]
       properties:
+        parent_run_id: { $ref: '#/components/schemas/ID' }
+        priority: { $ref: '#/components/schemas/Priority' }
         tenant_id: { $ref: '#/components/schemas/ID' }
         id: { $ref: '#/components/schemas/ID' }
         project_id: { $ref: '#/components/schemas/ID' }

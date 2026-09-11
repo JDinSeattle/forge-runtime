@@ -1,0 +1,57 @@
+{
+  "evidence": "E30",
+  "captured_at": "2026-09-11T21:10:01.357653+00:00",
+  "base_commit": "224a6b64ce0cc41c564ce2c9bfd2e74b4b9ccc0a",
+  "working_tree_dirty": true,
+  "scope": "Seven task-owned source files and original Go test logs. Real private PostgreSQL + production Driver + explicitly rejecting runner fixture + SQLite/files/TestBackend; no Docker capacity saturation or paid provider.",
+  "provenance_limit": "Snapshots copied after execution and matched to all seven pre-execution frozen SHA-256 values. The ephemeral go test executable was not retained; other dependencies are not fully snapshotted here. This is not a clean-commit build attestation.",
+  "go_version_at_capture": "go version go1.26.8 linux/amd64",
+  "sources": [
+    {
+      "path": "internal/runtime/types.go",
+      "sha256": "5a27b5b335614c0c0314ec8f4f2dc19bcb5adf0ce149db11e1623f51ef0ed9c3",
+      "snapshot": "source-snapshot/internal/runtime/types.go.txt",
+      "matches_pre_execution_freeze": true
+    },
+    {
+      "path": "internal/runtime/reducer.go",
+      "sha256": "2506d4ee38af7864097c2a93b99ca94f884e50b69c33572c65b060487c553056",
+      "snapshot": "source-snapshot/internal/runtime/reducer.go.txt",
+      "matches_pre_execution_freeze": true
+    },
+    {
+      "path": "internal/runtime/capacity_test.go",
+      "sha256": "61b513746b4d90a752613645a9c17ff425d0b51079ddc462ae757324008c4aab",
+      "snapshot": "source-snapshot/internal/runtime/capacity_test.go.txt",
+      "matches_pre_execution_freeze": true
+    },
+    {
+      "path": "internal/persistence/capacity.go",
+      "sha256": "9fcbd73d0233821f12dc8c79fb632c8958364c8239b1094232c8aacd7194b32c",
+      "snapshot": "source-snapshot/internal/persistence/capacity.go.txt",
+      "matches_pre_execution_freeze": true
+    },
+    {
+      "path": "internal/persistence/scheduler.go",
+      "sha256": "008fe942266f782f7cea5e8d1f8dc421ea175bb63b2fcf9b7147403f48df55fc",
+      "snapshot": "source-snapshot/internal/persistence/scheduler.go.txt",
+      "matches_pre_execution_freeze": true
+    },
+    {
+      "path": "internal/application/driver.go",
+      "sha256": "2bb5d61a2a1f92d83e3ea75d5e1fcbef4f33ddb23cee12b02a0036a5f0fa2781",
+      "snapshot": "source-snapshot/internal/application/driver.go.txt",
+      "matches_pre_execution_freeze": true
+    },
+    {
+      "path": "internal/application/capacity_integration_test.go",
+      "sha256": "c30deb068f16409619eaa3f375e3e8a40e643f60442fc9f299aab607879acf4e",
+      "snapshot": "source-snapshot/internal/application/capacity_integration_test.go.txt",
+      "matches_pre_execution_freeze": true
+    }
+  ],
+  "logs": {
+    "postgres-race.log": "75c872df0fc6e8e4e3615598af90dc85b22aad80d84704ca8f41585ba5a069e0",
+    "static-race-vet.log": "a10500603139749d38ce12d8a494543751f74e30614fecbaffe6c63d759674fb"
+  }
+}

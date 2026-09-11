@@ -1,0 +1,29 @@
+{
+  "anchor_commit": "224a6b64ce0cc41c564ce2c9bfd2e74b4b9ccc0a",
+  "scope": "Working-tree real private PG/RLS/TCP retry and input admission; no container execution or paid model",
+  "command": [
+    "go",
+    "test",
+    "-race",
+    "./internal/persistence",
+    "./cmd/forge",
+    "./tests/review",
+    "-run",
+    "TestSubmitWithoutParentPreservesPreRetryIdempotencyHashInput|Test.*Retry|TestReviewWholeTaskRetryCreatesOneChildWithoutReopeningParent",
+    "-count=1",
+    "-timeout=90s",
+    "-v"
+  ],
+  "exit_code": 0,
+  "selected_source_sha256": {
+    "internal/persistence/store.go": "ed4f5aad3ebc18974037dc9e32c0292a7fd85919487e9b0f80757e1f09e910b4",
+    "internal/persistence/input.go": "f3a1604046922edbb40e54f0044031af2e38e2030e4114fd3a13d30f91021598",
+    "internal/persistence/submit_test.go": "2130b6c34d1695264e837db3d1b073ce077902b0d5b4817ca8a43d484579c5d3",
+    "internal/httpapi/server.go": "4f3fcb4fa03dedf915808e6cfb64065cd50856638fe9498dae49eb34231f2a12",
+    "internal/httpapi/submit.go": "d8cdbd22350bf3ce644ee4e2dd45573d7011e6dc32c3f5ae43b6f7e13150e867",
+    "cmd/forge/commands.go": "d4db5a16b27a66713a6d6bcd8076cc127f6067a03a228f9f9ca75e691e87d482",
+    "cmd/forge/retry_test.go": "cce9943e9ad934a5528f7c4e7fd090757b32b656ac2b89219a076d5a4856e8f5",
+    "tests/review/retry_test.go": "32e0850cd702d94d93fd21f31cfa60b5710f90f593cc980766bf905d5abb0061"
+  },
+  "source_unchanged": true
+}

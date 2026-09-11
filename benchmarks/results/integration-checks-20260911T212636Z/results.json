@@ -1,0 +1,165 @@
+[
+  {
+    "argv": [
+      "go",
+      "build",
+      "-o",
+      "/tmp/forge-checked-binaries-integration-checks-20260911T212636Z/",
+      "./cmd/..."
+    ],
+    "elapsed_seconds": 2.5991285250056535,
+    "exit_code": 0,
+    "name": "build"
+  },
+  {
+    "argv": [
+      "go",
+      "test",
+      "-json",
+      "-count=1",
+      "./..."
+    ],
+    "elapsed_seconds": 21.74465147400042,
+    "exit_code": 0,
+    "failed_tests": [],
+    "name": "test",
+    "packages": {
+      "fail": 0,
+      "pass": 21,
+      "skip": 12
+    },
+    "tests": {
+      "fail": 0,
+      "pass": 368,
+      "skip": 27
+    }
+  },
+  {
+    "argv": [
+      "go",
+      "test",
+      "-race",
+      "-json",
+      "-count=1",
+      "./..."
+    ],
+    "elapsed_seconds": 26.995520123979077,
+    "exit_code": 0,
+    "failed_tests": [],
+    "name": "race",
+    "packages": {
+      "fail": 0,
+      "pass": 21,
+      "skip": 12
+    },
+    "tests": {
+      "fail": 0,
+      "pass": 368,
+      "skip": 27
+    }
+  },
+  {
+    "argv": [
+      "go",
+      "vet",
+      "./..."
+    ],
+    "elapsed_seconds": 0.5077253479976207,
+    "exit_code": 0,
+    "name": "vet"
+  },
+  {
+    "argv": [
+      "make",
+      "check-generated"
+    ],
+    "elapsed_seconds": 0.3901532490272075,
+    "exit_code": 0,
+    "name": "generated"
+  },
+  {
+    "argv": [
+      "python3",
+      "-I",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "scripts/workspace-volumes",
+      "-p",
+      "test_*.py",
+      "-v"
+    ],
+    "elapsed_seconds": 0.054729533032514155,
+    "exit_code": 0,
+    "name": "python-volumes"
+  },
+  {
+    "argv": [
+      "python3",
+      "-I",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "cmd/forge-runner",
+      "-p",
+      "test_*.py",
+      "-v"
+    ],
+    "elapsed_seconds": 0.04577782400883734,
+    "exit_code": 0,
+    "name": "python-runner"
+  },
+  {
+    "argv": [
+      "python3",
+      "-I",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "scripts/recovery",
+      "-p",
+      "test_*.py",
+      "-v"
+    ],
+    "elapsed_seconds": 0.058400282985530794,
+    "exit_code": 0,
+    "name": "python-recovery"
+  },
+  {
+    "argv": [
+      "python3",
+      "-I",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "scripts/evaluation",
+      "-p",
+      "test_*.py",
+      "-v"
+    ],
+    "elapsed_seconds": 2.9758639259962365,
+    "exit_code": 0,
+    "name": "python-evaluation"
+  },
+  {
+    "argv": [
+      "python3",
+      "-I",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "scripts/faults",
+      "-p",
+      "test_*.py",
+      "-v"
+    ],
+    "elapsed_seconds": 0.09136374900117517,
+    "exit_code": 0,
+    "name": "python-faults"
+  }
+]

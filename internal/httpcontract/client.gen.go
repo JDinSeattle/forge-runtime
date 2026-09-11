@@ -320,6 +320,9 @@ type MessageResult struct {
 // Money Integer micro-US dollars; 1 USD equals 1000000.
 type Money = int64
 
+// Priority Bounded reserved metadata. This release continues tenant rotation and FIFO within each tenant; priority does not change dispatch order.
+type Priority = int
+
 // Project defines model for Project.
 type Project struct {
 	CreatedAt time.Time `json:"created_at"`
@@ -342,12 +345,16 @@ type Run struct {
 	CoveredSeq  Counter   `json:"covered_seq"`
 	CreatedAt   time.Time `json:"created_at"`
 	Id          ID        `json:"id"`
+	ParentRunId *ID       `json:"parent_run_id,omitempty"`
 	PrincipalId ID        `json:"principal_id"`
-	ProjectId   ID        `json:"project_id"`
-	RunnerId    string    `json:"runner_id"`
-	State       State     `json:"state"`
-	Task        string    `json:"task"`
-	TenantId    ID        `json:"tenant_id"`
+
+	// Priority Bounded reserved metadata. This release continues tenant rotation and FIFO within each tenant; priority does not change dispatch order.
+	Priority  *Priority `json:"priority,omitempty"`
+	ProjectId ID        `json:"project_id"`
+	RunnerId  string    `json:"runner_id"`
+	State     State     `json:"state"`
+	Task      string    `json:"task"`
+	TenantId  ID        `json:"tenant_id"`
 }
 
 // RunStatus defines model for RunStatus.
@@ -396,7 +403,13 @@ type Submit struct {
 	// Budget Optional overrides may only reduce the named server configuration limits.
 	Budget   Budget `json:"budget"`
 	ConfigId string `json:"config_id"`
-	Task     string `json:"task"`
+
+	// ParentRunId Optional terminal parent for a whole-task retry. Same tenant, project, task and base are required; the new run has fresh state, workspace and budget. Omit for an unrelated task.
+	ParentRunId *ID `json:"parent_run_id,omitempty"`
+
+	// Priority Bounded reserved metadata. This release continues tenant rotation and FIFO within each tenant; priority does not change dispatch order.
+	Priority *Priority `json:"priority,omitempty"`
+	Task     string    `json:"task"`
 }
 
 // SubmitResult defines model for SubmitResult.
@@ -413,6 +426,14 @@ type Error = APIError
 
 // SubmitRunParams defines parameters for SubmitRun.
 type SubmitRunParams struct {
+	// IdempotencyKey Scoped to authenticated tenant, principal and route. The normalized
+	// request, including an optional parent_run_id, is bound to this key;
+	// a different request returns 409. Accepted keys are retained for at
+	// least 24 hours. This release keeps them indefinitely and never deletes
+	// them automatically; the stored expires_at is not permission to reuse a
+	// key. A future documented deletion policy may make an expired key a new
+	// submission after deletion. Reconcile uncertain older submissions before
+	// using a new key; elapsed time alone does not prove the old run is absent.
 	IdempotencyKey IdempotencyKey `json:"Idempotency-Key"`
 }
 
@@ -429,6 +450,14 @@ type WatchRunParams struct {
 
 // AddMessageParams defines parameters for AddMessage.
 type AddMessageParams struct {
+	// IdempotencyKey Scoped to authenticated tenant, principal and route. The normalized
+	// request, including an optional parent_run_id, is bound to this key;
+	// a different request returns 409. Accepted keys are retained for at
+	// least 24 hours. This release keeps them indefinitely and never deletes
+	// them automatically; the stored expires_at is not permission to reuse a
+	// key. A future documented deletion policy may make an expired key a new
+	// submission after deletion. Reconcile uncertain older submissions before
+	// using a new key; elapsed time alone does not prove the old run is absent.
 	IdempotencyKey IdempotencyKey `json:"Idempotency-Key"`
 }
 

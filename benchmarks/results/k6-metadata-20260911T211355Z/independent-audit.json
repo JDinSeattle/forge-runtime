@@ -1,0 +1,135 @@
+{
+  "audit_kind": "independent offline preserved-execution audit and source review; no new k6 workload",
+  "audited_at": "2026-09-11T21:20:45.721142+00:00",
+  "passed": true,
+  "findings_p1_p2": [],
+  "successful_execution": {
+    "http_requests": 1000,
+    "reads": 900,
+    "admissions": 100,
+    "expected_status_samples": 1000,
+    "request_failures": 0,
+    "failed_checks": 0,
+    "dropped_iterations": 0,
+    "iterations": 1001,
+    "duration_ms_linear_quantiles": {
+      "min": 0.553928,
+      "med": 1.3388165,
+      "max": 20.873848,
+      "p(95)": 6.74039744999999,
+      "p(99)": 11.377648989999999
+    },
+    "first_http_completion": "2026-09-11T21:13:55.728409849Z",
+    "last_http_completion": "2026-09-11T21:14:15.703587578Z",
+    "saved_postgres_counts": {
+      "runs": 101,
+      "keys": 101,
+      "created_events": 101,
+      "models": 0,
+      "effects": 0
+    },
+    "process_success": true,
+    "failed_thresholds": [],
+    "script_sha256": "409c531abc5718984e0756919bfd3c5b165827f867de817a8237da6a32eb6bd1",
+    "raw_sha256": {
+      "empty-config.json": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+      "execution.log": "9160ba87cf1e9cc6fee3a1a1058ac1b7a1fda5f12b15e6ce6f066a58a6f9f8cc",
+      "http_test.go.txt": "9a963f4d531e387ddbde425ddf56671e2db991be2e6e4b09e775568996e6b322",
+      "k6-version.txt": "770dbcd6ed6b00f8a6e606cfb350a8891112fce5a8f30d2a2130946bce311632",
+      "k6_test.go.txt": "d10fb02458e2954cef8f9116d35f2b688c5b0d4ea519b6d73ef1d55fac963443",
+      "metadata.js.txt": "409c531abc5718984e0756919bfd3c5b165827f867de817a8237da6a32eb6bd1",
+      "metrics.jsonl": "a17bcececb0484ea972e9aff134ee6e0c8c0109ba7f8c0a0c8ffe061193e4047",
+      "report.json": "ef2bc19da69a903cbbd88aa4f1dd1e992ced733ad53ff45277ab8866d010b5c5",
+      "summary.json": "3da40d5ca4864960727b2e102f6cdd68684439a7b63a37e6aaa624f0b61a725a"
+    }
+  },
+  "preserved_failed_execution": {
+    "http_requests": 1001,
+    "reads": 900,
+    "admissions": 101,
+    "expected_status_samples": 1001,
+    "request_failures": 0,
+    "failed_checks": 0,
+    "dropped_iterations": 0,
+    "iterations": 1001,
+    "duration_ms_linear_quantiles": {
+      "min": 0.557629,
+      "med": 1.567461,
+      "max": 19.29315,
+      "p(95)": 6.657663,
+      "p(99)": 13.222153
+    },
+    "first_http_completion": "2026-09-11T21:12:32.23105492Z",
+    "last_http_completion": "2026-09-11T21:12:52.231355375Z",
+    "saved_postgres_counts": {
+      "runs": 102,
+      "keys": 102,
+      "created_events": 102,
+      "models": 0,
+      "effects": 0
+    },
+    "process_success": false,
+    "failed_thresholds": [
+      "metadata_admissions:count==100"
+    ],
+    "script_sha256": "b6ecdfbd879c60270bb2bc3bf820f8591b54519b451dd70afbd6c3485e564d2b",
+    "raw_sha256": {
+      "empty-config.json": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+      "execution.log": "31e4de06c6617ceebd6a80c92a284ef6bfdd4f2cf59ffb595163e8facd594856",
+      "k6-version.txt": "770dbcd6ed6b00f8a6e606cfb350a8891112fce5a8f30d2a2130946bce311632",
+      "metadata.js.txt": "b6ecdfbd879c60270bb2bc3bf820f8591b54519b451dd70afbd6c3485e564d2b",
+      "metrics.jsonl": "46f370b2552a8ad13c43fd25bf75c306a1681b47590efe293758a5c2dc430603",
+      "report.json": "bb63b4df477aac12cb007ffab65d27e328b68e11e33a4639f4c3bf1225e339f3",
+      "summary.json": "e251cf8aa70051e8da6b4b481de9a84c9cbfd32b95de5e458e0b33eafa918771"
+    }
+  },
+  "bindings": {
+    "javascript_snapshot_matches_report_hash": true,
+    "harness_and_script_snapshots_match_current_files": {
+      "benchmarks/k6/metadata.js": true,
+      "benchmarks/k6_test.go": true,
+      "benchmarks/http_test.go": true
+    },
+    "reported_source_hashes_match_current_files": {
+      "benchmarks/scheduler_test.go": true,
+      "go.mod": true,
+      "internal/persistence/scheduler.go": true,
+      "internal/persistence/store.go": true,
+      "internal/runtime/reducer.go": true
+    },
+    "installed_k6_binary_matches_report_sha256": true,
+    "k6_binary_sha256": "9fced9ff140d73bf3d69b3cde2493adce3807b35ab210a5cb0771045d0ad5a29",
+    "go_test_binary_sha256_recorded_but_ephemeral_binary_not_independently_available": "8b43339f0e3bc649350a9a39875ce9dffbd76c67dfd5039e637460a08c075b7b"
+  },
+  "secret_scan": {
+    "patterns": [
+      "literal_platform_token",
+      "literal_bearer_credential",
+      "credentialed_postgres_url"
+    ],
+    "matches": 0,
+    "limit": "Actual token value not read or reconstructed; pattern scan and environment/argv review are not universal secret detection."
+  },
+  "fuzz_seed_review": {
+    "command": "GOCACHE=/tmp/forge-runtime-gocache GOPROXY=off go test -race ./cmd/forge ./internal/provider -run '^Fuzz(EventCursor|ToolArgument)' -count=1 -v",
+    "passed": true,
+    "seed_cases": 18,
+    "log_sha256": "b6f24abead613fa2a9a557175fe637201b6b2996bdaee7bc582e75ab8c6693eb",
+    "source_sha256": {
+      "cmd/forge/cursor_fuzz_test.go": "cea31e148b0f95d1ec7e1f8789271f9382691060de0a93e09956ebb3672237b8",
+      "cmd/forge/watch.go": "adadac43e2fe7050a51a8d4011ae0ad1caf1191f0bb506c31abd2e37e8af0b5a",
+      "internal/provider/arguments_fuzz_test.go": "4061477d4ccf0ead5ab5e76853498ce471e45907d7c73c93ae588e389e66be93",
+      "internal/provider/assembly.go": "49e1f03fd5efa541f33756e9404de9ab2e1c8542e980ec87b1b1fb3a391aa5c0"
+    },
+    "scope": "Bounded seeds, not a fuzz campaign; cursor prefix/identity/ack and tool JSON roundtrip/duplicates/depth invariants."
+  },
+  "interpretation": [
+    "Second run has 1001 iterations but only indices 0..999 dispatch HTTP; the boundary iteration is retained and adds no request.",
+    "Legacy k6 thresholds false means not failed. First run fails its admission-count threshold; it did not yet define the later http_reqs threshold.",
+    "k6 http_req_duration excludes connection/blocked time and uses interpolated quantiles.",
+    "PG counts are saved actual query/assertion results, not a historical full-table dump independently queried here.",
+    "Real authenticated httptest handler/nonowner RLS pool are used without telemetry. No worker, model, runner or container runs.",
+    "Script/test snapshots were captured after execution and match current bytes/report hashes. Recorded Go executable hash alone is not a reconstructed build or complete DB/GC metadata.",
+    "Original raw files/source were read only; first failure is retained, not relabelled."
+  ]
+}

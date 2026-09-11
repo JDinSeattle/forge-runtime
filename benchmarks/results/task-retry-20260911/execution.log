@@ -1,0 +1,19 @@
+=== RUN   TestSubmitWithoutParentPreservesPreRetryIdempotencyHashInput
+--- PASS: TestSubmitWithoutParentPreservesPreRetryIdempotencyHashInput (0.00s)
+PASS
+ok  	github.com/JDinSeattle/forge-runtime/internal/persistence	1.019s
+testing: warning: no tests to run
+PASS
+ok  	github.com/JDinSeattle/forge-runtime/cmd/forge	1.012s [no tests to run]
+=== RUN   TestReviewWholeTaskRetryCreatesOneChildWithoutReopeningParent
+=== RUN   TestReviewWholeTaskRetryCreatesOneChildWithoutReopeningParent/changed_task
+=== RUN   TestReviewWholeTaskRetryCreatesOneChildWithoutReopeningParent/missing_parent
+=== RUN   TestReviewWholeTaskRetryCreatesOneChildWithoutReopeningParent/foreign_parent
+=== RUN   TestReviewWholeTaskRetryCreatesOneChildWithoutReopeningParent/unregistered_base
+--- PASS: TestReviewWholeTaskRetryCreatesOneChildWithoutReopeningParent (0.34s)
+    --- PASS: TestReviewWholeTaskRetryCreatesOneChildWithoutReopeningParent/changed_task (0.00s)
+    --- PASS: TestReviewWholeTaskRetryCreatesOneChildWithoutReopeningParent/missing_parent (0.00s)
+    --- PASS: TestReviewWholeTaskRetryCreatesOneChildWithoutReopeningParent/foreign_parent (0.00s)
+    --- PASS: TestReviewWholeTaskRetryCreatesOneChildWithoutReopeningParent/unregistered_base (0.00s)
+PASS
+ok  	github.com/JDinSeattle/forge-runtime/tests/review	1.386s

@@ -1,0 +1,42 @@
+{
+  "passed": true,
+  "scope": "Independent saved-record recomputation, not another OS execution. Phase PG captures are sequential reads; historical process signals and SQLite counts remain harness observations. Models and prices are synthetic.",
+  "cases": [
+    {
+      "case": "F10_cancel_first",
+      "passed": true,
+      "run_id": "run_BLLHRTO2C5FNPBQGC6XOBKCIVC",
+      "artifacts_checked": 27,
+      "events_after_cleanup": 64,
+      "synthetic_microusd": 570,
+      "terminal_winner": "cancelled"
+    },
+    {
+      "case": "F10_complete_first",
+      "passed": true,
+      "run_id": "run_FXTWIJ6BFK52VNWTEVFZJOEUUH",
+      "artifacts_checked": 26,
+      "events_after_cleanup": 62,
+      "synthetic_microusd": 570,
+      "terminal_winner": "completed"
+    },
+    {
+      "case": "F11",
+      "passed": true,
+      "run_id": "run_SPYKFTUABYUKYR74Y3GNTYU5LR",
+      "artifacts_checked": 27,
+      "events_after_cleanup": 65,
+      "synthetic_microusd": 570,
+      "database_cut_seconds": 2.008678
+    },
+    {
+      "case": "F12",
+      "passed": true,
+      "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+      "artifacts_checked": 27,
+      "events_after_cleanup": 68,
+      "synthetic_microusd": 570,
+      "sse_during_outage": 19
+    }
+  ]
+}

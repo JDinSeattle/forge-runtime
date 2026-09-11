@@ -1,0 +1,114 @@
+[
+  {
+    "at": "2026-09-11T20:40:14.484138393Z",
+    "method": "GET",
+    "path": "/readyz",
+    "response": {
+      "status": "ready"
+    },
+    "status": 200
+  },
+  {
+    "at": "2026-09-11T20:40:16.463074495Z",
+    "method": "GET",
+    "path": "/readyz",
+    "response": {
+      "status": "ready"
+    },
+    "status": 200
+  },
+  {
+    "at": "2026-09-11T20:40:16.464070276Z",
+    "method": "GET",
+    "path": "/v1/runs/run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "response": {
+      "tenant_id": "app-fault-cfyfcir36jh23q2faon4gfvff7",
+      "id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+      "project_id": "project_TYJ7PLVOUPUERYKBDE2XKJ6GC7",
+      "principal_id": "fixture-operator",
+      "task": "Execute only the literal approved fixture commands and repair clamp; deterministic fake model.",
+      "base_commit": "66ee6f4ae415b0735c6eb4d0645f5a8d72d33e7946d0219e319aa9158a375659",
+      "runner_id": "application-fault-runner",
+      "state": {
+        "schema_version": 1,
+        "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+        "tenant_id": "app-fault-cfyfcir36jh23q2faon4gfvff7",
+        "version": 10,
+        "status": "needs_reconciliation",
+        "stage": "reconcile",
+        "resume_stage": "execute_effects",
+        "lease": {
+          "owner": "worker1-0",
+          "epoch": 2,
+          "until": "2026-09-11T13:40:16.443552-07:00"
+        },
+        "step_seq": 1,
+        "workspace_revision": 1,
+        "pending_effect": {
+          "operation_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2_step_1_op_0",
+          "kind": "run_command",
+          "args": {
+            "command": [
+              "python",
+              "-I",
+              "-B",
+              "-c",
+              "import os,json\nwith open('app-counter.txt','a') as f:\n f.write('1\\n');f.flush();os.fsync(f.fileno())\nprint(json.dumps({'counter':1}),flush=True)"
+            ]
+          },
+          "args_hash": "d79e739401109bc390df0e84bf97a5fd3acff00fd1ca08aa65dafb5d6d72c534",
+          "expected_revision": 1,
+          "dispatch_epoch": 2,
+          "policy_version": "workspace-v1",
+          "requires_approval": true,
+          "status": "unknown"
+        },
+        "approval": {
+          "effect_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2_step_1_op_0",
+          "args_hash": "d79e739401109bc390df0e84bf97a5fd3acff00fd1ca08aa65dafb5d6d72c534",
+          "workspace_revision": 1,
+          "policy_version": "workspace-v1",
+          "version": 2,
+          "granted": true
+        },
+        "output_ref": "artifact_7b72362400b7f935a0d66858f16a1a0b64e681c0e905e28f2fce8e749baa808c",
+        "verification_status": "unverified",
+        "verification_revision": 0,
+        "model_rounds": 1,
+        "tool_calls": 1,
+        "cost_microusd": 150,
+        "limits": {
+          "max_model_rounds": 8,
+          "max_tool_calls": 20,
+          "max_cost_microusd": 1000000,
+          "deadline": "2026-09-11T13:41:48.388279-07:00"
+        },
+        "failure_reason": "runner_unavailable: connection error: desc = \"transport: Error while dialing: dial unix /tmp/app-continuation-1359973676/runner.sock: connect: connection refused\""
+      },
+      "config": {
+        "provider": "fake",
+        "model": "fake",
+        "max_model_rounds": 8,
+        "max_tool_calls": 20,
+        "max_cost_microusd": 1000000,
+        "max_runtime_seconds": 95
+      },
+      "created_at": "2026-09-11T13:40:13.389584-07:00",
+      "covered_seq": 18
+    },
+    "status": 200
+  },
+  {
+    "at": "2026-09-11T20:40:16.465688155Z",
+    "method": "POST",
+    "path": "/v1/runs/run_LLHVN4LI23RZGQVCYHGOIRRRV2/messages",
+    "response": {
+      "message": {
+        "seq": 1,
+        "text": "Fixture control event while the original runner is offline."
+      },
+      "reused": false
+    },
+    "status": 202
+  }
+]

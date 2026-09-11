@@ -1,0 +1,327 @@
+{
+  "audit_kind": "harness author saved-record recomputation; not an independent implementation review or second execution",
+  "capture_semantics": "separate non-atomic PostgreSQL table reads; historical SQLite counts and rejected heartbeat are harness assertions",
+  "cases": {
+    "F10_cancel_first": {
+      "artifact_bytes": 29620,
+      "artifact_kinds": {
+        "baseline": 1,
+        "context": 4,
+        "model_response": 4,
+        "operation_receipt": 7,
+        "patch": 1,
+        "patch_manifest": 1,
+        "tool_batch": 3,
+        "verification_report": 1,
+        "workspace_snapshot": 1,
+        "workspace_stop": 4
+      },
+      "cancel_responses": [
+        {
+          "status": "cancel_requested",
+          "version": 28
+        },
+        {
+          "status": "cancelled",
+          "version": 29
+        },
+        {
+          "status": "cancelled",
+          "version": 29
+        }
+      ],
+      "cleanup_id": "cleanup_GZSD5TBFDILLOCCPJWQERIDEEI",
+      "docker_actions": {
+        "create": 1,
+        "die": 1,
+        "start": 1
+      },
+      "effects": {
+        "failed": 1,
+        "succeeded": 6
+      },
+      "events_after_cleanup": 64,
+      "events_before_cleanup": 61,
+      "fixture_tokens": 570,
+      "http": [
+        {
+          "at": "2026-09-11T20:39:50.516480811Z",
+          "method": "GET",
+          "path": "/readyz",
+          "status": 200
+        },
+        {
+          "at": "2026-09-11T20:39:55.48377372Z",
+          "method": "POST",
+          "path": "/v1/runs/run_BLLHRTO2C5FNPBQGC6XOBKCIVC/cancel",
+          "status": 202
+        },
+        {
+          "at": "2026-09-11T20:39:55.577654167Z",
+          "method": "POST",
+          "path": "/v1/runs/run_BLLHRTO2C5FNPBQGC6XOBKCIVC/cancel",
+          "status": 202
+        },
+        {
+          "at": "2026-09-11T20:39:55.580644956Z",
+          "method": "POST",
+          "path": "/v1/runs/run_BLLHRTO2C5FNPBQGC6XOBKCIVC/cancel",
+          "status": 202
+        }
+      ],
+      "original_receipt_sha256": "ba7c13b4f2ba95c7aed7f3182ed9eed060bddcbcdfc90fd3946462356d3c660a",
+      "ready_artifacts": 27,
+      "run_id": "run_BLLHRTO2C5FNPBQGC6XOBKCIVC",
+      "schema": "appfault_73ggar7so3vhnsqxqza7fwv74d",
+      "synthetic_microusd": 570,
+      "target_dispatch_epoch": 2,
+      "target_operation": "run_BLLHRTO2C5FNPBQGC6XOBKCIVC_step_1_op_0",
+      "terminal_status": "cancelled",
+      "terminal_version": 29
+    },
+    "F10_complete_first": {
+      "artifact_bytes": 29162,
+      "artifact_kinds": {
+        "baseline": 1,
+        "context": 4,
+        "model_response": 4,
+        "operation_receipt": 7,
+        "patch": 1,
+        "patch_manifest": 1,
+        "tool_batch": 3,
+        "verification_report": 1,
+        "workspace_snapshot": 1,
+        "workspace_stop": 3
+      },
+      "cancel_responses": [
+        {
+          "status": "completed",
+          "version": 28
+        },
+        {
+          "status": "completed",
+          "version": 28
+        }
+      ],
+      "cleanup_id": "cleanup_MEZFDXR3I3M47AXI67JFFKU7FY",
+      "docker_actions": {
+        "create": 1,
+        "die": 1,
+        "start": 1
+      },
+      "effects": {
+        "failed": 1,
+        "succeeded": 6
+      },
+      "events_after_cleanup": 62,
+      "events_before_cleanup": 59,
+      "fixture_tokens": 570,
+      "http": [
+        {
+          "at": "2026-09-11T20:39:56.942945022Z",
+          "method": "GET",
+          "path": "/readyz",
+          "status": 200
+        },
+        {
+          "at": "2026-09-11T20:40:01.908507651Z",
+          "method": "POST",
+          "path": "/v1/runs/run_FXTWIJ6BFK52VNWTEVFZJOEUUH/cancel",
+          "status": 202
+        },
+        {
+          "at": "2026-09-11T20:40:01.915505948Z",
+          "method": "POST",
+          "path": "/v1/runs/run_FXTWIJ6BFK52VNWTEVFZJOEUUH/cancel",
+          "status": 202
+        }
+      ],
+      "original_receipt_sha256": "020e7317305a60a76f55445468b2e4026baeec1a1959c6a7d2fba2f85cf0294f",
+      "ready_artifacts": 26,
+      "run_id": "run_FXTWIJ6BFK52VNWTEVFZJOEUUH",
+      "schema": "appfault_k4fwssbupamvdyyfrm5uosjn2t",
+      "synthetic_microusd": 570,
+      "target_dispatch_epoch": 2,
+      "target_operation": "run_FXTWIJ6BFK52VNWTEVFZJOEUUH_step_1_op_0",
+      "terminal_status": "completed",
+      "terminal_version": 28
+    },
+    "F11": {
+      "artifact_bytes": 29622,
+      "artifact_kinds": {
+        "baseline": 1,
+        "context": 4,
+        "model_response": 4,
+        "operation_receipt": 7,
+        "patch": 1,
+        "patch_manifest": 1,
+        "tool_batch": 3,
+        "verification_report": 1,
+        "workspace_snapshot": 1,
+        "workspace_stop": 4
+      },
+      "cleanup_id": "cleanup_56LQBUKFA4WV5MK6KFSE6G5ZP4",
+      "docker_actions": {
+        "create": 1,
+        "die": 1,
+        "start": 1
+      },
+      "effects": {
+        "failed": 1,
+        "succeeded": 6
+      },
+      "events_after_cleanup": 65,
+      "events_before_cleanup": 62,
+      "fixture_tokens": 570,
+      "http": [
+        {
+          "at": "2026-09-11T20:40:03.305034814Z",
+          "method": "GET",
+          "path": "/readyz",
+          "status": 200
+        },
+        {
+          "at": "2026-09-11T20:40:05.311362497Z",
+          "method": "POST",
+          "path": "/v1/projects/project_5SX7BFDDXTI2RCNAE632JUTQPH/runs",
+          "status": 500
+        },
+        {
+          "at": "2026-09-11T20:40:05.312142369Z",
+          "method": "GET",
+          "path": "/readyz",
+          "status": 500
+        },
+        {
+          "at": "2026-09-11T20:40:07.319279101Z",
+          "method": "GET",
+          "path": "/v1/runs/run_SPYKFTUABYUKYR74Y3GNTYU5LR",
+          "status": 200
+        }
+      ],
+      "lease_until_to_claim_ns": 35634000,
+      "original_lease_until": "2026-09-11T13:40:09.568131-07:00",
+      "original_receipt_sha256": "17218127d0ed2914e16fdc199276a099416eab3e38ea4ec59ec1b48db9b19a30",
+      "proxy_cut_duration_ns": 2008678248,
+      "ready_artifacts": 27,
+      "replacement_claim_db_time": "2026-09-11T13:40:09.603765-07:00",
+      "run_id": "run_SPYKFTUABYUKYR74Y3GNTYU5LR",
+      "schema": "appfault_f4plhwd7hzjbzvnwroz5fkcbll",
+      "synthetic_microusd": 570,
+      "target_dispatch_epoch": 2,
+      "target_operation": "run_SPYKFTUABYUKYR74Y3GNTYU5LR_step_1_op_0",
+      "terminal_status": "completed",
+      "terminal_version": 30,
+      "worker1_pid": 958635,
+      "worker1_sigkill_requested_at": "2026-09-11T20:40:07.317524433Z",
+      "worker2_pid": 959672
+    },
+    "F12": {
+      "artifact_bytes": 29877,
+      "artifact_kinds": {
+        "baseline": 1,
+        "context": 4,
+        "model_response": 4,
+        "operation_receipt": 7,
+        "patch": 1,
+        "patch_manifest": 1,
+        "tool_batch": 3,
+        "verification_report": 1,
+        "workspace_snapshot": 1,
+        "workspace_stop": 4
+      },
+      "cleanup_id": "cleanup_YTS6QPMOG34SEKTNEWDNYTBWN5",
+      "docker_actions": {
+        "create": 1,
+        "die": 1,
+        "start": 1
+      },
+      "effects": {
+        "failed": 1,
+        "succeeded": 6
+      },
+      "events_after_cleanup": 68,
+      "events_before_cleanup": 65,
+      "fixture_tokens": 570,
+      "http": [
+        {
+          "at": "2026-09-11T20:40:14.484138393Z",
+          "method": "GET",
+          "path": "/readyz",
+          "status": 200
+        },
+        {
+          "at": "2026-09-11T20:40:16.463074495Z",
+          "method": "GET",
+          "path": "/readyz",
+          "status": 200
+        },
+        {
+          "at": "2026-09-11T20:40:16.464070276Z",
+          "method": "GET",
+          "path": "/v1/runs/run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+          "status": 200
+        },
+        {
+          "at": "2026-09-11T20:40:16.465688155Z",
+          "method": "POST",
+          "path": "/v1/runs/run_LLHVN4LI23RZGQVCYHGOIRRRV2/messages",
+          "status": 202
+        }
+      ],
+      "lease_until_to_claim_ns": 5046858000,
+      "not_before": "2026-09-11T20:40:21.441861+00:00",
+      "not_before_to_claim_ns": 48549000,
+      "original_lease_until": "2026-09-11T13:40:16.443552-07:00",
+      "original_receipt_sha256": "e1e0bf849c21f03f1563c8c0187ccefe5e556a7f003904359b9ab7ee97003cb0",
+      "ready_artifacts": 27,
+      "recovery_trigger": "production Driver.Defer ended lease and set not_before; not an untouched natural-expiry experiment",
+      "replacement_claim_db_time": "2026-09-11T13:40:21.49041-07:00",
+      "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+      "runner1_pid": 961762,
+      "runner2_pid": 962744,
+      "runner_sigkill_requested_at": "2026-09-11T20:40:16.330717595Z",
+      "schema": "appfault_c3swdcklaegihlfw6hbfv5sg2v",
+      "sse-during-runner-outage_count": 19,
+      "sse-observed_count": 62,
+      "synthetic_microusd": 570,
+      "target_dispatch_epoch": 2,
+      "target_operation": "run_LLHVN4LI23RZGQVCYHGOIRRRV2_step_1_op_0",
+      "terminal_status": "completed",
+      "terminal_version": 31,
+      "worker1_pid": 961980,
+      "worker1_sigkill_requested_at": "2026-09-11T20:40:16.557626128Z",
+      "worker2_pid": 962929
+    }
+  },
+  "evidence": "E27",
+  "go_sources_in_compilation_manifest": 155,
+  "passed": true,
+  "preserved_preflight": {
+    "original_http_statuses": [
+      200,
+      202,
+      500,
+      500
+    ],
+    "retry_first_restore_get": "2026-09-11T20:35:36.985590849Z",
+    "retry_http_statuses": [
+      200,
+      202,
+      500,
+      500,
+      200
+    ],
+    "retry_restore_get_observation_gap_ns": 100698897,
+    "retry_success_get": "2026-09-11T20:35:37.086289746Z",
+    "scope": "private API plus PG proxy only; no runner/worker or workspace allocation"
+  },
+  "production_base_commit": "224a6b64ce0cc41c564ce2c9bfd2e74b4b9ccc0a",
+  "totals": {
+    "artifact_bytes": 118281,
+    "events_after_cleanup": 259,
+    "fixture_tokens": 2280,
+    "ready_artifacts": 107,
+    "synthetic_microusd": 2280
+  }
+}

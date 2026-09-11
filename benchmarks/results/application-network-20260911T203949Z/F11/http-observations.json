@@ -1,0 +1,114 @@
+[
+  {
+    "at": "2026-09-11T20:40:03.305034814Z",
+    "method": "GET",
+    "path": "/readyz",
+    "response": {
+      "status": "ready"
+    },
+    "status": 200
+  },
+  {
+    "at": "2026-09-11T20:40:05.311362497Z",
+    "method": "POST",
+    "path": "/v1/projects/project_5SX7BFDDXTI2RCNAE632JUTQPH/runs",
+    "response": {
+      "code": "internal",
+      "message": "request could not be completed",
+      "request_id": "request_ZPS7DW2VBSKIEQOBFKW6X3A5Y4",
+      "retryable": false
+    },
+    "status": 500
+  },
+  {
+    "at": "2026-09-11T20:40:05.312142369Z",
+    "method": "GET",
+    "path": "/readyz",
+    "response": {
+      "code": "internal",
+      "message": "request could not be completed",
+      "request_id": "request_YEZX3ADDAC5J3ZHNBRTFEFUKMD",
+      "retryable": false
+    },
+    "status": 500
+  },
+  {
+    "at": "2026-09-11T20:40:07.319279101Z",
+    "method": "GET",
+    "path": "/v1/runs/run_SPYKFTUABYUKYR74Y3GNTYU5LR",
+    "response": {
+      "tenant_id": "app-fault-7777ncl5uos7lapqlirforbhgq",
+      "id": "run_SPYKFTUABYUKYR74Y3GNTYU5LR",
+      "project_id": "project_5SX7BFDDXTI2RCNAE632JUTQPH",
+      "principal_id": "fixture-operator",
+      "task": "Execute only the literal approved fixture commands and repair clamp; deterministic fake model.",
+      "base_commit": "66ee6f4ae415b0735c6eb4d0645f5a8d72d33e7946d0219e319aa9158a375659",
+      "runner_id": "application-fault-runner",
+      "state": {
+        "schema_version": 1,
+        "run_id": "run_SPYKFTUABYUKYR74Y3GNTYU5LR",
+        "tenant_id": "app-fault-7777ncl5uos7lapqlirforbhgq",
+        "version": 9,
+        "status": "running",
+        "stage": "execute_effects",
+        "lease": {
+          "owner": "worker1-0",
+          "epoch": 2,
+          "until": "2026-09-11T13:40:09.568131-07:00"
+        },
+        "step_seq": 1,
+        "workspace_revision": 1,
+        "pending_effect": {
+          "operation_id": "run_SPYKFTUABYUKYR74Y3GNTYU5LR_step_1_op_0",
+          "kind": "run_command",
+          "args": {
+            "command": [
+              "python",
+              "-I",
+              "-B",
+              "-c",
+              "import os,json\nwith open('app-counter.txt','a') as f:\n f.write('1\\n');f.flush();os.fsync(f.fileno())\nprint(json.dumps({'counter':1}),flush=True)"
+            ]
+          },
+          "args_hash": "d79e739401109bc390df0e84bf97a5fd3acff00fd1ca08aa65dafb5d6d72c534",
+          "expected_revision": 1,
+          "dispatch_epoch": 2,
+          "policy_version": "workspace-v1",
+          "requires_approval": true,
+          "status": "in_flight"
+        },
+        "approval": {
+          "effect_id": "run_SPYKFTUABYUKYR74Y3GNTYU5LR_step_1_op_0",
+          "args_hash": "d79e739401109bc390df0e84bf97a5fd3acff00fd1ca08aa65dafb5d6d72c534",
+          "workspace_revision": 1,
+          "policy_version": "workspace-v1",
+          "version": 2,
+          "granted": true
+        },
+        "output_ref": "artifact_c5945b3cc6d60f07dbcea792ba634b86d20cf27449d6f86a6a8fbdeebfe52ed7",
+        "verification_status": "unverified",
+        "verification_revision": 0,
+        "model_rounds": 1,
+        "tool_calls": 1,
+        "cost_microusd": 150,
+        "limits": {
+          "max_model_rounds": 8,
+          "max_tool_calls": 20,
+          "max_cost_microusd": 1000000,
+          "deadline": "2026-09-11T13:41:37.228603-07:00"
+        }
+      },
+      "config": {
+        "provider": "fake",
+        "model": "fake",
+        "max_model_rounds": 8,
+        "max_tool_calls": 20,
+        "max_cost_microusd": 1000000,
+        "max_runtime_seconds": 95
+      },
+      "created_at": "2026-09-11T13:40:02.229711-07:00",
+      "covered_seq": 16
+    },
+    "status": 200
+  }
+]

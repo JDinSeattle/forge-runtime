@@ -6,6 +6,7 @@ import (
 	"errors"
 	"time"
 
+	"github.com/JDinSeattle/forge-runtime/internal/dependency"
 	"github.com/JDinSeattle/forge-runtime/internal/domain"
 	flow "github.com/JDinSeattle/forge-runtime/internal/runtime"
 	"github.com/jackc/pgx/v5"
@@ -15,6 +16,8 @@ import (
 // Existing prepared/completed attempts return their stored snapshot and deadline,
 // irrespective of the current configuration passed by a recovered worker.
 func (s *Store) BeginPricedAttempt(ctx context.Context, r Run, requestRef, priceVersion string, timeout time.Duration, pricing json.RawMessage) (ModelAttempt, json.RawMessage, error) {
+	ctx, cancel := dependency.Database(ctx)
+	defer cancel()
 	if timeout <= 0 || priceVersion == "" || len(pricing) > 32<<10 || !json.Valid(pricing) {
 		return ModelAttempt{}, nil, domain.ErrInvalid
 	}
@@ -95,6 +98,8 @@ func (s *Store) BeginPricedAttempt(ctx context.Context, r Run, requestRef, price
 }
 
 func (s *Store) AttemptPricing(ctx context.Context, a ModelAttempt) (json.RawMessage, error) {
+	ctx, cancel := dependency.Database(ctx)
+	defer cancel()
 	var raw json.RawMessage
 	err := s.Pool.QueryRow(ctx, `SELECT pricing FROM model_attempts WHERE tenant_id=$1 AND run_id=$2 AND step_seq=$3 AND attempt_id=$4 AND price_version=$5`, a.TenantID, a.RunID, a.StepSeq, a.ID, a.PriceVersion).Scan(&raw)
 	if errors.Is(err, pgx.ErrNoRows) {
@@ -114,6 +119,8 @@ type AttemptFailurePolicy struct {
 }
 
 func (s *Store) AttemptFailure(ctx context.Context, a ModelAttempt) (AttemptFailurePolicy, error) {
+	ctx, cancel := dependency.Database(ctx)
+	defer cancel()
 	var raw json.RawMessage
 	var policy AttemptFailurePolicy
 	err := s.Pool.QueryRow(ctx, `SELECT failure_policy FROM model_attempts WHERE tenant_id=$1 AND run_id=$2 AND attempt_id=$3`, a.TenantID, a.RunID, a.ID).Scan(&raw)
@@ -129,6 +136,8 @@ func (s *Store) AttemptFailure(ctx context.Context, a ModelAttempt) (AttemptFail
 	return policy, nil
 }
 func (s *Store) FirstAttemptAt(ctx context.Context, a ModelAttempt) (time.Time, error) {
+	ctx, cancel := dependency.Database(ctx)
+	defer cancel()
 	var at time.Time
 	err := s.Pool.QueryRow(ctx, `SELECT min(started_at) FROM model_attempts WHERE tenant_id=$1 AND run_id=$2 AND step_seq=$3`, a.TenantID, a.RunID, a.StepSeq).Scan(&at)
 	return at, err
@@ -137,6 +146,8 @@ func (s *Store) FirstAttemptAt(ctx context.Context, a ModelAttempt) (time.Time, 
 // FinishFailedAttempt persists the retry decision with the failure transition so
 // recovery cannot skip Retry-After or retry a permanent/local validation failure.
 func (s *Store) FinishFailedAttempt(ctx context.Context, a ModelAttempt, policy AttemptFailurePolicy) error {
+	ctx, cancel := dependency.Database(ctx)
+	defer cancel()
 	if policy.Code == "" || (policy.Outcome != "failure" && policy.Outcome != "neutral") || (policy.Retry && policy.NotBefore.IsZero()) {
 		return domain.ErrInvalid
 	}

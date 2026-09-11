@@ -1,0 +1,375 @@
+[
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 1,
+    "type": "run.created",
+    "schema_version": 1,
+    "payload": {
+      "lease": {
+        "epoch": 0,
+        "owner": "",
+        "until": "0001-01-01T00:00:00Z"
+      },
+      "stage": "initialize",
+      "limits": {
+        "deadline": "2026-09-11T13:41:48.388279-07:00",
+        "max_tool_calls": 20,
+        "max_model_rounds": 8,
+        "max_cost_microusd": 1000000
+      },
+      "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+      "status": "queued",
+      "version": 1,
+      "step_seq": 0,
+      "tenant_id": "app-fault-cfyfcir36jh23q2faon4gfvff7",
+      "tool_calls": 0,
+      "model_rounds": 0,
+      "cost_microusd": 0,
+      "schema_version": 1,
+      "workspace_revision": 0,
+      "verification_status": "unverified",
+      "verification_revision": 0
+    },
+    "created_at": "2026-09-11T13:40:13.391512-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 2,
+    "type": "run.claimed",
+    "schema_version": 1,
+    "payload": {
+      "stage": "initialize",
+      "state": "running",
+      "reason": "",
+      "version": 2,
+      "step_seq": 0,
+      "output_ref": "",
+      "tool_calls": 0,
+      "model_rounds": 0,
+      "cost_microusd": 0,
+      "workspace_revision": 0,
+      "verification_status": "unverified",
+      "verification_report_ref": ""
+    },
+    "created_at": "2026-09-11T13:40:14.563565-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 3,
+    "type": "artifact.ready",
+    "schema_version": 1,
+    "payload": {
+      "id": "artifact_49935342a920a52202b54052280703fcba8d0934ce03fa07c0282f3762a5f0f1",
+      "kind": "operation_receipt",
+      "state": "ready",
+      "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+      "sha256": "8e34e9a97f609c59d4310f35ebe6c669a46fc028ff96abddfa19d464ffe12332",
+      "byte_size": 1122,
+      "tenant_id": "app-fault-cfyfcir36jh23q2faon4gfvff7",
+      "created_at": "0001-01-01T00:00:00Z",
+      "object_key": "app-fault-cfyfcir36jh23q2faon4gfvff7/run_LLHVN4LI23RZGQVCYHGOIRRRV2/8e34e9a97f609c59d4310f35ebe6c669a46fc028ff96abddfa19d464ffe12332"
+    },
+    "created_at": "2026-09-11T13:40:15.407348-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 4,
+    "type": "artifact.ready",
+    "schema_version": 1,
+    "payload": {
+      "id": "artifact_3e18b9c1408e7b09ec3d2ea5b49a594d237c00c535baae5f457f61cf0f033daa",
+      "kind": "baseline",
+      "state": "ready",
+      "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+      "sha256": "456301d929bceeb50d307c60f16549ef5cf16b07e2904d170038a268ec1c72d2",
+      "byte_size": 206,
+      "tenant_id": "app-fault-cfyfcir36jh23q2faon4gfvff7",
+      "created_at": "0001-01-01T00:00:00Z",
+      "object_key": "app-fault-cfyfcir36jh23q2faon4gfvff7/run_LLHVN4LI23RZGQVCYHGOIRRRV2/456301d929bceeb50d307c60f16549ef5cf16b07e2904d170038a268ec1c72d2"
+    },
+    "created_at": "2026-09-11T13:40:15.439474-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 5,
+    "type": "workspace.prepared",
+    "schema_version": 1,
+    "payload": {
+      "stage": "build_context",
+      "state": "running",
+      "reason": "",
+      "version": 3,
+      "step_seq": 0,
+      "output_ref": "artifact_3e18b9c1408e7b09ec3d2ea5b49a594d237c00c535baae5f457f61cf0f033daa",
+      "tool_calls": 0,
+      "model_rounds": 0,
+      "cost_microusd": 0,
+      "workspace_revision": 1,
+      "verification_status": "unverified",
+      "verification_report_ref": ""
+    },
+    "created_at": "2026-09-11T13:40:15.45159-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 6,
+    "type": "artifact.ready",
+    "schema_version": 1,
+    "payload": {
+      "id": "artifact_da124c18704df08d502cbe7505fb36c0e679abb752989b8849a17f854aa745c6",
+      "kind": "context",
+      "state": "ready",
+      "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+      "sha256": "acad1f47ee26d0ca66d36ad6838c2ae72740b0a5ec1d46aaf1c24e950cf0faa6",
+      "byte_size": 2641,
+      "tenant_id": "app-fault-cfyfcir36jh23q2faon4gfvff7",
+      "created_at": "0001-01-01T00:00:00Z",
+      "object_key": "app-fault-cfyfcir36jh23q2faon4gfvff7/run_LLHVN4LI23RZGQVCYHGOIRRRV2/acad1f47ee26d0ca66d36ad6838c2ae72740b0a5ec1d46aaf1c24e950cf0faa6"
+    },
+    "created_at": "2026-09-11T13:40:15.489255-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 7,
+    "type": "step.started",
+    "schema_version": 1,
+    "payload": {
+      "stage": "model_step",
+      "state": "running",
+      "reason": "",
+      "version": 4,
+      "step_seq": 1,
+      "output_ref": "artifact_da124c18704df08d502cbe7505fb36c0e679abb752989b8849a17f854aa745c6",
+      "tool_calls": 0,
+      "model_rounds": 1,
+      "cost_microusd": 0,
+      "workspace_revision": 1,
+      "verification_status": "unverified",
+      "verification_report_ref": ""
+    },
+    "created_at": "2026-09-11T13:40:15.493543-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 8,
+    "type": "model.started",
+    "schema_version": 1,
+    "payload": {
+      "step_seq": 1,
+      "attempt_id": "attempt_57VRKHCF5UKQYD5JO3CN2QKI2Y",
+      "price_version": "synthetic-1microusd-per-token-v1"
+    },
+    "created_at": "2026-09-11T13:40:15.498896-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 9,
+    "type": "artifact.ready",
+    "schema_version": 1,
+    "payload": {
+      "id": "artifact_7b72362400b7f935a0d66858f16a1a0b64e681c0e905e28f2fce8e749baa808c",
+      "kind": "model_response",
+      "state": "ready",
+      "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+      "sha256": "7e5b34e17aea7dab33d811305fa7a5c9a0ce978d12190f8fbb6459c46a17cacb",
+      "byte_size": 571,
+      "tenant_id": "app-fault-cfyfcir36jh23q2faon4gfvff7",
+      "created_at": "0001-01-01T00:00:00Z",
+      "object_key": "app-fault-cfyfcir36jh23q2faon4gfvff7/run_LLHVN4LI23RZGQVCYHGOIRRRV2/7e5b34e17aea7dab33d811305fa7a5c9a0ce978d12190f8fbb6459c46a17cacb"
+    },
+    "created_at": "2026-09-11T13:40:15.523164-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 10,
+    "type": "model.completed",
+    "schema_version": 1,
+    "payload": {
+      "stage": "validate_tool_calls",
+      "state": "running",
+      "reason": "",
+      "version": 5,
+      "step_seq": 1,
+      "output_ref": "artifact_7b72362400b7f935a0d66858f16a1a0b64e681c0e905e28f2fce8e749baa808c",
+      "tool_calls": 0,
+      "model_rounds": 1,
+      "cost_microusd": 150,
+      "workspace_revision": 1,
+      "verification_status": "unverified",
+      "verification_report_ref": ""
+    },
+    "created_at": "2026-09-11T13:40:15.541069-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 11,
+    "type": "tool.planned",
+    "schema_version": 1,
+    "payload": {
+      "stage": "approval_gate",
+      "state": "waiting_approval",
+      "reason": "",
+      "version": 6,
+      "step_seq": 1,
+      "args_hash": "d79e739401109bc390df0e84bf97a5fd3acff00fd1ca08aa65dafb5d6d72c534",
+      "output_ref": "artifact_7b72362400b7f935a0d66858f16a1a0b64e681c0e905e28f2fce8e749baa808c",
+      "tool_calls": 0,
+      "model_rounds": 1,
+      "operation_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2_step_1_op_0",
+      "cost_microusd": 150,
+      "workspace_revision": 1,
+      "verification_status": "unverified",
+      "verification_report_ref": ""
+    },
+    "created_at": "2026-09-11T13:40:15.548223-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 12,
+    "type": "approval.required",
+    "schema_version": 1,
+    "payload": {
+      "binding": {
+        "granted": false,
+        "version": 1,
+        "args_hash": "d79e739401109bc390df0e84bf97a5fd3acff00fd1ca08aa65dafb5d6d72c534",
+        "effect_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2_step_1_op_0",
+        "policy_version": "workspace-v1",
+        "workspace_revision": 1
+      },
+      "approval_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2_step_1_op_0_approval"
+    },
+    "created_at": "2026-09-11T13:40:15.548612-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 13,
+    "type": "approval.decided",
+    "schema_version": 1,
+    "payload": {
+      "stage": "execute_effects",
+      "state": "queued",
+      "reason": "",
+      "version": 7,
+      "step_seq": 1,
+      "args_hash": "d79e739401109bc390df0e84bf97a5fd3acff00fd1ca08aa65dafb5d6d72c534",
+      "output_ref": "artifact_7b72362400b7f935a0d66858f16a1a0b64e681c0e905e28f2fce8e749baa808c",
+      "tool_calls": 0,
+      "model_rounds": 1,
+      "operation_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2_step_1_op_0",
+      "cost_microusd": 150,
+      "workspace_revision": 1,
+      "verification_status": "unverified",
+      "verification_report_ref": ""
+    },
+    "created_at": "2026-09-11T13:40:15.558907-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 14,
+    "type": "run.claimed",
+    "schema_version": 1,
+    "payload": {
+      "stage": "adopt_workspace",
+      "state": "running",
+      "reason": "",
+      "version": 8,
+      "step_seq": 1,
+      "args_hash": "d79e739401109bc390df0e84bf97a5fd3acff00fd1ca08aa65dafb5d6d72c534",
+      "output_ref": "artifact_7b72362400b7f935a0d66858f16a1a0b64e681c0e905e28f2fce8e749baa808c",
+      "tool_calls": 0,
+      "model_rounds": 1,
+      "operation_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2_step_1_op_0",
+      "cost_microusd": 150,
+      "workspace_revision": 1,
+      "verification_status": "unverified",
+      "verification_report_ref": ""
+    },
+    "created_at": "2026-09-11T13:40:15.585843-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 15,
+    "type": "artifact.ready",
+    "schema_version": 1,
+    "payload": {
+      "id": "artifact_12bced855bdc5677a0d256357f7218092e80e5a691c0cffce5cd75a90cd9ce6e",
+      "kind": "workspace_stop",
+      "state": "ready",
+      "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+      "sha256": "cf69a5ea13afecfeff9bd1a3cf687374c0501517e15248f55f8005bdd2ffc816",
+      "byte_size": 460,
+      "tenant_id": "app-fault-cfyfcir36jh23q2faon4gfvff7",
+      "created_at": "0001-01-01T00:00:00Z",
+      "object_key": "app-fault-cfyfcir36jh23q2faon4gfvff7/run_LLHVN4LI23RZGQVCYHGOIRRRV2/cf69a5ea13afecfeff9bd1a3cf687374c0501517e15248f55f8005bdd2ffc816"
+    },
+    "created_at": "2026-09-11T13:40:15.624433-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 16,
+    "type": "workspace.adopted",
+    "schema_version": 1,
+    "payload": {
+      "stage": "execute_effects",
+      "state": "running",
+      "reason": "",
+      "version": 9,
+      "step_seq": 1,
+      "args_hash": "d79e739401109bc390df0e84bf97a5fd3acff00fd1ca08aa65dafb5d6d72c534",
+      "output_ref": "artifact_7b72362400b7f935a0d66858f16a1a0b64e681c0e905e28f2fce8e749baa808c",
+      "tool_calls": 1,
+      "model_rounds": 1,
+      "operation_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2_step_1_op_0",
+      "cost_microusd": 150,
+      "workspace_revision": 1,
+      "verification_status": "unverified",
+      "verification_report_ref": ""
+    },
+    "created_at": "2026-09-11T13:40:15.631077-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 17,
+    "type": "run.effect_uncertain",
+    "schema_version": 1,
+    "payload": {
+      "stage": "reconcile",
+      "state": "needs_reconciliation",
+      "reason": "runner_unavailable: connection error: desc = \"transport: Error while dialing: dial unix /tmp/app-continuation-1359973676/runner.sock: connect: connection refused\"",
+      "version": 10,
+      "step_seq": 1,
+      "args_hash": "d79e739401109bc390df0e84bf97a5fd3acff00fd1ca08aa65dafb5d6d72c534",
+      "output_ref": "artifact_7b72362400b7f935a0d66858f16a1a0b64e681c0e905e28f2fce8e749baa808c",
+      "tool_calls": 1,
+      "model_rounds": 1,
+      "operation_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2_step_1_op_0",
+      "cost_microusd": 150,
+      "workspace_revision": 1,
+      "verification_status": "unverified",
+      "verification_report_ref": ""
+    },
+    "created_at": "2026-09-11T13:40:16.43761-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 18,
+    "type": "run.reconciliation_wait",
+    "schema_version": 1,
+    "payload": {
+      "not_before": "2026-09-11T13:40:21.441861895-07:00"
+    },
+    "created_at": "2026-09-11T13:40:16.445472-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 19,
+    "type": "run.message_added",
+    "schema_version": 1,
+    "payload": {
+      "seq": 1,
+      "text": "Fixture control event while the original runner is offline."
+    },
+    "created_at": "2026-09-11T13:40:16.472021-07:00"
+  }
+]

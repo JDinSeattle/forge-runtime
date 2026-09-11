@@ -96,7 +96,9 @@ func TestRecoveryPostgresAdditiveUpgrade(t *testing.T) {
 	capture := func() map[string]string {
 		result := map[string]string{}
 		for name, query := range map[string]string{
-			"runs":           `SELECT json_agg(row_to_json(x) ORDER BY x.id)::text FROM runs x`,
+			// Compare all pre-upgrade columns; migration 9's additive priority
+			// is checked independently below rather than silently ignored.
+			"runs":           `SELECT json_agg(to_jsonb(x)-'priority' ORDER BY x.id)::text FROM runs x`,
 			"effects":        `SELECT json_agg(row_to_json(x) ORDER BY x.operation_id)::text FROM effects x`,
 			"artifacts":      `SELECT json_agg(row_to_json(x) ORDER BY x.id)::text FROM artifacts x`,
 			"snapshot_bytes": `SELECT body::text FROM run_snapshots WHERE tenant_id=$1 AND run_id='run_a'`,
@@ -132,12 +134,16 @@ func TestRecoveryPostgresAdditiveUpgrade(t *testing.T) {
 	if err = legacy.QueryRow(ctx, `SELECT relrowsecurity FROM pg_class WHERE oid='workspace_cleanup'::regclass`).Scan(&cleanupRLS); err != nil || !cleanupRLS {
 		t.Fatalf("cleanup table missing RLS: %v", err)
 	}
+	var defaultPriorities bool
+	if err = legacy.QueryRow(ctx, `SELECT count(*)>0 AND bool_and(priority=0) FROM runs`).Scan(&defaultPriorities); err != nil || !defaultPriorities {
+		t.Fatalf("legacy runs did not receive default priority: %v", err)
+	}
 	var version int
-	if err = legacy.QueryRow(ctx, `SELECT max(version_id) FROM goose_db_version WHERE is_applied`).Scan(&version); err != nil || version != 8 {
+	if err = legacy.QueryRow(ctx, `SELECT max(version_id) FROM goose_db_version WHERE is_applied`).Scan(&version); err != nil || version != 10 {
 		t.Fatalf("unexpected migration version %d %v", version, err)
 	}
-	upgradeReport(t, "postgres", map[string]any{"passed": true, "from": 6, "to": version, "upgrade_twice": true, "committed_run_effect_artifact_and_snapshot_bytes_preserved": true, "unknown_effect_preserved": true, "legacy_audit_inputs_remain_null": nullInputs, "new_cleanup_rls": cleanupRLS, "private_schema": schema, "scope": "additive migration rehearsal, not an old-binary rolling compatibility claim"})
-	t.Log("private PostgreSQL schema upgraded 6 -> 8 twice; committed unknown effect, run, artifact metadata and snapshot bytes unchanged")
+	upgradeReport(t, "postgres", map[string]any{"passed": true, "from": 6, "to": version, "upgrade_twice": true, "committed_run_effect_artifact_and_snapshot_bytes_preserved": true, "unknown_effect_preserved": true, "legacy_audit_inputs_remain_null": nullInputs, "new_cleanup_rls": cleanupRLS, "new_priority_defaults_zero": defaultPriorities, "run_comparison": "all original columns; new priority independently checked", "private_schema": schema, "scope": "additive migration rehearsal, not an old-binary rolling compatibility claim"})
+	t.Log("private PostgreSQL schema upgraded 6 -> 10 twice; original run columns, unknown effect, artifact metadata and snapshot bytes unchanged; new priority defaults to zero")
 }
 
 type resultValue struct {

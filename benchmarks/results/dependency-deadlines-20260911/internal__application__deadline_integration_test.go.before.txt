@@ -1,0 +1,137 @@
+package application
+
+import (
+	"context"
+	"testing"
+	"time"
+
+	"github.com/JDinSeattle/forge-runtime/internal/dependency"
+	"github.com/JDinSeattle/forge-runtime/internal/domain"
+	"github.com/JDinSeattle/forge-runtime/internal/provider"
+	"github.com/JDinSeattle/forge-runtime/internal/runner"
+)
+
+type deadlinePausedProvider struct {
+	provider.Provider
+	entered chan struct{}
+	release chan struct{}
+	paused  bool
+}
+
+func (p *deadlinePausedProvider) Stream(ctx context.Context, r provider.ModelRequest, emit func(provider.ModelEvent) error) (provider.ModelTurn, error) {
+	if !p.paused {
+		p.paused = true
+		close(p.entered)
+		select {
+		case <-p.release:
+		case <-ctx.Done():
+			return provider.ModelTurn{}, ctx.Err()
+		}
+	}
+	return p.Provider.Stream(ctx, r, emit)
+}
+
+type deadlinePausedRunner struct {
+	runner.Service
+	entered chan struct{}
+	release chan struct{}
+	paused  bool
+}
+
+func (r *deadlinePausedRunner) StartOperation(ctx context.Context, op runner.OperationRequest) (runner.Operation, error) {
+	if !r.paused {
+		r.paused = true
+		close(r.entered)
+		select {
+		case <-r.release:
+		case <-ctx.Done():
+			return runner.Operation{}, ctx.Err()
+		}
+	}
+	return r.Service.StartOperation(ctx, op)
+}
+
+func TestExternalModelAndRunnerWaitsHoldNoSQLTransaction(t *testing.T) {
+	for _, external := range []string{"model", "runner"} {
+		t.Run(external, func(t *testing.T) {
+			d, r, p, _ := repairSetup(t)
+			spec := d.Models["fake/fake"]
+			spec.RequestTimeout = 10 * time.Second
+			d.Models["fake/fake"] = spec
+			entered, release := make(chan struct{}), make(chan struct{})
+			if external == "model" {
+				d.Providers["fake"] = &deadlinePausedProvider{Provider: p, entered: entered, release: release}
+			} else {
+				d.Runner = &deadlinePausedRunner{Service: d.Runner, entered: entered, release: release}
+			}
+			ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+			defer cancel()
+			claimed, err := d.Store.Claim(ctx, "deadline-worker", d.LeaseDuration)
+			if err != nil {
+				t.Fatal(err)
+			}
+			done := make(chan error, 1)
+			go func() { done <- d.Drive(ctx, claimed) }()
+			defer func() {
+				cancel()
+				select {
+				case <-done:
+				case <-time.After(time.Second):
+				}
+			}()
+			select {
+			case <-entered:
+			case err := <-done:
+				t.Fatalf("Driver returned before external wait: %v", err)
+			case <-ctx.Done():
+				t.Fatal(ctx.Err())
+			}
+			// While external I/O remains suspended, short SQL contexts have already
+			// finished. NOWAIT is independent evidence that run/quota rows are unlocked.
+			check := func() {
+				tx, err := d.Store.Pool.Begin(ctx)
+				if err != nil {
+					t.Fatal(err)
+				}
+				defer tx.Rollback(ctx)
+				for _, sql := range []string{`SELECT id FROM runs FOR UPDATE NOWAIT`, `SELECT tenant_id FROM tenant_runtime FOR UPDATE NOWAIT`, `SELECT credential_group FROM provider_quotas FOR UPDATE NOWAIT`} {
+					if _, err = tx.Exec(ctx, sql); err != nil {
+						t.Fatalf("external %s retained SQL lock: %v", external, err)
+					}
+				}
+				if err = tx.Rollback(ctx); err != nil {
+					t.Fatal(err)
+				}
+				until := time.Now().Add(time.Second)
+				for d.Store.Pool.Stat().AcquiredConns() != 0 && time.Now().Before(until) {
+					time.Sleep(time.Millisecond)
+				}
+				if d.Store.Pool.Stat().AcquiredConns() != 0 {
+					t.Fatal("external wait retained pooled transaction/connection")
+				}
+			}
+			check()
+			timer := time.NewTimer(dependency.DatabaseTimeout + 150*time.Millisecond)
+			select {
+			case <-timer.C:
+			case err := <-done:
+				timer.Stop()
+				t.Fatalf("DB operation budget canceled external %s: %v", external, err)
+			}
+			check()
+			close(release)
+			select {
+			case err := <-done:
+				if err != nil {
+					t.Fatal(err)
+				}
+			case <-ctx.Done():
+				t.Fatal(ctx.Err())
+			}
+			got, err := d.Store.GetRun(ctx, r.TenantID, r.ID)
+			if err != nil || got.State.Status != domain.StatusCompleted {
+				t.Fatalf("repair did not continue after external wait: %s %v", got.State.Status, err)
+			}
+		})
+	}
+}

@@ -14,6 +14,7 @@ import (
 	"strings"
 
 	"github.com/JDinSeattle/forge-runtime/internal/artifact"
+	"github.com/JDinSeattle/forge-runtime/internal/dependency"
 	"github.com/JDinSeattle/forge-runtime/internal/domain"
 	"github.com/JDinSeattle/forge-runtime/internal/persistence"
 	_ "modernc.org/sqlite"
@@ -29,39 +30,7 @@ func Collect(ctx context.Context, objects *artifact.LocalStore, db *persistence.
 		return artifact.CollectionResult{}, domain.ErrInvalid
 	}
 	return objects.Collect(ctx, options, func(ctx context.Context) (map[string]bool, error) {
-		var allTenants, otherRunner bool
-		err := db.Pool.QueryRow(ctx, `SELECT rolsuper OR rolbypassrls FROM pg_roles WHERE rolname=current_user`).Scan(&allTenants)
-		if err != nil {
-			return nil, err
-		}
-		if !allTenants {
-			return nil, fmt.Errorf("%w: collection needs all-tenant visibility", domain.ErrForbidden)
-		}
-		err = db.Pool.QueryRow(ctx, `SELECT EXISTS(SELECT 1 FROM runner_allocations WHERE runner_id<>$1)`, runnerID).Scan(&otherRunner)
-		if err != nil {
-			return nil, err
-		}
-		if otherRunner {
-			return nil, fmt.Errorf("%w: collection requires all runner journals; this command supports one local runner", domain.ErrInvalid)
-		}
-		refs := map[string]bool{}
-		rows, err := db.Pool.Query(ctx, `SELECT object_key FROM artifacts`)
-		if err != nil {
-			return nil, err
-		}
-		for rows.Next() {
-			var key string
-			if err = rows.Scan(&key); err != nil {
-				rows.Close()
-				return nil, err
-			}
-			if err = add(refs, key); err != nil {
-				rows.Close()
-				return nil, err
-			}
-		}
-		err = rows.Err()
-		rows.Close()
+		refs, err := postgresReferences(ctx, db, runnerID)
 		if err != nil {
 			return nil, err
 		}
@@ -70,6 +39,48 @@ func Collect(ctx context.Context, objects *artifact.LocalStore, db *persistence.
 		}
 		return refs, nil
 	})
+}
+
+func postgresReferences(ctx context.Context, db *persistence.Store, runnerID string) (map[string]bool, error) {
+	ctx, cancel := dependency.Database(ctx)
+	defer cancel()
+	var allTenants, otherRunner bool
+	err := db.Pool.QueryRow(ctx, `SELECT rolsuper OR rolbypassrls FROM pg_roles WHERE rolname=current_user`).Scan(&allTenants)
+	if err != nil {
+		return nil, err
+	}
+	if !allTenants {
+		return nil, fmt.Errorf("%w: collection needs all-tenant visibility", domain.ErrForbidden)
+	}
+	err = db.Pool.QueryRow(ctx, `SELECT EXISTS(SELECT 1 FROM runner_allocations WHERE runner_id<>$1)`, runnerID).Scan(&otherRunner)
+	if err != nil {
+		return nil, err
+	}
+	if otherRunner {
+		return nil, fmt.Errorf("%w: collection requires all runner journals; this command supports one local runner", domain.ErrInvalid)
+	}
+	refs := map[string]bool{}
+	rows, err := db.Pool.Query(ctx, `SELECT object_key FROM artifacts`)
+	if err != nil {
+		return nil, err
+	}
+	for rows.Next() {
+		var key string
+		if err = rows.Scan(&key); err != nil {
+			rows.Close()
+			return nil, err
+		}
+		if err = add(refs, key); err != nil {
+			rows.Close()
+			return nil, err
+		}
+	}
+	err = rows.Err()
+	rows.Close()
+	if err != nil {
+		return nil, err
+	}
+	return refs, nil
 }
 
 func add(refs map[string]bool, key string) error {
@@ -89,6 +100,8 @@ func add(refs map[string]bool, key string) error {
 }
 
 func journalReferences(ctx context.Context, filename string, refs map[string]bool, verify ...func(string) error) error {
+	ctx, cancel := dependency.Database(ctx)
+	defer cancel()
 	// mode=ro fails if missing, reads committed WAL state, and never silently
 	// creates a new empty journal or migrates an unknown schema during GC.
 	u := url.URL{Scheme: "file", Path: filename, RawQuery: url.Values{"mode": {"ro"}, "_pragma": {"busy_timeout(5000)"}}.Encode()}

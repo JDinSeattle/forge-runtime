@@ -1,0 +1,1202 @@
+[
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 1,
+    "type": "run.created",
+    "schema_version": 1,
+    "payload": {
+      "lease": {
+        "epoch": 0,
+        "owner": "",
+        "until": "0001-01-01T00:00:00Z"
+      },
+      "stage": "initialize",
+      "limits": {
+        "deadline": "2026-09-11T13:41:48.388279-07:00",
+        "max_tool_calls": 20,
+        "max_model_rounds": 8,
+        "max_cost_microusd": 1000000
+      },
+      "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+      "status": "queued",
+      "version": 1,
+      "step_seq": 0,
+      "tenant_id": "app-fault-cfyfcir36jh23q2faon4gfvff7",
+      "tool_calls": 0,
+      "model_rounds": 0,
+      "cost_microusd": 0,
+      "schema_version": 1,
+      "workspace_revision": 0,
+      "verification_status": "unverified",
+      "verification_revision": 0
+    },
+    "created_at": "2026-09-11T13:40:13.391512-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 2,
+    "type": "run.claimed",
+    "schema_version": 1,
+    "payload": {
+      "stage": "initialize",
+      "state": "running",
+      "reason": "",
+      "version": 2,
+      "step_seq": 0,
+      "output_ref": "",
+      "tool_calls": 0,
+      "model_rounds": 0,
+      "cost_microusd": 0,
+      "workspace_revision": 0,
+      "verification_status": "unverified",
+      "verification_report_ref": ""
+    },
+    "created_at": "2026-09-11T13:40:14.563565-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 3,
+    "type": "artifact.ready",
+    "schema_version": 1,
+    "payload": {
+      "id": "artifact_49935342a920a52202b54052280703fcba8d0934ce03fa07c0282f3762a5f0f1",
+      "kind": "operation_receipt",
+      "state": "ready",
+      "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+      "sha256": "8e34e9a97f609c59d4310f35ebe6c669a46fc028ff96abddfa19d464ffe12332",
+      "byte_size": 1122,
+      "tenant_id": "app-fault-cfyfcir36jh23q2faon4gfvff7",
+      "created_at": "0001-01-01T00:00:00Z",
+      "object_key": "app-fault-cfyfcir36jh23q2faon4gfvff7/run_LLHVN4LI23RZGQVCYHGOIRRRV2/8e34e9a97f609c59d4310f35ebe6c669a46fc028ff96abddfa19d464ffe12332"
+    },
+    "created_at": "2026-09-11T13:40:15.407348-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 4,
+    "type": "artifact.ready",
+    "schema_version": 1,
+    "payload": {
+      "id": "artifact_3e18b9c1408e7b09ec3d2ea5b49a594d237c00c535baae5f457f61cf0f033daa",
+      "kind": "baseline",
+      "state": "ready",
+      "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+      "sha256": "456301d929bceeb50d307c60f16549ef5cf16b07e2904d170038a268ec1c72d2",
+      "byte_size": 206,
+      "tenant_id": "app-fault-cfyfcir36jh23q2faon4gfvff7",
+      "created_at": "0001-01-01T00:00:00Z",
+      "object_key": "app-fault-cfyfcir36jh23q2faon4gfvff7/run_LLHVN4LI23RZGQVCYHGOIRRRV2/456301d929bceeb50d307c60f16549ef5cf16b07e2904d170038a268ec1c72d2"
+    },
+    "created_at": "2026-09-11T13:40:15.439474-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 5,
+    "type": "workspace.prepared",
+    "schema_version": 1,
+    "payload": {
+      "stage": "build_context",
+      "state": "running",
+      "reason": "",
+      "version": 3,
+      "step_seq": 0,
+      "output_ref": "artifact_3e18b9c1408e7b09ec3d2ea5b49a594d237c00c535baae5f457f61cf0f033daa",
+      "tool_calls": 0,
+      "model_rounds": 0,
+      "cost_microusd": 0,
+      "workspace_revision": 1,
+      "verification_status": "unverified",
+      "verification_report_ref": ""
+    },
+    "created_at": "2026-09-11T13:40:15.45159-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 6,
+    "type": "artifact.ready",
+    "schema_version": 1,
+    "payload": {
+      "id": "artifact_da124c18704df08d502cbe7505fb36c0e679abb752989b8849a17f854aa745c6",
+      "kind": "context",
+      "state": "ready",
+      "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+      "sha256": "acad1f47ee26d0ca66d36ad6838c2ae72740b0a5ec1d46aaf1c24e950cf0faa6",
+      "byte_size": 2641,
+      "tenant_id": "app-fault-cfyfcir36jh23q2faon4gfvff7",
+      "created_at": "0001-01-01T00:00:00Z",
+      "object_key": "app-fault-cfyfcir36jh23q2faon4gfvff7/run_LLHVN4LI23RZGQVCYHGOIRRRV2/acad1f47ee26d0ca66d36ad6838c2ae72740b0a5ec1d46aaf1c24e950cf0faa6"
+    },
+    "created_at": "2026-09-11T13:40:15.489255-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 7,
+    "type": "step.started",
+    "schema_version": 1,
+    "payload": {
+      "stage": "model_step",
+      "state": "running",
+      "reason": "",
+      "version": 4,
+      "step_seq": 1,
+      "output_ref": "artifact_da124c18704df08d502cbe7505fb36c0e679abb752989b8849a17f854aa745c6",
+      "tool_calls": 0,
+      "model_rounds": 1,
+      "cost_microusd": 0,
+      "workspace_revision": 1,
+      "verification_status": "unverified",
+      "verification_report_ref": ""
+    },
+    "created_at": "2026-09-11T13:40:15.493543-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 8,
+    "type": "model.started",
+    "schema_version": 1,
+    "payload": {
+      "step_seq": 1,
+      "attempt_id": "attempt_57VRKHCF5UKQYD5JO3CN2QKI2Y",
+      "price_version": "synthetic-1microusd-per-token-v1"
+    },
+    "created_at": "2026-09-11T13:40:15.498896-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 9,
+    "type": "artifact.ready",
+    "schema_version": 1,
+    "payload": {
+      "id": "artifact_7b72362400b7f935a0d66858f16a1a0b64e681c0e905e28f2fce8e749baa808c",
+      "kind": "model_response",
+      "state": "ready",
+      "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+      "sha256": "7e5b34e17aea7dab33d811305fa7a5c9a0ce978d12190f8fbb6459c46a17cacb",
+      "byte_size": 571,
+      "tenant_id": "app-fault-cfyfcir36jh23q2faon4gfvff7",
+      "created_at": "0001-01-01T00:00:00Z",
+      "object_key": "app-fault-cfyfcir36jh23q2faon4gfvff7/run_LLHVN4LI23RZGQVCYHGOIRRRV2/7e5b34e17aea7dab33d811305fa7a5c9a0ce978d12190f8fbb6459c46a17cacb"
+    },
+    "created_at": "2026-09-11T13:40:15.523164-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 10,
+    "type": "model.completed",
+    "schema_version": 1,
+    "payload": {
+      "stage": "validate_tool_calls",
+      "state": "running",
+      "reason": "",
+      "version": 5,
+      "step_seq": 1,
+      "output_ref": "artifact_7b72362400b7f935a0d66858f16a1a0b64e681c0e905e28f2fce8e749baa808c",
+      "tool_calls": 0,
+      "model_rounds": 1,
+      "cost_microusd": 150,
+      "workspace_revision": 1,
+      "verification_status": "unverified",
+      "verification_report_ref": ""
+    },
+    "created_at": "2026-09-11T13:40:15.541069-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 11,
+    "type": "tool.planned",
+    "schema_version": 1,
+    "payload": {
+      "stage": "approval_gate",
+      "state": "waiting_approval",
+      "reason": "",
+      "version": 6,
+      "step_seq": 1,
+      "args_hash": "d79e739401109bc390df0e84bf97a5fd3acff00fd1ca08aa65dafb5d6d72c534",
+      "output_ref": "artifact_7b72362400b7f935a0d66858f16a1a0b64e681c0e905e28f2fce8e749baa808c",
+      "tool_calls": 0,
+      "model_rounds": 1,
+      "operation_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2_step_1_op_0",
+      "cost_microusd": 150,
+      "workspace_revision": 1,
+      "verification_status": "unverified",
+      "verification_report_ref": ""
+    },
+    "created_at": "2026-09-11T13:40:15.548223-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 12,
+    "type": "approval.required",
+    "schema_version": 1,
+    "payload": {
+      "binding": {
+        "granted": false,
+        "version": 1,
+        "args_hash": "d79e739401109bc390df0e84bf97a5fd3acff00fd1ca08aa65dafb5d6d72c534",
+        "effect_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2_step_1_op_0",
+        "policy_version": "workspace-v1",
+        "workspace_revision": 1
+      },
+      "approval_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2_step_1_op_0_approval"
+    },
+    "created_at": "2026-09-11T13:40:15.548612-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 13,
+    "type": "approval.decided",
+    "schema_version": 1,
+    "payload": {
+      "stage": "execute_effects",
+      "state": "queued",
+      "reason": "",
+      "version": 7,
+      "step_seq": 1,
+      "args_hash": "d79e739401109bc390df0e84bf97a5fd3acff00fd1ca08aa65dafb5d6d72c534",
+      "output_ref": "artifact_7b72362400b7f935a0d66858f16a1a0b64e681c0e905e28f2fce8e749baa808c",
+      "tool_calls": 0,
+      "model_rounds": 1,
+      "operation_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2_step_1_op_0",
+      "cost_microusd": 150,
+      "workspace_revision": 1,
+      "verification_status": "unverified",
+      "verification_report_ref": ""
+    },
+    "created_at": "2026-09-11T13:40:15.558907-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 14,
+    "type": "run.claimed",
+    "schema_version": 1,
+    "payload": {
+      "stage": "adopt_workspace",
+      "state": "running",
+      "reason": "",
+      "version": 8,
+      "step_seq": 1,
+      "args_hash": "d79e739401109bc390df0e84bf97a5fd3acff00fd1ca08aa65dafb5d6d72c534",
+      "output_ref": "artifact_7b72362400b7f935a0d66858f16a1a0b64e681c0e905e28f2fce8e749baa808c",
+      "tool_calls": 0,
+      "model_rounds": 1,
+      "operation_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2_step_1_op_0",
+      "cost_microusd": 150,
+      "workspace_revision": 1,
+      "verification_status": "unverified",
+      "verification_report_ref": ""
+    },
+    "created_at": "2026-09-11T13:40:15.585843-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 15,
+    "type": "artifact.ready",
+    "schema_version": 1,
+    "payload": {
+      "id": "artifact_12bced855bdc5677a0d256357f7218092e80e5a691c0cffce5cd75a90cd9ce6e",
+      "kind": "workspace_stop",
+      "state": "ready",
+      "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+      "sha256": "cf69a5ea13afecfeff9bd1a3cf687374c0501517e15248f55f8005bdd2ffc816",
+      "byte_size": 460,
+      "tenant_id": "app-fault-cfyfcir36jh23q2faon4gfvff7",
+      "created_at": "0001-01-01T00:00:00Z",
+      "object_key": "app-fault-cfyfcir36jh23q2faon4gfvff7/run_LLHVN4LI23RZGQVCYHGOIRRRV2/cf69a5ea13afecfeff9bd1a3cf687374c0501517e15248f55f8005bdd2ffc816"
+    },
+    "created_at": "2026-09-11T13:40:15.624433-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 16,
+    "type": "workspace.adopted",
+    "schema_version": 1,
+    "payload": {
+      "stage": "execute_effects",
+      "state": "running",
+      "reason": "",
+      "version": 9,
+      "step_seq": 1,
+      "args_hash": "d79e739401109bc390df0e84bf97a5fd3acff00fd1ca08aa65dafb5d6d72c534",
+      "output_ref": "artifact_7b72362400b7f935a0d66858f16a1a0b64e681c0e905e28f2fce8e749baa808c",
+      "tool_calls": 1,
+      "model_rounds": 1,
+      "operation_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2_step_1_op_0",
+      "cost_microusd": 150,
+      "workspace_revision": 1,
+      "verification_status": "unverified",
+      "verification_report_ref": ""
+    },
+    "created_at": "2026-09-11T13:40:15.631077-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 17,
+    "type": "run.effect_uncertain",
+    "schema_version": 1,
+    "payload": {
+      "stage": "reconcile",
+      "state": "needs_reconciliation",
+      "reason": "runner_unavailable: connection error: desc = \"transport: Error while dialing: dial unix /tmp/app-continuation-1359973676/runner.sock: connect: connection refused\"",
+      "version": 10,
+      "step_seq": 1,
+      "args_hash": "d79e739401109bc390df0e84bf97a5fd3acff00fd1ca08aa65dafb5d6d72c534",
+      "output_ref": "artifact_7b72362400b7f935a0d66858f16a1a0b64e681c0e905e28f2fce8e749baa808c",
+      "tool_calls": 1,
+      "model_rounds": 1,
+      "operation_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2_step_1_op_0",
+      "cost_microusd": 150,
+      "workspace_revision": 1,
+      "verification_status": "unverified",
+      "verification_report_ref": ""
+    },
+    "created_at": "2026-09-11T13:40:16.43761-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 18,
+    "type": "run.reconciliation_wait",
+    "schema_version": 1,
+    "payload": {
+      "not_before": "2026-09-11T13:40:21.441861895-07:00"
+    },
+    "created_at": "2026-09-11T13:40:16.445472-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 19,
+    "type": "run.message_added",
+    "schema_version": 1,
+    "payload": {
+      "seq": 1,
+      "text": "Fixture control event while the original runner is offline."
+    },
+    "created_at": "2026-09-11T13:40:16.472021-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 20,
+    "type": "run.claimed",
+    "schema_version": 1,
+    "payload": {
+      "stage": "adopt_workspace",
+      "state": "needs_reconciliation",
+      "reason": "runner_unavailable: connection error: desc = \"transport: Error while dialing: dial unix /tmp/app-continuation-1359973676/runner.sock: connect: connection refused\"",
+      "version": 11,
+      "step_seq": 1,
+      "args_hash": "d79e739401109bc390df0e84bf97a5fd3acff00fd1ca08aa65dafb5d6d72c534",
+      "output_ref": "artifact_7b72362400b7f935a0d66858f16a1a0b64e681c0e905e28f2fce8e749baa808c",
+      "tool_calls": 1,
+      "model_rounds": 1,
+      "operation_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2_step_1_op_0",
+      "cost_microusd": 150,
+      "workspace_revision": 1,
+      "verification_status": "unverified",
+      "verification_report_ref": ""
+    },
+    "created_at": "2026-09-11T13:40:21.503948-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 21,
+    "type": "artifact.ready",
+    "schema_version": 1,
+    "payload": {
+      "id": "artifact_d4c6c230638439f581ff365a3c6d943ff17e08668f3898e57942fba204593eb5",
+      "kind": "workspace_stop",
+      "state": "ready",
+      "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+      "sha256": "ccbf1093b49e0507e56399a0c08572d6c8fd3c181bc422b12aa5adb023b928d1",
+      "byte_size": 460,
+      "tenant_id": "app-fault-cfyfcir36jh23q2faon4gfvff7",
+      "created_at": "0001-01-01T00:00:00Z",
+      "object_key": "app-fault-cfyfcir36jh23q2faon4gfvff7/run_LLHVN4LI23RZGQVCYHGOIRRRV2/ccbf1093b49e0507e56399a0c08572d6c8fd3c181bc422b12aa5adb023b928d1"
+    },
+    "created_at": "2026-09-11T13:40:21.54986-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 22,
+    "type": "workspace.adopted",
+    "schema_version": 1,
+    "payload": {
+      "stage": "reconcile",
+      "state": "needs_reconciliation",
+      "reason": "runner_unavailable: connection error: desc = \"transport: Error while dialing: dial unix /tmp/app-continuation-1359973676/runner.sock: connect: connection refused\"",
+      "version": 12,
+      "step_seq": 1,
+      "args_hash": "d79e739401109bc390df0e84bf97a5fd3acff00fd1ca08aa65dafb5d6d72c534",
+      "output_ref": "artifact_7b72362400b7f935a0d66858f16a1a0b64e681c0e905e28f2fce8e749baa808c",
+      "tool_calls": 1,
+      "model_rounds": 1,
+      "operation_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2_step_1_op_0",
+      "cost_microusd": 150,
+      "workspace_revision": 1,
+      "verification_status": "unverified",
+      "verification_report_ref": ""
+    },
+    "created_at": "2026-09-11T13:40:21.56098-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 23,
+    "type": "artifact.ready",
+    "schema_version": 1,
+    "payload": {
+      "id": "artifact_c50a05c7fd3bd07b8c1dcfa79a0f63f68931f12d0b205afec8d16610fbfbf0f8",
+      "kind": "operation_receipt",
+      "state": "ready",
+      "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+      "sha256": "e1e0bf849c21f03f1563c8c0187ccefe5e556a7f003904359b9ab7ee97003cb0",
+      "byte_size": 1156,
+      "tenant_id": "app-fault-cfyfcir36jh23q2faon4gfvff7",
+      "created_at": "0001-01-01T00:00:00Z",
+      "object_key": "app-fault-cfyfcir36jh23q2faon4gfvff7/run_LLHVN4LI23RZGQVCYHGOIRRRV2/e1e0bf849c21f03f1563c8c0187ccefe5e556a7f003904359b9ab7ee97003cb0"
+    },
+    "created_at": "2026-09-11T13:40:21.56769-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 24,
+    "type": "tool.finished",
+    "schema_version": 1,
+    "payload": {
+      "stage": "ingest_results",
+      "state": "running",
+      "reason": "",
+      "version": 13,
+      "step_seq": 1,
+      "output_ref": "artifact_c50a05c7fd3bd07b8c1dcfa79a0f63f68931f12d0b205afec8d16610fbfbf0f8",
+      "tool_calls": 1,
+      "receipt_ref": "artifact_c50a05c7fd3bd07b8c1dcfa79a0f63f68931f12d0b205afec8d16610fbfbf0f8",
+      "model_rounds": 1,
+      "cost_microusd": 150,
+      "workspace_revision": 2,
+      "verification_status": "unverified",
+      "verification_report_ref": ""
+    },
+    "created_at": "2026-09-11T13:40:21.573306-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 25,
+    "type": "artifact.ready",
+    "schema_version": 1,
+    "payload": {
+      "id": "artifact_7cab814e347c54517eb6a61f6a68eb9ff600e1cf5d90b47da0729c2fc393c7e6",
+      "kind": "tool_batch",
+      "state": "ready",
+      "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+      "sha256": "a00c9ebc35ac47cb6f43d86682215d9e1bacc84d530ec6a37bf02914cf2b9975",
+      "byte_size": 23,
+      "tenant_id": "app-fault-cfyfcir36jh23q2faon4gfvff7",
+      "created_at": "0001-01-01T00:00:00Z",
+      "object_key": "app-fault-cfyfcir36jh23q2faon4gfvff7/run_LLHVN4LI23RZGQVCYHGOIRRRV2/a00c9ebc35ac47cb6f43d86682215d9e1bacc84d530ec6a37bf02914cf2b9975"
+    },
+    "created_at": "2026-09-11T13:40:21.600229-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 26,
+    "type": "run.results_ingested",
+    "schema_version": 1,
+    "payload": {
+      "stage": "build_context",
+      "state": "running",
+      "reason": "",
+      "version": 14,
+      "step_seq": 1,
+      "output_ref": "artifact_7cab814e347c54517eb6a61f6a68eb9ff600e1cf5d90b47da0729c2fc393c7e6",
+      "tool_calls": 1,
+      "model_rounds": 1,
+      "cost_microusd": 150,
+      "workspace_revision": 2,
+      "verification_status": "unverified",
+      "verification_report_ref": ""
+    },
+    "created_at": "2026-09-11T13:40:21.607071-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 27,
+    "type": "artifact.ready",
+    "schema_version": 1,
+    "payload": {
+      "id": "artifact_da66730ce175c99926cfd8ad8fb11d98e5d697accc1b73b9993f736f79d7c653",
+      "kind": "context",
+      "state": "ready",
+      "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+      "sha256": "00b6b73b6f55e51650c77c2ba73a3891be7907be11ddf7069cd9c02d935fbaf9",
+      "byte_size": 3216,
+      "tenant_id": "app-fault-cfyfcir36jh23q2faon4gfvff7",
+      "created_at": "0001-01-01T00:00:00Z",
+      "object_key": "app-fault-cfyfcir36jh23q2faon4gfvff7/run_LLHVN4LI23RZGQVCYHGOIRRRV2/00b6b73b6f55e51650c77c2ba73a3891be7907be11ddf7069cd9c02d935fbaf9"
+    },
+    "created_at": "2026-09-11T13:40:21.637496-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 28,
+    "type": "step.started",
+    "schema_version": 1,
+    "payload": {
+      "stage": "model_step",
+      "state": "running",
+      "reason": "",
+      "version": 15,
+      "step_seq": 2,
+      "output_ref": "artifact_da66730ce175c99926cfd8ad8fb11d98e5d697accc1b73b9993f736f79d7c653",
+      "tool_calls": 1,
+      "model_rounds": 2,
+      "cost_microusd": 150,
+      "workspace_revision": 2,
+      "verification_status": "unverified",
+      "verification_report_ref": ""
+    },
+    "created_at": "2026-09-11T13:40:21.644163-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 29,
+    "type": "model.started",
+    "schema_version": 1,
+    "payload": {
+      "step_seq": 2,
+      "attempt_id": "attempt_PGCC3SA7Y4XFOMS27MGLJEHELR",
+      "price_version": "synthetic-1microusd-per-token-v1"
+    },
+    "created_at": "2026-09-11T13:40:21.662199-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 30,
+    "type": "artifact.ready",
+    "schema_version": 1,
+    "payload": {
+      "id": "artifact_3094af1d094d30cac4ba0c3976e05a018cf8887cbc6ff37ad4e6a5d7191ccf9d",
+      "kind": "model_response",
+      "state": "ready",
+      "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+      "sha256": "31b9573c737e0b632de100da91c8dde8b5c393a0d4d2e6101475eb644ac71dff",
+      "byte_size": 602,
+      "tenant_id": "app-fault-cfyfcir36jh23q2faon4gfvff7",
+      "created_at": "0001-01-01T00:00:00Z",
+      "object_key": "app-fault-cfyfcir36jh23q2faon4gfvff7/run_LLHVN4LI23RZGQVCYHGOIRRRV2/31b9573c737e0b632de100da91c8dde8b5c393a0d4d2e6101475eb644ac71dff"
+    },
+    "created_at": "2026-09-11T13:40:21.737032-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 31,
+    "type": "model.completed",
+    "schema_version": 1,
+    "payload": {
+      "stage": "validate_tool_calls",
+      "state": "running",
+      "reason": "",
+      "version": 16,
+      "step_seq": 2,
+      "output_ref": "artifact_3094af1d094d30cac4ba0c3976e05a018cf8887cbc6ff37ad4e6a5d7191ccf9d",
+      "tool_calls": 1,
+      "model_rounds": 2,
+      "cost_microusd": 300,
+      "workspace_revision": 2,
+      "verification_status": "unverified",
+      "verification_report_ref": ""
+    },
+    "created_at": "2026-09-11T13:40:21.752282-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 32,
+    "type": "tool.planned",
+    "schema_version": 1,
+    "payload": {
+      "stage": "approval_gate",
+      "state": "waiting_approval",
+      "reason": "",
+      "version": 17,
+      "step_seq": 2,
+      "args_hash": "4961501d577db79d91dd42e54475074d7ee360f3dbe69bb7da77918f18e77041",
+      "output_ref": "artifact_3094af1d094d30cac4ba0c3976e05a018cf8887cbc6ff37ad4e6a5d7191ccf9d",
+      "tool_calls": 1,
+      "model_rounds": 2,
+      "operation_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2_step_2_op_0",
+      "cost_microusd": 300,
+      "workspace_revision": 2,
+      "verification_status": "unverified",
+      "verification_report_ref": ""
+    },
+    "created_at": "2026-09-11T13:40:21.756518-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 33,
+    "type": "approval.required",
+    "schema_version": 1,
+    "payload": {
+      "binding": {
+        "granted": false,
+        "version": 1,
+        "args_hash": "4961501d577db79d91dd42e54475074d7ee360f3dbe69bb7da77918f18e77041",
+        "effect_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2_step_2_op_0",
+        "policy_version": "workspace-v1",
+        "workspace_revision": 2
+      },
+      "approval_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2_step_2_op_0_approval"
+    },
+    "created_at": "2026-09-11T13:40:21.756692-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 34,
+    "type": "approval.decided",
+    "schema_version": 1,
+    "payload": {
+      "stage": "execute_effects",
+      "state": "queued",
+      "reason": "",
+      "version": 18,
+      "step_seq": 2,
+      "args_hash": "4961501d577db79d91dd42e54475074d7ee360f3dbe69bb7da77918f18e77041",
+      "output_ref": "artifact_3094af1d094d30cac4ba0c3976e05a018cf8887cbc6ff37ad4e6a5d7191ccf9d",
+      "tool_calls": 1,
+      "model_rounds": 2,
+      "operation_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2_step_2_op_0",
+      "cost_microusd": 300,
+      "workspace_revision": 2,
+      "verification_status": "unverified",
+      "verification_report_ref": ""
+    },
+    "created_at": "2026-09-11T13:40:21.762687-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 35,
+    "type": "run.claimed",
+    "schema_version": 1,
+    "payload": {
+      "stage": "adopt_workspace",
+      "state": "running",
+      "reason": "",
+      "version": 19,
+      "step_seq": 2,
+      "args_hash": "4961501d577db79d91dd42e54475074d7ee360f3dbe69bb7da77918f18e77041",
+      "output_ref": "artifact_3094af1d094d30cac4ba0c3976e05a018cf8887cbc6ff37ad4e6a5d7191ccf9d",
+      "tool_calls": 1,
+      "model_rounds": 2,
+      "operation_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2_step_2_op_0",
+      "cost_microusd": 300,
+      "workspace_revision": 2,
+      "verification_status": "unverified",
+      "verification_report_ref": ""
+    },
+    "created_at": "2026-09-11T13:40:21.792344-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 36,
+    "type": "artifact.ready",
+    "schema_version": 1,
+    "payload": {
+      "id": "artifact_ac0ab3bd80d3fea2c9d354664b2895329f9634860ea55121502e3c2c7185b112",
+      "kind": "workspace_stop",
+      "state": "ready",
+      "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+      "sha256": "ba597e868df478041024a7ec538a67a28fcea174c71a7962cd9fa684cd36fcd5",
+      "byte_size": 460,
+      "tenant_id": "app-fault-cfyfcir36jh23q2faon4gfvff7",
+      "created_at": "0001-01-01T00:00:00Z",
+      "object_key": "app-fault-cfyfcir36jh23q2faon4gfvff7/run_LLHVN4LI23RZGQVCYHGOIRRRV2/ba597e868df478041024a7ec538a67a28fcea174c71a7962cd9fa684cd36fcd5"
+    },
+    "created_at": "2026-09-11T13:40:21.841834-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 37,
+    "type": "workspace.adopted",
+    "schema_version": 1,
+    "payload": {
+      "stage": "execute_effects",
+      "state": "running",
+      "reason": "",
+      "version": 20,
+      "step_seq": 2,
+      "args_hash": "4961501d577db79d91dd42e54475074d7ee360f3dbe69bb7da77918f18e77041",
+      "output_ref": "artifact_3094af1d094d30cac4ba0c3976e05a018cf8887cbc6ff37ad4e6a5d7191ccf9d",
+      "tool_calls": 2,
+      "model_rounds": 2,
+      "operation_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2_step_2_op_0",
+      "cost_microusd": 300,
+      "workspace_revision": 2,
+      "verification_status": "unverified",
+      "verification_report_ref": ""
+    },
+    "created_at": "2026-09-11T13:40:21.846406-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 38,
+    "type": "artifact.ready",
+    "schema_version": 1,
+    "payload": {
+      "id": "artifact_63bfdaa454fb51f8d085caa6f30b55a17e3ae8e30765cc9f46e9d89bfcb3f03b",
+      "kind": "operation_receipt",
+      "state": "ready",
+      "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+      "sha256": "6a5c99a09bd59dd2605e2b896c7222090ac68101428d5ddeadefb72749bd5876",
+      "byte_size": 1221,
+      "tenant_id": "app-fault-cfyfcir36jh23q2faon4gfvff7",
+      "created_at": "0001-01-01T00:00:00Z",
+      "object_key": "app-fault-cfyfcir36jh23q2faon4gfvff7/run_LLHVN4LI23RZGQVCYHGOIRRRV2/6a5c99a09bd59dd2605e2b896c7222090ac68101428d5ddeadefb72749bd5876"
+    },
+    "created_at": "2026-09-11T13:40:22.391891-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 39,
+    "type": "tool.finished",
+    "schema_version": 1,
+    "payload": {
+      "stage": "ingest_results",
+      "state": "running",
+      "reason": "",
+      "version": 21,
+      "step_seq": 2,
+      "output_ref": "artifact_63bfdaa454fb51f8d085caa6f30b55a17e3ae8e30765cc9f46e9d89bfcb3f03b",
+      "tool_calls": 2,
+      "receipt_ref": "artifact_63bfdaa454fb51f8d085caa6f30b55a17e3ae8e30765cc9f46e9d89bfcb3f03b",
+      "model_rounds": 2,
+      "cost_microusd": 300,
+      "workspace_revision": 3,
+      "verification_status": "unverified",
+      "verification_report_ref": ""
+    },
+    "created_at": "2026-09-11T13:40:22.395655-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 40,
+    "type": "artifact.ready",
+    "schema_version": 1,
+    "payload": {
+      "id": "artifact_b92014e310b21d2c101f554085a07c50918c6c355200cf30b3738a91591363f8",
+      "kind": "tool_batch",
+      "state": "ready",
+      "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+      "sha256": "7a6d0fc4bb36832e3667c602d07e58a250f712aef198f7ea9724bd0fb56e159d",
+      "byte_size": 23,
+      "tenant_id": "app-fault-cfyfcir36jh23q2faon4gfvff7",
+      "created_at": "0001-01-01T00:00:00Z",
+      "object_key": "app-fault-cfyfcir36jh23q2faon4gfvff7/run_LLHVN4LI23RZGQVCYHGOIRRRV2/7a6d0fc4bb36832e3667c602d07e58a250f712aef198f7ea9724bd0fb56e159d"
+    },
+    "created_at": "2026-09-11T13:40:22.417354-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 41,
+    "type": "run.results_ingested",
+    "schema_version": 1,
+    "payload": {
+      "stage": "build_context",
+      "state": "running",
+      "reason": "",
+      "version": 22,
+      "step_seq": 2,
+      "output_ref": "artifact_b92014e310b21d2c101f554085a07c50918c6c355200cf30b3738a91591363f8",
+      "tool_calls": 2,
+      "model_rounds": 2,
+      "cost_microusd": 300,
+      "workspace_revision": 3,
+      "verification_status": "unverified",
+      "verification_report_ref": ""
+    },
+    "created_at": "2026-09-11T13:40:22.421187-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 42,
+    "type": "artifact.ready",
+    "schema_version": 1,
+    "payload": {
+      "id": "artifact_bacfa3e9c5ec6f5d5102d2af48da9bd5e35364b75852aa43e689cb05faff86ec",
+      "kind": "context",
+      "state": "ready",
+      "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+      "sha256": "b266342e8535bd248c714cf5ca94fb1116344760e0106c9614b7bf952b387064",
+      "byte_size": 3767,
+      "tenant_id": "app-fault-cfyfcir36jh23q2faon4gfvff7",
+      "created_at": "0001-01-01T00:00:00Z",
+      "object_key": "app-fault-cfyfcir36jh23q2faon4gfvff7/run_LLHVN4LI23RZGQVCYHGOIRRRV2/b266342e8535bd248c714cf5ca94fb1116344760e0106c9614b7bf952b387064"
+    },
+    "created_at": "2026-09-11T13:40:22.441911-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 43,
+    "type": "step.started",
+    "schema_version": 1,
+    "payload": {
+      "stage": "model_step",
+      "state": "running",
+      "reason": "",
+      "version": 23,
+      "step_seq": 3,
+      "output_ref": "artifact_bacfa3e9c5ec6f5d5102d2af48da9bd5e35364b75852aa43e689cb05faff86ec",
+      "tool_calls": 2,
+      "model_rounds": 3,
+      "cost_microusd": 300,
+      "workspace_revision": 3,
+      "verification_status": "unverified",
+      "verification_report_ref": ""
+    },
+    "created_at": "2026-09-11T13:40:22.445188-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 44,
+    "type": "model.started",
+    "schema_version": 1,
+    "payload": {
+      "step_seq": 3,
+      "attempt_id": "attempt_B37YBEZYOP766OZ54GHEIYFRHN",
+      "price_version": "synthetic-1microusd-per-token-v1"
+    },
+    "created_at": "2026-09-11T13:40:22.449236-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 45,
+    "type": "artifact.ready",
+    "schema_version": 1,
+    "payload": {
+      "id": "artifact_77bee8266aa2c684a375b045da24a1d7740d4a387a6458b78233c4f8966fcb9e",
+      "kind": "model_response",
+      "state": "ready",
+      "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+      "sha256": "7d3f68294935cc98097d7606885438c19c21485912f3bee29fc3e90459c1f841",
+      "byte_size": 651,
+      "tenant_id": "app-fault-cfyfcir36jh23q2faon4gfvff7",
+      "created_at": "0001-01-01T00:00:00Z",
+      "object_key": "app-fault-cfyfcir36jh23q2faon4gfvff7/run_LLHVN4LI23RZGQVCYHGOIRRRV2/7d3f68294935cc98097d7606885438c19c21485912f3bee29fc3e90459c1f841"
+    },
+    "created_at": "2026-09-11T13:40:22.475945-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 46,
+    "type": "model.completed",
+    "schema_version": 1,
+    "payload": {
+      "stage": "validate_tool_calls",
+      "state": "running",
+      "reason": "",
+      "version": 24,
+      "step_seq": 3,
+      "output_ref": "artifact_77bee8266aa2c684a375b045da24a1d7740d4a387a6458b78233c4f8966fcb9e",
+      "tool_calls": 2,
+      "model_rounds": 3,
+      "cost_microusd": 450,
+      "workspace_revision": 3,
+      "verification_status": "unverified",
+      "verification_report_ref": ""
+    },
+    "created_at": "2026-09-11T13:40:22.489624-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 47,
+    "type": "tool.planned",
+    "schema_version": 1,
+    "payload": {
+      "stage": "execute_effects",
+      "state": "running",
+      "reason": "",
+      "version": 25,
+      "step_seq": 3,
+      "args_hash": "e5e62e5a341f8ccba140b2af3b4ccc7d31133294116f399587fc5031717b2028",
+      "output_ref": "artifact_77bee8266aa2c684a375b045da24a1d7740d4a387a6458b78233c4f8966fcb9e",
+      "tool_calls": 3,
+      "model_rounds": 3,
+      "operation_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2_step_3_op_0",
+      "cost_microusd": 450,
+      "workspace_revision": 3,
+      "verification_status": "unverified",
+      "verification_report_ref": ""
+    },
+    "created_at": "2026-09-11T13:40:22.494474-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 48,
+    "type": "artifact.ready",
+    "schema_version": 1,
+    "payload": {
+      "id": "artifact_da1059debc14d185a261beb78e2b8711cfcfd3f80d7075af38892478cfafca86",
+      "kind": "operation_receipt",
+      "state": "ready",
+      "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+      "sha256": "3f7dbebf0970c73c617b2c7951bf2f590f8b8c048db11186ecef8d62cd00e881",
+      "byte_size": 1194,
+      "tenant_id": "app-fault-cfyfcir36jh23q2faon4gfvff7",
+      "created_at": "0001-01-01T00:00:00Z",
+      "object_key": "app-fault-cfyfcir36jh23q2faon4gfvff7/run_LLHVN4LI23RZGQVCYHGOIRRRV2/3f7dbebf0970c73c617b2c7951bf2f590f8b8c048db11186ecef8d62cd00e881"
+    },
+    "created_at": "2026-09-11T13:40:22.612335-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 49,
+    "type": "tool.finished",
+    "schema_version": 1,
+    "payload": {
+      "stage": "ingest_results",
+      "state": "running",
+      "reason": "",
+      "version": 26,
+      "step_seq": 3,
+      "output_ref": "artifact_da1059debc14d185a261beb78e2b8711cfcfd3f80d7075af38892478cfafca86",
+      "tool_calls": 3,
+      "receipt_ref": "artifact_da1059debc14d185a261beb78e2b8711cfcfd3f80d7075af38892478cfafca86",
+      "model_rounds": 3,
+      "cost_microusd": 450,
+      "workspace_revision": 4,
+      "verification_status": "unverified",
+      "verification_report_ref": ""
+    },
+    "created_at": "2026-09-11T13:40:22.623693-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 50,
+    "type": "artifact.ready",
+    "schema_version": 1,
+    "payload": {
+      "id": "artifact_90d40ee8be8fa605cfa7250d389ec0e4108204cc00ce6757b68c9a640192961b",
+      "kind": "tool_batch",
+      "state": "ready",
+      "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+      "sha256": "5e667c368c974619661061f024dec6f19660830838a7baba594c0e26f6262677",
+      "byte_size": 23,
+      "tenant_id": "app-fault-cfyfcir36jh23q2faon4gfvff7",
+      "created_at": "0001-01-01T00:00:00Z",
+      "object_key": "app-fault-cfyfcir36jh23q2faon4gfvff7/run_LLHVN4LI23RZGQVCYHGOIRRRV2/5e667c368c974619661061f024dec6f19660830838a7baba594c0e26f6262677"
+    },
+    "created_at": "2026-09-11T13:40:22.644157-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 51,
+    "type": "run.results_ingested",
+    "schema_version": 1,
+    "payload": {
+      "stage": "build_context",
+      "state": "running",
+      "reason": "",
+      "version": 27,
+      "step_seq": 3,
+      "output_ref": "artifact_90d40ee8be8fa605cfa7250d389ec0e4108204cc00ce6757b68c9a640192961b",
+      "tool_calls": 3,
+      "model_rounds": 3,
+      "cost_microusd": 450,
+      "workspace_revision": 4,
+      "verification_status": "unverified",
+      "verification_report_ref": ""
+    },
+    "created_at": "2026-09-11T13:40:22.652752-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 52,
+    "type": "artifact.ready",
+    "schema_version": 1,
+    "payload": {
+      "id": "artifact_474576cd60c2da712d1cc309c10b451f2507978b8d73a6828aa89efbf75a2221",
+      "kind": "context",
+      "state": "ready",
+      "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+      "sha256": "9b744cb2afa9fea1fa8524f9a4ac401608c88c317e54dcc817448de258760874",
+      "byte_size": 4192,
+      "tenant_id": "app-fault-cfyfcir36jh23q2faon4gfvff7",
+      "created_at": "0001-01-01T00:00:00Z",
+      "object_key": "app-fault-cfyfcir36jh23q2faon4gfvff7/run_LLHVN4LI23RZGQVCYHGOIRRRV2/9b744cb2afa9fea1fa8524f9a4ac401608c88c317e54dcc817448de258760874"
+    },
+    "created_at": "2026-09-11T13:40:22.703445-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 53,
+    "type": "step.started",
+    "schema_version": 1,
+    "payload": {
+      "stage": "model_step",
+      "state": "running",
+      "reason": "",
+      "version": 28,
+      "step_seq": 4,
+      "output_ref": "artifact_474576cd60c2da712d1cc309c10b451f2507978b8d73a6828aa89efbf75a2221",
+      "tool_calls": 3,
+      "model_rounds": 4,
+      "cost_microusd": 450,
+      "workspace_revision": 4,
+      "verification_status": "unverified",
+      "verification_report_ref": ""
+    },
+    "created_at": "2026-09-11T13:40:22.709775-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 54,
+    "type": "model.started",
+    "schema_version": 1,
+    "payload": {
+      "step_seq": 4,
+      "attempt_id": "attempt_IWMNBY77VLM7ZUBPZ4I4UKLO3F",
+      "price_version": "synthetic-1microusd-per-token-v1"
+    },
+    "created_at": "2026-09-11T13:40:22.716566-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 55,
+    "type": "text.delta",
+    "schema_version": 1,
+    "payload": {
+      "delta": "Fixture repair ready for trusted verification.",
+      "attempt_id": "attempt_IWMNBY77VLM7ZUBPZ4I4UKLO3F",
+      "provisional": true
+    },
+    "created_at": "2026-09-11T13:40:22.730306-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 56,
+    "type": "artifact.ready",
+    "schema_version": 1,
+    "payload": {
+      "id": "artifact_455d8b325c9f874b952f40cd9e90ad6387ce95838cec177c0d59a481a7b71fe1",
+      "kind": "model_response",
+      "state": "ready",
+      "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+      "sha256": "0899b460de628fca23fdb831282bba018418a965a335835558f36fb4c0822cfa",
+      "byte_size": 358,
+      "tenant_id": "app-fault-cfyfcir36jh23q2faon4gfvff7",
+      "created_at": "0001-01-01T00:00:00Z",
+      "object_key": "app-fault-cfyfcir36jh23q2faon4gfvff7/run_LLHVN4LI23RZGQVCYHGOIRRRV2/0899b460de628fca23fdb831282bba018418a965a335835558f36fb4c0822cfa"
+    },
+    "created_at": "2026-09-11T13:40:22.745928-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 57,
+    "type": "model.completed",
+    "schema_version": 1,
+    "payload": {
+      "stage": "verify",
+      "state": "running",
+      "reason": "",
+      "version": 29,
+      "step_seq": 4,
+      "output_ref": "artifact_455d8b325c9f874b952f40cd9e90ad6387ce95838cec177c0d59a481a7b71fe1",
+      "tool_calls": 3,
+      "model_rounds": 4,
+      "cost_microusd": 570,
+      "workspace_revision": 4,
+      "verification_status": "unverified",
+      "verification_report_ref": ""
+    },
+    "created_at": "2026-09-11T13:40:22.763998-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 58,
+    "type": "artifact.ready",
+    "schema_version": 1,
+    "payload": {
+      "id": "artifact_796e94da3e8fd3351f9e6b34f56c63ba01c64b1a326435e4651a731dadc7618c",
+      "kind": "operation_receipt",
+      "state": "ready",
+      "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+      "sha256": "93cf267113910086c187c9797389a1807721ff659915df2eaffe07b7ab181588",
+      "byte_size": 1039,
+      "tenant_id": "app-fault-cfyfcir36jh23q2faon4gfvff7",
+      "created_at": "0001-01-01T00:00:00Z",
+      "object_key": "app-fault-cfyfcir36jh23q2faon4gfvff7/run_LLHVN4LI23RZGQVCYHGOIRRRV2/93cf267113910086c187c9797389a1807721ff659915df2eaffe07b7ab181588"
+    },
+    "created_at": "2026-09-11T13:40:23.62511-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 59,
+    "type": "artifact.ready",
+    "schema_version": 1,
+    "payload": {
+      "id": "artifact_f446c8ca97893e8e00a70ed3e74c2fe335bce3d068ccd9ebeac0d380202a4543",
+      "kind": "operation_receipt",
+      "state": "ready",
+      "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+      "sha256": "5a1cbf5b1391a28d38251670917149e1bf38a4d06a4882980d7d3a594fb30c90",
+      "byte_size": 1028,
+      "tenant_id": "app-fault-cfyfcir36jh23q2faon4gfvff7",
+      "created_at": "0001-01-01T00:00:00Z",
+      "object_key": "app-fault-cfyfcir36jh23q2faon4gfvff7/run_LLHVN4LI23RZGQVCYHGOIRRRV2/5a1cbf5b1391a28d38251670917149e1bf38a4d06a4882980d7d3a594fb30c90"
+    },
+    "created_at": "2026-09-11T13:40:24.488984-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 60,
+    "type": "artifact.ready",
+    "schema_version": 1,
+    "payload": {
+      "id": "artifact_74c544940e33ab5a257aae14aa830341533c7d21c3fef0d89e9c4961a5e4ff82",
+      "kind": "verification_report",
+      "state": "ready",
+      "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+      "sha256": "f57573e4d8874f5e62db460ebdaa8d2ab7040a7045352335e967929ec4d3fd61",
+      "byte_size": 466,
+      "tenant_id": "app-fault-cfyfcir36jh23q2faon4gfvff7",
+      "created_at": "0001-01-01T00:00:00Z",
+      "object_key": "app-fault-cfyfcir36jh23q2faon4gfvff7/run_LLHVN4LI23RZGQVCYHGOIRRRV2/f57573e4d8874f5e62db460ebdaa8d2ab7040a7045352335e967929ec4d3fd61"
+    },
+    "created_at": "2026-09-11T13:40:24.506813-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 61,
+    "type": "validation.finished",
+    "schema_version": 1,
+    "payload": {
+      "stage": "finalize",
+      "state": "running",
+      "reason": "",
+      "version": 30,
+      "step_seq": 4,
+      "output_ref": "artifact_455d8b325c9f874b952f40cd9e90ad6387ce95838cec177c0d59a481a7b71fe1",
+      "tool_calls": 3,
+      "model_rounds": 4,
+      "cost_microusd": 570,
+      "workspace_revision": 4,
+      "verification_status": "verified",
+      "verification_report_ref": "artifact_74c544940e33ab5a257aae14aa830341533c7d21c3fef0d89e9c4961a5e4ff82"
+    },
+    "created_at": "2026-09-11T13:40:24.51012-07:00"
+  },
+  {
+    "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+    "seq": 62,
+    "type": "artifact.ready",
+    "schema_version": 1,
+    "payload": {
+      "id": "artifact_e1db5d73e2b3448585384ff8514426db2960cd80f2c67dd233dc3fa1f121c1f4",
+      "kind": "operation_receipt",
+      "state": "ready",
+      "run_id": "run_LLHVN4LI23RZGQVCYHGOIRRRV2",
+      "sha256": "5d832b98a40af4fde656adac94ec7329c4f3a44dd1e1bda90113147df76fa809",
+      "byte_size": 1902,
+      "tenant_id": "app-fault-cfyfcir36jh23q2faon4gfvff7",
+      "created_at": "0001-01-01T00:00:00Z",
+      "object_key": "app-fault-cfyfcir36jh23q2faon4gfvff7/run_LLHVN4LI23RZGQVCYHGOIRRRV2/5d832b98a40af4fde656adac94ec7329c4f3a44dd1e1bda90113147df76fa809"
+    },
+    "created_at": "2026-09-11T13:40:24.624671-07:00"
+  }
+]

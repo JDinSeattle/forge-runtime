@@ -1,0 +1,36 @@
+{
+  "argv": [
+    [
+      "go",
+      "build",
+      "-o",
+      "/tmp/forge-resume-build-20260911T210708Z/forge",
+      "./cmd/forge"
+    ],
+    [
+      "go",
+      "test",
+      "-race",
+      "-c",
+      "-o",
+      "/tmp/forge-resume-build-20260911T210708Z/review.test",
+      "./tests/review"
+    ],
+    [
+      "/tmp/forge-resume-build-20260911T210708Z/review.test",
+      "-test.v",
+      "-test.run",
+      "^TestReview(HTTPResumePreservesIdentityAndCapacity|ConcurrentFinalizeDoesNotReleaseSentinelCapacity|CLIResumeSucceedsThroughRealHTTP)$",
+      "-test.timeout=2m"
+    ]
+  ],
+  "environment_names": [
+    "FORGE_REVIEW_DATABASE_URL",
+    "FORGE_REVIEW_ALLOW_FIXTURES",
+    "FORGE_REVIEW_FORGE_BINARY",
+    "FORGE_REVIEW_RESUME_EVIDENCE",
+    "GOCACHE"
+  ],
+  "private_environment_source": "var/local/review-database.env (values not recorded)",
+  "scope": "private schema control fixtures, no original services or runner slots used"
+}

@@ -1,0 +1,18 @@
+=== RUN   TestPrepareCapacityRequeuesAtomically
+    capacity_integration_test.go:125: capacity_requeue snapshot={"kind":"capacity_rejected","expected_version":2,"owner":"capacity-worker","epoch":1,"at":"2026-09-11T14:07:04.796129-07:00","not_before":"2026-09-11T14:07:05.796129-07:00"} allocation_state=released runner=runner workspace=run_TOBHCPBZA6J4GTSWTD5BM7BDWS
+    capacity_integration_test.go:172: capacity_requeue snapshot={"kind":"capacity_rejected","expected_version":4,"owner":"retry-worker","epoch":2,"at":"2026-09-11T14:07:05.81728-07:00","not_before":"2026-09-11T14:07:06.81728-07:00"} allocation_state=released runner=runner workspace=run_TOBHCPBZA6J4GTSWTD5BM7BDWS
+    capacity_integration_test.go:213: capacity_result run=run_TOBHCPBZA6J4GTSWTD5BM7BDWS terminal=completed epochs=1,2,3 rejections=2 model_calls=3 final_active=0 final_reserved_slots=0 events=43
+--- PASS: TestPrepareCapacityRequeuesAtomically (3.35s)
+=== RUN   TestPrepareCapacityDoesNotDiscardDurableIntent
+--- PASS: TestPrepareCapacityDoesNotDiscardDurableIntent (0.28s)
+=== RUN   TestPrepareNonCapacityErrorsPreserveHandling
+=== RUN   TestPrepareNonCapacityErrorsPreserveHandling/invalid_argument
+time=2026-09-11T14:07:08.393-07:00 level=WARN msg="step failed" run_id=run_XNRSIQWQCFLVLMNEBFXGTQMAAZ stage=initialize error=invalid_argument
+=== RUN   TestPrepareNonCapacityErrorsPreserveHandling/reconciliation_required
+--- PASS: TestPrepareNonCapacityErrorsPreserveHandling (0.58s)
+    --- PASS: TestPrepareNonCapacityErrorsPreserveHandling/invalid_argument (0.30s)
+    --- PASS: TestPrepareNonCapacityErrorsPreserveHandling/reconciliation_required (0.28s)
+=== RUN   TestPrepareCapacityAfterAdoptionCannotRequeue
+--- PASS: TestPrepareCapacityAfterAdoptionCannotRequeue (0.32s)
+PASS
+ok  	github.com/JDinSeattle/forge-runtime/internal/application	5.557s
