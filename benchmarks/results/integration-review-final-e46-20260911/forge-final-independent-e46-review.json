@@ -1,0 +1,68 @@
+{
+  "no-progress-20260911": {
+    "manifest_files_verified": 117
+  },
+  "no-progress-audit-hardening-20260911": {
+    "manifest_files_verified": 14
+  },
+  "integration-checks-20260911T233322Z": {
+    "manifest_files_verified": 38,
+    "stable_sources": 303,
+    "test": {
+      "test_terminal_actions": {
+        "pass": 515,
+        "skip": 29
+      },
+      "legacy_fallback_gate": [
+        "pass"
+      ]
+    },
+    "race": {
+      "test_terminal_actions": {
+        "pass": 515,
+        "skip": 29
+      },
+      "legacy_fallback_gate": [
+        "pass"
+      ]
+    },
+    "subsequent_source_differences": [
+      "cmd/forge-runner/main.go",
+      "scripts/progress/audit.py",
+      "scripts/progress/test_audit.py"
+    ]
+  },
+  "integrated-telemetry-20260911T233752Z": {
+    "manifest_files_verified": 21,
+    "claims": 4,
+    "journal_operations": 6,
+    "passed": true,
+    "pg_committed_transitions": 23,
+    "pg_ready_bytes": 20749,
+    "scope": "production TCP API/PG/Driver/gRPC/SQLite, deterministic local provider, TestBackend protocol verification only; drive context cancellation after persisted result, no process kill/no Docker/no paid model",
+    "span_count": 109,
+    "source_comparison": {
+      "source_inputs": 215,
+      "unchanged": true
+    },
+    "execution": 0
+  },
+  "integration-final-e46-20260911": {
+    "manifest_files_verified": 9
+  },
+  "e42_original_negatives": {
+    "sql-effect-status.json": {
+      "rejected": true,
+      "reason": "receipt/SQL terminal status mismatch"
+    },
+    "middle-progress-chain.json": {
+      "rejected": true,
+      "reason": "input is not the preceding committed snapshot"
+    },
+    "final-run-status.json": {
+      "rejected": true,
+      "reason": "current run differs from its final snapshot"
+    }
+  },
+  "e41_integrated_records": 14
+}

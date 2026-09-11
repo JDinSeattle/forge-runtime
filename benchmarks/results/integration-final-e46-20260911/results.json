@@ -1,0 +1,64 @@
+[
+  {
+    "name": "runner-build",
+    "argv": [
+      "go",
+      "build",
+      "-o",
+      "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/forge-e46-final/forge-runner",
+      "./cmd/forge-runner"
+    ],
+    "exit_code": 0,
+    "seconds": 0.6651074489927851
+  },
+  {
+    "name": "runner-race",
+    "argv": [
+      "go",
+      "test",
+      "-race",
+      "-count=1",
+      "./cmd/forge-runner"
+    ],
+    "exit_code": 0,
+    "seconds": 1.7673629479832016
+  },
+  {
+    "name": "runner-vet",
+    "argv": [
+      "go",
+      "vet",
+      "./cmd/forge-runner"
+    ],
+    "exit_code": 0,
+    "seconds": 0.16426289197988808
+  },
+  {
+    "name": "progress-audit-regressions",
+    "argv": [
+      "python3",
+      "-I",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "scripts/progress",
+      "-p",
+      "test_*.py",
+      "-v"
+    ],
+    "exit_code": 0,
+    "seconds": 0.06443207402480766
+  },
+  {
+    "name": "handoff-original-audit",
+    "argv": [
+      "python3",
+      "scripts/provider-handoff/audit.py",
+      "benchmarks/results/provider-handoff-20260911T230147Z",
+      "--self-test"
+    ],
+    "exit_code": 0,
+    "seconds": 0.06406977301230654
+  }
+]

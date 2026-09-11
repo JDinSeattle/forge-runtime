@@ -43,6 +43,12 @@ Key implementation decisions are explained in [ADR 0001](docs/adr/0001-receipt-f
 and [ADR 0002](docs/adr/0002-workspace-storage.md). The [implementation map](docs/implementation-map.md)
 tracks the scope of the [SDE plan](docs/spec/SDE_IMPLEMENTATION_PLAN.md).
 
+The runtime also supports a frozen, one-way [compatible model fallback](docs/provider-handoff-evidence.md),
+a durable [closed-batch repetition limit](docs/no-progress-evidence.md), and
+[API/worker/runner trace propagation](docs/telemetry-chain-evidence.md).
+Their evidence distinguishes local native-protocol fixtures, real database and
+journal behavior, and the still-pending paid-model and operational acceptance.
+
 ## Build and verify
 
 Go 1.26 and Git are required; contract generation also requires protoc 36.1.
@@ -113,7 +119,8 @@ network, read-only root filesystems and explicit memory/PID/CPU limits.
    ```
 
 The API defaults to `127.0.0.1:8097`. Worker metrics default to
-`127.0.0.1:8098`; override `FORGE_METRICS_LISTEN` for an additional worker and
+`127.0.0.1:8098` and runner metrics to `127.0.0.1:8099`;
+override `FORGE_METRICS_LISTEN` for an additional worker and
 pass a unique `-id`. Use a TLS reverse proxy for remote API access. Runner TCP
 requires TLS 1.3 mutual authentication and configured peer identity; plaintext
 TCP is not a deployment option.

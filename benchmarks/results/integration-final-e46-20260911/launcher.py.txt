@@ -1,0 +1,24 @@
+import datetime,pathlib,json,hashlib,subprocess,os,importlib.util,time
+repo=pathlib.Path('/home/postedism/Desktop/mini claude code/forge-runtime');out=repo/'benchmarks/results/integration-final-e46-20260911';out.mkdir()
+env={k:v for k,v in os.environ.items() if not k.startswith(('FORGE_','OTEL_'))};env.update(GOCACHE=str(repo/'var/local/go-build-cache'),GOTMPDIR=str(repo/'var/local/integration-go-tmp'),TMPDIR='/tmp',GOPROXY='off',GOSUMDB='off',GOENV='off',GOTOOLCHAIN='local')
+binary=repo/'var/local/forge-e46-final/forge-runner';binary.parent.mkdir(parents=True,exist_ok=True)
+checks=[('runner-build',['go','build','-o',str(binary),'./cmd/forge-runner']),('runner-race',['go','test','-race','-count=1','./cmd/forge-runner']),('runner-vet',['go','vet','./cmd/forge-runner']),('progress-audit-regressions',['python3','-I','-m','unittest','discover','-s','scripts/progress','-p','test_*.py','-v']),('handoff-original-audit',['python3','scripts/provider-handoff/audit.py','benchmarks/results/provider-handoff-20260911T230147Z','--self-test'])]
+results=[]
+for name,argv in checks:
+ with (out/(name+'.log')).open('wb') as f:
+  start=time.monotonic();result=subprocess.run(argv,cwd=repo,env=env,stdout=f,stderr=subprocess.STDOUT,timeout=120)
+ results.append({'name':name,'argv':argv,'exit_code':result.returncode,'seconds':time.monotonic()-start})
+assert all(r['exit_code']==0 for r in results)
+spec=importlib.util.spec_from_file_location('handoff_audit',repo/'scripts/provider-handoff/audit.py');m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
+root=repo/'benchmarks/results/integration-checks-20260911T233322Z';manifest=json.loads((root/'manifest.json').read_text())
+for n,h in manifest.items():assert hashlib.sha256((root/n).read_bytes()).hexdigest()==h
+records={}
+for cohort in ('test','race'):
+ records[cohort]=[m.verify_record(json.loads(p.read_text())) for p in sorted((root/(cohort+'-handoff-records')).glob('*.json'))]
+ assert len(records[cohort])==7
+(out/'integrated-handoff-audit.json').write_text(json.dumps(records,indent=2)+'\n')
+(out/'results.json').write_text(json.dumps(results,indent=2)+'\n')
+(out/'identity.json').write_text(json.dumps({'base_commit':subprocess.check_output(['git','rev-parse','HEAD'],cwd=repo,text=True).strip(),'runner_binary_path':str(binary),'runner_binary_sha256':hashlib.sha256(binary.read_bytes()).hexdigest(),'runner_source_sha256':hashlib.sha256((repo/'cmd/forge-runner/main.go').read_bytes()).hexdigest(),'progress_audit_sha256':hashlib.sha256((repo/'scripts/progress/audit.py').read_bytes()).hexdigest(),'scope':'post-whole-suite runner default-port correction; auditor hardening and recomputation of both integrated handoff cohorts; no fixture socket/database/model calls'},indent=2)+'\n')
+(out/'launcher.py.txt').write_text(pathlib.Path(__file__).read_text())
+(out/'manifest.json').write_text(json.dumps({p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(out.iterdir()) if p.is_file()},indent=2)+'\n')
+print(json.dumps({'output':str(out),'all_passed':True,'integrated_handoff_records':sum(map(len,records.values())),'results':results},indent=2))

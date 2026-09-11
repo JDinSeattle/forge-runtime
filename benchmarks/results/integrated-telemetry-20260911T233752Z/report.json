@@ -1,0 +1,6349 @@
+{
+  "api_current_user": "review_http_7j2p2nasklnx4iwuhbgxaxcvgl",
+  "api_session_user": "forge_admin",
+  "claims": 4,
+  "collector_graph": {
+    "02a99440351e64ea": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "02a99440351e64ea",
+      "parentSpanId": "76cb13b4ede99b12",
+      "name": "forge.runner.server/InspectOperation",
+      "attributes": [
+        {
+          "key": "rpc.system.name",
+          "value": {
+            "stringValue": "grpc",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "rpc.method",
+          "value": {
+            "stringValue": "InspectOperation",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "4"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.operation.id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T_step_1_op_0",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": [
+        {
+          "name": "forge.receipt_replayed"
+        }
+      ],
+      "Service": "forge-runner",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "06fc6e2f63bec504": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "06fc6e2f63bec504",
+      "parentSpanId": "6165cefda4496512",
+      "name": "forge.effect.execute",
+      "attributes": [
+        {
+          "key": "forge.effect.kind",
+          "value": {
+            "stringValue": "get_diff",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "3"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "23"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "4"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "2"
+          }
+        },
+        {
+          "key": "forge.operation.id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T_3_final_diff",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "082364de9b311c5e": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "082364de9b311c5e",
+      "parentSpanId": "ee0e955b106c6bbb",
+      "name": "forge.run.step",
+      "attributes": [
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "2"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": [
+        {
+          "name": "forge.committed"
+        }
+      ],
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "08f49456f7ca394e": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "08f49456f7ca394e",
+      "parentSpanId": "6a28a27d869530be",
+      "name": "forge.run.step",
+      "attributes": [
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "15"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "4"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": [
+        {
+          "name": "forge.committed"
+        }
+      ],
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "0bfc45cfafa5c0b1": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "0bfc45cfafa5c0b1",
+      "parentSpanId": "eca7f5574b87dcb3",
+      "name": "forge.runner.server/InspectOperation",
+      "attributes": [
+        {
+          "key": "rpc.system.name",
+          "value": {
+            "stringValue": "grpc",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "rpc.method",
+          "value": {
+            "stringValue": "InspectOperation",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "4"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "2"
+          }
+        },
+        {
+          "key": "forge.operation.id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T_3_final_diff",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": [
+        {
+          "name": "forge.receipt_replayed"
+        }
+      ],
+      "Service": "forge-runner",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "122835fb3fb53fa7": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "122835fb3fb53fa7",
+      "parentSpanId": "9bf7eb2bf34c50a0",
+      "name": "forge.runner.server/InspectOperation",
+      "attributes": [
+        {
+          "key": "rpc.system.name",
+          "value": {
+            "stringValue": "grpc",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "rpc.method",
+          "value": {
+            "stringValue": "InspectOperation",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "unknown",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-runner",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "1316083149fc5f95": {
+      "traceId": "4ae494ba4f3733ea2d7afcb56e89aefe",
+      "spanId": "1316083149fc5f95",
+      "parentSpanId": "",
+      "name": "POST /v1/approvals/{id}/decision",
+      "attributes": [
+        {
+          "key": "http.request.method",
+          "value": {
+            "stringValue": "POST",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "http.route",
+          "value": {
+            "stringValue": "/v1/approvals/{id}/decision",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "http.response.status_code",
+          "value": {
+            "stringValue": "",
+            "intValue": "200"
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-api",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "144c62c802b4d8ea": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "144c62c802b4d8ea",
+      "parentSpanId": "c2f2ef06a35b5095",
+      "name": "forge.runner.server/StartOperation",
+      "attributes": [
+        {
+          "key": "rpc.system.name",
+          "value": {
+            "stringValue": "grpc",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "rpc.method",
+          "value": {
+            "stringValue": "StartOperation",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-runner",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "1472667de877f080": {
+      "traceId": "a8108b22c321b0e679b127886f76ece2",
+      "spanId": "1472667de877f080",
+      "parentSpanId": "",
+      "name": "POST /v1/projects/{id}/runs",
+      "attributes": [
+        {
+          "key": "http.request.method",
+          "value": {
+            "stringValue": "POST",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "http.route",
+          "value": {
+            "stringValue": "/v1/projects/{id}/runs",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "http.response.status_code",
+          "value": {
+            "stringValue": "",
+            "intValue": "202"
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-api",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "166457b112cf48a0": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "166457b112cf48a0",
+      "parentSpanId": "26c26ee058289b72",
+      "name": "forge.run.claim",
+      "attributes": [
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "4"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "2"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": [
+        {
+          "traceId": "92509ec207478c0a8cba012ea6613c13",
+          "spanId": "9dd8fbbdd9b5828f",
+          "attributes": [
+            {
+              "key": "forge.relationship",
+              "value": {
+                "stringValue": "claim_continuation",
+                "intValue": ""
+              }
+            }
+          ]
+        }
+      ],
+      "events": [
+        {
+          "name": "forge.committed"
+        }
+      ],
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "17c9f7741f6fdb62": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "17c9f7741f6fdb62",
+      "parentSpanId": "a418cde03f05fc18",
+      "name": "forge.runner.client/StartOperation",
+      "attributes": [
+        {
+          "key": "rpc.system.name",
+          "value": {
+            "stringValue": "grpc",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "rpc.method",
+          "value": {
+            "stringValue": "StartOperation",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "1d854ee8066b278e": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "1d854ee8066b278e",
+      "parentSpanId": "e43de7f0df5e7379",
+      "name": "forge.run.model_attempt",
+      "attributes": [
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "2"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.attempt.id",
+          "value": {
+            "stringValue": "attempt_NQMKDSKYZGVLZW7NFOJL6GMJYJ",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": [
+        {
+          "traceId": "92509ec207478c0a8cba012ea6613c13",
+          "spanId": "69d063e72ab38066",
+          "attributes": [
+            {
+              "key": "forge.relationship",
+              "value": {
+                "stringValue": "provider_retry",
+                "intValue": ""
+              }
+            }
+          ]
+        }
+      ],
+      "events": [
+        {
+          "name": "forge.committed"
+        }
+      ],
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "1e8665da7e889829": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "1e8665da7e889829",
+      "parentSpanId": "d3facca152aa3fb0",
+      "name": "forge.run.step",
+      "attributes": [
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "7"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "3"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": [
+        {
+          "name": "forge.committed"
+        }
+      ],
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "1ecf6446449f6824": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "1ecf6446449f6824",
+      "parentSpanId": "9a1f830fcfdb9480",
+      "name": "forge.run.model_attempt",
+      "attributes": [
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "3"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "4"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.attempt.id",
+          "value": {
+            "stringValue": "attempt_JK7GAG7ME2UQCHR5GQYOL4DGRA",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": [
+        {
+          "name": "forge.committed"
+        }
+      ],
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "266378d25bc1a5da": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "266378d25bc1a5da",
+      "parentSpanId": "06fc6e2f63bec504",
+      "name": "forge.runner.client/StartOperation",
+      "attributes": [
+        {
+          "key": "rpc.system.name",
+          "value": {
+            "stringValue": "grpc",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "rpc.method",
+          "value": {
+            "stringValue": "StartOperation",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "26c26ee058289b72": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "26c26ee058289b72",
+      "parentSpanId": "ba5bed55b922ce67",
+      "name": "forge.run.enqueue",
+      "attributes": [
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": [
+        {
+          "name": "forge.committed"
+        }
+      ],
+      "Service": "forge-api",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "28aaa7a934155359": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "28aaa7a934155359",
+      "parentSpanId": "953577f991c81f46",
+      "name": "forge.runner.client/AdoptWorkspace",
+      "attributes": [
+        {
+          "key": "rpc.system.name",
+          "value": {
+            "stringValue": "grpc",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "rpc.method",
+          "value": {
+            "stringValue": "AdoptWorkspace",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "2918aed363da539e": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "2918aed363da539e",
+      "parentSpanId": "6a28a27d869530be",
+      "name": "forge.run.step",
+      "attributes": [
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "2"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "17"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "4"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": [
+        {
+          "name": "forge.committed"
+        }
+      ],
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "29a10a26a5aa03bf": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "29a10a26a5aa03bf",
+      "parentSpanId": "49c0856964b8e62e",
+      "name": "forge.runner.server/InspectOperation",
+      "attributes": [
+        {
+          "key": "rpc.system.name",
+          "value": {
+            "stringValue": "grpc",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "rpc.method",
+          "value": {
+            "stringValue": "InspectOperation",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "unknown",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-runner",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "2c241e437f93c346": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "2c241e437f93c346",
+      "parentSpanId": "26c26ee058289b72",
+      "name": "forge.run.queue",
+      "attributes": [
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "4"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "30da7de4ff353c74": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "30da7de4ff353c74",
+      "parentSpanId": "b689a2722b51447d",
+      "name": "forge.runner.server/StartOperation",
+      "attributes": [
+        {
+          "key": "rpc.system.name",
+          "value": {
+            "stringValue": "grpc",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "rpc.method",
+          "value": {
+            "stringValue": "StartOperation",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-runner",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "3123844e0482ca35": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "3123844e0482ca35",
+      "parentSpanId": "6d4d61a8f5b56f87",
+      "name": "forge.runner.server/InspectOperation",
+      "attributes": [
+        {
+          "key": "rpc.system.name",
+          "value": {
+            "stringValue": "grpc",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "rpc.method",
+          "value": {
+            "stringValue": "InspectOperation",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "4"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "2"
+          }
+        },
+        {
+          "key": "forge.operation.id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T_3_regression",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": [
+        {
+          "name": "forge.receipt_replayed"
+        }
+      ],
+      "Service": "forge-runner",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "36f6ed3931edd45f": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "36f6ed3931edd45f",
+      "parentSpanId": "3886fb4435b01b93",
+      "name": "forge.effect.execute",
+      "attributes": [
+        {
+          "key": "forge.effect.kind",
+          "value": {
+            "stringValue": "verify",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "3"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "22"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "4"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "2"
+          }
+        },
+        {
+          "key": "forge.operation.id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T_3_regression",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "3886fb4435b01b93": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "3886fb4435b01b93",
+      "parentSpanId": "92324a487d5cc22a",
+      "name": "forge.run.verification",
+      "attributes": [
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "3"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "22"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "4"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "2"
+          }
+        },
+        {
+          "key": "forge.verification.phase",
+          "value": {
+            "stringValue": "regression",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": [
+        {
+          "name": "forge.committed"
+        }
+      ],
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "39b9580f5a5d77fa": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "39b9580f5a5d77fa",
+      "parentSpanId": "48af69db16e19737",
+      "name": "forge.runner.server/StartOperation",
+      "attributes": [
+        {
+          "key": "rpc.system.name",
+          "value": {
+            "stringValue": "grpc",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "rpc.method",
+          "value": {
+            "stringValue": "StartOperation",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-runner",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "443f5db557fb562c": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "443f5db557fb562c",
+      "parentSpanId": "6ea8d53d49ec9d49",
+      "name": "forge.runner.client/InspectOperation",
+      "attributes": [
+        {
+          "key": "rpc.system.name",
+          "value": {
+            "stringValue": "grpc",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "rpc.method",
+          "value": {
+            "stringValue": "InspectOperation",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "47161c72fb2eafcf": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "47161c72fb2eafcf",
+      "parentSpanId": "ee0e955b106c6bbb",
+      "name": "forge.run.step",
+      "attributes": [
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "4"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "unknown",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "4754330a790da213": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "4754330a790da213",
+      "parentSpanId": "92324a487d5cc22a",
+      "name": "forge.run.verification",
+      "attributes": [
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "3"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "22"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "4"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "2"
+          }
+        },
+        {
+          "key": "forge.verification.phase",
+          "value": {
+            "stringValue": "final_target",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": [
+        {
+          "name": "forge.committed"
+        }
+      ],
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "48af69db16e19737": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "48af69db16e19737",
+      "parentSpanId": "6ea8d53d49ec9d49",
+      "name": "forge.runner.client/StartOperation",
+      "attributes": [
+        {
+          "key": "rpc.system.name",
+          "value": {
+            "stringValue": "grpc",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "rpc.method",
+          "value": {
+            "stringValue": "StartOperation",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "49c0856964b8e62e": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "49c0856964b8e62e",
+      "parentSpanId": "9f1cc0a8878e64db",
+      "name": "forge.runner.client/InspectOperation",
+      "attributes": [
+        {
+          "key": "rpc.system.name",
+          "value": {
+            "stringValue": "grpc",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "rpc.method",
+          "value": {
+            "stringValue": "InspectOperation",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "unknown",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "4b72b8cacc230b79": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "4b72b8cacc230b79",
+      "parentSpanId": "9f1cc0a8878e64db",
+      "name": "forge.runner.client/InspectOperation",
+      "attributes": [
+        {
+          "key": "rpc.system.name",
+          "value": {
+            "stringValue": "grpc",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "rpc.method",
+          "value": {
+            "stringValue": "InspectOperation",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "4f71702d753fdfb3": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "4f71702d753fdfb3",
+      "parentSpanId": "d83a33db6ed3d58c",
+      "name": "forge.run.drive",
+      "attributes": [
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "3"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "24"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "4"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "2"
+          }
+        },
+        {
+          "key": "forge.run.status",
+          "value": {
+            "stringValue": "completed",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "54ad193545cc8bf2": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "54ad193545cc8bf2",
+      "parentSpanId": "fb78ea75fb87fbe3",
+      "name": "forge.runner.client/InspectOperation",
+      "attributes": [
+        {
+          "key": "rpc.system.name",
+          "value": {
+            "stringValue": "grpc",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "rpc.method",
+          "value": {
+            "stringValue": "InspectOperation",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "unknown",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "55215c7c6a782b63": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "55215c7c6a782b63",
+      "parentSpanId": "a418cde03f05fc18",
+      "name": "forge.runner.client/InspectOperation",
+      "attributes": [
+        {
+          "key": "rpc.system.name",
+          "value": {
+            "stringValue": "grpc",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "rpc.method",
+          "value": {
+            "stringValue": "InspectOperation",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "5b21d222d463ef76": {
+      "traceId": "a8108b22c321b0e679b127886f76ece2",
+      "spanId": "5b21d222d463ef76",
+      "parentSpanId": "1472667de877f080",
+      "name": "forge.run.enqueue",
+      "attributes": [
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": [
+        {
+          "name": "forge.deduplicated"
+        }
+      ],
+      "Service": "forge-api",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "6165cefda4496512": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "6165cefda4496512",
+      "parentSpanId": "b4b0b0fe78f772c2",
+      "name": "forge.run.verification",
+      "attributes": [
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "3"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "23"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "4"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "2"
+          }
+        },
+        {
+          "key": "forge.verification.phase",
+          "value": {
+            "stringValue": "final_diff",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": [
+        {
+          "name": "forge.committed"
+        }
+      ],
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "627025c1ee1fe9f5": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "627025c1ee1fe9f5",
+      "parentSpanId": "28aaa7a934155359",
+      "name": "forge.runner.server/AdoptWorkspace",
+      "attributes": [
+        {
+          "key": "rpc.system.name",
+          "value": {
+            "stringValue": "grpc",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "rpc.method",
+          "value": {
+            "stringValue": "AdoptWorkspace",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-runner",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "628436db7c715d1e": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "628436db7c715d1e",
+      "parentSpanId": "54ad193545cc8bf2",
+      "name": "forge.runner.server/InspectOperation",
+      "attributes": [
+        {
+          "key": "rpc.system.name",
+          "value": {
+            "stringValue": "grpc",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "rpc.method",
+          "value": {
+            "stringValue": "InspectOperation",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "unknown",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-runner",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "62f855f54c4a4860": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "62f855f54c4a4860",
+      "parentSpanId": "1ecf6446449f6824",
+      "name": "forge.model.request",
+      "attributes": [
+        {
+          "key": "gen_ai.provider.name",
+          "value": {
+            "stringValue": "fake",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "gen_ai.operation.name",
+          "value": {
+            "stringValue": "chat",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "3"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "21"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "4"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "2"
+          }
+        },
+        {
+          "key": "forge.attempt.id",
+          "value": {
+            "stringValue": "attempt_JK7GAG7ME2UQCHR5GQYOL4DGRA",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "gen_ai.request.model",
+          "value": {
+            "stringValue": "fake",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.attempt.number",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.usage.input_tokens",
+          "value": {
+            "stringValue": "",
+            "intValue": "50"
+          }
+        },
+        {
+          "key": "forge.usage.output_tokens",
+          "value": {
+            "stringValue": "",
+            "intValue": "20"
+          }
+        },
+        {
+          "key": "gen_ai.usage.output_tokens",
+          "value": {
+            "stringValue": "",
+            "intValue": "20"
+          }
+        },
+        {
+          "key": "gen_ai.usage.input_tokens",
+          "value": {
+            "stringValue": "",
+            "intValue": "50"
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "63679b991bb2ed20": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "63679b991bb2ed20",
+      "parentSpanId": "c0b4d0a5ed6155b0",
+      "name": "forge.runner.server/AdoptWorkspace",
+      "attributes": [
+        {
+          "key": "rpc.system.name",
+          "value": {
+            "stringValue": "grpc",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "rpc.method",
+          "value": {
+            "stringValue": "AdoptWorkspace",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-runner",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "683b706de0435031": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "683b706de0435031",
+      "parentSpanId": "39b9580f5a5d77fa",
+      "name": "forge.runner.operation",
+      "attributes": [
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.operation.id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T_0_initial_target",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.effect.kind",
+          "value": {
+            "stringValue": "verify",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-runner",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "69d063e72ab38066": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "69d063e72ab38066",
+      "parentSpanId": "47161c72fb2eafcf",
+      "name": "forge.run.model_attempt",
+      "attributes": [
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.attempt.id",
+          "value": {
+            "stringValue": "attempt_4FGQC2YOKNOOTUVKL765HQUT3H",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": [
+        {
+          "name": "forge.committed"
+        }
+      ],
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "6a28a27d869530be": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "6a28a27d869530be",
+      "parentSpanId": "d83a33db6ed3d58c",
+      "name": "forge.run.drive",
+      "attributes": [
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "12"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "4"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.run.status",
+          "value": {
+            "stringValue": "completed",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "6d4d61a8f5b56f87": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "6d4d61a8f5b56f87",
+      "parentSpanId": "36f6ed3931edd45f",
+      "name": "forge.runner.client/InspectOperation",
+      "attributes": [
+        {
+          "key": "rpc.system.name",
+          "value": {
+            "stringValue": "grpc",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "rpc.method",
+          "value": {
+            "stringValue": "InspectOperation",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "6ea8d53d49ec9d49": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "6ea8d53d49ec9d49",
+      "parentSpanId": "ba5d25fab15bb377",
+      "name": "forge.effect.execute",
+      "attributes": [
+        {
+          "key": "forge.effect.kind",
+          "value": {
+            "stringValue": "verify",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "2"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.operation.id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T_0_initial_target",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "failed",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "725b8a5f50c81509": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "725b8a5f50c81509",
+      "parentSpanId": "55215c7c6a782b63",
+      "name": "forge.runner.server/InspectOperation",
+      "attributes": [
+        {
+          "key": "rpc.system.name",
+          "value": {
+            "stringValue": "grpc",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "rpc.method",
+          "value": {
+            "stringValue": "InspectOperation",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "4"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "2"
+          }
+        },
+        {
+          "key": "forge.operation.id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T_3_final_target",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": [
+        {
+          "name": "forge.receipt_replayed"
+        }
+      ],
+      "Service": "forge-runner",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "76cb13b4ede99b12": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "76cb13b4ede99b12",
+      "parentSpanId": "fb78ea75fb87fbe3",
+      "name": "forge.runner.client/InspectOperation",
+      "attributes": [
+        {
+          "key": "rpc.system.name",
+          "value": {
+            "stringValue": "grpc",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "rpc.method",
+          "value": {
+            "stringValue": "InspectOperation",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "7965a5ab5ae92fcb": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "7965a5ab5ae92fcb",
+      "parentSpanId": "88aa359314ad9ff7",
+      "name": "forge.runner.server/AdoptWorkspace",
+      "attributes": [
+        {
+          "key": "rpc.system.name",
+          "value": {
+            "stringValue": "grpc",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "rpc.method",
+          "value": {
+            "stringValue": "AdoptWorkspace",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-runner",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "817ce4f1d042659e": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "817ce4f1d042659e",
+      "parentSpanId": "d536ab1a689404d5",
+      "name": "forge.runner.operation",
+      "attributes": [
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "4"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "2"
+          }
+        },
+        {
+          "key": "forge.operation.id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T_3_final_diff",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.effect.kind",
+          "value": {
+            "stringValue": "get_diff",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-runner",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "81c874418279ac18": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "81c874418279ac18",
+      "parentSpanId": "144c62c802b4d8ea",
+      "name": "forge.runner.operation",
+      "attributes": [
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "4"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "2"
+          }
+        },
+        {
+          "key": "forge.operation.id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T_3_regression",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.effect.kind",
+          "value": {
+            "stringValue": "verify",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-runner",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "81cc8135b76bee5d": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "81cc8135b76bee5d",
+      "parentSpanId": "f2e4d92b7ceddd9b",
+      "name": "forge.runner.server/InspectOperation",
+      "attributes": [
+        {
+          "key": "rpc.system.name",
+          "value": {
+            "stringValue": "grpc",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "rpc.method",
+          "value": {
+            "stringValue": "InspectOperation",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "unknown",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-runner",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "826c55d46ecdfd4a": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "826c55d46ecdfd4a",
+      "parentSpanId": "6a28a27d869530be",
+      "name": "forge.run.step",
+      "attributes": [
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "2"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "19"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "4"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "2"
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": [
+        {
+          "name": "forge.committed"
+        }
+      ],
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "82f1b9e6aa065af3": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "82f1b9e6aa065af3",
+      "parentSpanId": "30da7de4ff353c74",
+      "name": "forge.runner.operation",
+      "attributes": [
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "4"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.operation.id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T_step_2_op_0",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.effect.kind",
+          "value": {
+            "stringValue": "apply_patch",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-runner",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "88aa359314ad9ff7": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "88aa359314ad9ff7",
+      "parentSpanId": "1e8665da7e889829",
+      "name": "forge.runner.client/AdoptWorkspace",
+      "attributes": [
+        {
+          "key": "rpc.system.name",
+          "value": {
+            "stringValue": "grpc",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "rpc.method",
+          "value": {
+            "stringValue": "AdoptWorkspace",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "88e8291c40682e08": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "88e8291c40682e08",
+      "parentSpanId": "6a28a27d869530be",
+      "name": "forge.run.step",
+      "attributes": [
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "2"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "18"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "4"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": [
+        {
+          "name": "forge.committed"
+        }
+      ],
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "8aed1fa77ff7e352": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "8aed1fa77ff7e352",
+      "parentSpanId": "06fc6e2f63bec504",
+      "name": "forge.runner.client/InspectOperation",
+      "attributes": [
+        {
+          "key": "rpc.system.name",
+          "value": {
+            "stringValue": "grpc",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "rpc.method",
+          "value": {
+            "stringValue": "InspectOperation",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "unknown",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "8b2c75f21a49cb96": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "8b2c75f21a49cb96",
+      "parentSpanId": "166457b112cf48a0",
+      "name": "forge.run.drive",
+      "attributes": [
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "5"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "2"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.run.status",
+          "value": {
+            "stringValue": "running",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "8c914d2cfdd61b96": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "8c914d2cfdd61b96",
+      "parentSpanId": "d079034a9183fd7e",
+      "name": "forge.runner.server/PrepareWorkspace",
+      "attributes": [
+        {
+          "key": "rpc.system.name",
+          "value": {
+            "stringValue": "grpc",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "rpc.method",
+          "value": {
+            "stringValue": "PrepareWorkspace",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-runner",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "8f96eb58d6b13440": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "8f96eb58d6b13440",
+      "parentSpanId": "d3facca152aa3fb0",
+      "name": "forge.run.step",
+      "attributes": [
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "8"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "3"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": [
+        {
+          "name": "forge.result_replayed"
+        },
+        {
+          "name": "forge.committed"
+        }
+      ],
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "915fce564fa75343": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "915fce564fa75343",
+      "parentSpanId": "443f5db557fb562c",
+      "name": "forge.runner.server/InspectOperation",
+      "attributes": [
+        {
+          "key": "rpc.system.name",
+          "value": {
+            "stringValue": "grpc",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "rpc.method",
+          "value": {
+            "stringValue": "InspectOperation",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.operation.id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T_0_initial_target",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": [
+        {
+          "name": "forge.receipt_replayed"
+        }
+      ],
+      "Service": "forge-runner",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "92324a487d5cc22a": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "92324a487d5cc22a",
+      "parentSpanId": "6a28a27d869530be",
+      "name": "forge.run.step",
+      "attributes": [
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "3"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "22"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "4"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "2"
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": [
+        {
+          "name": "forge.committed"
+        }
+      ],
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "953577f991c81f46": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "953577f991c81f46",
+      "parentSpanId": "6a28a27d869530be",
+      "name": "forge.run.step",
+      "attributes": [
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "12"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "4"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": [
+        {
+          "name": "forge.committed"
+        }
+      ],
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "9a1f830fcfdb9480": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "9a1f830fcfdb9480",
+      "parentSpanId": "6a28a27d869530be",
+      "name": "forge.run.step",
+      "attributes": [
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "3"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "21"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "4"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "2"
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": [
+        {
+          "name": "forge.committed"
+        }
+      ],
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "9bf7eb2bf34c50a0": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "9bf7eb2bf34c50a0",
+      "parentSpanId": "a418cde03f05fc18",
+      "name": "forge.runner.client/InspectOperation",
+      "attributes": [
+        {
+          "key": "rpc.system.name",
+          "value": {
+            "stringValue": "grpc",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "rpc.method",
+          "value": {
+            "stringValue": "InspectOperation",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "unknown",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "9dd8fbbdd9b5828f": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "9dd8fbbdd9b5828f",
+      "parentSpanId": "26c26ee058289b72",
+      "name": "forge.run.claim",
+      "attributes": [
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": [
+        {
+          "name": "forge.committed"
+        }
+      ],
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "9f1cc0a8878e64db": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "9f1cc0a8878e64db",
+      "parentSpanId": "88e8291c40682e08",
+      "name": "forge.effect.execute",
+      "attributes": [
+        {
+          "key": "forge.effect.kind",
+          "value": {
+            "stringValue": "apply_patch",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "2"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "18"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "4"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.operation.id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T_step_2_op_0",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "a0af193436f121e3": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "a0af193436f121e3",
+      "parentSpanId": "8b2c75f21a49cb96",
+      "name": "forge.run.step",
+      "attributes": [
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "5"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "2"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": [
+        {
+          "name": "forge.committed"
+        }
+      ],
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "a17589c760593c01": {
+      "traceId": "0caca910677123658d06b581491bd8f8",
+      "spanId": "a17589c760593c01",
+      "parentSpanId": "",
+      "name": "POST /v1/approvals/{id}/decision",
+      "attributes": [
+        {
+          "key": "http.request.method",
+          "value": {
+            "stringValue": "POST",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "http.route",
+          "value": {
+            "stringValue": "/v1/approvals/{id}/decision",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "http.response.status_code",
+          "value": {
+            "stringValue": "",
+            "intValue": "200"
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-api",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "a418cde03f05fc18": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "a418cde03f05fc18",
+      "parentSpanId": "4754330a790da213",
+      "name": "forge.effect.execute",
+      "attributes": [
+        {
+          "key": "forge.effect.kind",
+          "value": {
+            "stringValue": "verify",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "3"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "22"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "4"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "2"
+          }
+        },
+        {
+          "key": "forge.operation.id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T_3_final_target",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "a91fd3ef40ed0639": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "a91fd3ef40ed0639",
+      "parentSpanId": "6a28a27d869530be",
+      "name": "forge.run.step",
+      "attributes": [
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "2"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "16"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "4"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": [
+        {
+          "name": "forge.committed"
+        }
+      ],
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "aaed2d84f73b33ab": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "aaed2d84f73b33ab",
+      "parentSpanId": "fb78ea75fb87fbe3",
+      "name": "forge.runner.client/StartOperation",
+      "attributes": [
+        {
+          "key": "rpc.system.name",
+          "value": {
+            "stringValue": "grpc",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "rpc.method",
+          "value": {
+            "stringValue": "StartOperation",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "ae59253baba9102d": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "ae59253baba9102d",
+      "parentSpanId": "26c26ee058289b72",
+      "name": "forge.run.queue",
+      "attributes": [
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "2"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "b4b0b0fe78f772c2": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "b4b0b0fe78f772c2",
+      "parentSpanId": "6a28a27d869530be",
+      "name": "forge.run.step",
+      "attributes": [
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "3"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "23"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "4"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "2"
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": [
+        {
+          "name": "forge.committed"
+        }
+      ],
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "b541bb438a7834ab": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "b541bb438a7834ab",
+      "parentSpanId": "ee0e955b106c6bbb",
+      "name": "forge.run.step",
+      "attributes": [
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "3"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": [
+        {
+          "name": "forge.committed"
+        }
+      ],
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "b689a2722b51447d": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "b689a2722b51447d",
+      "parentSpanId": "9f1cc0a8878e64db",
+      "name": "forge.runner.client/StartOperation",
+      "attributes": [
+        {
+          "key": "rpc.system.name",
+          "value": {
+            "stringValue": "grpc",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "rpc.method",
+          "value": {
+            "stringValue": "StartOperation",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "b70e07200e86f0eb": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "b70e07200e86f0eb",
+      "parentSpanId": "d175421c1e3280a0",
+      "name": "forge.model.request",
+      "attributes": [
+        {
+          "key": "gen_ai.provider.name",
+          "value": {
+            "stringValue": "fake",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "gen_ai.operation.name",
+          "value": {
+            "stringValue": "chat",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "2"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "16"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "4"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.attempt.id",
+          "value": {
+            "stringValue": "attempt_ZRALIFXBDYP2OZBHJGWFJ63SXF",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "gen_ai.request.model",
+          "value": {
+            "stringValue": "fake",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.attempt.number",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.usage.input_tokens",
+          "value": {
+            "stringValue": "",
+            "intValue": "50"
+          }
+        },
+        {
+          "key": "forge.usage.output_tokens",
+          "value": {
+            "stringValue": "",
+            "intValue": "20"
+          }
+        },
+        {
+          "key": "gen_ai.usage.output_tokens",
+          "value": {
+            "stringValue": "",
+            "intValue": "20"
+          }
+        },
+        {
+          "key": "gen_ai.usage.input_tokens",
+          "value": {
+            "stringValue": "",
+            "intValue": "50"
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "ba5bed55b922ce67": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "ba5bed55b922ce67",
+      "parentSpanId": "",
+      "name": "POST /v1/projects/{id}/runs",
+      "attributes": [
+        {
+          "key": "http.request.method",
+          "value": {
+            "stringValue": "POST",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "http.route",
+          "value": {
+            "stringValue": "/v1/projects/{id}/runs",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "http.response.status_code",
+          "value": {
+            "stringValue": "",
+            "intValue": "202"
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-api",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "ba5d25fab15bb377": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "ba5d25fab15bb377",
+      "parentSpanId": "082364de9b311c5e",
+      "name": "forge.run.verification",
+      "attributes": [
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "2"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.verification.phase",
+          "value": {
+            "stringValue": "initial_target",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": [
+        {
+          "name": "forge.committed"
+        }
+      ],
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "c0b4d0a5ed6155b0": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "c0b4d0a5ed6155b0",
+      "parentSpanId": "a0af193436f121e3",
+      "name": "forge.runner.client/AdoptWorkspace",
+      "attributes": [
+        {
+          "key": "rpc.system.name",
+          "value": {
+            "stringValue": "grpc",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "rpc.method",
+          "value": {
+            "stringValue": "AdoptWorkspace",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "c1612cb19789162d": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "c1612cb19789162d",
+      "parentSpanId": "8aed1fa77ff7e352",
+      "name": "forge.runner.server/InspectOperation",
+      "attributes": [
+        {
+          "key": "rpc.system.name",
+          "value": {
+            "stringValue": "grpc",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "rpc.method",
+          "value": {
+            "stringValue": "InspectOperation",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "unknown",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-runner",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "c2c7b1a14ee4b738": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "c2c7b1a14ee4b738",
+      "parentSpanId": "6a28a27d869530be",
+      "name": "forge.run.step",
+      "attributes": [
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "2"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "20"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "4"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "2"
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": [
+        {
+          "name": "forge.committed"
+        }
+      ],
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "c2f2ef06a35b5095": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "c2f2ef06a35b5095",
+      "parentSpanId": "36f6ed3931edd45f",
+      "name": "forge.runner.client/StartOperation",
+      "attributes": [
+        {
+          "key": "rpc.system.name",
+          "value": {
+            "stringValue": "grpc",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "rpc.method",
+          "value": {
+            "stringValue": "StartOperation",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "c301947a3b8e037b": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "c301947a3b8e037b",
+      "parentSpanId": "69d063e72ab38066",
+      "name": "forge.model.request",
+      "attributes": [
+        {
+          "key": "gen_ai.provider.name",
+          "value": {
+            "stringValue": "fake",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "gen_ai.operation.name",
+          "value": {
+            "stringValue": "chat",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "4"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.attempt.id",
+          "value": {
+            "stringValue": "attempt_4FGQC2YOKNOOTUVKL765HQUT3H",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "gen_ai.request.model",
+          "value": {
+            "stringValue": "fake",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.attempt.number",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "unknown",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "d079034a9183fd7e": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "d079034a9183fd7e",
+      "parentSpanId": "082364de9b311c5e",
+      "name": "forge.runner.client/PrepareWorkspace",
+      "attributes": [
+        {
+          "key": "rpc.system.name",
+          "value": {
+            "stringValue": "grpc",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "rpc.method",
+          "value": {
+            "stringValue": "PrepareWorkspace",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "d175421c1e3280a0": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "d175421c1e3280a0",
+      "parentSpanId": "a91fd3ef40ed0639",
+      "name": "forge.run.model_attempt",
+      "attributes": [
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "2"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "4"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.attempt.id",
+          "value": {
+            "stringValue": "attempt_ZRALIFXBDYP2OZBHJGWFJ63SXF",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": [
+        {
+          "name": "forge.committed"
+        }
+      ],
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "d3facca152aa3fb0": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "d3facca152aa3fb0",
+      "parentSpanId": "d74792ad515c6687",
+      "name": "forge.run.drive",
+      "attributes": [
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "7"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "3"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.run.status",
+          "value": {
+            "stringValue": "waiting_approval",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "d536ab1a689404d5": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "d536ab1a689404d5",
+      "parentSpanId": "266378d25bc1a5da",
+      "name": "forge.runner.server/StartOperation",
+      "attributes": [
+        {
+          "key": "rpc.system.name",
+          "value": {
+            "stringValue": "grpc",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "rpc.method",
+          "value": {
+            "stringValue": "StartOperation",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-runner",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "d73e25d38a798bab": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "d73e25d38a798bab",
+      "parentSpanId": "f8c11e6aa5806bf7",
+      "name": "forge.runner.operation",
+      "attributes": [
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "4"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.operation.id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T_step_1_op_0",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.effect.kind",
+          "value": {
+            "stringValue": "run_command",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-runner",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "d74792ad515c6687": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "d74792ad515c6687",
+      "parentSpanId": "26c26ee058289b72",
+      "name": "forge.run.claim",
+      "attributes": [
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "6"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "3"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": [
+        {
+          "traceId": "92509ec207478c0a8cba012ea6613c13",
+          "spanId": "166457b112cf48a0",
+          "attributes": [
+            {
+              "key": "forge.relationship",
+              "value": {
+                "stringValue": "lease_takeover",
+                "intValue": ""
+              }
+            }
+          ]
+        }
+      ],
+      "events": [
+        {
+          "name": "forge.committed"
+        }
+      ],
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "d83a33db6ed3d58c": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "d83a33db6ed3d58c",
+      "parentSpanId": "26c26ee058289b72",
+      "name": "forge.run.claim",
+      "attributes": [
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "11"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "4"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": [
+        {
+          "traceId": "92509ec207478c0a8cba012ea6613c13",
+          "spanId": "d74792ad515c6687",
+          "attributes": [
+            {
+              "key": "forge.relationship",
+              "value": {
+                "stringValue": "claim_continuation",
+                "intValue": ""
+              }
+            }
+          ]
+        }
+      ],
+      "events": [
+        {
+          "name": "forge.committed"
+        }
+      ],
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "e104d21ea43da173": {
+      "traceId": "83f37ba6addb451a6837250397564a0e",
+      "spanId": "e104d21ea43da173",
+      "parentSpanId": "e359643fe0789efe",
+      "name": "forge.run.enqueue",
+      "attributes": [
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_TDY6ZPI3RIO6Q2NPSB36L2DLNO",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": [
+        {
+          "traceId": "92509ec207478c0a8cba012ea6613c13",
+          "spanId": "26c26ee058289b72",
+          "attributes": [
+            {
+              "key": "forge.relationship",
+              "value": {
+                "stringValue": "run_retry",
+                "intValue": ""
+              }
+            }
+          ]
+        }
+      ],
+      "events": [
+        {
+          "name": "forge.committed"
+        }
+      ],
+      "Service": "forge-api",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "e359643fe0789efe": {
+      "traceId": "83f37ba6addb451a6837250397564a0e",
+      "spanId": "e359643fe0789efe",
+      "parentSpanId": "",
+      "name": "POST /v1/projects/{id}/runs",
+      "attributes": [
+        {
+          "key": "http.request.method",
+          "value": {
+            "stringValue": "POST",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "http.route",
+          "value": {
+            "stringValue": "/v1/projects/{id}/runs",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "http.response.status_code",
+          "value": {
+            "stringValue": "",
+            "intValue": "202"
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-api",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "e4005ce03f34e525": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "e4005ce03f34e525",
+      "parentSpanId": "1d854ee8066b278e",
+      "name": "forge.model.request",
+      "attributes": [
+        {
+          "key": "gen_ai.provider.name",
+          "value": {
+            "stringValue": "fake",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "gen_ai.operation.name",
+          "value": {
+            "stringValue": "chat",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "6"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "2"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.attempt.id",
+          "value": {
+            "stringValue": "attempt_NQMKDSKYZGVLZW7NFOJL6GMJYJ",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "gen_ai.request.model",
+          "value": {
+            "stringValue": "fake",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.attempt.number",
+          "value": {
+            "stringValue": "",
+            "intValue": "2"
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.usage.input_tokens",
+          "value": {
+            "stringValue": "",
+            "intValue": "50"
+          }
+        },
+        {
+          "key": "forge.usage.output_tokens",
+          "value": {
+            "stringValue": "",
+            "intValue": "20"
+          }
+        },
+        {
+          "key": "gen_ai.usage.output_tokens",
+          "value": {
+            "stringValue": "",
+            "intValue": "20"
+          }
+        },
+        {
+          "key": "gen_ai.usage.input_tokens",
+          "value": {
+            "stringValue": "",
+            "intValue": "50"
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "e43de7f0df5e7379": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "e43de7f0df5e7379",
+      "parentSpanId": "8b2c75f21a49cb96",
+      "name": "forge.run.step",
+      "attributes": [
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "6"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "2"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "unknown",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "e449a9b04191f9ef": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "e449a9b04191f9ef",
+      "parentSpanId": "6a28a27d869530be",
+      "name": "forge.run.step",
+      "attributes": [
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "13"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "4"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": [
+        {
+          "name": "forge.committed"
+        }
+      ],
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "e57c402284d715ea": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "e57c402284d715ea",
+      "parentSpanId": "fe769773b73ab50f",
+      "name": "forge.runner.server/InspectOperation",
+      "attributes": [
+        {
+          "key": "rpc.system.name",
+          "value": {
+            "stringValue": "grpc",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "rpc.method",
+          "value": {
+            "stringValue": "InspectOperation",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "unknown",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-runner",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "e612cc7d2cb22c9c": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "e612cc7d2cb22c9c",
+      "parentSpanId": "26c26ee058289b72",
+      "name": "forge.run.queue",
+      "attributes": [
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "3"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "eb921a24c2b0cda5": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "eb921a24c2b0cda5",
+      "parentSpanId": "6a28a27d869530be",
+      "name": "forge.run.step",
+      "attributes": [
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "14"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "4"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": [
+        {
+          "name": "forge.committed"
+        }
+      ],
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "eca7f5574b87dcb3": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "eca7f5574b87dcb3",
+      "parentSpanId": "06fc6e2f63bec504",
+      "name": "forge.runner.client/InspectOperation",
+      "attributes": [
+        {
+          "key": "rpc.system.name",
+          "value": {
+            "stringValue": "grpc",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "rpc.method",
+          "value": {
+            "stringValue": "InspectOperation",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "ee0e955b106c6bbb": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "ee0e955b106c6bbb",
+      "parentSpanId": "9dd8fbbdd9b5828f",
+      "name": "forge.run.drive",
+      "attributes": [
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "2"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.run.status",
+          "value": {
+            "stringValue": "running",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "f20a091bb227a934": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "f20a091bb227a934",
+      "parentSpanId": "17c9f7741f6fdb62",
+      "name": "forge.runner.server/StartOperation",
+      "attributes": [
+        {
+          "key": "rpc.system.name",
+          "value": {
+            "stringValue": "grpc",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "rpc.method",
+          "value": {
+            "stringValue": "StartOperation",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-runner",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "f2e4d92b7ceddd9b": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "f2e4d92b7ceddd9b",
+      "parentSpanId": "6ea8d53d49ec9d49",
+      "name": "forge.runner.client/InspectOperation",
+      "attributes": [
+        {
+          "key": "rpc.system.name",
+          "value": {
+            "stringValue": "grpc",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "rpc.method",
+          "value": {
+            "stringValue": "InspectOperation",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "unknown",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "f44efe47bff48596": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "f44efe47bff48596",
+      "parentSpanId": "4b72b8cacc230b79",
+      "name": "forge.runner.server/InspectOperation",
+      "attributes": [
+        {
+          "key": "rpc.system.name",
+          "value": {
+            "stringValue": "grpc",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "rpc.method",
+          "value": {
+            "stringValue": "InspectOperation",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "4"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.operation.id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T_step_2_op_0",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": [
+        {
+          "name": "forge.receipt_replayed"
+        }
+      ],
+      "Service": "forge-runner",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "f45b931aa492cdfe": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "f45b931aa492cdfe",
+      "parentSpanId": "26c26ee058289b72",
+      "name": "forge.run.queue",
+      "attributes": [
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "f8c11e6aa5806bf7": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "f8c11e6aa5806bf7",
+      "parentSpanId": "aaed2d84f73b33ab",
+      "name": "forge.runner.server/StartOperation",
+      "attributes": [
+        {
+          "key": "rpc.system.name",
+          "value": {
+            "stringValue": "grpc",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "rpc.method",
+          "value": {
+            "stringValue": "StartOperation",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-runner",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "f9dcdd0f285783a0": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "f9dcdd0f285783a0",
+      "parentSpanId": "f20a091bb227a934",
+      "name": "forge.runner.operation",
+      "attributes": [
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "0"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "4"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "2"
+          }
+        },
+        {
+          "key": "forge.operation.id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T_3_final_target",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.effect.kind",
+          "value": {
+            "stringValue": "verify",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-runner",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "fb78ea75fb87fbe3": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "fb78ea75fb87fbe3",
+      "parentSpanId": "e449a9b04191f9ef",
+      "name": "forge.effect.execute",
+      "attributes": [
+        {
+          "key": "forge.effect.kind",
+          "value": {
+            "stringValue": "run_command",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "13"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "4"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.operation.id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T_step_1_op_0",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "fbc99d1470357eb5": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "fbc99d1470357eb5",
+      "parentSpanId": "d3facca152aa3fb0",
+      "name": "forge.run.step",
+      "attributes": [
+        {
+          "key": "forge.tenant_id",
+          "value": {
+            "stringValue": "chain_tenant",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.run_id",
+          "value": {
+            "stringValue": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.step.seq",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.state.version",
+          "value": {
+            "stringValue": "",
+            "intValue": "9"
+          }
+        },
+        {
+          "key": "forge.lease.epoch",
+          "value": {
+            "stringValue": "",
+            "intValue": "3"
+          }
+        },
+        {
+          "key": "forge.workspace.revision",
+          "value": {
+            "stringValue": "",
+            "intValue": "1"
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "success",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": [
+        {
+          "name": "forge.committed"
+        }
+      ],
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    },
+    "fe769773b73ab50f": {
+      "traceId": "92509ec207478c0a8cba012ea6613c13",
+      "spanId": "fe769773b73ab50f",
+      "parentSpanId": "36f6ed3931edd45f",
+      "name": "forge.runner.client/InspectOperation",
+      "attributes": [
+        {
+          "key": "rpc.system.name",
+          "value": {
+            "stringValue": "grpc",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "rpc.method",
+          "value": {
+            "stringValue": "InspectOperation",
+            "intValue": ""
+          }
+        },
+        {
+          "key": "forge.outcome",
+          "value": {
+            "stringValue": "unknown",
+            "intValue": ""
+          }
+        }
+      ],
+      "links": null,
+      "events": null,
+      "Service": "forge-worker",
+      "Schema": "https://opentelemetry.io/schemas/1.38.0"
+    }
+  },
+  "journal_operation_ids": [
+    "run_KL3EOFWISSKLWAHWEO6QI2QU3T_0_initial_target",
+    "run_KL3EOFWISSKLWAHWEO6QI2QU3T_3_final_diff",
+    "run_KL3EOFWISSKLWAHWEO6QI2QU3T_3_final_target",
+    "run_KL3EOFWISSKLWAHWEO6QI2QU3T_3_regression",
+    "run_KL3EOFWISSKLWAHWEO6QI2QU3T_step_1_op_0",
+    "run_KL3EOFWISSKLWAHWEO6QI2QU3T_step_2_op_0"
+  ],
+  "journal_operations": 6,
+  "metrics": {
+    "forge-api": {
+      "active_runs": 0,
+      "artifact_bytes_total": 0,
+      "dispatch_latency_seconds": 0,
+      "effect_operations_inflight": 0,
+      "lease_expirations_total": 0,
+      "model_attempts_total": 0,
+      "model_requests_inflight": 0,
+      "provider_rate_limits_total": 0,
+      "queue_depth": 0,
+      "reconciliation_total": 0,
+      "reserved_budget_usd": 0,
+      "run_drives_inflight": 0,
+      "run_transitions_total": 1,
+      "runner_operation_duration_seconds": 0
+    },
+    "forge-runner": {
+      "active_runs": 0,
+      "artifact_bytes_total": 0,
+      "dispatch_latency_seconds": 0,
+      "effect_operations_inflight": 0,
+      "lease_expirations_total": 0,
+      "model_attempts_total": 0,
+      "model_requests_inflight": 0,
+      "provider_rate_limits_total": 0,
+      "queue_depth": 0,
+      "reconciliation_total": 0,
+      "reserved_budget_usd": 0,
+      "run_drives_inflight": 0,
+      "run_transitions_total": 0,
+      "runner_operation_duration_seconds": 6
+    },
+    "forge-worker": {
+      "active_runs": 0,
+      "artifact_bytes_total": 20749,
+      "dispatch_latency_seconds": 4,
+      "effect_operations_inflight": 0,
+      "lease_expirations_total": 1,
+      "model_attempts_total": 4,
+      "model_requests_inflight": 0,
+      "provider_rate_limits_total": 1,
+      "queue_depth": 1,
+      "reconciliation_total": 0,
+      "reserved_budget_usd": 0,
+      "run_drives_inflight": 0,
+      "run_transitions_total": 22,
+      "runner_operation_duration_seconds": 0
+    }
+  },
+  "passed": true,
+  "pg_attempts": [
+    {
+      "id": "attempt_4FGQC2YOKNOOTUVKL765HQUT3H",
+      "step": 1,
+      "number": 1,
+      "status": "failed",
+      "traceparent": "00-92509ec207478c0a8cba012ea6613c13-69d063e72ab38066-01"
+    },
+    {
+      "id": "attempt_NQMKDSKYZGVLZW7NFOJL6GMJYJ",
+      "step": 1,
+      "number": 2,
+      "status": "completed",
+      "traceparent": "00-92509ec207478c0a8cba012ea6613c13-1d854ee8066b278e-01"
+    },
+    {
+      "id": "attempt_ZRALIFXBDYP2OZBHJGWFJ63SXF",
+      "step": 2,
+      "number": 1,
+      "status": "completed",
+      "traceparent": "00-92509ec207478c0a8cba012ea6613c13-d175421c1e3280a0-01"
+    },
+    {
+      "id": "attempt_JK7GAG7ME2UQCHR5GQYOL4DGRA",
+      "step": 3,
+      "number": 1,
+      "status": "completed",
+      "traceparent": "00-92509ec207478c0a8cba012ea6613c13-1ecf6446449f6824-01"
+    }
+  ],
+  "pg_committed_transitions": 23,
+  "pg_enqueue_traceparent": "00-92509ec207478c0a8cba012ea6613c13-26c26ee058289b72-01",
+  "pg_last_claim_traceparent": "00-92509ec207478c0a8cba012ea6613c13-d83a33db6ed3d58c-01",
+  "pg_ready_bytes": 20749,
+  "retry_child": "run_TDY6ZPI3RIO6Q2NPSB36L2DLNO",
+  "run": {
+    "tenant_id": "chain_tenant",
+    "id": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+    "project_id": "project_NECZIJHSSXC75XEN65MADAVPSI",
+    "principal_id": "chain_principal",
+    "task": "E43_PRIVATE_PROMPT_CANARY_719",
+    "base_commit": "1389cc75b246c174bb742f6ac0a113453f7dabcc2fcb46c2a02ca6ba81bc1440",
+    "runner_id": "chain_runner",
+    "commands": [
+      {
+        "kind": "publish_terminal"
+      }
+    ],
+    "state": {
+      "progress": {
+        "last_checked_step": 2,
+        "message_seq": 0,
+        "repeated_batches": 0,
+        "classification": "new_evidence",
+        "recent_evidence": [
+          "0273e5c371ef80c91c365a916c195d35f6d1087584b8b6e73ecc5a9a8bbb1a20",
+          "bdca96169817cf29bc56ea5dc06f4187d56e39ae22171448daca169de26138aa"
+        ],
+        "recent_trees": [
+          "1389cc75b246c174bb742f6ac0a113453f7dabcc2fcb46c2a02ca6ba81bc1440",
+          "4edc56e0b10dd66b325eec5b8d1d3a9bafc7ed76a5b1dde274225e728089a7fa"
+        ]
+      },
+      "schema_version": 2,
+      "run_id": "run_KL3EOFWISSKLWAHWEO6QI2QU3T",
+      "tenant_id": "chain_tenant",
+      "version": 24,
+      "status": "completed",
+      "stage": "stopped",
+      "lease": {
+        "owner": "worker-3",
+        "epoch": 4,
+        "until": "2026-09-11T16:38:01.168263-07:00"
+      },
+      "step_seq": 3,
+      "workspace_revision": 2,
+      "output_ref": "artifact_dba93873bc6a984a8f7c6b3023ea646a013465dba5e6abf2a3830c11049d8bef",
+      "verification_status": "verified",
+      "verification_report_ref": "artifact_5d4e48460afd7542e4cbb7d9e9f4a51d7276379ae1159f3e9173500ef6950e45",
+      "verification_revision": 2,
+      "model_rounds": 3,
+      "tool_calls": 2,
+      "cost_microusd": 0,
+      "limits": {
+        "max_no_progress_batches": 3,
+        "max_model_rounds": 6,
+        "max_tool_calls": 6,
+        "max_cost_microusd": 1000000,
+        "deadline": "2026-09-11T16:38:55.54123-07:00"
+      }
+    },
+    "config": {
+      "provider": "fake",
+      "model": "fake",
+      "max_model_rounds": 6,
+      "max_tool_calls": 6,
+      "max_cost_microusd": 1000000,
+      "max_runtime_seconds": 60,
+      "max_no_progress_batches": 3
+    },
+    "created_at": "2026-09-11T16:37:55.542674-07:00",
+    "covered_seq": 55
+  },
+  "scope": "production TCP API/PG/Driver/gRPC/SQLite, deterministic local provider, TestBackend protocol verification only; drive context cancellation after persisted result, no process kill/no Docker/no paid model"
+}

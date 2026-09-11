@@ -132,8 +132,12 @@ remain unchanged.
 
 This working-tree evidence is anchored at `5de6f0f`, whose separate
 [GitHub CI](../benchmarks/results/github-actions-5de6f0f/run.json) passed before
-E41. It does not certify a future commit or a live deployment. Integration with
-E42's explicit snapshot-v2 admission/old-reader guard remains required before
-promoting S10.3/S10.8; existing v1 runs keep their original configuration.
+E41. It does not certify a future commit or a live deployment. The integrated
+E42 path now gives new submissions snapshot v2, which old readers hold. A v1
+snapshot with a fallback is rejected before dispatch and before prepared-attempt
+replay; the Store checks its locked durable version even when given a stale
+in-memory v2 run. Existing v1 runs without fallback retain their original
+configuration and execution behavior. These integration checks are recorded
+separately from the original E41 native records.
 No paid provider call, live database migration, runner replacement or mount
 change was performed by E41.

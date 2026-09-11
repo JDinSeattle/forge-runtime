@@ -5,7 +5,7 @@ replaces globals. API, worker and runner entrypoints install it on their real
 Store/Driver/gRPC/Engine objects. Set `OTEL_EXPORTER_OTLP_TRACES_ENDPOINT` to an
 operator-controlled OTLP HTTP URL. Empty disables export while retaining context
 and metrics. Runner metrics use numeric loopback `FORGE_METRICS_LISTEN` (default
-`127.0.0.1:8097`); API and worker retain their existing metrics listeners.
+`127.0.0.1:8099`); API and worker retain their existing metrics listeners.
 
 ## Trace boundaries and recovery
 

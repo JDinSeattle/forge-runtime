@@ -5,6 +5,11 @@ This acceptance extends S16.1, S16.2 and S16.3 on isolated base commit
 schemas. It does not deploy the live services or migrate the public database.
 The parent integrates this isolated worktree with E41/E42/E44 separately.
 
+[E46](integration-checks-e46-20260911.md) subsequently integrates E41/E42 and
+repeats the actual Collector chain successfully, retaining its own source and
+record identity. It also corrects the runner's default metrics port to 8099 so
+it does not conflict with the API's 8097 listener. E44 remains separate.
+
 The instrumented path is a real TCP HTTP API with the existing restricted
 NOBYPASSRLS review role, private PostgreSQL schema, production Driver, real gRPC
 transport, production Engine, durable SQLite journal, actual artifact bytes,

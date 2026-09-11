@@ -1,0 +1,56 @@
+import datetime, hashlib, importlib.util, json, os, pathlib, shlex, subprocess, sys, time
+repo=pathlib.Path('/home/postedism/Desktop/mini claude code/forge-runtime')
+output=repo/'benchmarks/results'/('integration-checks-'+datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%SZ'))
+output.mkdir(mode=0o700)
+binaries=repo/'var/local'/('forge-checked-binaries-'+output.name)
+binaries.mkdir(mode=0o700)
+build_tmp=repo/'var/local/integration-go-tmp'
+build_tmp.mkdir(mode=0o700,exist_ok=True)
+env={k:v for k,v in os.environ.items() if not k.startswith('FORGE_')}
+for line in (repo/'var/local/review-database.env').read_text().splitlines():
+    key,sep,value=line.partition('=')
+    if sep and key in ('FORGE_REVIEW_DATABASE_URL','FORGE_REVIEW_ALLOW_FIXTURES'):
+        env[key]=shlex.split(value)[0]
+assert env.get('FORGE_REVIEW_ALLOW_FIXTURES')=='1'
+env.update(FORGE_TEST_DATABASE_URL=env['FORGE_REVIEW_DATABASE_URL'],GOCACHE=str(repo/'var/local/go-build-cache'),GOPROXY='off',FORGE_REVIEW_FORGE_BINARY=str(binaries/'forge'),FORGE_REVIEW_ADMIN_BINARY=str(binaries/'forge-admin'),FORGE_REVIEW_API_BINARY=str(binaries/'forge-api'),TMPDIR='/tmp',GOTMPDIR=str(build_tmp),GOENV='off',GOTOOLCHAIN='local',GOSUMDB='off')
+def snapshot():
+    names=subprocess.check_output(['rg','--files','--hidden','-g','!.git','-g','!benchmarks/results','-g','!var','-g','!bin'],cwd=repo,text=True).splitlines()
+    return {n:hashlib.sha256((repo/n).read_bytes()).hexdigest() for n in sorted(names) if pathlib.Path(n).suffix in ('.go','.mod','.sum','.sql','.yaml','.yml','.proto','.py','.sh') or n=='Makefile'}
+def dump(name,data):
+    (output/name).write_text(json.dumps(data,indent=2,sort_keys=True)+'\n')
+(output/'check-runner.py.txt').write_text(pathlib.Path(__file__).read_text())
+before=snapshot(); dump('source-before.json',before)
+dump('identity.json',{'started_at':datetime.datetime.now(datetime.timezone.utc).isoformat(),'base_commit':subprocess.check_output(['git','rev-parse','HEAD'],cwd=repo,text=True).strip(),'working_tree':True,'go':subprocess.check_output(['go','version'],cwd=repo,text=True).strip(),'binary_directory':str(binaries),'scope':'local whole-tree checks; private fixture schemas, no live migration, model call, or Docker acceptance'})
+spec=importlib.util.spec_from_file_location('bounded_launcher',repo/'tests/review/run_api_lifecycle.py');launcher=importlib.util.module_from_spec(spec);spec.loader.exec_module(launcher)
+checks=[('build',['go','build','-o',str(binaries)+'/', './cmd/...']),('test',['go','test','-json','-count=1','./...']),('race',['go','test','-race','-json','-count=1','./...']),('vet',['go','vet','./...']),('generated',['make','check-generated'])]
+for label, folder in [('volumes','scripts/workspace-volumes'),('runner','cmd/forge-runner'),('recovery','scripts/recovery'),('evaluation','scripts/evaluation'),('faults','scripts/faults'),('progress','scripts/progress')]:
+    checks.append(('python-'+label,['python3','-I','-m','unittest','discover','-s',folder,'-p','test_*.py','-v']))
+results=[]
+print(json.dumps({'output':str(output),'source_files':len(before)}),flush=True)
+for name, argv in checks:
+    if name in ('test','race'):
+        env['FORGE_RECOVERY_UPGRADE_OUTPUT']=str(output/(name+'-upgrade'))
+        env['FORGE_HANDOFF_EVIDENCE_DIR']=str(output/(name+'-handoff-records'))
+        env['FORGE_REVIEW_LIFECYCLE_EVIDENCE']=str(output/(name+'-api-lifecycle'))
+        (output/(name+'-api-lifecycle')).mkdir()
+    start=time.monotonic()
+    with (output/(name+'.log')).open('xb') as log:
+        code=launcher.execute_bounded(argv,repo,env,log,600)
+    result={'name':name,'argv':argv,'exit_code':code,'elapsed_seconds':time.monotonic()-start}
+    if name in ('test','race'):
+        records=[]
+        for line in (output/(name+'.log')).read_text().splitlines():
+            try: records.append(json.loads(line))
+            except ValueError: pass
+        result['tests']={act:sum(1 for row in records if row.get('Test') and row.get('Action')==act) for act in ('pass','fail','skip')}
+        result['packages']={act:sum(1 for row in records if not row.get('Test') and row.get('Action')==act) for act in ('pass','fail','skip')}
+        result['failed_tests']=[row.get('Package','')+'/'+row['Test'] for row in records if row.get('Test') and row.get('Action')=='fail']
+    results.append(result); dump('results.json',results); print(json.dumps(result),flush=True)
+    if name=='build':
+        if code: break
+        dump('binaries.json',{p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in binaries.iterdir() if p.is_file()})
+after=snapshot(); dump('source-after.json',after)
+dump('source-comparison.json',{'unchanged':before==after,'changes':[n for n in sorted(before.keys()|after.keys()) if before.get(n)!=after.get(n)]})
+dump('manifest.json',{str(p.relative_to(output)):hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(output.rglob('*')) if p.is_file() and p.name!='manifest.json'})
+print(json.dumps({'completed':True,'all_passed':all(r['exit_code']==0 for r in results),'source_unchanged':before==after}),flush=True)
+sys.exit(0 if all(r['exit_code']==0 for r in results) and before==after else 1)

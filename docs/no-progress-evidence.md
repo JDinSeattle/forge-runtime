@@ -85,6 +85,15 @@ charges from a paid API.
   must retain the same watermark and avoid emitting another `ContextBuilt` for a
   fallback attempt; its v1/fallback gate is separate integration work.
 
+The subsequent [E46 integration](integration-checks-e46-20260911.md) now verifies
+that shared boundary and the v1/fallback guard. Independent review also exposed
+three omissions in the original auditor, while confirming that the original
+reports were consistent. The [hardened auditor evidence](../benchmarks/results/no-progress-audit-hardening-20260911/README.md)
+binds terminal SQL/receipt statuses, the complete consecutive snapshot chain and
+the final Run state, excluding only the separately updated heartbeat deadline.
+All nine original reports still pass; the former false-accepting counterexamples
+are retained separately and rejected by the revised auditor.
+
 ## Executed evidence and provenance
 
 Evidence root: [`benchmarks/results/no-progress-20260911`](../benchmarks/results/no-progress-20260911).
