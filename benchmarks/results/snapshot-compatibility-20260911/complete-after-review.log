@@ -1,0 +1,50 @@
+=== RUN   TestReviewUnsupportedSnapshotDoesNotStarveHealthyRuns
+    snapshot_compatibility_test.go:117: claim 0 run=run_3OKYNQ2ZG3BWORZB52QWL7LJUY err=<nil>
+    snapshot_compatibility_test.go:117: claim 1 run=run_MHAZW5J2V2M25LSHAPCRQZN55I err=snapshot_migration_required: stored schema 2; binary supports 1; execution is paused: use forge-admin snapshot-inspect and docs/snapshot-compatibility-evidence.md
+    snapshot_compatibility_test.go:117: claim 2 run=run_55JP46S7SFC557CRBYVP6HZNUF err=<nil>
+    snapshot_compatibility_test.go:117: claim 3 run= err=not_found
+    snapshot_compatibility_test.go:117: claim 4 run= err=not_found
+--- PASS: TestReviewUnsupportedSnapshotDoesNotStarveHealthyRuns (0.51s)
+=== RUN   TestReviewUnsupportedSnapshotAmbiguousMembersFenceAndHold
+=== RUN   TestReviewUnsupportedSnapshotAmbiguousMembersFenceAndHold/lower-then-upper
+=== RUN   TestReviewUnsupportedSnapshotAmbiguousMembersFenceAndHold/upper-then-lower
+=== RUN   TestReviewUnsupportedSnapshotAmbiguousMembersFenceAndHold/duplicate-two-one
+=== RUN   TestReviewUnsupportedSnapshotAmbiguousMembersFenceAndHold/duplicate-one-one
+=== RUN   TestReviewUnsupportedSnapshotAmbiguousMembersFenceAndHold/unicode-long-s
+=== RUN   TestReviewUnsupportedSnapshotAmbiguousMembersFenceAndHold/escaped-long-s
+--- PASS: TestReviewUnsupportedSnapshotAmbiguousMembersFenceAndHold (8.33s)
+    --- PASS: TestReviewUnsupportedSnapshotAmbiguousMembersFenceAndHold/lower-then-upper (1.41s)
+    --- PASS: TestReviewUnsupportedSnapshotAmbiguousMembersFenceAndHold/upper-then-lower (1.37s)
+    --- PASS: TestReviewUnsupportedSnapshotAmbiguousMembersFenceAndHold/duplicate-two-one (1.45s)
+    --- PASS: TestReviewUnsupportedSnapshotAmbiguousMembersFenceAndHold/duplicate-one-one (1.33s)
+    --- PASS: TestReviewUnsupportedSnapshotAmbiguousMembersFenceAndHold/unicode-long-s (1.42s)
+    --- PASS: TestReviewUnsupportedSnapshotAmbiguousMembersFenceAndHold/escaped-long-s (1.35s)
+=== RUN   TestReviewUnsupportedSnapshotOperatorCLI
+--- PASS: TestReviewUnsupportedSnapshotOperatorCLI (0.34s)
+=== RUN   TestReviewUnsupportedSnapshotPreservesUnknownLedgerAndAuthority
+--- PASS: TestReviewUnsupportedSnapshotPreservesUnknownLedgerAndAuthority (2.33s)
+=== RUN   TestReviewUnsupportedSnapshotHTTPAndOperatorRecovery
+--- PASS: TestReviewUnsupportedSnapshotHTTPAndOperatorRecovery (0.57s)
+=== RUN   TestReviewUnsupportedSnapshotApprovalRefusesUnknownState
+--- PASS: TestReviewUnsupportedSnapshotApprovalRefusesUnknownState (0.38s)
+=== RUN   TestReviewUnsupportedSnapshotMalformedHeadersRemainHeld
+=== RUN   TestReviewUnsupportedSnapshotMalformedHeadersRemainHeld/null
+=== RUN   TestReviewUnsupportedSnapshotMalformedHeadersRemainHeld/1.5
+=== RUN   TestReviewUnsupportedSnapshotMalformedHeadersRemainHeld/"1"
+=== RUN   TestReviewUnsupportedSnapshotMalformedHeadersRemainHeld/-1
+=== RUN   TestReviewUnsupportedSnapshotMalformedHeadersRemainHeld/999999999999999999999999999999999999999999999999999999999999999999999999
+--- PASS: TestReviewUnsupportedSnapshotMalformedHeadersRemainHeld (1.28s)
+    --- PASS: TestReviewUnsupportedSnapshotMalformedHeadersRemainHeld/null (0.27s)
+    --- PASS: TestReviewUnsupportedSnapshotMalformedHeadersRemainHeld/1.5 (0.28s)
+    --- PASS: TestReviewUnsupportedSnapshotMalformedHeadersRemainHeld/"1" (0.25s)
+    --- PASS: TestReviewUnsupportedSnapshotMalformedHeadersRemainHeld/-1 (0.25s)
+    --- PASS: TestReviewUnsupportedSnapshotMalformedHeadersRemainHeld/999999999999999999999999999999999999999999999999999999999999999999999999 (0.24s)
+=== RUN   TestReviewUnsupportedSnapshotStopsCleanupAndRetentionOfTerminalEvidence
+--- PASS: TestReviewUnsupportedSnapshotStopsCleanupAndRetentionOfTerminalEvidence (0.31s)
+=== RUN   TestReviewUnsupportedSnapshotEndsExistingSSEGeneration
+--- PASS: TestReviewUnsupportedSnapshotEndsExistingSSEGeneration (0.33s)
+=== RUN   TestRecoveryPostgresAdditiveUpgrade
+    upgrade_test.go:150: private PostgreSQL schema upgraded 6 -> 11 twice; original run columns, unknown effect, artifact metadata and snapshot bytes unchanged; new priority defaults to zero and holds are NULL
+--- PASS: TestRecoveryPostgresAdditiveUpgrade (0.27s)
+PASS
+ok  	github.com/JDinSeattle/forge-runtime/tests/review	15.685s

@@ -1,0 +1,100 @@
+{
+  "evidence_id": "E37",
+  "date": "2026-09-11",
+  "passed": true,
+  "source_base": "a9208e7",
+  "current_parent_head": "a0b3a5da4c09181cf600e7e4f54d83df93387282",
+  "postgres_http_race": {
+    "top_level_compatibility_tests": 9,
+    "compatibility_leaf_cases": 18,
+    "additive_upgrade_tests": 1,
+    "elapsed_seconds": 15.685,
+    "actual_cli_included": true,
+    "existing_sse_included": true,
+    "raw_directory": "complete-after-review",
+    "log": "complete-after-review.log"
+  },
+  "operator_cli_race": {
+    "included_in_final_suite": true,
+    "binary_sha256": "64265367919d6bf61699fa2769b741eadc978c13a57843e29ce2d941510af27c",
+    "binary_bytes": 81908563,
+    "binary_retained_in_evidence": false,
+    "binary_local_path": "var/local/e37-build/forge-admin"
+  },
+  "header_race": {
+    "tests": 3,
+    "elapsed_seconds": 1.532,
+    "log": "header-after-review.log",
+    "includes_exhaustive_unicode_fold_guard": true
+  },
+  "scope": [
+    "Private PostgreSQL schemas with real TCP API and production Store/Driver gates.",
+    "API effective nonowner current_user uses SET ROLE from administrator session, not separate restricted LOGIN.",
+    "No provider request or runner operation: recording uncalled runner boundary, synthetic control evidence and unknown dispatch quota marker.",
+    "Actual artifact bytes remain readable; this is not paired workspace/SQLite recovery.",
+    "Operator unhold never converts data; positive test restores previously saved complete known v1 fixture first.",
+    "No live service/public schema migration.",
+    "Source snapshots copied after targeted tests, not full build input or retained executable attestation."
+  ],
+  "initial_failures": [
+    "Before change: GET schema2 returns 200 and same-tenant healthy run is blocked by repeated unsupported-snapshot claim rollback.",
+    "Initial fixture used jsonb_set on the json column without a jsonb cast; corrected fixture only.",
+    "Initial full-suite server fixture omitted Streams; SSE request returned 500. The original first-run/http-operator.json includes a mistaken passed=true field from unconditional producer metadata; its actual HTTP500 and failing test log are authoritative. compatibilitySave now derives passed from t.Failed().",
+    "CLI test import initially collided with the existing exec fixture helper; aliased os/exec, unchanged production CLI then passed.",
+    "Independent review exposed case-folded and duplicate version member bypasses. All six real PostgreSQL negative cases failed before both reader and SQL gates were fixed; original evidence retained.",
+    "A later forge-admin link failed because /tmp disk quota was exceeded, before tests started. Only obsolete own test binary removed; rebuild and final workspace-scratch acceptance passed."
+  ],
+  "remaining_integration": "Targeted compatibility acceptance complete; whole-tree/CI and actual deployment checks are separate. No live schema or runtime migration performed.",
+  "final_run_base": "a0b3a5da4c09181cf600e7e4f54d83df93387282",
+  "earlier_subsets": {
+    "postgres_http_race_seconds": 6.544,
+    "operator_cli_race_seconds": 1.327,
+    "complete_before_ambiguity_review_seconds": 6.886,
+    "original_derived_report": "pre-review-derived-report.json"
+  },
+  "ambiguity_review": {
+    "severity": "P2",
+    "independent_before_log": "ambiguity-independent-before.log",
+    "real_postgres_before_cases": 6,
+    "before_elapsed_seconds": 8.377,
+    "real_postgres_after_cases": 6,
+    "after_elapsed_seconds": 9.472,
+    "cases": [
+      "lower-then-upper",
+      "upper-then-lower",
+      "duplicate-two-one",
+      "duplicate-one-one",
+      "unicode-long-s",
+      "escaped-long-s"
+    ],
+    "before_raw": "ambiguous-before",
+    "after_raw": "ambiguous-after",
+    "repeated_in_final_suite": true
+  },
+  "existing_sse": {
+    "initial_http_status": 200,
+    "source_error": "snapshot_migration_required",
+    "closed_without_client_cancel": true,
+    "new_http_status": 409,
+    "observation_ms": 16.165,
+    "measurement_scope": "Includes fixture mutation, observed close and new HTTP admission; not a latency benchmark."
+  },
+  "read_only_recomputation": {
+    "ambiguous_final_records_equal": true,
+    "unknown_ledger_records_equal": true,
+    "approval_records_equal": true,
+    "terminal_records_equal": true,
+    "artifact_bytes_downloaded": true,
+    "snapshot_cli_sha_matches_original_text": true
+  },
+  "initial_implementation_base": "a9208e7",
+  "pre_ambiguity_suite_base": "7b7504711538aa8fb9a9ad3b3124d0043e545bb2",
+  "independent_review": {
+    "ambiguity_P2_closed": true,
+    "original_overlay_after_fix_seconds": 1.027,
+    "header_unit_race_seconds": 1.528,
+    "audited_retained_postgres_after_cases": 6,
+    "postgres_rerun_by_reviewer": false,
+    "audit": "ambiguity-independent-after-audit.json"
+  }
+}

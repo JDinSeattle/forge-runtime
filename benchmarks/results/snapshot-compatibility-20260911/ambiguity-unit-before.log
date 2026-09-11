@@ -1,0 +1,11 @@
+=== RUN   TestSnapshotHeaderRejectsAmbiguousMembers
+    snapshot_compatibility_test.go:39: ambiguous version accepted {"schema_version":1,"SCHEMA_VERSION":2}: <nil>
+    snapshot_compatibility_test.go:39: ambiguous version accepted {"SCHEMA_VERSION":2,"schema_version":1}: <nil>
+    snapshot_compatibility_test.go:39: ambiguous version accepted {"schema_version":2,"schema_version":1}: <nil>
+    snapshot_compatibility_test.go:39: ambiguous version accepted {"schema_version":1,"schema_version":1}: <nil>
+    snapshot_compatibility_test.go:39: ambiguous version accepted {"schema_version":1,"ſchema_version":2}: <nil>
+    snapshot_compatibility_test.go:39: ambiguous version accepted {"schema_version":1,"\u017fchema_version":2}: <nil>
+--- FAIL: TestSnapshotHeaderRejectsAmbiguousMembers (0.00s)
+FAIL
+FAIL	github.com/JDinSeattle/forge-runtime/internal/persistence	0.012s
+FAIL

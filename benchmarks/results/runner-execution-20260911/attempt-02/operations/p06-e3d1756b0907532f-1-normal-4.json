@@ -1,0 +1,48 @@
+{
+  "request": {
+    "tenant_id": "p06-execution",
+    "run_id": "p06-e3d1756b0907532f-1",
+    "workspace_id": "p06-e3d1756b0907532f-1",
+    "epoch": 1,
+    "grant": "",
+    "operation_id": "p06-e3d1756b0907532f-1-normal-4",
+    "expected_revision": 5,
+    "kind": "run_command",
+    "args": {
+      "command": [
+        "python",
+        "-I",
+        "-B",
+        "-c",
+        "import array, fcntl, json, os, pathlib, signal, socket, struct, sys, time\nmarker, mode = sys.argv[1:]\np = pathlib.Path(\"p06-shared-name.txt\")\np.write_text(marker)\ndef read(name):\n    return pathlib.Path(name).read_text().strip()\ndef network_facts():\n    names = sorted(os.listdir(\"/sys/class/net\"))\n    addresses = {name: [] for name in names}\n    with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as control:\n        # Linux SIOCGIFCONF returns every IPv4 address, including aliases.\n        stride = 40 if struct.calcsize(\"P\") == 8 else 32\n        buffer = array.array(\"B\", b\"\\0\" * 16384)\n        result = fcntl.ioctl(control.fileno(), 0x8912, struct.pack(\"iP\", len(buffer), buffer.buffer_info()[0]))\n        used = struct.unpack_from(\"i\", result)[0]\n        if used \u003c 0 or used % stride or used \u003e len(buffer) - stride:\n            raise RuntimeError(\"incomplete IPv4 interface inventory\")\n        raw = buffer.tobytes()\n        for at in range(0, used, stride):\n            name = raw[at:at+16].split(b\"\\0\", 1)[0].decode().split(\":\", 1)[0]\n            if name not in addresses or struct.unpack_from(\"H\", raw, at+16)[0] != socket.AF_INET:\n                raise RuntimeError(\"unexpected IPv4 interface record\")\n            addresses[name].append(socket.inet_ntoa(raw[at+20:at+24]))\n        interfaces = []\n        for name in names:\n            request = struct.pack(\"256s\", name.encode())\n            flags = struct.unpack_from(\"H\", fcntl.ioctl(control.fileno(), 0x8913, request), 16)[0]\n            interfaces.append({\"name\": name, \"flags\": flags,\n                \"operstate\": read(\"/sys/class/net/\" + name + \"/operstate\"),\n                \"ipv4\": sorted(set(addresses[name]))})\n    ipv4_text, ipv6_text = read(\"/proc/net/route\"), read(\"/proc/net/ipv6_route\")\n    ipv4 = []\n    for line in ipv4_text.splitlines()[1:]:\n        fields = line.split()\n        if len(fields) != 11:\n            raise RuntimeError(\"malformed IPv4 route\")\n        decode = lambda value: socket.inet_ntoa(bytes.fromhex(value)[::-1])\n        ipv4.append({\"interface\": fields[0], \"destination\": decode(fields[1]),\n            \"gateway\": decode(fields[2]), \"mask\": decode(fields[7]), \"flags\": int(fields[3], 16)})\n    ipv6 = []\n    for line in ipv6_text.splitlines():\n        fields = line.split()\n        if len(fields) != 10:\n            raise RuntimeError(\"malformed IPv6 route\")\n        decode = lambda value: socket.inet_ntop(socket.AF_INET6, bytes.fromhex(value))\n        ipv6.append({\"interface\": fields[9], \"destination\": decode(fields[0]),\n            \"prefix\": int(fields[1], 16), \"next_hop\": decode(fields[4]), \"flags\": int(fields[8], 16)})\n    return {\"interfaces\": interfaces, \"ipv4_routes\": ipv4, \"ipv6_routes\": ipv6,\n        \"ipv4_route_table\": ipv4_text, \"ipv6_route_table\": ipv6_text}\nstatus = dict(line.split(\":\", 1) for line in read(\"/proc/self/status\").splitlines() if \":\" in line)\nfacts = {\"marker\": marker, \"uid\": os.getuid(), \"gid\": os.getgid(),\n         \"memory_max\": read(\"/sys/fs/cgroup/memory.max\"), \"pids_max\": read(\"/sys/fs/cgroup/pids.max\"),\n         \"cpu_max\": read(\"/sys/fs/cgroup/cpu.max\"), \"cap_eff\": status[\"CapEff\"].strip(),\n         \"no_new_privs\": status[\"NoNewPrivs\"].strip(), \"net_devices\": sorted(os.listdir(\"/sys/class/net\")),\n         \"network\": network_facts(),\n         \"docker_socket\": os.path.exists(\"/var/run/docker.sock\"),\n         \"root_readonly\": bool(os.statvfs(\"/\").f_flag \u0026 os.ST_RDONLY),\n         \"tmp_bytes\": os.statvfs(\"/tmp\").f_blocks * os.statvfs(\"/tmp\").f_frsize}\nprint(\"P06_READY \" + json.dumps(facts, sort_keys=True), flush=True)\nif mode == \"cancel\":\n    signal.signal(signal.SIGTERM, signal.SIG_IGN)\n    child = os.fork()\n    if child == 0:\n        print(\"P06_CHILD \" + marker, flush=True)\n        time.sleep(45)\n        os._exit(0)\nuntil = time.monotonic() + (45 if mode == \"cancel\" else 1.0)\nchecks = 0\nwhile time.monotonic() \u003c until:\n    if p.read_text() != marker:\n        print(\"P06_ISOLATION_FAILURE \" + marker, flush=True)\n        sys.exit(31)\n    checks += 1\n    time.sleep(0.02)\nprint(\"P06_DONE \" + json.dumps({\"marker\": marker, \"checks\": checks}), flush=True)\n",
+        "p06-e3d1756b0907532f-1/normal/4",
+        "normal"
+      ]
+    },
+    "args_hash": "a4ddd2098552b8af25bb4588192f8bf54732efc4ca85deaa2117d558009d0584",
+    "policy_version": "p06-fixed-local-v1",
+    "deadline": "2026-09-11T22:17:23.335743018Z"
+  },
+  "status": "succeeded",
+  "job_id": "forge-6d1f84d90d6085b890b458ccb065675c8bfe8ff4",
+  "before_hash": "6704dcdc6956f9dc1ec8ffc34531d6b52e7398b30cde6bdbee1a50160b8db1e7",
+  "after_hash": "c3a9feeb04f7f20551d30315e12051cf527fb673a993c2c895438ab577209794",
+  "after_revision": 6,
+  "result": {
+    "id": "forge-6d1f84d90d6085b890b458ccb065675c8bfe8ff4",
+    "running": false,
+    "exit_code": 0,
+    "started": true,
+    "output": "UDA2X1JFQURZIHsiY2FwX2VmZiI6ICIwMDAwMDAwMDAwMDAwMDAwIiwgImNwdV9tYXgiOiAiMTAwMDAwIDEwMDAwMCIsICJkb2NrZXJfc29ja2V0IjogZmFsc2UsICJnaWQiOiAxMDAwLCAibWFya2VyIjogInAwNi1lM2QxNzU2YjA5MDc1MzJmLTEvbm9ybWFsLzQiLCAibWVtb3J5X21heCI6ICIyNjg0MzU0NTYiLCAibmV0X2RldmljZXMiOiBbImxvIiwgInR1bmwwIl0sICJuZXR3b3JrIjogeyJpbnRlcmZhY2VzIjogW3siZmxhZ3MiOiA3MywgImlwdjQiOiBbIjEyNy4wLjAuMSJdLCAibmFtZSI6ICJsbyIsICJvcGVyc3RhdGUiOiAidW5rbm93biJ9LCB7ImZsYWdzIjogMTI4LCAiaXB2NCI6IFtdLCAibmFtZSI6ICJ0dW5sMCIsICJvcGVyc3RhdGUiOiAiZG93biJ9XSwgImlwdjRfcm91dGVfdGFibGUiOiAiSWZhY2VcdERlc3RpbmF0aW9uXHRHYXRld2F5IFx0RmxhZ3NcdFJlZkNudFx0VXNlXHRNZXRyaWNcdE1hc2tcdFx0TVRVXHRXaW5kb3dcdElSVFQiLCAiaXB2NF9yb3V0ZXMiOiBbXSwgImlwdjZfcm91dGVfdGFibGUiOiAiMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAgMDAgMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAgMDAgMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAgZmZmZmZmZmYgMDAwMDAwMDEgMDAwMDAwMDAgMDAyMDAyMDAgICAgICAgbG9cbjAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAxIDgwIDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwIDAwIDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAyIDAwMDAwMDAwIDgwMjAwMDAxICAgICAgIGxvXG4wMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMCAwMCAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMCAwMCAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMCBmZmZmZmZmZiAwMDAwMDAwMSAwMDAwMDAwMCAwMDIwMDIwMCAgICAgICBsbyIsICJpcHY2X3JvdXRlcyI6IFt7ImRlc3RpbmF0aW9uIjogIjo6IiwgImZsYWdzIjogMjA5NzY2NCwgImludGVyZmFjZSI6ICJsbyIsICJuZXh0X2hvcCI6ICI6OiIsICJwcmVmaXgiOiAwfSwgeyJkZXN0aW5hdGlvbiI6ICI6OjEiLCAiZmxhZ3MiOiAyMTQ5NTgwODAxLCAiaW50ZXJmYWNlIjogImxvIiwgIm5leHRfaG9wIjogIjo6IiwgInByZWZpeCI6IDEyOH0sIHsiZGVzdGluYXRpb24iOiAiOjoiLCAiZmxhZ3MiOiAyMDk3NjY0LCAiaW50ZXJmYWNlIjogImxvIiwgIm5leHRfaG9wIjogIjo6IiwgInByZWZpeCI6IDB9XX0sICJub19uZXdfcHJpdnMiOiAiMSIsICJwaWRzX21heCI6ICI2NCIsICJyb290X3JlYWRvbmx5IjogdHJ1ZSwgInRtcF9ieXRlcyI6IDY3MTA4ODY0LCAidWlkIjogMTAwMH0KUDA2X0RPTkUgeyJtYXJrZXIiOiAicDA2LWUzZDE3NTZiMDkwNzUzMmYtMS9ub3JtYWwvNCIsICJjaGVja3MiOiA1MH0K",
+    "truncated": false
+  },
+  "receipt": {
+    "tenant_id": "p06-execution",
+    "run_id": "p06-e3d1756b0907532f-1",
+    "kind": "operation_receipt",
+    "object_key": "p06-execution/p06-e3d1756b0907532f-1/2c5bba145ccc438d929236e005570f9174f2de5fd6e843493a4463dfd49c33b2",
+    "sha256": "2c5bba145ccc438d929236e005570f9174f2de5fd6e843493a4463dfd49c33b2",
+    "size": 7274
+  },
+  "cancel_requested": false
+}

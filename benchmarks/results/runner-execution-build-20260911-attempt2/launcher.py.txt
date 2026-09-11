@@ -1,0 +1,55 @@
+import datetime, hashlib, json, os, pathlib, shutil, subprocess, sys, time
+
+repo = pathlib.Path('/home/postedism/Desktop/mini claude code/forge-runtime')
+base = 'a0b3a5da4c09181cf600e7e4f54d83df93387282'
+clone = pathlib.Path('/tmp/forge-p06-a0b3a5d-20260911-attempt2')
+output = repo / 'benchmarks/results/runner-execution-build-20260911-attempt2'
+binary = repo / 'var/local/p06-build-attempt2/runnerclient.test'
+tmp = repo / 'var/local/p06-build-attempt2/tmp'
+env = {k:v for k,v in os.environ.items() if not k.startswith('FORGE_')}
+env.update(GOCACHE='/tmp/forge-runtime-gocache', GOPROXY='off', GOSUMDB='off', GOENV='off', GOTOOLCHAIN='local', TMPDIR=str(tmp), GOTMPDIR=str(tmp), GOMAXPROCS='2')
+def sha(p): return hashlib.sha256(p.read_bytes()).hexdigest()
+def dump(p, v): p.write_text(json.dumps(v, indent=2, sort_keys=True)+'\n')
+def call(name, argv, cwd):
+    start=time.monotonic()
+    with (output/(name+'.log')).open('xb') as log:
+        r=subprocess.run(argv, cwd=cwd, env=env, stdout=log, stderr=subprocess.STDOUT)
+    result={'argv':argv, 'exit_code':r.returncode, 'elapsed_seconds':time.monotonic()-start}
+    dump(output/(name+'.json'), result)
+    if r.returncode: raise RuntimeError(name+' failed')
+def snapshot():
+    names=subprocess.check_output(['rg','--files','--hidden','-g','!.git','-g','!benchmarks/results','-g','!var','-g','!bin'],cwd=clone,text=True).splitlines()
+    return {n:sha(clone/n) for n in sorted(names) if pathlib.Path(n).suffix in ('.go','.mod','.sum','.sql','.yaml','.yml','.proto','.py','.sh') or n=='Makefile'}
+if sys.argv[1]=='build':
+    output.mkdir(mode=0o700); tmp.mkdir(parents=True,exist_ok=True)
+    shutil.copyfile(__file__,output/'launcher.py.txt')
+    call('clone',['git','clone','--no-hardlinks','--no-checkout',str(repo),str(clone)],repo)
+    call('checkout',['git','checkout','--detach',base],clone)
+    rel='internal/runnerclient/execution_benchmark_test.go'
+    assert len(sys.argv)>2 and sha(repo/rel)==sys.argv[2], 'explicit independently reviewed source hash required'
+    shutil.copyfile(repo/rel,clone/rel)
+    status=subprocess.check_output(['git','status','--porcelain'],cwd=clone,text=True)
+    assert status=='?? '+rel+'\n',status
+    before=snapshot();dump(output/'source-before.json',before)
+    call('build',['go','test','-c','-o',str(binary),'./internal/runnerclient'],clone)
+    call('offline-race',['go','test','-race','./internal/runnerclient','-run','^TestP06','-count=1','-v'],clone)
+    after=snapshot();assert before==after
+    dump(output/'source-after.json',after)
+    dump(output/'identity.json',{'base_commit':base,'clone':str(clone),'working_tree':status,'source_files':len(before),'binary':str(binary),'binary_sha256':sha(binary),'go':subprocess.check_output(['go','version'],env=env,text=True).strip(),'build_env':{k:env[k] for k in ['GOCACHE','GOPROXY','GOSUMDB','GOENV','GOTOOLCHAIN','TMPDIR','GOTMPDIR','GOMAXPROCS']},'scope':'Fixed commit plus independently reviewed P06 harness; no live runner execution during build.'})
+    dump(output/'manifest.json',{str(p.relative_to(output)):sha(p) for p in sorted(output.rglob('*')) if p.is_file() and p.name!='manifest.json'})
+    print(json.dumps({'build_passed':True,'identity':str(output/'identity.json')}),flush=True)
+elif sys.argv[1]=='run':
+    identity=json.loads((output/'identity.json').read_text());assert sha(binary)==identity['binary_sha256']
+    assert snapshot()==json.loads((output/'source-after.json').read_text())
+    leaf=repo/'benchmarks/results/local'/('runner-execution-'+datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%SZ'))
+    env.update(FORGE_RUN_EXECUTION_EVIDENCE='1',FORGE_REAL_RUNNER_CONFIG=str(repo/'var/local/runner.json'),FORGE_REAL_RUNNER_PID='969928',FORGE_EXECUTION_EVIDENCE_DIR=str(leaf))
+    argv=[str(binary),'-test.run=^TestRealRunnerExecutionEvidence$','-test.count=1','-test.timeout=6m','-test.v']
+    begin=time.monotonic()
+    with (output/'execution.log').open('xb') as log:
+        r=subprocess.run(argv,cwd=clone/'internal/runnerclient',env=env,stdout=log,stderr=subprocess.STDOUT)
+    unchanged=snapshot()==json.loads((output/'source-after.json').read_text()) and sha(binary)==identity['binary_sha256']
+    result={'argv':argv,'exit_code':r.returncode,'elapsed_seconds':time.monotonic()-begin,'evidence':str(leaf),'source_and_binary_unchanged':unchanged,'execution_log_sha256':sha(output/'execution.log')}
+    dump(output/'execution.json',result)
+    print(json.dumps(result),flush=True)
+    sys.exit(0 if r.returncode==0 and unchanged else 1)
+else: raise ValueError('expected build or run')

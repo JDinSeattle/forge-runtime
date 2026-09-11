@@ -1,0 +1,36 @@
+=== RUN   TestReviewUnsupportedSnapshotDoesNotStarveHealthyRuns
+    snapshot_compatibility_test.go:117: claim 0 run=run_RUCOUQ6OVMDRFVG75N44BIF5FW err=<nil>
+    snapshot_compatibility_test.go:117: claim 1 run=run_JFA5P4CXAKA2H77Y3O3N44RE6B err=snapshot_migration_required: stored schema 2; binary supports 1; execution is paused: use forge-admin snapshot-inspect and docs/snapshot-compatibility-evidence.md
+    snapshot_compatibility_test.go:117: claim 2 run=run_RZG3YBMHUXE5UYC5ZB5C72B3GB err=<nil>
+    snapshot_compatibility_test.go:117: claim 3 run= err=not_found
+    snapshot_compatibility_test.go:117: claim 4 run= err=not_found
+--- PASS: TestReviewUnsupportedSnapshotDoesNotStarveHealthyRuns (0.40s)
+=== RUN   TestReviewUnsupportedSnapshotOperatorCLI
+--- PASS: TestReviewUnsupportedSnapshotOperatorCLI (0.33s)
+=== RUN   TestReviewUnsupportedSnapshotPreservesUnknownLedgerAndAuthority
+--- PASS: TestReviewUnsupportedSnapshotPreservesUnknownLedgerAndAuthority (2.28s)
+=== RUN   TestReviewUnsupportedSnapshotHTTPAndOperatorRecovery
+--- PASS: TestReviewUnsupportedSnapshotHTTPAndOperatorRecovery (0.47s)
+=== RUN   TestReviewUnsupportedSnapshotApprovalRefusesUnknownState
+--- PASS: TestReviewUnsupportedSnapshotApprovalRefusesUnknownState (0.32s)
+=== RUN   TestReviewUnsupportedSnapshotMalformedHeadersRemainHeld
+=== RUN   TestReviewUnsupportedSnapshotMalformedHeadersRemainHeld/null
+=== RUN   TestReviewUnsupportedSnapshotMalformedHeadersRemainHeld/1.5
+=== RUN   TestReviewUnsupportedSnapshotMalformedHeadersRemainHeld/"1"
+=== RUN   TestReviewUnsupportedSnapshotMalformedHeadersRemainHeld/-1
+=== RUN   TestReviewUnsupportedSnapshotMalformedHeadersRemainHeld/999999999999999999999999999999999999999999999999999999999999999999999999
+--- PASS: TestReviewUnsupportedSnapshotMalformedHeadersRemainHeld (1.21s)
+    --- PASS: TestReviewUnsupportedSnapshotMalformedHeadersRemainHeld/null (0.22s)
+    --- PASS: TestReviewUnsupportedSnapshotMalformedHeadersRemainHeld/1.5 (0.25s)
+    --- PASS: TestReviewUnsupportedSnapshotMalformedHeadersRemainHeld/"1" (0.25s)
+    --- PASS: TestReviewUnsupportedSnapshotMalformedHeadersRemainHeld/-1 (0.25s)
+    --- PASS: TestReviewUnsupportedSnapshotMalformedHeadersRemainHeld/999999999999999999999999999999999999999999999999999999999999999999999999 (0.24s)
+=== RUN   TestReviewUnsupportedSnapshotStopsCleanupAndRetentionOfTerminalEvidence
+--- PASS: TestReviewUnsupportedSnapshotStopsCleanupAndRetentionOfTerminalEvidence (0.31s)
+=== RUN   TestReviewUnsupportedSnapshotEndsExistingSSEGeneration
+--- PASS: TestReviewUnsupportedSnapshotEndsExistingSSEGeneration (0.24s)
+=== RUN   TestRecoveryPostgresAdditiveUpgrade
+    upgrade_test.go:150: private PostgreSQL schema upgraded 6 -> 11 twice; original run columns, unknown effect, artifact metadata and snapshot bytes unchanged; new priority defaults to zero and holds are NULL
+--- PASS: TestRecoveryPostgresAdditiveUpgrade (0.28s)
+PASS
+ok  	github.com/JDinSeattle/forge-runtime/tests/review	6.886s

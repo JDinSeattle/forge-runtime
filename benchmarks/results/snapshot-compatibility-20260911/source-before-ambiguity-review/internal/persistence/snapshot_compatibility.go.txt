@@ -1,0 +1,212 @@
+package persistence
+
+import (
+	"context"
+	"crypto/sha256"
+	"encoding/hex"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"strconv"
+	"time"
+
+	"github.com/JDinSeattle/forge-runtime/internal/dependency"
+	"github.com/JDinSeattle/forge-runtime/internal/domain"
+	flow "github.com/JDinSeattle/forge-runtime/internal/runtime"
+	"github.com/jackc/pgx/v5"
+)
+
+// This SQL predicate is only an authority gate. DecodeSnapshotHeader performs
+// the diagnostic check before interpreting any snapshot as the current schema.
+// Keep the literal in sync with SnapshotSchemaVersion (covered by tests).
+const supportedSnapshotSQL = `snapshot_hold_at IS NULL AND coalesce(json_typeof(snapshot->'schema_version')='number' AND snapshot->>'schema_version'='1',false)`
+
+type SnapshotCompatibilityError struct {
+	Reason         string
+	ObservedSchema string
+	SHA256         string
+}
+
+func (e *SnapshotCompatibilityError) Error() string {
+	return fmt.Sprintf("%s: stored schema %s; binary supports %d; execution is paused: use forge-admin snapshot-inspect and docs/snapshot-compatibility-evidence.md", domain.ErrSnapshotMigration, e.ObservedSchema, flow.SnapshotSchemaVersion)
+}
+func (e *SnapshotCompatibilityError) Unwrap() error { return domain.ErrSnapshotMigration }
+
+func snapshotDigest(raw []byte) string { h := sha256.Sum256(raw); return hex.EncodeToString(h[:]) }
+
+// DecodeSnapshotHeader examines only a version envelope. Unknown fields and
+// exact JSON bytes remain untouched; no future state is projected into v1.
+func DecodeSnapshotHeader(raw []byte) error {
+	var header map[string]json.RawMessage
+	observed, reason := "invalid", "malformed_schema"
+	if json.Unmarshal(raw, &header) == nil && len(header["schema_version"]) > 0 && len(header["schema_version"]) <= 64 {
+		candidate := string(header["schema_version"])
+		digits := true
+		for _, c := range candidate {
+			if c < '0' || c > '9' {
+				digits = false
+				break
+			}
+		}
+		if digits {
+			observed, reason = candidate, "unsupported_schema"
+			if candidate == strconv.FormatUint(uint64(flow.SnapshotSchemaVersion), 10) {
+				return nil
+			}
+		}
+	}
+	return &SnapshotCompatibilityError{Reason: reason, ObservedSchema: observed, SHA256: snapshotDigest(raw)}
+}
+
+// holdSnapshot is called only with tenant/run locks already held by Claim.
+// Commit by the caller is mandatory even though its claim is refused.
+func holdSnapshot(ctx context.Context, tx pgx.Tx, tenant, id domain.ID, problem *SnapshotCompatibilityError, now time.Time) error {
+	_, err := tx.Exec(ctx, `UPDATE runs SET snapshot_hold_at=$3,snapshot_hold_reason=$4,snapshot_hold_schema=$5,snapshot_hold_sha256=$6 WHERE tenant_id=$1 AND id=$2 AND snapshot_hold_at IS NULL`, tenant, id, now, problem.Reason, problem.ObservedSchema, problem.SHA256)
+	if err != nil {
+		return err
+	}
+	_, err = tx.Exec(ctx, `UPDATE tenant_runtime SET last_dispatched_at=$2 WHERE tenant_id=$1`, tenant, now)
+	return err
+}
+
+type SnapshotHold struct {
+	At             time.Time `json:"at"`
+	Reason         string    `json:"reason"`
+	ObservedSchema string    `json:"observed_schema"`
+	SHA256         string    `json:"observed_sha256"`
+}
+
+type SnapshotInspection struct {
+	TenantID        domain.ID        `json:"tenant_id"`
+	RunID           domain.ID        `json:"run_id"`
+	Version         uint64           `json:"version"`
+	Status          domain.RunStatus `json:"stored_status"`
+	RunnerID        string           `json:"runner_id"`
+	LeaseUntil      *time.Time       `json:"lease_until"`
+	SupportedSchema uint32           `json:"supported_schema"`
+	HeaderSupported bool             `json:"header_supported"`
+	SHA256          string           `json:"snapshot_sha256"`
+	// String preserves the exact PostgreSQL json text (including whitespace)
+	// when decoded from the operator JSON output, unlike a typed state export.
+	SnapshotText string        `json:"snapshot_text"`
+	Hold         *SnapshotHold `json:"hold,omitempty"`
+}
+
+func (s *Store) checkSnapshotOperator(ctx context.Context) error {
+	var allowed bool
+	err := s.Pool.QueryRow(ctx, `SELECT rolsuper OR pg_has_role(current_user,(SELECT relowner FROM pg_class WHERE oid='runs'::regclass),'MEMBER') FROM pg_roles WHERE rolname=current_user`).Scan(&allowed)
+	if err != nil {
+		return err
+	}
+	if !allowed {
+		return domain.ErrForbidden
+	}
+	return nil
+}
+
+func inspectSnapshot(ctx context.Context, tx pgx.Tx, tenant, id domain.ID, lock bool) (SnapshotInspection, error) {
+	var v SnapshotInspection
+	var at *time.Time
+	var reason, observed, hash *string
+	query := `SELECT tenant_id,id,version,state,coalesce(runner_id,''),lease_until,snapshot::text,snapshot_hold_at,snapshot_hold_reason,snapshot_hold_schema,snapshot_hold_sha256 FROM runs WHERE tenant_id=$1 AND id=$2`
+	if lock {
+		query += " FOR UPDATE"
+	}
+	err := tx.QueryRow(ctx, query, tenant, id).Scan(&v.TenantID, &v.RunID, &v.Version, &v.Status, &v.RunnerID, &v.LeaseUntil, &v.SnapshotText, &at, &reason, &observed, &hash)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return v, domain.ErrNotFound
+	}
+	if err != nil {
+		return v, err
+	}
+	v.SHA256, v.SupportedSchema = snapshotDigest([]byte(v.SnapshotText)), flow.SnapshotSchemaVersion
+	v.HeaderSupported = DecodeSnapshotHeader([]byte(v.SnapshotText)) == nil
+	if at != nil {
+		v.Hold = &SnapshotHold{At: *at, Reason: *reason, ObservedSchema: *observed, SHA256: *hash}
+	}
+	return v, nil
+}
+
+// InspectSnapshot is a read-only operator diagnostic, unavailable to API and
+// worker roles. It does not create a hold or reinterpret/modify unknown state.
+func (s *Store) InspectSnapshot(ctx context.Context, tenant, id domain.ID) (SnapshotInspection, error) {
+	ctx, cancel := dependency.Database(ctx)
+	defer cancel()
+	if err := s.checkSnapshotOperator(ctx); err != nil {
+		return SnapshotInspection{}, err
+	}
+	tx, err := s.Tx(ctx, tenant, pgx.TxOptions{AccessMode: pgx.ReadOnly})
+	if err != nil {
+		return SnapshotInspection{}, err
+	}
+	defer tx.Rollback(ctx)
+	v, err := inspectSnapshot(ctx, tx, tenant, id, false)
+	if err != nil {
+		return v, err
+	}
+	return v, tx.Commit(ctx)
+}
+
+// ClearSnapshotHold never migrates a snapshot. An operator must first deploy a
+// compatible reader or perform a separately reviewed conversion. The expected
+// version/hash refer to the current raw bytes returned by InspectSnapshot.
+func (s *Store) ClearSnapshotHold(ctx context.Context, tenant, id domain.ID, version uint64, expectedHash string) (SnapshotInspection, error) {
+	ctx, cancel := dependency.Database(ctx)
+	defer cancel()
+	if version == 0 || len(expectedHash) != 64 {
+		return SnapshotInspection{}, domain.ErrInvalid
+	}
+	if b, err := hex.DecodeString(expectedHash); err != nil || len(b) != 32 {
+		return SnapshotInspection{}, domain.ErrInvalid
+	}
+	if err := s.checkSnapshotOperator(ctx); err != nil {
+		return SnapshotInspection{}, err
+	}
+	tx, err := s.Tx(ctx, tenant, pgx.TxOptions{})
+	if err != nil {
+		return SnapshotInspection{}, err
+	}
+	defer tx.Rollback(ctx)
+	if err = lockTenant(ctx, tx, tenant); err != nil {
+		return SnapshotInspection{}, err
+	}
+	v, err := inspectSnapshot(ctx, tx, tenant, id, true)
+	if err != nil {
+		return v, err
+	}
+	if v.Version != version || v.SHA256 != expectedHash {
+		return v, domain.ErrConflict
+	}
+	if err = DecodeSnapshotHeader([]byte(v.SnapshotText)); err != nil {
+		return v, err
+	}
+	var state flow.State
+	if err = json.Unmarshal([]byte(v.SnapshotText), &state); err != nil {
+		return v, domain.ErrInvalid
+	}
+	if err = flow.ValidateSnapshot(state); err != nil {
+		return v, err
+	}
+	if state.RunID != id || state.TenantID != tenant || state.Version != version || state.Status != v.Status {
+		return v, domain.ErrConflict
+	}
+	var now time.Time
+	if err = tx.QueryRow(ctx, `SELECT clock_timestamp()`).Scan(&now); err != nil {
+		return v, err
+	}
+	if v.LeaseUntil != nil && v.LeaseUntil.After(now) {
+		return v, domain.ErrFenced
+	}
+	if v.Hold == nil {
+		return v, tx.Commit(ctx)
+	}
+	_, err = tx.Exec(ctx, `UPDATE runs SET snapshot_hold_at=NULL,snapshot_hold_reason=NULL,snapshot_hold_schema=NULL,snapshot_hold_sha256=NULL WHERE tenant_id=$1 AND id=$2 AND version=$3`, tenant, id, version)
+	if err != nil {
+		return v, err
+	}
+	if err = tx.Commit(ctx); err != nil {
+		return v, err
+	}
+	v.Hold = nil
+	return v, nil
+}

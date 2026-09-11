@@ -1,0 +1,13 @@
+=== RUN   TestReviewUnsupportedSnapshotDoesNotStarveHealthyRuns
+    snapshot_compatibility_test.go:69: unsupported snapshot exposed as current projection: schema=2 version=1
+    snapshot_compatibility_test.go:84: future snapshot HTTP=200 code="" retryable=false
+    snapshot_compatibility_test.go:92: claim 0 run=run_5MMMGDKHFBQ2X447WXD6L7HOLD err=<nil>
+    snapshot_compatibility_test.go:92: claim 1 run=run_5OYTJ3PEZMBKTLIBB2SLKDIDAR err=invalid_argument: unsupported or malformed snapshot
+    snapshot_compatibility_test.go:92: claim 2 run=run_5OYTJ3PEZMBKTLIBB2SLKDIDAR err=invalid_argument: unsupported or malformed snapshot
+    snapshot_compatibility_test.go:92: claim 3 run=run_5OYTJ3PEZMBKTLIBB2SLKDIDAR err=invalid_argument: unsupported or malformed snapshot
+    snapshot_compatibility_test.go:92: claim 4 run=run_5OYTJ3PEZMBKTLIBB2SLKDIDAR err=invalid_argument: unsupported or malformed snapshot
+    snapshot_compatibility_test.go:95: future snapshot monopolized claims: bad=false same_tenant=false other_tenant=true
+--- FAIL: TestReviewUnsupportedSnapshotDoesNotStarveHealthyRuns (0.35s)
+FAIL
+FAIL	github.com/JDinSeattle/forge-runtime/tests/review	0.389s
+FAIL

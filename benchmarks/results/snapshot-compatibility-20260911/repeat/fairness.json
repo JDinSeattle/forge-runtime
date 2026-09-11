@@ -1,0 +1,31 @@
+{
+  "bad": "run_COMQQNYFRPOYGVJB6X26OKFJLJ",
+  "claimed": {
+    "run_ANKH5SIWEFBMTUYW5ZYK4T5BVY": true,
+    "run_BF246N3SGKJRFY7J6KNH6TT7QD": true
+  },
+  "concurrent_reopened_claims": 8,
+  "healthy_other_tenant": "run_BF246N3SGKJRFY7J6KNH6TT7QD",
+  "healthy_same_tenant": "run_ANKH5SIWEFBMTUYW5ZYK4T5BVY",
+  "http_body": "{\"code\":\"snapshot_migration_required\",\"message\":\"snapshot_migration_required: stored schema 2; binary supports 1; execution is paused: use forge-admin snapshot-inspect and docs/snapshot-compatibility-evidence.md\",\"request_id\":\"request_GC6DZH73MMAHYCS5U45437YKBW\",\"retryable\":false}\n",
+  "http_status": 409,
+  "inspection": {
+    "tenant_id": "review_tenant",
+    "run_id": "run_COMQQNYFRPOYGVJB6X26OKFJLJ",
+    "version": 1,
+    "stored_status": "queued",
+    "runner_id": "",
+    "lease_until": null,
+    "supported_schema": 1,
+    "header_supported": false,
+    "snapshot_sha256": "f97dd4628205afe5cdc7ed9bf50c073e35bf6785878233bf766889a908e0f0d1",
+    "snapshot_text": "{\"lease\": {\"epoch\": 0, \"owner\": \"\", \"until\": \"0001-01-01T00:00:00Z\"}, \"stage\": \"initialize\", \"limits\": {\"deadline\": \"2026-09-11T14:55:56.710986-07:00\", \"max_tool_calls\": 3, \"max_model_rounds\": 2, \"max_cost_microusd\": 1000000}, \"run_id\": \"run_COMQQNYFRPOYGVJB6X26OKFJLJ\", \"status\": \"queued\", \"version\": 1, \"step_seq\": 0, \"tenant_id\": \"review_tenant\", \"tool_calls\": 0, \"future_only\": {\"html\": \"\u003c\u003e\u0026\", \"exact\": 9007199254740993}, \"model_rounds\": 0, \"cost_microusd\": 0, \"schema_version\": 2, \"workspace_revision\": 0, \"verification_status\": \"unverified\", \"verification_revision\": 0}",
+    "hold": {
+      "at": "2026-09-11T14:53:56.749108-07:00",
+      "reason": "unsupported_schema",
+      "observed_schema": "2",
+      "observed_sha256": "f97dd4628205afe5cdc7ed9bf50c073e35bf6785878233bf766889a908e0f0d1"
+    }
+  },
+  "passed": true
+}

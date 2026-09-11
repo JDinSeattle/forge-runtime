@@ -1,0 +1,31 @@
+{
+  "temp_directory": "/tmp/forge-patch-context-2qytwzz7",
+  "git_environment_keys": [
+    "GIT_PAGER"
+  ],
+  "results": [
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "--show-toplevel",
+        "--show-prefix"
+      ],
+      "exit_code": 128,
+      "stdout": "",
+      "stderr": "fatal: not a git repository (or any parent up to mount point /)\nStopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).\n"
+    },
+    {
+      "argv": [
+        "git",
+        "apply",
+        "--verbose",
+        "/tmp/forge-patch-context-2qytwzz7/change.patch"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "Checking patch x...\nApplied patch x cleanly.\n"
+    }
+  ],
+  "actual_content": "new\n"
+}

@@ -1,0 +1,3333 @@
+{
+  "schema": 1,
+  "passed": false,
+  "error": "actual process isolation/resource facts failed",
+  "StartedUTC": "2026-09-11T22:03:33.744770045Z",
+  "EndedUTC": "2026-09-11T22:03:36.02511919Z",
+  "RoundsPerMode": 5,
+  "ProcessCommands": 2,
+  "PollIntervalNS": 50000000,
+  "ProgramSHA256": "10c11b7f8d0bbb6d45b14d65f68a23419db5a1b1c2b23d9d03d86d7fa4a68669",
+  "ConfigurationSHA256": "0c9e19d609c8930eb79d5486bf70fb123541933b00aec7b203962a6a131f1113",
+  "TestBinarySHA256": "ddd9a953cc677fb1e20894a132e0217ce8f1144ab48ff72fe9b13431b80d9920",
+  "RunnerPID": 969928,
+  "RunnerStartTicks": "44361042",
+  "RunnerExecutableSHA256": "6921c94212899fada5fabc730dcea7e4944d86c9ae2baccd5656e26dcbe969a0",
+  "RunnerBuildInfo": "/proc/969928/exe: go1.26.8\n\tpath\tgithub.com/JDinSeattle/forge-runtime/cmd/forge-runner\n\tmod\tgithub.com/JDinSeattle/forge-runtime\tv0.0.0-20260908090414-a4541a159484+dirty\t\n\tdep\tgithub.com/dustin/go-humanize\tv1.0.1\th1:GzkhY7T5VNhEkwH0PVJgjz+fX1rhBrR7pRT3mDkpeCY=\n\tdep\tgithub.com/google/uuid\tv1.6.0\th1:NIvaJDMOsjHA8n1jAhLSgzrAzy1Hgr+hNrb57e+94F0=\n\tdep\tgithub.com/remyoudompheng/bigfft\tv0.0.0-20230129092748-24d4a6f8daec\th1:W09IVJc94icq4NjY3clb7Lk8O1qJ8BdBEF8z0ibU0rE=\n\tdep\tgolang.org/x/net\tv0.58.0\th1:ynWG7rqYi4ccpTEuPZ2QGWHktVEM9DMCj9yzDE0Q7To=\n\tdep\tgolang.org/x/sys\tv0.47.0\th1:o7XGOvZQCADBQQ4Y7VNq2dRWQR7JmOUW8Kxx4ZsNgWs=\n\tdep\tgolang.org/x/text\tv0.41.0\th1:vz/seA0lnX87Othu2f/0L24RcgrXD9/YFTSuGjj3rH8=\n\tdep\tgoogle.golang.org/genproto/googleapis/rpc\tv0.0.0-20260831171406-18b4a7587f8a\th1:3Dnd1cDaZlB68lziofO+bJXpjOy8UfRv8Unt+yH8tQ4=\n\tdep\tgoogle.golang.org/grpc\tv1.83.2\th1:EManeRomTObA0BU7I8vXgg/78uE5MJ9M8B39EX2WscU=\n\tdep\tgoogle.golang.org/protobuf\tv1.36.12\th1:pJOKDDOyeXErUroCihFAd5LQuwXBSpVnKGrj5o/fwxc=\n\tdep\tmodernc.org/libc\tv1.75.6\th1:yKk8qo+Di4gkmvRboK8ocCqH22FiUCR6jRy2OwtCRus=\n\tdep\tmodernc.org/mathutil\tv1.7.1\th1:GCZVGXdaN8gTqB1Mf/usp1Y/hSqgI2vAGGP4jZMCxOU=\n\tdep\tmodernc.org/memory\tv1.12.1\th1:nFMiWrpStgZczNl6XI9GnIk/rWhYIyHGUaR04pGbp9g=\n\tdep\tmodernc.org/sqlite\tv1.58.0\th1:38u40/bwkfM7f0Myhosl+SEMltSDxnGdQf8o6Kjmys0=\n\tbuild\t-buildmode=exe\n\tbuild\t-compiler=gc\n\tbuild\tCGO_ENABLED=1\n\tbuild\tCGO_CFLAGS=\n\tbuild\tCGO_CPPFLAGS=\n\tbuild\tCGO_CXXFLAGS=\n\tbuild\tCGO_LDFLAGS=\n\tbuild\tGOARCH=amd64\n\tbuild\tGOOS=linux\n\tbuild\tGOAMD64=v1\n\tbuild\tvcs=git\n\tbuild\tvcs.revision=a4541a159484a17493db6f0c3ac85ea929543670\n\tbuild\tvcs.time=2026-09-08T09:04:14Z\n\tbuild\tvcs.modified=true\n",
+  "RunnerConfigArgumentMatches": true,
+  "GRPCConnectionPeers": [
+    {
+      "At": {
+        "utc": "2026-09-11T22:03:33.826311747Z",
+        "since_experiment_start_ns": 81541679
+      },
+      "PID": 969928,
+      "UID": 1000,
+      "GID": 1000,
+      "MatchesRunnerPID": true
+    }
+  ],
+  "GoVersion": "go1.26.8",
+  "GOOS": "linux",
+  "GOARCH": "amd64",
+  "LogicalCPUs": 32,
+  "GOMAXPROCS": 2,
+  "Profile": {
+    "id": "python-clamp",
+    "image": "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+    "verify_command": [
+      "python",
+      "-I",
+      "-B",
+      "/forge-tests/check.py",
+      "clamp",
+      "regression"
+    ],
+    "target_command": [
+      "python",
+      "-I",
+      "-B",
+      "/forge-tests/check.py",
+      "clamp",
+      "target"
+    ],
+    "trusted_tests_dir": "/home/postedism/Desktop/mini claude code/forge-runtime/testdata/graders",
+    "memory_bytes": 268435456,
+    "workspace_quota_bytes": 268435456,
+    "cpus": 1,
+    "pids": 64,
+    "user": "1000:1000"
+  },
+  "ConfiguredVolumeSlots": 4,
+  "DockerVersion": {
+    "Client": {
+      "Platform": {
+        "Name": "Docker Engine - Community"
+      },
+      "Version": "29.8.0",
+      "ApiVersion": "1.56",
+      "DefaultAPIVersion": "1.56",
+      "GitCommit": "88096ef",
+      "GoVersion": "go1.26.8",
+      "Os": "linux",
+      "Arch": "amd64",
+      "BuildTime": "Thu Sep  3 21:50:20 2026",
+      "Context": "default"
+    },
+    "Server": {
+      "Platform": {
+        "Name": "Docker Engine - Community"
+      },
+      "Version": "29.8.0",
+      "ApiVersion": "1.56",
+      "MinAPIVersion": "1.40",
+      "Os": "linux",
+      "Arch": "amd64",
+      "Components": [
+        {
+          "Name": "Engine",
+          "Version": "29.8.0",
+          "Details": {
+            "ApiVersion": "1.56",
+            "Arch": "amd64",
+            "BuildTime": "Thu Sep  3 21:50:20 2026",
+            "Experimental": "false",
+            "GitCommit": "3ce5872",
+            "GoVersion": "go1.26.8",
+            "KernelVersion": "7.0.0-29-generic",
+            "MinAPIVersion": "1.40",
+            "Module": "github.com/moby/moby/v2",
+            "ModuleVersion": "v2.0.0+unknown",
+            "Os": "linux"
+          }
+        },
+        {
+          "Name": "containerd",
+          "Version": "v2.3.4",
+          "Details": {
+            "GitCommit": "db8809540e1a7a9da5d518876894933ff55692ab"
+          }
+        },
+        {
+          "Name": "runc",
+          "Version": "1.5.1",
+          "Details": {
+            "GitCommit": "v1.5.1-0-g8f2685a4"
+          }
+        },
+        {
+          "Name": "docker-init",
+          "Version": "0.19.0",
+          "Details": {
+            "GitCommit": "de40ad0"
+          }
+        },
+        {
+          "Name": "rootlesskit",
+          "Version": "3.1.0",
+          "Details": {
+            "ApiVersion": "1.1.2",
+            "NetworkDriver": "gvisor-tap-vsock",
+            "PortDriver": "builtin",
+            "StateDir": "/run/user/1000/forge-runtime-rootlesskit"
+          }
+        }
+      ],
+      "GitCommit": "3ce5872",
+      "GoVersion": "go1.26.8",
+      "KernelVersion": "7.0.0-29-generic",
+      "BuildTime": "2026-09-03T21:50:20.000000000+00:00"
+    }
+  },
+  "Sources": {
+    "go.mod": "61a96a6dbfdc546edcc7abab472adc49313db486443c47f2272ad75cdae21682",
+    "go.sum": "fb95568a8246ed4b2759494d6384e27a57e330b722154046b8160357ed1c7718",
+    "internal/runner/engine.go": "7c65fca133e9f209fe4cd6388d05cf145f9224b718d5d80580fb5da4ec25346c",
+    "internal/runner/files.go": "dc582d1f54c21238cefce34fcd6f1aafddeb02d5938018b02fdef85c2b8d43fb",
+    "internal/runner/journal.go": "36e6ae6c75558d26348f5b9a59d75d6fd39a0bedae232f2211bc62d4a186d75b",
+    "internal/runnerclient/client.go": "6650068c9ab3ba6f7efc65c11646541a601750725ef30631a3f206982f00639e",
+    "internal/runnerclient/execution_benchmark_test.go": "216ffc78a980c73ca40d5e3421b790dc7b7884d66ff40efe0e5d7969c61131cf",
+    "internal/runnerclient/mapping.go": "e8625fdf28da9c33abca385c327b8e50006408ecf0f0d94fffa9107fa7d8d8b4",
+    "internal/runnerclient/server.go": "3c02f9f60d0813d0703503ef03fef8807a7a42b53923d5419951acf2d112f8d7",
+    "internal/sandbox/docker.go": "a8414e82f802c097fbfd80c85dce94c0dfdd807afa8b0486c9833076604025af",
+    "proto/runner/v1/runner.proto": "df1b356efa73e8a1b313b8af8dcf2a932a8911abe8d5121f41f3344b6616ab51"
+  },
+  "Workspaces": [
+    {
+      "ID": "p06-3ce8ae2a909f3101-0",
+      "Revision": 1,
+      "PrepareBegin": {
+        "utc": "2026-09-11T22:03:33.826510561Z",
+        "since_experiment_start_ns": 81740493
+      },
+      "PrepareEnd": {
+        "utc": "2026-09-11T22:03:33.909665998Z",
+        "since_experiment_start_ns": 164895932
+      },
+      "Prepared": {
+        "tenant_id": "p06-execution",
+        "run_id": "p06-3ce8ae2a909f3101-0",
+        "id": "p06-3ce8ae2a909f3101-0",
+        "source_id": "clamp",
+        "profile_id": "python-clamp",
+        "epoch": 1,
+        "revision": 1,
+        "stopped": false,
+        "adopting": false,
+        "released": false,
+        "baseline_hash": "66ee6f4ae415b0735c6eb4d0645f5a8d72d33e7946d0219e319aa9158a375659"
+      },
+      "Unknown": false,
+      "Stop": {
+        "workspace": {
+          "tenant_id": "p06-execution",
+          "run_id": "p06-3ce8ae2a909f3101-0",
+          "id": "p06-3ce8ae2a909f3101-0",
+          "source_id": "clamp",
+          "profile_id": "python-clamp",
+          "epoch": 1,
+          "revision": 2,
+          "stopped": true,
+          "adopting": true,
+          "released": false,
+          "baseline_hash": "66ee6f4ae415b0735c6eb4d0645f5a8d72d33e7946d0219e319aa9158a375659"
+        },
+        "no_active_operations": true,
+        "ref": {
+          "tenant_id": "p06-execution",
+          "run_id": "p06-3ce8ae2a909f3101-0",
+          "kind": "workspace_stop",
+          "object_key": "p06-execution/p06-3ce8ae2a909f3101-0/d423fecce083861797b8507a8e67b844ed5819228db3879f52c401adb41ecefb",
+          "sha256": "d423fecce083861797b8507a8e67b844ed5819228db3879f52c401adb41ecefb",
+          "size": 419
+        }
+      },
+      "Snapshot": {
+        "workspace": {
+          "tenant_id": "p06-execution",
+          "run_id": "p06-3ce8ae2a909f3101-0",
+          "id": "p06-3ce8ae2a909f3101-0",
+          "source_id": "clamp",
+          "profile_id": "python-clamp",
+          "epoch": 1,
+          "revision": 2,
+          "stopped": true,
+          "adopting": true,
+          "released": false,
+          "baseline_hash": "66ee6f4ae415b0735c6eb4d0645f5a8d72d33e7946d0219e319aa9158a375659"
+        },
+        "hash": "69fbeb87ad360ae80c8824ddadf674296af6dc879f185277852c9d617006ef17",
+        "artifact": {
+          "tenant_id": "p06-execution",
+          "run_id": "p06-3ce8ae2a909f3101-0",
+          "kind": "workspace_snapshot",
+          "object_key": "p06-execution/p06-3ce8ae2a909f3101-0/c92e51aec909bd972fb68c2474d9a3d8b662663f281c5397658116fc8f2c8423",
+          "sha256": "c92e51aec909bd972fb68c2474d9a3d8b662663f281c5397658116fc8f2c8423",
+          "size": 790
+        }
+      },
+      "Released": {
+        "workspace_id": "p06-3ce8ae2a909f3101-0",
+        "released": true
+      }
+    },
+    {
+      "ID": "p06-3ce8ae2a909f3101-1",
+      "Revision": 1,
+      "PrepareBegin": {
+        "utc": "2026-09-11T22:03:33.909692078Z",
+        "since_experiment_start_ns": 164922017
+      },
+      "PrepareEnd": {
+        "utc": "2026-09-11T22:03:33.972269395Z",
+        "since_experiment_start_ns": 227499327
+      },
+      "Prepared": {
+        "tenant_id": "p06-execution",
+        "run_id": "p06-3ce8ae2a909f3101-1",
+        "id": "p06-3ce8ae2a909f3101-1",
+        "source_id": "clamp",
+        "profile_id": "python-clamp",
+        "epoch": 1,
+        "revision": 1,
+        "stopped": false,
+        "adopting": false,
+        "released": false,
+        "baseline_hash": "66ee6f4ae415b0735c6eb4d0645f5a8d72d33e7946d0219e319aa9158a375659"
+      },
+      "Unknown": false,
+      "Stop": {
+        "workspace": {
+          "tenant_id": "p06-execution",
+          "run_id": "p06-3ce8ae2a909f3101-1",
+          "id": "p06-3ce8ae2a909f3101-1",
+          "source_id": "clamp",
+          "profile_id": "python-clamp",
+          "epoch": 1,
+          "revision": 2,
+          "stopped": true,
+          "adopting": true,
+          "released": false,
+          "baseline_hash": "66ee6f4ae415b0735c6eb4d0645f5a8d72d33e7946d0219e319aa9158a375659"
+        },
+        "no_active_operations": true,
+        "ref": {
+          "tenant_id": "p06-execution",
+          "run_id": "p06-3ce8ae2a909f3101-1",
+          "kind": "workspace_stop",
+          "object_key": "p06-execution/p06-3ce8ae2a909f3101-1/74abe474af13fb34d22c15c052f2cb22eb5c3e24f8dbe35d0ed62ba808d6f541",
+          "sha256": "74abe474af13fb34d22c15c052f2cb22eb5c3e24f8dbe35d0ed62ba808d6f541",
+          "size": 419
+        }
+      },
+      "Snapshot": {
+        "workspace": {
+          "tenant_id": "p06-execution",
+          "run_id": "p06-3ce8ae2a909f3101-1",
+          "id": "p06-3ce8ae2a909f3101-1",
+          "source_id": "clamp",
+          "profile_id": "python-clamp",
+          "epoch": 1,
+          "revision": 2,
+          "stopped": true,
+          "adopting": true,
+          "released": false,
+          "baseline_hash": "66ee6f4ae415b0735c6eb4d0645f5a8d72d33e7946d0219e319aa9158a375659"
+        },
+        "hash": "a53d69169ae13133ae50a3ff02d53ff73e7fb0b19ec1e32926a4e32abf223809",
+        "artifact": {
+          "tenant_id": "p06-execution",
+          "run_id": "p06-3ce8ae2a909f3101-1",
+          "kind": "workspace_snapshot",
+          "object_key": "p06-execution/p06-3ce8ae2a909f3101-1/06ab042aa1f7cc4e305769453ee16d5a630b4eb70d30f5cb2ac9d93be1772be5",
+          "sha256": "06ab042aa1f7cc4e305769453ee16d5a630b4eb70d30f5cb2ac9d93be1772be5",
+          "size": 790
+        }
+      },
+      "Released": {
+        "workspace_id": "p06-3ce8ae2a909f3101-1",
+        "released": true
+      }
+    }
+  ],
+  "Samples": [
+    {
+      "ID": "p06-3ce8ae2a909f3101-0-normal-0",
+      "Workspace": "p06-3ce8ae2a909f3101-0",
+      "Mode": "normal",
+      "Marker": "p06-3ce8ae2a909f3101-0/normal/0",
+      "Round": 0,
+      "Request": {
+        "tenant_id": "p06-execution",
+        "run_id": "p06-3ce8ae2a909f3101-0",
+        "workspace_id": "p06-3ce8ae2a909f3101-0",
+        "epoch": 1,
+        "grant": "",
+        "operation_id": "p06-3ce8ae2a909f3101-0-normal-0",
+        "expected_revision": 1,
+        "kind": "run_command",
+        "args": {
+          "command": [
+            "python",
+            "-I",
+            "-B",
+            "-c",
+            "import json, os, pathlib, signal, sys, time\nmarker, mode = sys.argv[1:]\np = pathlib.Path(\"p06-shared-name.txt\")\np.write_text(marker)\ndef read(name):\n    return pathlib.Path(name).read_text().strip()\nstatus = dict(line.split(\":\", 1) for line in read(\"/proc/self/status\").splitlines() if \":\" in line)\nfacts = {\"marker\": marker, \"uid\": os.getuid(), \"gid\": os.getgid(),\n         \"memory_max\": read(\"/sys/fs/cgroup/memory.max\"), \"pids_max\": read(\"/sys/fs/cgroup/pids.max\"),\n         \"cpu_max\": read(\"/sys/fs/cgroup/cpu.max\"), \"cap_eff\": status[\"CapEff\"].strip(),\n         \"no_new_privs\": status[\"NoNewPrivs\"].strip(), \"net_devices\": sorted(os.listdir(\"/sys/class/net\")),\n         \"docker_socket\": os.path.exists(\"/var/run/docker.sock\"),\n         \"root_readonly\": bool(os.statvfs(\"/\").f_flag \u0026 os.ST_RDONLY),\n         \"tmp_bytes\": os.statvfs(\"/tmp\").f_blocks * os.statvfs(\"/tmp\").f_frsize}\nprint(\"P06_READY \" + json.dumps(facts, sort_keys=True), flush=True)\nif mode == \"cancel\":\n    signal.signal(signal.SIGTERM, signal.SIG_IGN)\n    child = os.fork()\n    if child == 0:\n        print(\"P06_CHILD \" + marker, flush=True)\n        time.sleep(45)\n        os._exit(0)\nuntil = time.monotonic() + (45 if mode == \"cancel\" else 1.0)\nchecks = 0\nwhile time.monotonic() \u003c until:\n    if p.read_text() != marker:\n        print(\"P06_ISOLATION_FAILURE \" + marker, flush=True)\n        sys.exit(31)\n    checks += 1\n    time.sleep(0.02)\nprint(\"P06_DONE \" + json.dumps({\"marker\": marker, \"checks\": checks}), flush=True)\n",
+            "p06-3ce8ae2a909f3101-0/normal/0",
+            "normal"
+          ]
+        },
+        "args_hash": "8095a8d3128019bd486800198abf9fe16efca08e93404aff5711057df23dbda6",
+        "policy_version": "p06-fixed-local-v1",
+        "deadline": "2026-09-11T15:04:28.972374173-07:00"
+      },
+      "StartBegin": {
+        "utc": "2026-09-11T22:03:33.972378184Z",
+        "since_experiment_start_ns": 227608119
+      },
+      "StartAck": {
+        "utc": "2026-09-11T22:03:34.023273512Z",
+        "since_experiment_start_ns": 278503450
+      },
+      "StartReturn": {
+        "utc": "2026-09-11T22:03:34.023273512Z",
+        "since_experiment_start_ns": 278503450
+      },
+      "StartStatus": "prepared",
+      "FirstDaemonLog": {
+        "utc": "2026-09-11T22:03:34.536334878Z",
+        "since_experiment_start_ns": 791564817
+      },
+      "ChildDaemonLogObserved": false,
+      "FirstTypedInspectLog": {
+        "utc": "2026-09-11T22:03:35.738592573Z",
+        "since_experiment_start_ns": 1993822511
+      },
+      "CancelBegin": null,
+      "CancelAck": null,
+      "FirstStoppedObservation": {
+        "utc": "2026-09-11T22:03:35.595911317Z",
+        "since_experiment_start_ns": 1851141253
+      },
+      "LastRunningObservation": {
+        "utc": "2026-09-11T22:03:35.436710655Z",
+        "since_experiment_start_ns": 1691940590
+      },
+      "FirstRunningObservation": {
+        "utc": "2026-09-11T22:03:34.421091569Z",
+        "since_experiment_start_ns": 676321505
+      },
+      "CancelReply": null,
+      "Final": {
+        "request": {
+          "tenant_id": "p06-execution",
+          "run_id": "p06-3ce8ae2a909f3101-0",
+          "workspace_id": "p06-3ce8ae2a909f3101-0",
+          "epoch": 1,
+          "grant": "",
+          "operation_id": "p06-3ce8ae2a909f3101-0-normal-0",
+          "expected_revision": 1,
+          "kind": "run_command",
+          "args": {
+            "command": [
+              "python",
+              "-I",
+              "-B",
+              "-c",
+              "import json, os, pathlib, signal, sys, time\nmarker, mode = sys.argv[1:]\np = pathlib.Path(\"p06-shared-name.txt\")\np.write_text(marker)\ndef read(name):\n    return pathlib.Path(name).read_text().strip()\nstatus = dict(line.split(\":\", 1) for line in read(\"/proc/self/status\").splitlines() if \":\" in line)\nfacts = {\"marker\": marker, \"uid\": os.getuid(), \"gid\": os.getgid(),\n         \"memory_max\": read(\"/sys/fs/cgroup/memory.max\"), \"pids_max\": read(\"/sys/fs/cgroup/pids.max\"),\n         \"cpu_max\": read(\"/sys/fs/cgroup/cpu.max\"), \"cap_eff\": status[\"CapEff\"].strip(),\n         \"no_new_privs\": status[\"NoNewPrivs\"].strip(), \"net_devices\": sorted(os.listdir(\"/sys/class/net\")),\n         \"docker_socket\": os.path.exists(\"/var/run/docker.sock\"),\n         \"root_readonly\": bool(os.statvfs(\"/\").f_flag \u0026 os.ST_RDONLY),\n         \"tmp_bytes\": os.statvfs(\"/tmp\").f_blocks * os.statvfs(\"/tmp\").f_frsize}\nprint(\"P06_READY \" + json.dumps(facts, sort_keys=True), flush=True)\nif mode == \"cancel\":\n    signal.signal(signal.SIGTERM, signal.SIG_IGN)\n    child = os.fork()\n    if child == 0:\n        print(\"P06_CHILD \" + marker, flush=True)\n        time.sleep(45)\n        os._exit(0)\nuntil = time.monotonic() + (45 if mode == \"cancel\" else 1.0)\nchecks = 0\nwhile time.monotonic() \u003c until:\n    if p.read_text() != marker:\n        print(\"P06_ISOLATION_FAILURE \" + marker, flush=True)\n        sys.exit(31)\n    checks += 1\n    time.sleep(0.02)\nprint(\"P06_DONE \" + json.dumps({\"marker\": marker, \"checks\": checks}), flush=True)\n",
+              "p06-3ce8ae2a909f3101-0/normal/0",
+              "normal"
+            ]
+          },
+          "args_hash": "8095a8d3128019bd486800198abf9fe16efca08e93404aff5711057df23dbda6",
+          "policy_version": "p06-fixed-local-v1",
+          "deadline": "2026-09-11T22:04:28.972374173Z"
+        },
+        "status": "succeeded",
+        "job_id": "forge-faa2cb8ed9e70545d05142969bca3b5e0c6746ab",
+        "before_hash": "66ee6f4ae415b0735c6eb4d0645f5a8d72d33e7946d0219e319aa9158a375659",
+        "after_hash": "69fbeb87ad360ae80c8824ddadf674296af6dc879f185277852c9d617006ef17",
+        "after_revision": 2,
+        "result": {
+          "id": "forge-faa2cb8ed9e70545d05142969bca3b5e0c6746ab",
+          "running": false,
+          "exit_code": 0,
+          "started": true,
+          "output": "UDA2X1JFQURZIHsiY2FwX2VmZiI6ICIwMDAwMDAwMDAwMDAwMDAwIiwgImNwdV9tYXgiOiAiMTAwMDAwIDEwMDAwMCIsICJkb2NrZXJfc29ja2V0IjogZmFsc2UsICJnaWQiOiAxMDAwLCAibWFya2VyIjogInAwNi0zY2U4YWUyYTkwOWYzMTAxLTAvbm9ybWFsLzAiLCAibWVtb3J5X21heCI6ICIyNjg0MzU0NTYiLCAibmV0X2RldmljZXMiOiBbImxvIiwgInR1bmwwIl0sICJub19uZXdfcHJpdnMiOiAiMSIsICJwaWRzX21heCI6ICI2NCIsICJyb290X3JlYWRvbmx5IjogdHJ1ZSwgInRtcF9ieXRlcyI6IDY3MTA4ODY0LCAidWlkIjogMTAwMH0KUDA2X0RPTkUgeyJtYXJrZXIiOiAicDA2LTNjZThhZTJhOTA5ZjMxMDEtMC9ub3JtYWwvMCIsICJjaGVja3MiOiA1MH0K",
+          "truncated": false
+        },
+        "receipt": {
+          "tenant_id": "p06-execution",
+          "run_id": "p06-3ce8ae2a909f3101-0",
+          "kind": "operation_receipt",
+          "object_key": "p06-execution/p06-3ce8ae2a909f3101-0/5bd128e677a424f54daf9c2c469140e56a5bebc42cacde52e6ccff7d5ea7a1c2",
+          "sha256": "5bd128e677a424f54daf9c2c469140e56a5bebc42cacde52e6ccff7d5ea7a1c2",
+          "size": 3096
+        },
+        "cancel_requested": false
+      },
+      "Observations": [
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:34.023311272Z",
+            "since_experiment_start_ns": 278541209
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:34.037609202Z",
+            "since_experiment_start_ns": 292839137
+          },
+          "Kind": "typed_inspect",
+          "Status": "running"
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:34.037634297Z",
+            "since_experiment_start_ns": 292864228
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:34.051714332Z",
+            "since_experiment_start_ns": 306944278
+          },
+          "Kind": "docker_inspect",
+          "Error": "container not yet created"
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:34.113501999Z",
+            "since_experiment_start_ns": 368731937
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:34.114050772Z",
+            "since_experiment_start_ns": 369280710
+          },
+          "Kind": "typed_inspect",
+          "Status": "running"
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:34.114059987Z",
+            "since_experiment_start_ns": 369289924
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:34.125511711Z",
+            "since_experiment_start_ns": 380741662
+          },
+          "Kind": "docker_inspect",
+          "Error": "container not yet created"
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:34.187892372Z",
+            "since_experiment_start_ns": 443122304
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:34.188355194Z",
+            "since_experiment_start_ns": 443585126
+          },
+          "Kind": "typed_inspect",
+          "Status": "running"
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:34.188359689Z",
+            "since_experiment_start_ns": 443589621
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:34.201646309Z",
+            "since_experiment_start_ns": 456876244
+          },
+          "Kind": "docker_inspect",
+          "Error": "container not yet created"
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:34.265193111Z",
+            "since_experiment_start_ns": 520423048
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:34.265686045Z",
+            "since_experiment_start_ns": 520915982
+          },
+          "Kind": "typed_inspect",
+          "Status": "running"
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:34.265691443Z",
+            "since_experiment_start_ns": 520921381
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:34.421091569Z",
+            "since_experiment_start_ns": 676321505
+          },
+          "Kind": "docker_inspect",
+          "Docker": {
+            "ID": "29979de980c5b6e4c01c179074b203bc585d8e76ffaf729a0a7f5e249fc8f281",
+            "Name": "/forge-faa2cb8ed9e70545d05142969bca3b5e0c6746ab",
+            "Image": "sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+            "Config": {
+              "User": "1000:1000",
+              "Image": "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+              "Labels": {
+                "forge.runtime": "1"
+              }
+            },
+            "State": {
+              "Running": true,
+              "OOMKilled": false,
+              "Pid": 2016383,
+              "ExitCode": 0,
+              "StartedAt": "2026-09-11T22:03:34.310241494Z",
+              "FinishedAt": "0001-01-01T00:00:00Z"
+            },
+            "HostConfig": {
+              "Memory": 268435456,
+              "MemorySwap": 268435456,
+              "NanoCpus": 1000000000,
+              "PidsLimit": 64,
+              "ReadonlyRootfs": true,
+              "NetworkMode": "none",
+              "CapDrop": [
+                "ALL"
+              ],
+              "SecurityOpt": [
+                "no-new-privileges"
+              ],
+              "Tmpfs": {
+                "/tmp": "rw,nosuid,nodev,noexec,size=67108864"
+              },
+              "LogConfig": {
+                "Type": "local",
+                "Config": {
+                  "max-file": "2",
+                  "max-size": "1m"
+                }
+              }
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/workspace-storage/mounts/slot-001/workspace-p06-3ce8ae2a909f3101-0/checkout",
+                "Destination": "/workspace",
+                "RW": true
+              }
+            ]
+          }
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:34.421236151Z",
+            "since_experiment_start_ns": 676466083
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:34.434879376Z",
+            "since_experiment_start_ns": 690109314
+          },
+          "Kind": "daemon_logs_while_running"
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:34.511608429Z",
+            "since_experiment_start_ns": 766838367
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:34.512165378Z",
+            "since_experiment_start_ns": 767395318
+          },
+          "Kind": "typed_inspect",
+          "Status": "running"
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:34.512170976Z",
+            "since_experiment_start_ns": 767400913
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:34.522778367Z",
+            "since_experiment_start_ns": 778008312
+          },
+          "Kind": "docker_inspect",
+          "Docker": {
+            "ID": "29979de980c5b6e4c01c179074b203bc585d8e76ffaf729a0a7f5e249fc8f281",
+            "Name": "/forge-faa2cb8ed9e70545d05142969bca3b5e0c6746ab",
+            "Image": "sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+            "Config": {
+              "User": "1000:1000",
+              "Image": "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+              "Labels": {
+                "forge.runtime": "1"
+              }
+            },
+            "State": {
+              "Running": true,
+              "OOMKilled": false,
+              "Pid": 2016383,
+              "ExitCode": 0,
+              "StartedAt": "2026-09-11T22:03:34.310241494Z",
+              "FinishedAt": "0001-01-01T00:00:00Z"
+            },
+            "HostConfig": {
+              "Memory": 268435456,
+              "MemorySwap": 268435456,
+              "NanoCpus": 1000000000,
+              "PidsLimit": 64,
+              "ReadonlyRootfs": true,
+              "NetworkMode": "none",
+              "CapDrop": [
+                "ALL"
+              ],
+              "SecurityOpt": [
+                "no-new-privileges"
+              ],
+              "Tmpfs": {
+                "/tmp": "rw,nosuid,nodev,noexec,size=67108864"
+              },
+              "LogConfig": {
+                "Type": "local",
+                "Config": {
+                  "max-file": "2",
+                  "max-size": "1m"
+                }
+              }
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/workspace-storage/mounts/slot-001/workspace-p06-3ce8ae2a909f3101-0/checkout",
+                "Destination": "/workspace",
+                "RW": true
+              }
+            ]
+          }
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:34.522904902Z",
+            "since_experiment_start_ns": 778134839
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:34.536334878Z",
+            "since_experiment_start_ns": 791564817
+          },
+          "Kind": "daemon_logs_while_running",
+          "Output": "P06_READY {\"cap_eff\": \"0000000000000000\", \"cpu_max\": \"100000 100000\", \"docker_socket\": false, \"gid\": 1000, \"marker\": \"p06-3ce8ae2a909f3101-0/normal/0\", \"memory_max\": \"268435456\", \"net_devices\": [\"lo\", \"tunl0\"], \"no_new_privs\": \"1\", \"pids_max\": \"64\", \"root_readonly\": true, \"tmp_bytes\": 67108864, \"uid\": 1000}\n"
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:34.536334878Z",
+            "since_experiment_start_ns": 791564817
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:34.549697709Z",
+            "since_experiment_start_ns": 804927660
+          },
+          "Kind": "docker_running_after_first_log",
+          "Docker": {
+            "ID": "29979de980c5b6e4c01c179074b203bc585d8e76ffaf729a0a7f5e249fc8f281",
+            "Name": "/forge-faa2cb8ed9e70545d05142969bca3b5e0c6746ab",
+            "Image": "sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+            "Config": {
+              "User": "1000:1000",
+              "Image": "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+              "Labels": {
+                "forge.runtime": "1"
+              }
+            },
+            "State": {
+              "Running": true,
+              "OOMKilled": false,
+              "Pid": 2016383,
+              "ExitCode": 0,
+              "StartedAt": "2026-09-11T22:03:34.310241494Z",
+              "FinishedAt": "0001-01-01T00:00:00Z"
+            },
+            "HostConfig": {
+              "Memory": 268435456,
+              "MemorySwap": 268435456,
+              "NanoCpus": 1000000000,
+              "PidsLimit": 64,
+              "ReadonlyRootfs": true,
+              "NetworkMode": "none",
+              "CapDrop": [
+                "ALL"
+              ],
+              "SecurityOpt": [
+                "no-new-privileges"
+              ],
+              "Tmpfs": {
+                "/tmp": "rw,nosuid,nodev,noexec,size=67108864"
+              },
+              "LogConfig": {
+                "Type": "local",
+                "Config": {
+                  "max-file": "2",
+                  "max-size": "1m"
+                }
+              }
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/workspace-storage/mounts/slot-001/workspace-p06-3ce8ae2a909f3101-0/checkout",
+                "Destination": "/workspace",
+                "RW": true
+              }
+            ]
+          }
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:34.634738296Z",
+            "since_experiment_start_ns": 889968232
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:34.635244515Z",
+            "since_experiment_start_ns": 890474453
+          },
+          "Kind": "typed_inspect",
+          "Status": "running"
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:34.635250082Z",
+            "since_experiment_start_ns": 890480019
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:34.647813498Z",
+            "since_experiment_start_ns": 903043437
+          },
+          "Kind": "docker_inspect",
+          "Docker": {
+            "ID": "29979de980c5b6e4c01c179074b203bc585d8e76ffaf729a0a7f5e249fc8f281",
+            "Name": "/forge-faa2cb8ed9e70545d05142969bca3b5e0c6746ab",
+            "Image": "sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+            "Config": {
+              "User": "1000:1000",
+              "Image": "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+              "Labels": {
+                "forge.runtime": "1"
+              }
+            },
+            "State": {
+              "Running": true,
+              "OOMKilled": false,
+              "Pid": 2016383,
+              "ExitCode": 0,
+              "StartedAt": "2026-09-11T22:03:34.310241494Z",
+              "FinishedAt": "0001-01-01T00:00:00Z"
+            },
+            "HostConfig": {
+              "Memory": 268435456,
+              "MemorySwap": 268435456,
+              "NanoCpus": 1000000000,
+              "PidsLimit": 64,
+              "ReadonlyRootfs": true,
+              "NetworkMode": "none",
+              "CapDrop": [
+                "ALL"
+              ],
+              "SecurityOpt": [
+                "no-new-privileges"
+              ],
+              "Tmpfs": {
+                "/tmp": "rw,nosuid,nodev,noexec,size=67108864"
+              },
+              "LogConfig": {
+                "Type": "local",
+                "Config": {
+                  "max-file": "2",
+                  "max-size": "1m"
+                }
+              }
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/workspace-storage/mounts/slot-001/workspace-p06-3ce8ae2a909f3101-0/checkout",
+                "Destination": "/workspace",
+                "RW": true
+              }
+            ]
+          }
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:34.712503366Z",
+            "since_experiment_start_ns": 967733303
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:34.713044575Z",
+            "since_experiment_start_ns": 968274512
+          },
+          "Kind": "typed_inspect",
+          "Status": "running"
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:34.713050106Z",
+            "since_experiment_start_ns": 968280044
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:34.727181917Z",
+            "since_experiment_start_ns": 982411854
+          },
+          "Kind": "docker_inspect",
+          "Docker": {
+            "ID": "29979de980c5b6e4c01c179074b203bc585d8e76ffaf729a0a7f5e249fc8f281",
+            "Name": "/forge-faa2cb8ed9e70545d05142969bca3b5e0c6746ab",
+            "Image": "sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+            "Config": {
+              "User": "1000:1000",
+              "Image": "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+              "Labels": {
+                "forge.runtime": "1"
+              }
+            },
+            "State": {
+              "Running": true,
+              "OOMKilled": false,
+              "Pid": 2016383,
+              "ExitCode": 0,
+              "StartedAt": "2026-09-11T22:03:34.310241494Z",
+              "FinishedAt": "0001-01-01T00:00:00Z"
+            },
+            "HostConfig": {
+              "Memory": 268435456,
+              "MemorySwap": 268435456,
+              "NanoCpus": 1000000000,
+              "PidsLimit": 64,
+              "ReadonlyRootfs": true,
+              "NetworkMode": "none",
+              "CapDrop": [
+                "ALL"
+              ],
+              "SecurityOpt": [
+                "no-new-privileges"
+              ],
+              "Tmpfs": {
+                "/tmp": "rw,nosuid,nodev,noexec,size=67108864"
+              },
+              "LogConfig": {
+                "Type": "local",
+                "Config": {
+                  "max-file": "2",
+                  "max-size": "1m"
+                }
+              }
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/workspace-storage/mounts/slot-001/workspace-p06-3ce8ae2a909f3101-0/checkout",
+                "Destination": "/workspace",
+                "RW": true
+              }
+            ]
+          }
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:34.791260758Z",
+            "since_experiment_start_ns": 1046490695
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:34.791781882Z",
+            "since_experiment_start_ns": 1047011818
+          },
+          "Kind": "typed_inspect",
+          "Status": "running"
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:34.791794732Z",
+            "since_experiment_start_ns": 1047024667
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:34.801874496Z",
+            "since_experiment_start_ns": 1057104432
+          },
+          "Kind": "docker_inspect",
+          "Docker": {
+            "ID": "29979de980c5b6e4c01c179074b203bc585d8e76ffaf729a0a7f5e249fc8f281",
+            "Name": "/forge-faa2cb8ed9e70545d05142969bca3b5e0c6746ab",
+            "Image": "sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+            "Config": {
+              "User": "1000:1000",
+              "Image": "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+              "Labels": {
+                "forge.runtime": "1"
+              }
+            },
+            "State": {
+              "Running": true,
+              "OOMKilled": false,
+              "Pid": 2016383,
+              "ExitCode": 0,
+              "StartedAt": "2026-09-11T22:03:34.310241494Z",
+              "FinishedAt": "0001-01-01T00:00:00Z"
+            },
+            "HostConfig": {
+              "Memory": 268435456,
+              "MemorySwap": 268435456,
+              "NanoCpus": 1000000000,
+              "PidsLimit": 64,
+              "ReadonlyRootfs": true,
+              "NetworkMode": "none",
+              "CapDrop": [
+                "ALL"
+              ],
+              "SecurityOpt": [
+                "no-new-privileges"
+              ],
+              "Tmpfs": {
+                "/tmp": "rw,nosuid,nodev,noexec,size=67108864"
+              },
+              "LogConfig": {
+                "Type": "local",
+                "Config": {
+                  "max-file": "2",
+                  "max-size": "1m"
+                }
+              }
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/workspace-storage/mounts/slot-001/workspace-p06-3ce8ae2a909f3101-0/checkout",
+                "Destination": "/workspace",
+                "RW": true
+              }
+            ]
+          }
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:34.864429995Z",
+            "since_experiment_start_ns": 1119659932
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:34.864965424Z",
+            "since_experiment_start_ns": 1120195361
+          },
+          "Kind": "typed_inspect",
+          "Status": "running"
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:34.864970759Z",
+            "since_experiment_start_ns": 1120200696
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:34.877649034Z",
+            "since_experiment_start_ns": 1132878980
+          },
+          "Kind": "docker_inspect",
+          "Docker": {
+            "ID": "29979de980c5b6e4c01c179074b203bc585d8e76ffaf729a0a7f5e249fc8f281",
+            "Name": "/forge-faa2cb8ed9e70545d05142969bca3b5e0c6746ab",
+            "Image": "sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+            "Config": {
+              "User": "1000:1000",
+              "Image": "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+              "Labels": {
+                "forge.runtime": "1"
+              }
+            },
+            "State": {
+              "Running": true,
+              "OOMKilled": false,
+              "Pid": 2016383,
+              "ExitCode": 0,
+              "StartedAt": "2026-09-11T22:03:34.310241494Z",
+              "FinishedAt": "0001-01-01T00:00:00Z"
+            },
+            "HostConfig": {
+              "Memory": 268435456,
+              "MemorySwap": 268435456,
+              "NanoCpus": 1000000000,
+              "PidsLimit": 64,
+              "ReadonlyRootfs": true,
+              "NetworkMode": "none",
+              "CapDrop": [
+                "ALL"
+              ],
+              "SecurityOpt": [
+                "no-new-privileges"
+              ],
+              "Tmpfs": {
+                "/tmp": "rw,nosuid,nodev,noexec,size=67108864"
+              },
+              "LogConfig": {
+                "Type": "local",
+                "Config": {
+                  "max-file": "2",
+                  "max-size": "1m"
+                }
+              }
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/workspace-storage/mounts/slot-001/workspace-p06-3ce8ae2a909f3101-0/checkout",
+                "Destination": "/workspace",
+                "RW": true
+              }
+            ]
+          }
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:34.941105149Z",
+            "since_experiment_start_ns": 1196335088
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:34.941775769Z",
+            "since_experiment_start_ns": 1197005707
+          },
+          "Kind": "typed_inspect",
+          "Status": "running"
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:34.941781848Z",
+            "since_experiment_start_ns": 1197011784
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:34.955946106Z",
+            "since_experiment_start_ns": 1211176051
+          },
+          "Kind": "docker_inspect",
+          "Docker": {
+            "ID": "29979de980c5b6e4c01c179074b203bc585d8e76ffaf729a0a7f5e249fc8f281",
+            "Name": "/forge-faa2cb8ed9e70545d05142969bca3b5e0c6746ab",
+            "Image": "sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+            "Config": {
+              "User": "1000:1000",
+              "Image": "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+              "Labels": {
+                "forge.runtime": "1"
+              }
+            },
+            "State": {
+              "Running": true,
+              "OOMKilled": false,
+              "Pid": 2016383,
+              "ExitCode": 0,
+              "StartedAt": "2026-09-11T22:03:34.310241494Z",
+              "FinishedAt": "0001-01-01T00:00:00Z"
+            },
+            "HostConfig": {
+              "Memory": 268435456,
+              "MemorySwap": 268435456,
+              "NanoCpus": 1000000000,
+              "PidsLimit": 64,
+              "ReadonlyRootfs": true,
+              "NetworkMode": "none",
+              "CapDrop": [
+                "ALL"
+              ],
+              "SecurityOpt": [
+                "no-new-privileges"
+              ],
+              "Tmpfs": {
+                "/tmp": "rw,nosuid,nodev,noexec,size=67108864"
+              },
+              "LogConfig": {
+                "Type": "local",
+                "Config": {
+                  "max-file": "2",
+                  "max-size": "1m"
+                }
+              }
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/workspace-storage/mounts/slot-001/workspace-p06-3ce8ae2a909f3101-0/checkout",
+                "Destination": "/workspace",
+                "RW": true
+              }
+            ]
+          }
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:35.021879117Z",
+            "since_experiment_start_ns": 1277109054
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:35.022435173Z",
+            "since_experiment_start_ns": 1277665110
+          },
+          "Kind": "typed_inspect",
+          "Status": "running"
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:35.022442211Z",
+            "since_experiment_start_ns": 1277672149
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:35.039068885Z",
+            "since_experiment_start_ns": 1294298827
+          },
+          "Kind": "docker_inspect",
+          "Docker": {
+            "ID": "29979de980c5b6e4c01c179074b203bc585d8e76ffaf729a0a7f5e249fc8f281",
+            "Name": "/forge-faa2cb8ed9e70545d05142969bca3b5e0c6746ab",
+            "Image": "sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+            "Config": {
+              "User": "1000:1000",
+              "Image": "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+              "Labels": {
+                "forge.runtime": "1"
+              }
+            },
+            "State": {
+              "Running": true,
+              "OOMKilled": false,
+              "Pid": 2016383,
+              "ExitCode": 0,
+              "StartedAt": "2026-09-11T22:03:34.310241494Z",
+              "FinishedAt": "0001-01-01T00:00:00Z"
+            },
+            "HostConfig": {
+              "Memory": 268435456,
+              "MemorySwap": 268435456,
+              "NanoCpus": 1000000000,
+              "PidsLimit": 64,
+              "ReadonlyRootfs": true,
+              "NetworkMode": "none",
+              "CapDrop": [
+                "ALL"
+              ],
+              "SecurityOpt": [
+                "no-new-privileges"
+              ],
+              "Tmpfs": {
+                "/tmp": "rw,nosuid,nodev,noexec,size=67108864"
+              },
+              "LogConfig": {
+                "Type": "local",
+                "Config": {
+                  "max-file": "2",
+                  "max-size": "1m"
+                }
+              }
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/workspace-storage/mounts/slot-001/workspace-p06-3ce8ae2a909f3101-0/checkout",
+                "Destination": "/workspace",
+                "RW": true
+              }
+            ]
+          }
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:35.106487507Z",
+            "since_experiment_start_ns": 1361717444
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:35.106979277Z",
+            "since_experiment_start_ns": 1362209214
+          },
+          "Kind": "typed_inspect",
+          "Status": "running"
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:35.106984041Z",
+            "since_experiment_start_ns": 1362213978
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:35.120008169Z",
+            "since_experiment_start_ns": 1375238107
+          },
+          "Kind": "docker_inspect",
+          "Docker": {
+            "ID": "29979de980c5b6e4c01c179074b203bc585d8e76ffaf729a0a7f5e249fc8f281",
+            "Name": "/forge-faa2cb8ed9e70545d05142969bca3b5e0c6746ab",
+            "Image": "sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+            "Config": {
+              "User": "1000:1000",
+              "Image": "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+              "Labels": {
+                "forge.runtime": "1"
+              }
+            },
+            "State": {
+              "Running": true,
+              "OOMKilled": false,
+              "Pid": 2016383,
+              "ExitCode": 0,
+              "StartedAt": "2026-09-11T22:03:34.310241494Z",
+              "FinishedAt": "0001-01-01T00:00:00Z"
+            },
+            "HostConfig": {
+              "Memory": 268435456,
+              "MemorySwap": 268435456,
+              "NanoCpus": 1000000000,
+              "PidsLimit": 64,
+              "ReadonlyRootfs": true,
+              "NetworkMode": "none",
+              "CapDrop": [
+                "ALL"
+              ],
+              "SecurityOpt": [
+                "no-new-privileges"
+              ],
+              "Tmpfs": {
+                "/tmp": "rw,nosuid,nodev,noexec,size=67108864"
+              },
+              "LogConfig": {
+                "Type": "local",
+                "Config": {
+                  "max-file": "2",
+                  "max-size": "1m"
+                }
+              }
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/workspace-storage/mounts/slot-001/workspace-p06-3ce8ae2a909f3101-0/checkout",
+                "Destination": "/workspace",
+                "RW": true
+              }
+            ]
+          }
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:35.184720922Z",
+            "since_experiment_start_ns": 1439950854
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:35.185226775Z",
+            "since_experiment_start_ns": 1440456712
+          },
+          "Kind": "typed_inspect",
+          "Status": "running"
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:35.185231996Z",
+            "since_experiment_start_ns": 1440461933
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:35.19599481Z",
+            "since_experiment_start_ns": 1451224748
+          },
+          "Kind": "docker_inspect",
+          "Docker": {
+            "ID": "29979de980c5b6e4c01c179074b203bc585d8e76ffaf729a0a7f5e249fc8f281",
+            "Name": "/forge-faa2cb8ed9e70545d05142969bca3b5e0c6746ab",
+            "Image": "sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+            "Config": {
+              "User": "1000:1000",
+              "Image": "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+              "Labels": {
+                "forge.runtime": "1"
+              }
+            },
+            "State": {
+              "Running": true,
+              "OOMKilled": false,
+              "Pid": 2016383,
+              "ExitCode": 0,
+              "StartedAt": "2026-09-11T22:03:34.310241494Z",
+              "FinishedAt": "0001-01-01T00:00:00Z"
+            },
+            "HostConfig": {
+              "Memory": 268435456,
+              "MemorySwap": 268435456,
+              "NanoCpus": 1000000000,
+              "PidsLimit": 64,
+              "ReadonlyRootfs": true,
+              "NetworkMode": "none",
+              "CapDrop": [
+                "ALL"
+              ],
+              "SecurityOpt": [
+                "no-new-privileges"
+              ],
+              "Tmpfs": {
+                "/tmp": "rw,nosuid,nodev,noexec,size=67108864"
+              },
+              "LogConfig": {
+                "Type": "local",
+                "Config": {
+                  "max-file": "2",
+                  "max-size": "1m"
+                }
+              }
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/workspace-storage/mounts/slot-001/workspace-p06-3ce8ae2a909f3101-0/checkout",
+                "Destination": "/workspace",
+                "RW": true
+              }
+            ]
+          }
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:35.261060823Z",
+            "since_experiment_start_ns": 1516290761
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:35.261590543Z",
+            "since_experiment_start_ns": 1516820480
+          },
+          "Kind": "typed_inspect",
+          "Status": "running"
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:35.261596197Z",
+            "since_experiment_start_ns": 1516826135
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:35.275040368Z",
+            "since_experiment_start_ns": 1530270312
+          },
+          "Kind": "docker_inspect",
+          "Docker": {
+            "ID": "29979de980c5b6e4c01c179074b203bc585d8e76ffaf729a0a7f5e249fc8f281",
+            "Name": "/forge-faa2cb8ed9e70545d05142969bca3b5e0c6746ab",
+            "Image": "sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+            "Config": {
+              "User": "1000:1000",
+              "Image": "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+              "Labels": {
+                "forge.runtime": "1"
+              }
+            },
+            "State": {
+              "Running": true,
+              "OOMKilled": false,
+              "Pid": 2016383,
+              "ExitCode": 0,
+              "StartedAt": "2026-09-11T22:03:34.310241494Z",
+              "FinishedAt": "0001-01-01T00:00:00Z"
+            },
+            "HostConfig": {
+              "Memory": 268435456,
+              "MemorySwap": 268435456,
+              "NanoCpus": 1000000000,
+              "PidsLimit": 64,
+              "ReadonlyRootfs": true,
+              "NetworkMode": "none",
+              "CapDrop": [
+                "ALL"
+              ],
+              "SecurityOpt": [
+                "no-new-privileges"
+              ],
+              "Tmpfs": {
+                "/tmp": "rw,nosuid,nodev,noexec,size=67108864"
+              },
+              "LogConfig": {
+                "Type": "local",
+                "Config": {
+                  "max-file": "2",
+                  "max-size": "1m"
+                }
+              }
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/workspace-storage/mounts/slot-001/workspace-p06-3ce8ae2a909f3101-0/checkout",
+                "Destination": "/workspace",
+                "RW": true
+              }
+            ]
+          }
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:35.340437476Z",
+            "since_experiment_start_ns": 1595667414
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:35.341036529Z",
+            "since_experiment_start_ns": 1596266460
+          },
+          "Kind": "typed_inspect",
+          "Status": "running"
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:35.341041119Z",
+            "since_experiment_start_ns": 1596271051
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:35.354897384Z",
+            "since_experiment_start_ns": 1610127329
+          },
+          "Kind": "docker_inspect",
+          "Docker": {
+            "ID": "29979de980c5b6e4c01c179074b203bc585d8e76ffaf729a0a7f5e249fc8f281",
+            "Name": "/forge-faa2cb8ed9e70545d05142969bca3b5e0c6746ab",
+            "Image": "sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+            "Config": {
+              "User": "1000:1000",
+              "Image": "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+              "Labels": {
+                "forge.runtime": "1"
+              }
+            },
+            "State": {
+              "Running": true,
+              "OOMKilled": false,
+              "Pid": 2016383,
+              "ExitCode": 0,
+              "StartedAt": "2026-09-11T22:03:34.310241494Z",
+              "FinishedAt": "0001-01-01T00:00:00Z"
+            },
+            "HostConfig": {
+              "Memory": 268435456,
+              "MemorySwap": 268435456,
+              "NanoCpus": 1000000000,
+              "PidsLimit": 64,
+              "ReadonlyRootfs": true,
+              "NetworkMode": "none",
+              "CapDrop": [
+                "ALL"
+              ],
+              "SecurityOpt": [
+                "no-new-privileges"
+              ],
+              "Tmpfs": {
+                "/tmp": "rw,nosuid,nodev,noexec,size=67108864"
+              },
+              "LogConfig": {
+                "Type": "local",
+                "Config": {
+                  "max-file": "2",
+                  "max-size": "1m"
+                }
+              }
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/workspace-storage/mounts/slot-001/workspace-p06-3ce8ae2a909f3101-0/checkout",
+                "Destination": "/workspace",
+                "RW": true
+              }
+            ]
+          }
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:35.421072011Z",
+            "since_experiment_start_ns": 1676301946
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:35.421482298Z",
+            "since_experiment_start_ns": 1676712235
+          },
+          "Kind": "typed_inspect",
+          "Status": "running"
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:35.421486686Z",
+            "since_experiment_start_ns": 1676716623
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:35.436710655Z",
+            "since_experiment_start_ns": 1691940590
+          },
+          "Kind": "docker_inspect",
+          "Docker": {
+            "ID": "29979de980c5b6e4c01c179074b203bc585d8e76ffaf729a0a7f5e249fc8f281",
+            "Name": "/forge-faa2cb8ed9e70545d05142969bca3b5e0c6746ab",
+            "Image": "sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+            "Config": {
+              "User": "1000:1000",
+              "Image": "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+              "Labels": {
+                "forge.runtime": "1"
+              }
+            },
+            "State": {
+              "Running": true,
+              "OOMKilled": false,
+              "Pid": 2016383,
+              "ExitCode": 0,
+              "StartedAt": "2026-09-11T22:03:34.310241494Z",
+              "FinishedAt": "0001-01-01T00:00:00Z"
+            },
+            "HostConfig": {
+              "Memory": 268435456,
+              "MemorySwap": 268435456,
+              "NanoCpus": 1000000000,
+              "PidsLimit": 64,
+              "ReadonlyRootfs": true,
+              "NetworkMode": "none",
+              "CapDrop": [
+                "ALL"
+              ],
+              "SecurityOpt": [
+                "no-new-privileges"
+              ],
+              "Tmpfs": {
+                "/tmp": "rw,nosuid,nodev,noexec,size=67108864"
+              },
+              "LogConfig": {
+                "Type": "local",
+                "Config": {
+                  "max-file": "2",
+                  "max-size": "1m"
+                }
+              }
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/workspace-storage/mounts/slot-001/workspace-p06-3ce8ae2a909f3101-0/checkout",
+                "Destination": "/workspace",
+                "RW": true
+              }
+            ]
+          }
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:35.503261072Z",
+            "since_experiment_start_ns": 1758491009
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:35.504146346Z",
+            "since_experiment_start_ns": 1759376281
+          },
+          "Kind": "typed_inspect",
+          "Status": "running"
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:35.504150766Z",
+            "since_experiment_start_ns": 1759380701
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:35.595911317Z",
+            "since_experiment_start_ns": 1851141253
+          },
+          "Kind": "docker_inspect",
+          "Docker": {
+            "ID": "29979de980c5b6e4c01c179074b203bc585d8e76ffaf729a0a7f5e249fc8f281",
+            "Name": "/forge-faa2cb8ed9e70545d05142969bca3b5e0c6746ab",
+            "Image": "sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+            "Config": {
+              "User": "1000:1000",
+              "Image": "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+              "Labels": {
+                "forge.runtime": "1"
+              }
+            },
+            "State": {
+              "Running": false,
+              "OOMKilled": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "StartedAt": "2026-09-11T22:03:34.310241494Z",
+              "FinishedAt": "2026-09-11T22:03:35.505733972Z"
+            },
+            "HostConfig": {
+              "Memory": 268435456,
+              "MemorySwap": 268435456,
+              "NanoCpus": 1000000000,
+              "PidsLimit": 64,
+              "ReadonlyRootfs": true,
+              "NetworkMode": "none",
+              "CapDrop": [
+                "ALL"
+              ],
+              "SecurityOpt": [
+                "no-new-privileges"
+              ],
+              "Tmpfs": {
+                "/tmp": "rw,nosuid,nodev,noexec,size=67108864"
+              },
+              "LogConfig": {
+                "Type": "local",
+                "Config": {
+                  "max-file": "2",
+                  "max-size": "1m"
+                }
+              }
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/workspace-storage/mounts/slot-001/workspace-p06-3ce8ae2a909f3101-0/checkout",
+                "Destination": "/workspace",
+                "RW": true
+              }
+            ]
+          }
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:35.659384895Z",
+            "since_experiment_start_ns": 1914614831
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:35.659895715Z",
+            "since_experiment_start_ns": 1915125647
+          },
+          "Kind": "typed_inspect",
+          "Status": "running"
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:35.659900018Z",
+            "since_experiment_start_ns": 1915129950
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:35.672894857Z",
+            "since_experiment_start_ns": 1928124792
+          },
+          "Kind": "docker_inspect",
+          "Docker": {
+            "ID": "29979de980c5b6e4c01c179074b203bc585d8e76ffaf729a0a7f5e249fc8f281",
+            "Name": "/forge-faa2cb8ed9e70545d05142969bca3b5e0c6746ab",
+            "Image": "sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+            "Config": {
+              "User": "1000:1000",
+              "Image": "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+              "Labels": {
+                "forge.runtime": "1"
+              }
+            },
+            "State": {
+              "Running": false,
+              "OOMKilled": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "StartedAt": "2026-09-11T22:03:34.310241494Z",
+              "FinishedAt": "2026-09-11T22:03:35.505733972Z"
+            },
+            "HostConfig": {
+              "Memory": 268435456,
+              "MemorySwap": 268435456,
+              "NanoCpus": 1000000000,
+              "PidsLimit": 64,
+              "ReadonlyRootfs": true,
+              "NetworkMode": "none",
+              "CapDrop": [
+                "ALL"
+              ],
+              "SecurityOpt": [
+                "no-new-privileges"
+              ],
+              "Tmpfs": {
+                "/tmp": "rw,nosuid,nodev,noexec,size=67108864"
+              },
+              "LogConfig": {
+                "Type": "local",
+                "Config": {
+                  "max-file": "2",
+                  "max-size": "1m"
+                }
+              }
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/workspace-storage/mounts/slot-001/workspace-p06-3ce8ae2a909f3101-0/checkout",
+                "Destination": "/workspace",
+                "RW": true
+              }
+            ]
+          }
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:35.738045075Z",
+            "since_experiment_start_ns": 1993275012
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:35.738592573Z",
+            "since_experiment_start_ns": 1993822511
+          },
+          "Kind": "typed_inspect",
+          "Status": "succeeded",
+          "Output": "P06_READY {\"cap_eff\": \"0000000000000000\", \"cpu_max\": \"100000 100000\", \"docker_socket\": false, \"gid\": 1000, \"marker\": \"p06-3ce8ae2a909f3101-0/normal/0\", \"memory_max\": \"268435456\", \"net_devices\": [\"lo\", \"tunl0\"], \"no_new_privs\": \"1\", \"pids_max\": \"64\", \"root_readonly\": true, \"tmp_bytes\": 67108864, \"uid\": 1000}\nP06_DONE {\"marker\": \"p06-3ce8ae2a909f3101-0/normal/0\", \"checks\": 50}\n"
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:35.73860992Z",
+            "since_experiment_start_ns": 1993839858
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:35.753243947Z",
+            "since_experiment_start_ns": 2008473894
+          },
+          "Kind": "docker_inspect",
+          "Docker": {
+            "ID": "29979de980c5b6e4c01c179074b203bc585d8e76ffaf729a0a7f5e249fc8f281",
+            "Name": "/forge-faa2cb8ed9e70545d05142969bca3b5e0c6746ab",
+            "Image": "sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+            "Config": {
+              "User": "1000:1000",
+              "Image": "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+              "Labels": {
+                "forge.runtime": "1"
+              }
+            },
+            "State": {
+              "Running": false,
+              "OOMKilled": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "StartedAt": "2026-09-11T22:03:34.310241494Z",
+              "FinishedAt": "2026-09-11T22:03:35.505733972Z"
+            },
+            "HostConfig": {
+              "Memory": 268435456,
+              "MemorySwap": 268435456,
+              "NanoCpus": 1000000000,
+              "PidsLimit": 64,
+              "ReadonlyRootfs": true,
+              "NetworkMode": "none",
+              "CapDrop": [
+                "ALL"
+              ],
+              "SecurityOpt": [
+                "no-new-privileges"
+              ],
+              "Tmpfs": {
+                "/tmp": "rw,nosuid,nodev,noexec,size=67108864"
+              },
+              "LogConfig": {
+                "Type": "local",
+                "Config": {
+                  "max-file": "2",
+                  "max-size": "1m"
+                }
+              }
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/workspace-storage/mounts/slot-001/workspace-p06-3ce8ae2a909f3101-0/checkout",
+                "Destination": "/workspace",
+                "RW": true
+              }
+            ]
+          }
+        }
+      ],
+      "ReceiptFile": "",
+      "TypedFile": "",
+      "CgroupPath": "",
+      "BeforeTasks": "",
+      "AfterTasks": "",
+      "CgroupRemoved": false,
+      "TasksAfterCancelAt": null,
+      "VerifiedContent": "",
+      "ReadOperation": null
+    },
+    {
+      "ID": "p06-3ce8ae2a909f3101-1-normal-0",
+      "Workspace": "p06-3ce8ae2a909f3101-1",
+      "Mode": "normal",
+      "Marker": "p06-3ce8ae2a909f3101-1/normal/0",
+      "Round": 0,
+      "Request": {
+        "tenant_id": "p06-execution",
+        "run_id": "p06-3ce8ae2a909f3101-1",
+        "workspace_id": "p06-3ce8ae2a909f3101-1",
+        "epoch": 1,
+        "grant": "",
+        "operation_id": "p06-3ce8ae2a909f3101-1-normal-0",
+        "expected_revision": 1,
+        "kind": "run_command",
+        "args": {
+          "command": [
+            "python",
+            "-I",
+            "-B",
+            "-c",
+            "import json, os, pathlib, signal, sys, time\nmarker, mode = sys.argv[1:]\np = pathlib.Path(\"p06-shared-name.txt\")\np.write_text(marker)\ndef read(name):\n    return pathlib.Path(name).read_text().strip()\nstatus = dict(line.split(\":\", 1) for line in read(\"/proc/self/status\").splitlines() if \":\" in line)\nfacts = {\"marker\": marker, \"uid\": os.getuid(), \"gid\": os.getgid(),\n         \"memory_max\": read(\"/sys/fs/cgroup/memory.max\"), \"pids_max\": read(\"/sys/fs/cgroup/pids.max\"),\n         \"cpu_max\": read(\"/sys/fs/cgroup/cpu.max\"), \"cap_eff\": status[\"CapEff\"].strip(),\n         \"no_new_privs\": status[\"NoNewPrivs\"].strip(), \"net_devices\": sorted(os.listdir(\"/sys/class/net\")),\n         \"docker_socket\": os.path.exists(\"/var/run/docker.sock\"),\n         \"root_readonly\": bool(os.statvfs(\"/\").f_flag \u0026 os.ST_RDONLY),\n         \"tmp_bytes\": os.statvfs(\"/tmp\").f_blocks * os.statvfs(\"/tmp\").f_frsize}\nprint(\"P06_READY \" + json.dumps(facts, sort_keys=True), flush=True)\nif mode == \"cancel\":\n    signal.signal(signal.SIGTERM, signal.SIG_IGN)\n    child = os.fork()\n    if child == 0:\n        print(\"P06_CHILD \" + marker, flush=True)\n        time.sleep(45)\n        os._exit(0)\nuntil = time.monotonic() + (45 if mode == \"cancel\" else 1.0)\nchecks = 0\nwhile time.monotonic() \u003c until:\n    if p.read_text() != marker:\n        print(\"P06_ISOLATION_FAILURE \" + marker, flush=True)\n        sys.exit(31)\n    checks += 1\n    time.sleep(0.02)\nprint(\"P06_DONE \" + json.dumps({\"marker\": marker, \"checks\": checks}), flush=True)\n",
+            "p06-3ce8ae2a909f3101-1/normal/0",
+            "normal"
+          ]
+        },
+        "args_hash": "43370b454a58d453d08e79c8b4f0a630b57e033dd0812c252a842a43505612a5",
+        "policy_version": "p06-fixed-local-v1",
+        "deadline": "2026-09-11T15:04:28.972417331-07:00"
+      },
+      "StartBegin": {
+        "utc": "2026-09-11T22:03:33.972419869Z",
+        "since_experiment_start_ns": 227649801
+      },
+      "StartAck": {
+        "utc": "2026-09-11T22:03:34.017023919Z",
+        "since_experiment_start_ns": 272253855
+      },
+      "StartReturn": {
+        "utc": "2026-09-11T22:03:34.017023919Z",
+        "since_experiment_start_ns": 272253855
+      },
+      "StartStatus": "prepared",
+      "FirstDaemonLog": {
+        "utc": "2026-09-11T22:03:34.574403057Z",
+        "since_experiment_start_ns": 829632996
+      },
+      "ChildDaemonLogObserved": false,
+      "FirstTypedInspectLog": {
+        "utc": "2026-09-11T22:03:35.753870004Z",
+        "since_experiment_start_ns": 2009099942
+      },
+      "CancelBegin": null,
+      "CancelAck": null,
+      "FirstStoppedObservation": {
+        "utc": "2026-09-11T22:03:35.609100569Z",
+        "since_experiment_start_ns": 1864330522
+      },
+      "LastRunningObservation": {
+        "utc": "2026-09-11T22:03:35.452991329Z",
+        "since_experiment_start_ns": 1708221340
+      },
+      "FirstRunningObservation": {
+        "utc": "2026-09-11T22:03:34.450200251Z",
+        "since_experiment_start_ns": 705430196
+      },
+      "CancelReply": null,
+      "Final": {
+        "request": {
+          "tenant_id": "p06-execution",
+          "run_id": "p06-3ce8ae2a909f3101-1",
+          "workspace_id": "p06-3ce8ae2a909f3101-1",
+          "epoch": 1,
+          "grant": "",
+          "operation_id": "p06-3ce8ae2a909f3101-1-normal-0",
+          "expected_revision": 1,
+          "kind": "run_command",
+          "args": {
+            "command": [
+              "python",
+              "-I",
+              "-B",
+              "-c",
+              "import json, os, pathlib, signal, sys, time\nmarker, mode = sys.argv[1:]\np = pathlib.Path(\"p06-shared-name.txt\")\np.write_text(marker)\ndef read(name):\n    return pathlib.Path(name).read_text().strip()\nstatus = dict(line.split(\":\", 1) for line in read(\"/proc/self/status\").splitlines() if \":\" in line)\nfacts = {\"marker\": marker, \"uid\": os.getuid(), \"gid\": os.getgid(),\n         \"memory_max\": read(\"/sys/fs/cgroup/memory.max\"), \"pids_max\": read(\"/sys/fs/cgroup/pids.max\"),\n         \"cpu_max\": read(\"/sys/fs/cgroup/cpu.max\"), \"cap_eff\": status[\"CapEff\"].strip(),\n         \"no_new_privs\": status[\"NoNewPrivs\"].strip(), \"net_devices\": sorted(os.listdir(\"/sys/class/net\")),\n         \"docker_socket\": os.path.exists(\"/var/run/docker.sock\"),\n         \"root_readonly\": bool(os.statvfs(\"/\").f_flag \u0026 os.ST_RDONLY),\n         \"tmp_bytes\": os.statvfs(\"/tmp\").f_blocks * os.statvfs(\"/tmp\").f_frsize}\nprint(\"P06_READY \" + json.dumps(facts, sort_keys=True), flush=True)\nif mode == \"cancel\":\n    signal.signal(signal.SIGTERM, signal.SIG_IGN)\n    child = os.fork()\n    if child == 0:\n        print(\"P06_CHILD \" + marker, flush=True)\n        time.sleep(45)\n        os._exit(0)\nuntil = time.monotonic() + (45 if mode == \"cancel\" else 1.0)\nchecks = 0\nwhile time.monotonic() \u003c until:\n    if p.read_text() != marker:\n        print(\"P06_ISOLATION_FAILURE \" + marker, flush=True)\n        sys.exit(31)\n    checks += 1\n    time.sleep(0.02)\nprint(\"P06_DONE \" + json.dumps({\"marker\": marker, \"checks\": checks}), flush=True)\n",
+              "p06-3ce8ae2a909f3101-1/normal/0",
+              "normal"
+            ]
+          },
+          "args_hash": "43370b454a58d453d08e79c8b4f0a630b57e033dd0812c252a842a43505612a5",
+          "policy_version": "p06-fixed-local-v1",
+          "deadline": "2026-09-11T22:04:28.972417331Z"
+        },
+        "status": "succeeded",
+        "job_id": "forge-bbe3bec6d3b9e95b7b1bb2d020fe2a53dff579d5",
+        "before_hash": "66ee6f4ae415b0735c6eb4d0645f5a8d72d33e7946d0219e319aa9158a375659",
+        "after_hash": "a53d69169ae13133ae50a3ff02d53ff73e7fb0b19ec1e32926a4e32abf223809",
+        "after_revision": 2,
+        "result": {
+          "id": "forge-bbe3bec6d3b9e95b7b1bb2d020fe2a53dff579d5",
+          "running": false,
+          "exit_code": 0,
+          "started": true,
+          "output": "UDA2X1JFQURZIHsiY2FwX2VmZiI6ICIwMDAwMDAwMDAwMDAwMDAwIiwgImNwdV9tYXgiOiAiMTAwMDAwIDEwMDAwMCIsICJkb2NrZXJfc29ja2V0IjogZmFsc2UsICJnaWQiOiAxMDAwLCAibWFya2VyIjogInAwNi0zY2U4YWUyYTkwOWYzMTAxLTEvbm9ybWFsLzAiLCAibWVtb3J5X21heCI6ICIyNjg0MzU0NTYiLCAibmV0X2RldmljZXMiOiBbImxvIiwgInR1bmwwIl0sICJub19uZXdfcHJpdnMiOiAiMSIsICJwaWRzX21heCI6ICI2NCIsICJyb290X3JlYWRvbmx5IjogdHJ1ZSwgInRtcF9ieXRlcyI6IDY3MTA4ODY0LCAidWlkIjogMTAwMH0KUDA2X0RPTkUgeyJtYXJrZXIiOiAicDA2LTNjZThhZTJhOTA5ZjMxMDEtMS9ub3JtYWwvMCIsICJjaGVja3MiOiA1MH0K",
+          "truncated": false
+        },
+        "receipt": {
+          "tenant_id": "p06-execution",
+          "run_id": "p06-3ce8ae2a909f3101-1",
+          "kind": "operation_receipt",
+          "object_key": "p06-execution/p06-3ce8ae2a909f3101-1/d0d489d98a50ef5b340f41a56ae92fb934b1e5fe656c9c389bb4855bf0e94084",
+          "sha256": "d0d489d98a50ef5b340f41a56ae92fb934b1e5fe656c9c389bb4855bf0e94084",
+          "size": 3096
+        },
+        "cancel_requested": false
+      },
+      "Observations": [
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:34.051746233Z",
+            "since_experiment_start_ns": 306976170
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:34.052414445Z",
+            "since_experiment_start_ns": 307644382
+          },
+          "Kind": "typed_inspect",
+          "Status": "running"
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:34.052422053Z",
+            "since_experiment_start_ns": 307651991
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:34.063356236Z",
+            "since_experiment_start_ns": 318586181
+          },
+          "Kind": "docker_inspect",
+          "Error": "container not yet created"
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:34.12553583Z",
+            "since_experiment_start_ns": 380765766
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:34.126291469Z",
+            "since_experiment_start_ns": 381521401
+          },
+          "Kind": "typed_inspect",
+          "Status": "running"
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:34.126296912Z",
+            "since_experiment_start_ns": 381526844
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:34.137719831Z",
+            "since_experiment_start_ns": 392949767
+          },
+          "Kind": "docker_inspect",
+          "Error": "container not yet created"
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:34.201668193Z",
+            "since_experiment_start_ns": 456898125
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:34.202059693Z",
+            "since_experiment_start_ns": 457289630
+          },
+          "Kind": "typed_inspect",
+          "Status": "running"
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:34.20206537Z",
+            "since_experiment_start_ns": 457295307
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:34.215061817Z",
+            "since_experiment_start_ns": 470291766
+          },
+          "Kind": "docker_inspect",
+          "Error": "container not yet created"
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:34.434918869Z",
+            "since_experiment_start_ns": 690148806
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:34.435452709Z",
+            "since_experiment_start_ns": 690682645
+          },
+          "Kind": "typed_inspect",
+          "Status": "running"
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:34.435457843Z",
+            "since_experiment_start_ns": 690687781
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:34.450200251Z",
+            "since_experiment_start_ns": 705430196
+          },
+          "Kind": "docker_inspect",
+          "Docker": {
+            "ID": "1710c9910d9cad9a0ab6841243333a6322b0aeab9b56b4470b6a3b00f8b32d40",
+            "Name": "/forge-bbe3bec6d3b9e95b7b1bb2d020fe2a53dff579d5",
+            "Image": "sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+            "Config": {
+              "User": "1000:1000",
+              "Image": "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+              "Labels": {
+                "forge.runtime": "1"
+              }
+            },
+            "State": {
+              "Running": true,
+              "OOMKilled": false,
+              "Pid": 2016390,
+              "ExitCode": 0,
+              "StartedAt": "2026-09-11T22:03:34.313829395Z",
+              "FinishedAt": "0001-01-01T00:00:00Z"
+            },
+            "HostConfig": {
+              "Memory": 268435456,
+              "MemorySwap": 268435456,
+              "NanoCpus": 1000000000,
+              "PidsLimit": 64,
+              "ReadonlyRootfs": true,
+              "NetworkMode": "none",
+              "CapDrop": [
+                "ALL"
+              ],
+              "SecurityOpt": [
+                "no-new-privileges"
+              ],
+              "Tmpfs": {
+                "/tmp": "rw,nosuid,nodev,noexec,size=67108864"
+              },
+              "LogConfig": {
+                "Type": "local",
+                "Config": {
+                  "max-file": "2",
+                  "max-size": "1m"
+                }
+              }
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/workspace-storage/mounts/slot-002/workspace-p06-3ce8ae2a909f3101-1/checkout",
+                "Destination": "/workspace",
+                "RW": true
+              }
+            ]
+          }
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:34.450328793Z",
+            "since_experiment_start_ns": 705558731
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:34.461426021Z",
+            "since_experiment_start_ns": 716655967
+          },
+          "Kind": "daemon_logs_while_running"
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:34.549718279Z",
+            "since_experiment_start_ns": 804948216
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:34.550252523Z",
+            "since_experiment_start_ns": 805482461
+          },
+          "Kind": "typed_inspect",
+          "Status": "running"
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:34.550257224Z",
+            "since_experiment_start_ns": 805487161
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:34.562455664Z",
+            "since_experiment_start_ns": 817685602
+          },
+          "Kind": "docker_inspect",
+          "Docker": {
+            "ID": "1710c9910d9cad9a0ab6841243333a6322b0aeab9b56b4470b6a3b00f8b32d40",
+            "Name": "/forge-bbe3bec6d3b9e95b7b1bb2d020fe2a53dff579d5",
+            "Image": "sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+            "Config": {
+              "User": "1000:1000",
+              "Image": "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+              "Labels": {
+                "forge.runtime": "1"
+              }
+            },
+            "State": {
+              "Running": true,
+              "OOMKilled": false,
+              "Pid": 2016390,
+              "ExitCode": 0,
+              "StartedAt": "2026-09-11T22:03:34.313829395Z",
+              "FinishedAt": "0001-01-01T00:00:00Z"
+            },
+            "HostConfig": {
+              "Memory": 268435456,
+              "MemorySwap": 268435456,
+              "NanoCpus": 1000000000,
+              "PidsLimit": 64,
+              "ReadonlyRootfs": true,
+              "NetworkMode": "none",
+              "CapDrop": [
+                "ALL"
+              ],
+              "SecurityOpt": [
+                "no-new-privileges"
+              ],
+              "Tmpfs": {
+                "/tmp": "rw,nosuid,nodev,noexec,size=67108864"
+              },
+              "LogConfig": {
+                "Type": "local",
+                "Config": {
+                  "max-file": "2",
+                  "max-size": "1m"
+                }
+              }
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/workspace-storage/mounts/slot-002/workspace-p06-3ce8ae2a909f3101-1/checkout",
+                "Destination": "/workspace",
+                "RW": true
+              }
+            ]
+          }
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:34.562581427Z",
+            "since_experiment_start_ns": 817811365
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:34.574403057Z",
+            "since_experiment_start_ns": 829632996
+          },
+          "Kind": "daemon_logs_while_running",
+          "Output": "P06_READY {\"cap_eff\": \"0000000000000000\", \"cpu_max\": \"100000 100000\", \"docker_socket\": false, \"gid\": 1000, \"marker\": \"p06-3ce8ae2a909f3101-1/normal/0\", \"memory_max\": \"268435456\", \"net_devices\": [\"lo\", \"tunl0\"], \"no_new_privs\": \"1\", \"pids_max\": \"64\", \"root_readonly\": true, \"tmp_bytes\": 67108864, \"uid\": 1000}\n"
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:34.574403057Z",
+            "since_experiment_start_ns": 829632996
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:34.584585904Z",
+            "since_experiment_start_ns": 839815843
+          },
+          "Kind": "docker_running_after_first_log",
+          "Docker": {
+            "ID": "1710c9910d9cad9a0ab6841243333a6322b0aeab9b56b4470b6a3b00f8b32d40",
+            "Name": "/forge-bbe3bec6d3b9e95b7b1bb2d020fe2a53dff579d5",
+            "Image": "sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+            "Config": {
+              "User": "1000:1000",
+              "Image": "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+              "Labels": {
+                "forge.runtime": "1"
+              }
+            },
+            "State": {
+              "Running": true,
+              "OOMKilled": false,
+              "Pid": 2016390,
+              "ExitCode": 0,
+              "StartedAt": "2026-09-11T22:03:34.313829395Z",
+              "FinishedAt": "0001-01-01T00:00:00Z"
+            },
+            "HostConfig": {
+              "Memory": 268435456,
+              "MemorySwap": 268435456,
+              "NanoCpus": 1000000000,
+              "PidsLimit": 64,
+              "ReadonlyRootfs": true,
+              "NetworkMode": "none",
+              "CapDrop": [
+                "ALL"
+              ],
+              "SecurityOpt": [
+                "no-new-privileges"
+              ],
+              "Tmpfs": {
+                "/tmp": "rw,nosuid,nodev,noexec,size=67108864"
+              },
+              "LogConfig": {
+                "Type": "local",
+                "Config": {
+                  "max-file": "2",
+                  "max-size": "1m"
+                }
+              }
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/workspace-storage/mounts/slot-002/workspace-p06-3ce8ae2a909f3101-1/checkout",
+                "Destination": "/workspace",
+                "RW": true
+              }
+            ]
+          }
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:34.647957853Z",
+            "since_experiment_start_ns": 903187791
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:34.648477852Z",
+            "since_experiment_start_ns": 903707791
+          },
+          "Kind": "typed_inspect",
+          "Status": "running"
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:34.648481662Z",
+            "since_experiment_start_ns": 903711600
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:34.662185995Z",
+            "since_experiment_start_ns": 917415933
+          },
+          "Kind": "docker_inspect",
+          "Docker": {
+            "ID": "1710c9910d9cad9a0ab6841243333a6322b0aeab9b56b4470b6a3b00f8b32d40",
+            "Name": "/forge-bbe3bec6d3b9e95b7b1bb2d020fe2a53dff579d5",
+            "Image": "sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+            "Config": {
+              "User": "1000:1000",
+              "Image": "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+              "Labels": {
+                "forge.runtime": "1"
+              }
+            },
+            "State": {
+              "Running": true,
+              "OOMKilled": false,
+              "Pid": 2016390,
+              "ExitCode": 0,
+              "StartedAt": "2026-09-11T22:03:34.313829395Z",
+              "FinishedAt": "0001-01-01T00:00:00Z"
+            },
+            "HostConfig": {
+              "Memory": 268435456,
+              "MemorySwap": 268435456,
+              "NanoCpus": 1000000000,
+              "PidsLimit": 64,
+              "ReadonlyRootfs": true,
+              "NetworkMode": "none",
+              "CapDrop": [
+                "ALL"
+              ],
+              "SecurityOpt": [
+                "no-new-privileges"
+              ],
+              "Tmpfs": {
+                "/tmp": "rw,nosuid,nodev,noexec,size=67108864"
+              },
+              "LogConfig": {
+                "Type": "local",
+                "Config": {
+                  "max-file": "2",
+                  "max-size": "1m"
+                }
+              }
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/workspace-storage/mounts/slot-002/workspace-p06-3ce8ae2a909f3101-1/checkout",
+                "Destination": "/workspace",
+                "RW": true
+              }
+            ]
+          }
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:34.727294401Z",
+            "since_experiment_start_ns": 982524333
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:34.727679395Z",
+            "since_experiment_start_ns": 982909327
+          },
+          "Kind": "typed_inspect",
+          "Status": "running"
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:34.727683101Z",
+            "since_experiment_start_ns": 982913032
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:34.740959142Z",
+            "since_experiment_start_ns": 996189086
+          },
+          "Kind": "docker_inspect",
+          "Docker": {
+            "ID": "1710c9910d9cad9a0ab6841243333a6322b0aeab9b56b4470b6a3b00f8b32d40",
+            "Name": "/forge-bbe3bec6d3b9e95b7b1bb2d020fe2a53dff579d5",
+            "Image": "sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+            "Config": {
+              "User": "1000:1000",
+              "Image": "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+              "Labels": {
+                "forge.runtime": "1"
+              }
+            },
+            "State": {
+              "Running": true,
+              "OOMKilled": false,
+              "Pid": 2016390,
+              "ExitCode": 0,
+              "StartedAt": "2026-09-11T22:03:34.313829395Z",
+              "FinishedAt": "0001-01-01T00:00:00Z"
+            },
+            "HostConfig": {
+              "Memory": 268435456,
+              "MemorySwap": 268435456,
+              "NanoCpus": 1000000000,
+              "PidsLimit": 64,
+              "ReadonlyRootfs": true,
+              "NetworkMode": "none",
+              "CapDrop": [
+                "ALL"
+              ],
+              "SecurityOpt": [
+                "no-new-privileges"
+              ],
+              "Tmpfs": {
+                "/tmp": "rw,nosuid,nodev,noexec,size=67108864"
+              },
+              "LogConfig": {
+                "Type": "local",
+                "Config": {
+                  "max-file": "2",
+                  "max-size": "1m"
+                }
+              }
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/workspace-storage/mounts/slot-002/workspace-p06-3ce8ae2a909f3101-1/checkout",
+                "Destination": "/workspace",
+                "RW": true
+              }
+            ]
+          }
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:34.801976023Z",
+            "since_experiment_start_ns": 1057205955
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:34.802323399Z",
+            "since_experiment_start_ns": 1057553338
+          },
+          "Kind": "typed_inspect",
+          "Status": "running"
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:34.802329942Z",
+            "since_experiment_start_ns": 1057559880
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:34.81413086Z",
+            "since_experiment_start_ns": 1069360800
+          },
+          "Kind": "docker_inspect",
+          "Docker": {
+            "ID": "1710c9910d9cad9a0ab6841243333a6322b0aeab9b56b4470b6a3b00f8b32d40",
+            "Name": "/forge-bbe3bec6d3b9e95b7b1bb2d020fe2a53dff579d5",
+            "Image": "sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+            "Config": {
+              "User": "1000:1000",
+              "Image": "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+              "Labels": {
+                "forge.runtime": "1"
+              }
+            },
+            "State": {
+              "Running": true,
+              "OOMKilled": false,
+              "Pid": 2016390,
+              "ExitCode": 0,
+              "StartedAt": "2026-09-11T22:03:34.313829395Z",
+              "FinishedAt": "0001-01-01T00:00:00Z"
+            },
+            "HostConfig": {
+              "Memory": 268435456,
+              "MemorySwap": 268435456,
+              "NanoCpus": 1000000000,
+              "PidsLimit": 64,
+              "ReadonlyRootfs": true,
+              "NetworkMode": "none",
+              "CapDrop": [
+                "ALL"
+              ],
+              "SecurityOpt": [
+                "no-new-privileges"
+              ],
+              "Tmpfs": {
+                "/tmp": "rw,nosuid,nodev,noexec,size=67108864"
+              },
+              "LogConfig": {
+                "Type": "local",
+                "Config": {
+                  "max-file": "2",
+                  "max-size": "1m"
+                }
+              }
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/workspace-storage/mounts/slot-002/workspace-p06-3ce8ae2a909f3101-1/checkout",
+                "Destination": "/workspace",
+                "RW": true
+              }
+            ]
+          }
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:34.877804294Z",
+            "since_experiment_start_ns": 1133034231
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:34.87832463Z",
+            "since_experiment_start_ns": 1133554568
+          },
+          "Kind": "typed_inspect",
+          "Status": "running"
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:34.87832837Z",
+            "since_experiment_start_ns": 1133558308
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:34.890809942Z",
+            "since_experiment_start_ns": 1146039880
+          },
+          "Kind": "docker_inspect",
+          "Docker": {
+            "ID": "1710c9910d9cad9a0ab6841243333a6322b0aeab9b56b4470b6a3b00f8b32d40",
+            "Name": "/forge-bbe3bec6d3b9e95b7b1bb2d020fe2a53dff579d5",
+            "Image": "sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+            "Config": {
+              "User": "1000:1000",
+              "Image": "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+              "Labels": {
+                "forge.runtime": "1"
+              }
+            },
+            "State": {
+              "Running": true,
+              "OOMKilled": false,
+              "Pid": 2016390,
+              "ExitCode": 0,
+              "StartedAt": "2026-09-11T22:03:34.313829395Z",
+              "FinishedAt": "0001-01-01T00:00:00Z"
+            },
+            "HostConfig": {
+              "Memory": 268435456,
+              "MemorySwap": 268435456,
+              "NanoCpus": 1000000000,
+              "PidsLimit": 64,
+              "ReadonlyRootfs": true,
+              "NetworkMode": "none",
+              "CapDrop": [
+                "ALL"
+              ],
+              "SecurityOpt": [
+                "no-new-privileges"
+              ],
+              "Tmpfs": {
+                "/tmp": "rw,nosuid,nodev,noexec,size=67108864"
+              },
+              "LogConfig": {
+                "Type": "local",
+                "Config": {
+                  "max-file": "2",
+                  "max-size": "1m"
+                }
+              }
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/workspace-storage/mounts/slot-002/workspace-p06-3ce8ae2a909f3101-1/checkout",
+                "Destination": "/workspace",
+                "RW": true
+              }
+            ]
+          }
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:34.956090774Z",
+            "since_experiment_start_ns": 1211320712
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:34.956640828Z",
+            "since_experiment_start_ns": 1211870765
+          },
+          "Kind": "typed_inspect",
+          "Status": "running"
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:34.956644552Z",
+            "since_experiment_start_ns": 1211874489
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:34.971581949Z",
+            "since_experiment_start_ns": 1226811887
+          },
+          "Kind": "docker_inspect",
+          "Docker": {
+            "ID": "1710c9910d9cad9a0ab6841243333a6322b0aeab9b56b4470b6a3b00f8b32d40",
+            "Name": "/forge-bbe3bec6d3b9e95b7b1bb2d020fe2a53dff579d5",
+            "Image": "sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+            "Config": {
+              "User": "1000:1000",
+              "Image": "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+              "Labels": {
+                "forge.runtime": "1"
+              }
+            },
+            "State": {
+              "Running": true,
+              "OOMKilled": false,
+              "Pid": 2016390,
+              "ExitCode": 0,
+              "StartedAt": "2026-09-11T22:03:34.313829395Z",
+              "FinishedAt": "0001-01-01T00:00:00Z"
+            },
+            "HostConfig": {
+              "Memory": 268435456,
+              "MemorySwap": 268435456,
+              "NanoCpus": 1000000000,
+              "PidsLimit": 64,
+              "ReadonlyRootfs": true,
+              "NetworkMode": "none",
+              "CapDrop": [
+                "ALL"
+              ],
+              "SecurityOpt": [
+                "no-new-privileges"
+              ],
+              "Tmpfs": {
+                "/tmp": "rw,nosuid,nodev,noexec,size=67108864"
+              },
+              "LogConfig": {
+                "Type": "local",
+                "Config": {
+                  "max-file": "2",
+                  "max-size": "1m"
+                }
+              }
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/workspace-storage/mounts/slot-002/workspace-p06-3ce8ae2a909f3101-1/checkout",
+                "Destination": "/workspace",
+                "RW": true
+              }
+            ]
+          }
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:35.039249342Z",
+            "since_experiment_start_ns": 1294479274
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:35.039795989Z",
+            "since_experiment_start_ns": 1295025927
+          },
+          "Kind": "typed_inspect",
+          "Status": "running"
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:35.039800549Z",
+            "since_experiment_start_ns": 1295030487
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:35.05614917Z",
+            "since_experiment_start_ns": 1311379108
+          },
+          "Kind": "docker_inspect",
+          "Docker": {
+            "ID": "1710c9910d9cad9a0ab6841243333a6322b0aeab9b56b4470b6a3b00f8b32d40",
+            "Name": "/forge-bbe3bec6d3b9e95b7b1bb2d020fe2a53dff579d5",
+            "Image": "sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+            "Config": {
+              "User": "1000:1000",
+              "Image": "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+              "Labels": {
+                "forge.runtime": "1"
+              }
+            },
+            "State": {
+              "Running": true,
+              "OOMKilled": false,
+              "Pid": 2016390,
+              "ExitCode": 0,
+              "StartedAt": "2026-09-11T22:03:34.313829395Z",
+              "FinishedAt": "0001-01-01T00:00:00Z"
+            },
+            "HostConfig": {
+              "Memory": 268435456,
+              "MemorySwap": 268435456,
+              "NanoCpus": 1000000000,
+              "PidsLimit": 64,
+              "ReadonlyRootfs": true,
+              "NetworkMode": "none",
+              "CapDrop": [
+                "ALL"
+              ],
+              "SecurityOpt": [
+                "no-new-privileges"
+              ],
+              "Tmpfs": {
+                "/tmp": "rw,nosuid,nodev,noexec,size=67108864"
+              },
+              "LogConfig": {
+                "Type": "local",
+                "Config": {
+                  "max-file": "2",
+                  "max-size": "1m"
+                }
+              }
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/workspace-storage/mounts/slot-002/workspace-p06-3ce8ae2a909f3101-1/checkout",
+                "Destination": "/workspace",
+                "RW": true
+              }
+            ]
+          }
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:35.12015622Z",
+            "since_experiment_start_ns": 1375386158
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:35.120635878Z",
+            "since_experiment_start_ns": 1375865817
+          },
+          "Kind": "typed_inspect",
+          "Status": "running"
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:35.120639283Z",
+            "since_experiment_start_ns": 1375869220
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:35.134466621Z",
+            "since_experiment_start_ns": 1389696557
+          },
+          "Kind": "docker_inspect",
+          "Docker": {
+            "ID": "1710c9910d9cad9a0ab6841243333a6322b0aeab9b56b4470b6a3b00f8b32d40",
+            "Name": "/forge-bbe3bec6d3b9e95b7b1bb2d020fe2a53dff579d5",
+            "Image": "sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+            "Config": {
+              "User": "1000:1000",
+              "Image": "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+              "Labels": {
+                "forge.runtime": "1"
+              }
+            },
+            "State": {
+              "Running": true,
+              "OOMKilled": false,
+              "Pid": 2016390,
+              "ExitCode": 0,
+              "StartedAt": "2026-09-11T22:03:34.313829395Z",
+              "FinishedAt": "0001-01-01T00:00:00Z"
+            },
+            "HostConfig": {
+              "Memory": 268435456,
+              "MemorySwap": 268435456,
+              "NanoCpus": 1000000000,
+              "PidsLimit": 64,
+              "ReadonlyRootfs": true,
+              "NetworkMode": "none",
+              "CapDrop": [
+                "ALL"
+              ],
+              "SecurityOpt": [
+                "no-new-privileges"
+              ],
+              "Tmpfs": {
+                "/tmp": "rw,nosuid,nodev,noexec,size=67108864"
+              },
+              "LogConfig": {
+                "Type": "local",
+                "Config": {
+                  "max-file": "2",
+                  "max-size": "1m"
+                }
+              }
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/workspace-storage/mounts/slot-002/workspace-p06-3ce8ae2a909f3101-1/checkout",
+                "Destination": "/workspace",
+                "RW": true
+              }
+            ]
+          }
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:35.196158491Z",
+            "since_experiment_start_ns": 1451388428
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:35.196730371Z",
+            "since_experiment_start_ns": 1451960308
+          },
+          "Kind": "typed_inspect",
+          "Status": "running"
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:35.196734079Z",
+            "since_experiment_start_ns": 1451964016
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:35.210753525Z",
+            "since_experiment_start_ns": 1465983463
+          },
+          "Kind": "docker_inspect",
+          "Docker": {
+            "ID": "1710c9910d9cad9a0ab6841243333a6322b0aeab9b56b4470b6a3b00f8b32d40",
+            "Name": "/forge-bbe3bec6d3b9e95b7b1bb2d020fe2a53dff579d5",
+            "Image": "sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+            "Config": {
+              "User": "1000:1000",
+              "Image": "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+              "Labels": {
+                "forge.runtime": "1"
+              }
+            },
+            "State": {
+              "Running": true,
+              "OOMKilled": false,
+              "Pid": 2016390,
+              "ExitCode": 0,
+              "StartedAt": "2026-09-11T22:03:34.313829395Z",
+              "FinishedAt": "0001-01-01T00:00:00Z"
+            },
+            "HostConfig": {
+              "Memory": 268435456,
+              "MemorySwap": 268435456,
+              "NanoCpus": 1000000000,
+              "PidsLimit": 64,
+              "ReadonlyRootfs": true,
+              "NetworkMode": "none",
+              "CapDrop": [
+                "ALL"
+              ],
+              "SecurityOpt": [
+                "no-new-privileges"
+              ],
+              "Tmpfs": {
+                "/tmp": "rw,nosuid,nodev,noexec,size=67108864"
+              },
+              "LogConfig": {
+                "Type": "local",
+                "Config": {
+                  "max-file": "2",
+                  "max-size": "1m"
+                }
+              }
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/workspace-storage/mounts/slot-002/workspace-p06-3ce8ae2a909f3101-1/checkout",
+                "Destination": "/workspace",
+                "RW": true
+              }
+            ]
+          }
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:35.275185683Z",
+            "since_experiment_start_ns": 1530415622
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:35.275659697Z",
+            "since_experiment_start_ns": 1530889634
+          },
+          "Kind": "typed_inspect",
+          "Status": "running"
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:35.27568213Z",
+            "since_experiment_start_ns": 1530912067
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:35.290157129Z",
+            "since_experiment_start_ns": 1545387067
+          },
+          "Kind": "docker_inspect",
+          "Docker": {
+            "ID": "1710c9910d9cad9a0ab6841243333a6322b0aeab9b56b4470b6a3b00f8b32d40",
+            "Name": "/forge-bbe3bec6d3b9e95b7b1bb2d020fe2a53dff579d5",
+            "Image": "sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+            "Config": {
+              "User": "1000:1000",
+              "Image": "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+              "Labels": {
+                "forge.runtime": "1"
+              }
+            },
+            "State": {
+              "Running": true,
+              "OOMKilled": false,
+              "Pid": 2016390,
+              "ExitCode": 0,
+              "StartedAt": "2026-09-11T22:03:34.313829395Z",
+              "FinishedAt": "0001-01-01T00:00:00Z"
+            },
+            "HostConfig": {
+              "Memory": 268435456,
+              "MemorySwap": 268435456,
+              "NanoCpus": 1000000000,
+              "PidsLimit": 64,
+              "ReadonlyRootfs": true,
+              "NetworkMode": "none",
+              "CapDrop": [
+                "ALL"
+              ],
+              "SecurityOpt": [
+                "no-new-privileges"
+              ],
+              "Tmpfs": {
+                "/tmp": "rw,nosuid,nodev,noexec,size=67108864"
+              },
+              "LogConfig": {
+                "Type": "local",
+                "Config": {
+                  "max-file": "2",
+                  "max-size": "1m"
+                }
+              }
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/workspace-storage/mounts/slot-002/workspace-p06-3ce8ae2a909f3101-1/checkout",
+                "Destination": "/workspace",
+                "RW": true
+              }
+            ]
+          }
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:35.35500498Z",
+            "since_experiment_start_ns": 1610234912
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:35.355424191Z",
+            "since_experiment_start_ns": 1610654128
+          },
+          "Kind": "typed_inspect",
+          "Status": "running"
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:35.355428535Z",
+            "since_experiment_start_ns": 1610658472
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:35.370770295Z",
+            "since_experiment_start_ns": 1626000235
+          },
+          "Kind": "docker_inspect",
+          "Docker": {
+            "ID": "1710c9910d9cad9a0ab6841243333a6322b0aeab9b56b4470b6a3b00f8b32d40",
+            "Name": "/forge-bbe3bec6d3b9e95b7b1bb2d020fe2a53dff579d5",
+            "Image": "sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+            "Config": {
+              "User": "1000:1000",
+              "Image": "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+              "Labels": {
+                "forge.runtime": "1"
+              }
+            },
+            "State": {
+              "Running": true,
+              "OOMKilled": false,
+              "Pid": 2016390,
+              "ExitCode": 0,
+              "StartedAt": "2026-09-11T22:03:34.313829395Z",
+              "FinishedAt": "0001-01-01T00:00:00Z"
+            },
+            "HostConfig": {
+              "Memory": 268435456,
+              "MemorySwap": 268435456,
+              "NanoCpus": 1000000000,
+              "PidsLimit": 64,
+              "ReadonlyRootfs": true,
+              "NetworkMode": "none",
+              "CapDrop": [
+                "ALL"
+              ],
+              "SecurityOpt": [
+                "no-new-privileges"
+              ],
+              "Tmpfs": {
+                "/tmp": "rw,nosuid,nodev,noexec,size=67108864"
+              },
+              "LogConfig": {
+                "Type": "local",
+                "Config": {
+                  "max-file": "2",
+                  "max-size": "1m"
+                }
+              }
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/workspace-storage/mounts/slot-002/workspace-p06-3ce8ae2a909f3101-1/checkout",
+                "Destination": "/workspace",
+                "RW": true
+              }
+            ]
+          }
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:35.436817958Z",
+            "since_experiment_start_ns": 1692047889
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:35.437167828Z",
+            "since_experiment_start_ns": 1692397764
+          },
+          "Kind": "typed_inspect",
+          "Status": "running"
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:35.437171646Z",
+            "since_experiment_start_ns": 1692401582
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:35.452991329Z",
+            "since_experiment_start_ns": 1708221340
+          },
+          "Kind": "docker_inspect",
+          "Docker": {
+            "ID": "1710c9910d9cad9a0ab6841243333a6322b0aeab9b56b4470b6a3b00f8b32d40",
+            "Name": "/forge-bbe3bec6d3b9e95b7b1bb2d020fe2a53dff579d5",
+            "Image": "sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+            "Config": {
+              "User": "1000:1000",
+              "Image": "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+              "Labels": {
+                "forge.runtime": "1"
+              }
+            },
+            "State": {
+              "Running": true,
+              "OOMKilled": false,
+              "Pid": 2016390,
+              "ExitCode": 0,
+              "StartedAt": "2026-09-11T22:03:34.313829395Z",
+              "FinishedAt": "0001-01-01T00:00:00Z"
+            },
+            "HostConfig": {
+              "Memory": 268435456,
+              "MemorySwap": 268435456,
+              "NanoCpus": 1000000000,
+              "PidsLimit": 64,
+              "ReadonlyRootfs": true,
+              "NetworkMode": "none",
+              "CapDrop": [
+                "ALL"
+              ],
+              "SecurityOpt": [
+                "no-new-privileges"
+              ],
+              "Tmpfs": {
+                "/tmp": "rw,nosuid,nodev,noexec,size=67108864"
+              },
+              "LogConfig": {
+                "Type": "local",
+                "Config": {
+                  "max-file": "2",
+                  "max-size": "1m"
+                }
+              }
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/workspace-storage/mounts/slot-002/workspace-p06-3ce8ae2a909f3101-1/checkout",
+                "Destination": "/workspace",
+                "RW": true
+              }
+            ]
+          }
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:35.596022395Z",
+            "since_experiment_start_ns": 1851252326
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:35.59638527Z",
+            "since_experiment_start_ns": 1851615205
+          },
+          "Kind": "typed_inspect",
+          "Status": "running"
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:35.596391428Z",
+            "since_experiment_start_ns": 1851621365
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:35.609100569Z",
+            "since_experiment_start_ns": 1864330522
+          },
+          "Kind": "docker_inspect",
+          "Docker": {
+            "ID": "1710c9910d9cad9a0ab6841243333a6322b0aeab9b56b4470b6a3b00f8b32d40",
+            "Name": "/forge-bbe3bec6d3b9e95b7b1bb2d020fe2a53dff579d5",
+            "Image": "sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+            "Config": {
+              "User": "1000:1000",
+              "Image": "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+              "Labels": {
+                "forge.runtime": "1"
+              }
+            },
+            "State": {
+              "Running": false,
+              "OOMKilled": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "StartedAt": "2026-09-11T22:03:34.313829395Z",
+              "FinishedAt": "2026-09-11T22:03:35.516497765Z"
+            },
+            "HostConfig": {
+              "Memory": 268435456,
+              "MemorySwap": 268435456,
+              "NanoCpus": 1000000000,
+              "PidsLimit": 64,
+              "ReadonlyRootfs": true,
+              "NetworkMode": "none",
+              "CapDrop": [
+                "ALL"
+              ],
+              "SecurityOpt": [
+                "no-new-privileges"
+              ],
+              "Tmpfs": {
+                "/tmp": "rw,nosuid,nodev,noexec,size=67108864"
+              },
+              "LogConfig": {
+                "Type": "local",
+                "Config": {
+                  "max-file": "2",
+                  "max-size": "1m"
+                }
+              }
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/workspace-storage/mounts/slot-002/workspace-p06-3ce8ae2a909f3101-1/checkout",
+                "Destination": "/workspace",
+                "RW": true
+              }
+            ]
+          }
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:35.673000267Z",
+            "since_experiment_start_ns": 1928230202
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:35.673348132Z",
+            "since_experiment_start_ns": 1928578064
+          },
+          "Kind": "typed_inspect",
+          "Status": "running"
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:35.673352052Z",
+            "since_experiment_start_ns": 1928581985
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:35.68774602Z",
+            "since_experiment_start_ns": 1942975960
+          },
+          "Kind": "docker_inspect",
+          "Docker": {
+            "ID": "1710c9910d9cad9a0ab6841243333a6322b0aeab9b56b4470b6a3b00f8b32d40",
+            "Name": "/forge-bbe3bec6d3b9e95b7b1bb2d020fe2a53dff579d5",
+            "Image": "sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+            "Config": {
+              "User": "1000:1000",
+              "Image": "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+              "Labels": {
+                "forge.runtime": "1"
+              }
+            },
+            "State": {
+              "Running": false,
+              "OOMKilled": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "StartedAt": "2026-09-11T22:03:34.313829395Z",
+              "FinishedAt": "2026-09-11T22:03:35.516497765Z"
+            },
+            "HostConfig": {
+              "Memory": 268435456,
+              "MemorySwap": 268435456,
+              "NanoCpus": 1000000000,
+              "PidsLimit": 64,
+              "ReadonlyRootfs": true,
+              "NetworkMode": "none",
+              "CapDrop": [
+                "ALL"
+              ],
+              "SecurityOpt": [
+                "no-new-privileges"
+              ],
+              "Tmpfs": {
+                "/tmp": "rw,nosuid,nodev,noexec,size=67108864"
+              },
+              "LogConfig": {
+                "Type": "local",
+                "Config": {
+                  "max-file": "2",
+                  "max-size": "1m"
+                }
+              }
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/workspace-storage/mounts/slot-002/workspace-p06-3ce8ae2a909f3101-1/checkout",
+                "Destination": "/workspace",
+                "RW": true
+              }
+            ]
+          }
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:35.753401402Z",
+            "since_experiment_start_ns": 2008631347
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:35.753870004Z",
+            "since_experiment_start_ns": 2009099942
+          },
+          "Kind": "typed_inspect",
+          "Status": "succeeded",
+          "Output": "P06_READY {\"cap_eff\": \"0000000000000000\", \"cpu_max\": \"100000 100000\", \"docker_socket\": false, \"gid\": 1000, \"marker\": \"p06-3ce8ae2a909f3101-1/normal/0\", \"memory_max\": \"268435456\", \"net_devices\": [\"lo\", \"tunl0\"], \"no_new_privs\": \"1\", \"pids_max\": \"64\", \"root_readonly\": true, \"tmp_bytes\": 67108864, \"uid\": 1000}\nP06_DONE {\"marker\": \"p06-3ce8ae2a909f3101-1/normal/0\", \"checks\": 50}\n"
+        },
+        {
+          "Begin": {
+            "utc": "2026-09-11T22:03:35.753882323Z",
+            "since_experiment_start_ns": 2009112260
+          },
+          "End": {
+            "utc": "2026-09-11T22:03:35.76851437Z",
+            "since_experiment_start_ns": 2023744308
+          },
+          "Kind": "docker_inspect",
+          "Docker": {
+            "ID": "1710c9910d9cad9a0ab6841243333a6322b0aeab9b56b4470b6a3b00f8b32d40",
+            "Name": "/forge-bbe3bec6d3b9e95b7b1bb2d020fe2a53dff579d5",
+            "Image": "sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+            "Config": {
+              "User": "1000:1000",
+              "Image": "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+              "Labels": {
+                "forge.runtime": "1"
+              }
+            },
+            "State": {
+              "Running": false,
+              "OOMKilled": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "StartedAt": "2026-09-11T22:03:34.313829395Z",
+              "FinishedAt": "2026-09-11T22:03:35.516497765Z"
+            },
+            "HostConfig": {
+              "Memory": 268435456,
+              "MemorySwap": 268435456,
+              "NanoCpus": 1000000000,
+              "PidsLimit": 64,
+              "ReadonlyRootfs": true,
+              "NetworkMode": "none",
+              "CapDrop": [
+                "ALL"
+              ],
+              "SecurityOpt": [
+                "no-new-privileges"
+              ],
+              "Tmpfs": {
+                "/tmp": "rw,nosuid,nodev,noexec,size=67108864"
+              },
+              "LogConfig": {
+                "Type": "local",
+                "Config": {
+                  "max-file": "2",
+                  "max-size": "1m"
+                }
+              }
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/workspace-storage/mounts/slot-002/workspace-p06-3ce8ae2a909f3101-1/checkout",
+                "Destination": "/workspace",
+                "RW": true
+              }
+            ]
+          }
+        }
+      ],
+      "ReceiptFile": "",
+      "TypedFile": "",
+      "CgroupPath": "",
+      "BeforeTasks": "",
+      "AfterTasks": "",
+      "CgroupRemoved": false,
+      "TasksAfterCancelAt": null,
+      "VerifiedContent": "",
+      "ReadOperation": null
+    }
+  ],
+  "Pairs": [
+    {
+      "Mode": "normal",
+      "Round": 0,
+      "IDs": [
+        "p06-3ce8ae2a909f3101-0-normal-0",
+        "p06-3ce8ae2a909f3101-1-normal-0"
+      ],
+      "BothRunning": true,
+      "DistinctMountSources": true,
+      "DaemonOverlapNS": 1191904577,
+      "BRunningAfterAStopped": false,
+      "BObservationAfterAStopped": null
+    }
+  ],
+  "Distributions": {
+    "normal/direct_start_ack_ms": {
+      "Count": 2,
+      "MinMS": 44.604054,
+      "P50MS": 47.749692499999995,
+      "P95MS": 50.58076715,
+      "MaxMS": 50.895331
+    },
+    "normal/start_to_active_daemon_log_ms": {
+      "Count": 2,
+      "MinMS": 563.956698,
+      "P50MS": 582.9699465,
+      "P95MS": 600.08187015,
+      "MaxMS": 601.983195
+    },
+    "normal/start_to_first_observed_running_upper_bound_ms": {
+      "Count": 2,
+      "MinMS": 448.713386,
+      "P50MS": 463.2468905,
+      "P95MS": 476.32704455,
+      "MaxMS": 477.780395
+    },
+    "normal/start_to_terminal_typed_inspect_log_ms": {
+      "Count": 2,
+      "MinMS": 1766.214392,
+      "P50MS": 1773.8322665,
+      "P95MS": 1780.68835355,
+      "MaxMS": 1781.450141
+    }
+  },
+  "Boundary": "20 process commands in two fresh workspaces on an existing runner; direct typed Start acknowledgement, daemon active-log observation, and typed Inspect terminal-log observation are separate measurements. No PostgreSQL, worker, model, paid API, service restart, mount mutation, or unrelated cleanup. Poll/CLI overhead is included; finite observed samples have no borrowed latency SLO. Operator capabilities do not constitute PostgreSQL lease evidence."
+}

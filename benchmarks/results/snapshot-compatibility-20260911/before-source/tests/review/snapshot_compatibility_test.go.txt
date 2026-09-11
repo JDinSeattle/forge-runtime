@@ -1,0 +1,97 @@
+package review_test
+
+import (
+	"context"
+	"encoding/json"
+	"fmt"
+	"io"
+	"net/http"
+	"net/http/httptest"
+	"testing"
+	"time"
+
+	"github.com/JDinSeattle/forge-runtime/internal/domain"
+	"github.com/JDinSeattle/forge-runtime/internal/httpapi"
+	"github.com/JDinSeattle/forge-runtime/internal/persistence"
+)
+
+func compatibilityFuture(t *testing.T, ctx context.Context, s *persistence.Store, r persistence.Run, version string) {
+	t.Helper()
+	_, err := s.Pool.Exec(ctx, `UPDATE runs SET snapshot=jsonb_set(snapshot::jsonb,'{schema_version}',$3::jsonb)||'{"future_only":{"exact":9007199254740993,"html":"<>&"}}'::jsonb WHERE tenant_id=$1 AND id=$2`, r.TenantID, r.ID, version)
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
+func compatibilityHTTP(t *testing.T, ctx context.Context, server *httptest.Server, tenant domain.ID, token, method, path string) (int, []byte) {
+	t.Helper()
+	req, err := http.NewRequestWithContext(ctx, method, server.URL+path, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.Header.Set("Authorization", "Bearer "+token)
+	req.Header.Set("X-Forge-Tenant", string(tenant))
+	res, err := server.Client().Do(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer res.Body.Close()
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return res.StatusCode, body
+}
+
+// Real PostgreSQL and production HTTP/claim paths. No model or runner is
+// attached: future state must be rejected before any execution authority.
+func TestReviewUnsupportedSnapshotDoesNotStarveHealthyRuns(t *testing.T) {
+	ctx, owner, api := reviewAPIStore(t)
+	restrictApprovalAuthTables(t, ctx, owner, api)
+	bad := reviewRun(t, ctx, owner)
+	healthy, _, err := owner.Submit(ctx, persistence.SubmitRequest{TenantID: bad.TenantID, PrincipalID: bad.PrincipalID, ProjectID: bad.ProjectID, Task: "healthy same tenant", BaseCommit: bad.BaseCommit, Config: bad.Config}, "healthy-same")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err = owner.BootstrapTenant(ctx, "healthy_other", "other_principal", "developer"); err != nil {
+		t.Fatal(err)
+	}
+	project, err := owner.CreateProject(ctx, "healthy_other", "healthy", "local-fixture", "python")
+	if err != nil {
+		t.Fatal(err)
+	}
+	other, _, err := owner.Submit(ctx, persistence.SubmitRequest{TenantID: "healthy_other", PrincipalID: "other_principal", ProjectID: project.ID, Task: "healthy other tenant", BaseCommit: bad.BaseCommit, Config: bad.Config}, "healthy-other")
+	if err != nil {
+		t.Fatal(err)
+	}
+	compatibilityFuture(t, ctx, owner, bad, "2")
+	if got, err := owner.GetRun(ctx, bad.TenantID, bad.ID); err == nil {
+		t.Errorf("unsupported snapshot exposed as current projection: schema=%d version=%d", got.State.SchemaVersion, got.State.Version)
+	}
+	token, err := owner.IssueToken(ctx, bad.PrincipalID, time.Hour)
+	if err != nil {
+		t.Fatal(err)
+	}
+	server := httptest.NewServer((&httpapi.Server{Store: api}).Handler())
+	defer server.Close()
+	status, raw := compatibilityHTTP(t, ctx, server, bad.TenantID, token, "GET", "/v1/runs/"+string(bad.ID))
+	var response struct {
+		Code      string `json:"code"`
+		Retryable bool   `json:"retryable"`
+	}
+	_ = json.Unmarshal(raw, &response)
+	if status != 409 || response.Code != "snapshot_migration_required" || response.Retryable {
+		t.Errorf("future snapshot HTTP=%d code=%q retryable=%t", status, response.Code, response.Retryable)
+	}
+	seen := map[domain.ID]bool{}
+	for n := range 5 {
+		r, err := owner.ClaimOnRunner(ctx, fmt.Sprintf("compatibility-worker-%d", n), time.Minute, "review_runner")
+		if err == nil {
+			seen[r.ID] = true
+		}
+		t.Logf("claim %d run=%s err=%v", n, r.ID, err)
+	}
+	if seen[bad.ID] || !seen[healthy.ID] || !seen[other.ID] {
+		t.Errorf("future snapshot monopolized claims: bad=%t same_tenant=%t other_tenant=%t", seen[bad.ID], seen[healthy.ID], seen[other.ID])
+	}
+}

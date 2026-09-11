@@ -1,0 +1,71 @@
+=== RUN   TestReviewUnsupportedSnapshotAmbiguousMembersFenceAndHold
+=== RUN   TestReviewUnsupportedSnapshotAmbiguousMembersFenceAndHold/lower-then-upper
+    snapshot_compatibility_test.go:215: ambiguous state exposed: HTTP=200 body={"tenant_id":"review_tenant","id":"run_YMUDD3GIEWXOSE44JWLV5BV2TS","project_id":"project_HJEB7QEPMFPQR545O6O2HYRDPT","principal_id":"review_principal","task":"test control-plane lease authority","base_commit":"fixed-fixture-base","runner_id":"review_runner","state":{"schema_version":2,"run_id":"run_YMUDD3GIEWXOSE44JWLV5BV2TS","tenant_id":"review_tenant","version":2,"status":"running","stage":"initialize","lease":{"owner":"original","epoch":1,"until":"2026-09-11T15:06:50.78534-07:00"},"step_seq":0,"workspace_revision":0,"verification_status":"unverified","verification_revision":0,"model_rounds":0,"tool_calls":0,"cost_microusd":0,"limits":{"max_model_rounds":2,"max_tool_calls":3,"max_cost_microusd":1000000,"deadline":"2026-09-11T15:08:49.775569-07:00"}},"config":{"provider":"fake","model":"fixture","max_model_rounds":2,"max_tool_calls":3,"max_cost_microusd":1000000,"max_runtime_seconds":120},"created_at":"2026-09-11T15:06:49.777828-07:00","covered_seq":2}
+    snapshot_compatibility_test.go:222: live lease authorized proof: <nil>
+    snapshot_compatibility_test.go:222: live lease authorized heartbeat: <nil>
+    snapshot_compatibility_test.go:222: live lease authorized worker_event: <nil>
+    snapshot_compatibility_test.go:227: ambiguous header authority checks changed persistent records
+    snapshot_compatibility_test.go:238: ambiguous candidate not durably held: invalid_argument: unsupported or malformed snapshot
+    snapshot_compatibility_test.go:245: ambiguous original bytes/hold missing
+    snapshot_compatibility_test.go:249: hold changed original run evidence or execution authority
+    snapshot_compatibility_test.go:253: ambiguous candidate blocks same-tenant healthy run: id=run_YMUDD3GIEWXOSE44JWLV5BV2TS err=invalid_argument: unsupported or malformed snapshot
+    snapshot_compatibility_test.go:256: held candidate selected repeatedly: invalid_argument: unsupported or malformed snapshot
+=== RUN   TestReviewUnsupportedSnapshotAmbiguousMembersFenceAndHold/upper-then-lower
+    snapshot_compatibility_test.go:215: ambiguous state exposed: HTTP=200 body={"tenant_id":"review_tenant","id":"run_67JP6T4GUVSMLA6A7SQ7GWGLXS","project_id":"project_623O52IMEBHT73TCAGHECEF2JC","principal_id":"review_principal","task":"test control-plane lease authority","base_commit":"fixed-fixture-base","runner_id":"review_runner","state":{"schema_version":1,"run_id":"run_67JP6T4GUVSMLA6A7SQ7GWGLXS","tenant_id":"review_tenant","version":2,"status":"running","stage":"initialize","lease":{"owner":"original","epoch":1,"until":"2026-09-11T15:06:52.140049-07:00"},"step_seq":0,"workspace_revision":0,"verification_status":"unverified","verification_revision":0,"model_rounds":0,"tool_calls":0,"cost_microusd":0,"limits":{"max_model_rounds":2,"max_tool_calls":3,"max_cost_microusd":1000000,"deadline":"2026-09-11T15:08:51.131053-07:00"}},"config":{"provider":"fake","model":"fixture","max_model_rounds":2,"max_tool_calls":3,"max_cost_microusd":1000000,"max_runtime_seconds":120},"created_at":"2026-09-11T15:06:51.133542-07:00","covered_seq":2}
+    snapshot_compatibility_test.go:222: live lease authorized proof: <nil>
+    snapshot_compatibility_test.go:222: live lease authorized heartbeat: <nil>
+    snapshot_compatibility_test.go:222: live lease authorized worker_event: <nil>
+    snapshot_compatibility_test.go:227: ambiguous header authority checks changed persistent records
+    snapshot_compatibility_test.go:238: ambiguous candidate not durably held: <nil>
+    snapshot_compatibility_test.go:245: ambiguous original bytes/hold missing
+    snapshot_compatibility_test.go:249: hold changed original run evidence or execution authority
+=== RUN   TestReviewUnsupportedSnapshotAmbiguousMembersFenceAndHold/duplicate-two-one
+    snapshot_compatibility_test.go:215: ambiguous state exposed: HTTP=200 body={"tenant_id":"review_tenant","id":"run_IG5AOM37NWI3GJAL7B2563DSDA","project_id":"project_MFDETCCJE3AQ7TZZPILGUZTAPB","principal_id":"review_principal","task":"test control-plane lease authority","base_commit":"fixed-fixture-base","runner_id":"review_runner","state":{"schema_version":1,"run_id":"run_IG5AOM37NWI3GJAL7B2563DSDA","tenant_id":"review_tenant","version":2,"status":"running","stage":"initialize","lease":{"owner":"original","epoch":1,"until":"2026-09-11T15:06:53.518058-07:00"},"step_seq":0,"workspace_revision":0,"verification_status":"unverified","verification_revision":0,"model_rounds":0,"tool_calls":0,"cost_microusd":0,"limits":{"max_model_rounds":2,"max_tool_calls":3,"max_cost_microusd":1000000,"deadline":"2026-09-11T15:08:52.50815-07:00"}},"config":{"provider":"fake","model":"fixture","max_model_rounds":2,"max_tool_calls":3,"max_cost_microusd":1000000,"max_runtime_seconds":120},"created_at":"2026-09-11T15:06:52.510779-07:00","covered_seq":2}
+    snapshot_compatibility_test.go:222: live lease authorized proof: <nil>
+    snapshot_compatibility_test.go:222: live lease authorized heartbeat: <nil>
+    snapshot_compatibility_test.go:222: live lease authorized worker_event: <nil>
+    snapshot_compatibility_test.go:227: ambiguous header authority checks changed persistent records
+    snapshot_compatibility_test.go:238: ambiguous candidate not durably held: <nil>
+    snapshot_compatibility_test.go:245: ambiguous original bytes/hold missing
+    snapshot_compatibility_test.go:249: hold changed original run evidence or execution authority
+=== RUN   TestReviewUnsupportedSnapshotAmbiguousMembersFenceAndHold/duplicate-one-one
+    snapshot_compatibility_test.go:215: ambiguous state exposed: HTTP=200 body={"tenant_id":"review_tenant","id":"run_PKNJLTFM5YU5POIHSYWWPL6RGF","project_id":"project_EIGACP4EF6CR2CAVIVI4E7TKFX","principal_id":"review_principal","task":"test control-plane lease authority","base_commit":"fixed-fixture-base","runner_id":"review_runner","state":{"schema_version":1,"run_id":"run_PKNJLTFM5YU5POIHSYWWPL6RGF","tenant_id":"review_tenant","version":2,"status":"running","stage":"initialize","lease":{"owner":"original","epoch":1,"until":"2026-09-11T15:06:54.872905-07:00"},"step_seq":0,"workspace_revision":0,"verification_status":"unverified","verification_revision":0,"model_rounds":0,"tool_calls":0,"cost_microusd":0,"limits":{"max_model_rounds":2,"max_tool_calls":3,"max_cost_microusd":1000000,"deadline":"2026-09-11T15:08:53.8624-07:00"}},"config":{"provider":"fake","model":"fixture","max_model_rounds":2,"max_tool_calls":3,"max_cost_microusd":1000000,"max_runtime_seconds":120},"created_at":"2026-09-11T15:06:53.865603-07:00","covered_seq":2}
+    snapshot_compatibility_test.go:222: live lease authorized heartbeat: <nil>
+    snapshot_compatibility_test.go:222: live lease authorized worker_event: <nil>
+    snapshot_compatibility_test.go:222: live lease authorized proof: <nil>
+    snapshot_compatibility_test.go:227: ambiguous header authority checks changed persistent records
+    snapshot_compatibility_test.go:238: ambiguous candidate not durably held: <nil>
+    snapshot_compatibility_test.go:245: ambiguous original bytes/hold missing
+    snapshot_compatibility_test.go:249: hold changed original run evidence or execution authority
+=== RUN   TestReviewUnsupportedSnapshotAmbiguousMembersFenceAndHold/unicode-long-s
+    snapshot_compatibility_test.go:215: ambiguous state exposed: HTTP=200 body={"tenant_id":"review_tenant","id":"run_P5NTVSH4T4NCLNUKM46RCBBCFT","project_id":"project_RDDQ3P63CKHXHNO4NBPOJXQEEI","principal_id":"review_principal","task":"test control-plane lease authority","base_commit":"fixed-fixture-base","runner_id":"review_runner","state":{"schema_version":2,"run_id":"run_P5NTVSH4T4NCLNUKM46RCBBCFT","tenant_id":"review_tenant","version":2,"status":"running","stage":"initialize","lease":{"owner":"original","epoch":1,"until":"2026-09-11T15:06:56.31511-07:00"},"step_seq":0,"workspace_revision":0,"verification_status":"unverified","verification_revision":0,"model_rounds":0,"tool_calls":0,"cost_microusd":0,"limits":{"max_model_rounds":2,"max_tool_calls":3,"max_cost_microusd":1000000,"deadline":"2026-09-11T15:08:55.302298-07:00"}},"config":{"provider":"fake","model":"fixture","max_model_rounds":2,"max_tool_calls":3,"max_cost_microusd":1000000,"max_runtime_seconds":120},"created_at":"2026-09-11T15:06:55.305355-07:00","covered_seq":2}
+    snapshot_compatibility_test.go:222: live lease authorized proof: <nil>
+    snapshot_compatibility_test.go:222: live lease authorized heartbeat: <nil>
+    snapshot_compatibility_test.go:222: live lease authorized worker_event: <nil>
+    snapshot_compatibility_test.go:227: ambiguous header authority checks changed persistent records
+    snapshot_compatibility_test.go:238: ambiguous candidate not durably held: invalid_argument: unsupported or malformed snapshot
+    snapshot_compatibility_test.go:245: ambiguous original bytes/hold missing
+    snapshot_compatibility_test.go:249: hold changed original run evidence or execution authority
+    snapshot_compatibility_test.go:253: ambiguous candidate blocks same-tenant healthy run: id=run_P5NTVSH4T4NCLNUKM46RCBBCFT err=invalid_argument: unsupported or malformed snapshot
+    snapshot_compatibility_test.go:256: held candidate selected repeatedly: invalid_argument: unsupported or malformed snapshot
+=== RUN   TestReviewUnsupportedSnapshotAmbiguousMembersFenceAndHold/escaped-long-s
+    snapshot_compatibility_test.go:215: ambiguous state exposed: HTTP=200 body={"tenant_id":"review_tenant","id":"run_ZFF6XKUPYZ2PT2F7EEEXUU7XXZ","project_id":"project_5XOQJ4SOOLD4AOHCGNKD6PB3K6","principal_id":"review_principal","task":"test control-plane lease authority","base_commit":"fixed-fixture-base","runner_id":"review_runner","state":{"schema_version":2,"run_id":"run_ZFF6XKUPYZ2PT2F7EEEXUU7XXZ","tenant_id":"review_tenant","version":2,"status":"running","stage":"initialize","lease":{"owner":"original","epoch":1,"until":"2026-09-11T15:06:57.770595-07:00"},"step_seq":0,"workspace_revision":0,"verification_status":"unverified","verification_revision":0,"model_rounds":0,"tool_calls":0,"cost_microusd":0,"limits":{"max_model_rounds":2,"max_tool_calls":3,"max_cost_microusd":1000000,"deadline":"2026-09-11T15:08:56.763943-07:00"}},"config":{"provider":"fake","model":"fixture","max_model_rounds":2,"max_tool_calls":3,"max_cost_microusd":1000000,"max_runtime_seconds":120},"created_at":"2026-09-11T15:06:56.765856-07:00","covered_seq":2}
+    snapshot_compatibility_test.go:222: live lease authorized proof: <nil>
+    snapshot_compatibility_test.go:222: live lease authorized heartbeat: <nil>
+    snapshot_compatibility_test.go:222: live lease authorized worker_event: <nil>
+    snapshot_compatibility_test.go:227: ambiguous header authority checks changed persistent records
+    snapshot_compatibility_test.go:238: ambiguous candidate not durably held: invalid_argument: unsupported or malformed snapshot
+    snapshot_compatibility_test.go:245: ambiguous original bytes/hold missing
+    snapshot_compatibility_test.go:249: hold changed original run evidence or execution authority
+    snapshot_compatibility_test.go:253: ambiguous candidate blocks same-tenant healthy run: id=run_ZFF6XKUPYZ2PT2F7EEEXUU7XXZ err=invalid_argument: unsupported or malformed snapshot
+    snapshot_compatibility_test.go:256: held candidate selected repeatedly: invalid_argument: unsupported or malformed snapshot
+--- FAIL: TestReviewUnsupportedSnapshotAmbiguousMembersFenceAndHold (8.34s)
+    --- FAIL: TestReviewUnsupportedSnapshotAmbiguousMembersFenceAndHold/lower-then-upper (1.34s)
+    --- FAIL: TestReviewUnsupportedSnapshotAmbiguousMembersFenceAndHold/upper-then-lower (1.37s)
+    --- FAIL: TestReviewUnsupportedSnapshotAmbiguousMembersFenceAndHold/duplicate-two-one (1.37s)
+    --- FAIL: TestReviewUnsupportedSnapshotAmbiguousMembersFenceAndHold/duplicate-one-one (1.36s)
+    --- FAIL: TestReviewUnsupportedSnapshotAmbiguousMembersFenceAndHold/unicode-long-s (1.47s)
+    --- FAIL: TestReviewUnsupportedSnapshotAmbiguousMembersFenceAndHold/escaped-long-s (1.43s)
+FAIL
+FAIL	github.com/JDinSeattle/forge-runtime/tests/review	8.377s
+FAIL

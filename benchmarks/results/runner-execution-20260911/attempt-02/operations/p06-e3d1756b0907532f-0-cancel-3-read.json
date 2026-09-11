@@ -1,0 +1,38 @@
+{
+  "request": {
+    "tenant_id": "p06-execution",
+    "run_id": "p06-e3d1756b0907532f-0",
+    "workspace_id": "p06-e3d1756b0907532f-0",
+    "epoch": 1,
+    "grant": "",
+    "operation_id": "p06-e3d1756b0907532f-0-cancel-3-read",
+    "expected_revision": 10,
+    "kind": "read_file",
+    "args": {
+      "path": "p06-shared-name.txt"
+    },
+    "args_hash": "ab7187bd54041e0d4dbdee6465985f1de9925668e9bea4c817c828e2f3130b34",
+    "policy_version": "p06-fixed-local-v1",
+    "deadline": "2026-09-11T22:17:30.273626564Z"
+  },
+  "status": "succeeded",
+  "job_id": "forge-d20115d735f606aff7fd66fdc150355ea91b8c5a",
+  "before_hash": "1716bb55c1bca880a1dec7eb2ed67dd6f606b583e131c4226bffd081631181ee",
+  "after_hash": "1716bb55c1bca880a1dec7eb2ed67dd6f606b583e131c4226bffd081631181ee",
+  "after_revision": 10,
+  "result": {
+    "content": "p06-e3d1756b0907532f-0/cancel/3",
+    "path": "p06-shared-name.txt",
+    "sha256": "d976aa83877ae7067342b61df992c63ce417d7080f1dfb686785884f2b737d4e",
+    "start_line": 1
+  },
+  "receipt": {
+    "tenant_id": "p06-execution",
+    "run_id": "p06-e3d1756b0907532f-0",
+    "kind": "operation_receipt",
+    "object_key": "p06-execution/p06-e3d1756b0907532f-0/3ba5580f76f7b83e3c11bedba0631b8895afac0dea2635710ff832f07ba71975",
+    "sha256": "3ba5580f76f7b83e3c11bedba0631b8895afac0dea2635710ff832f07ba71975",
+    "size": 977
+  },
+  "cancel_requested": false
+}

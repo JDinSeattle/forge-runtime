@@ -1,0 +1,177 @@
+[
+  {
+    "argv": [
+      "go",
+      "build",
+      "-o",
+      "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/forge-checked-binaries-integration-checks-20260911T221741Z/",
+      "./cmd/..."
+    ],
+    "elapsed_seconds": 1.6994565990171395,
+    "exit_code": 0,
+    "name": "build"
+  },
+  {
+    "argv": [
+      "go",
+      "test",
+      "-json",
+      "-count=1",
+      "./..."
+    ],
+    "elapsed_seconds": 33.33094719197834,
+    "exit_code": 1,
+    "failed_tests": [
+      "github.com/JDinSeattle/forge-runtime/internal/runnerclient/TestUDSContractAndPermissions",
+      "github.com/JDinSeattle/forge-runtime/internal/runnerclient/TestStartTimeoutInspectsSameIDWithoutResubmission/accepted",
+      "github.com/JDinSeattle/forge-runtime/internal/runnerclient/TestStartTimeoutInspectsSameIDWithoutResubmission/unknown",
+      "github.com/JDinSeattle/forge-runtime/internal/runnerclient/TestStartTimeoutInspectsSameIDWithoutResubmission",
+      "github.com/JDinSeattle/forge-runtime/internal/application/TestUnifiedPatchActuallyAppliesWithGit"
+    ],
+    "name": "test",
+    "packages": {
+      "fail": 2,
+      "pass": 21,
+      "skip": 10
+    },
+    "tests": {
+      "fail": 5,
+      "pass": 443,
+      "skip": 28
+    }
+  },
+  {
+    "argv": [
+      "go",
+      "test",
+      "-race",
+      "-json",
+      "-count=1",
+      "./..."
+    ],
+    "elapsed_seconds": 41.19988187297713,
+    "exit_code": 1,
+    "failed_tests": [
+      "github.com/JDinSeattle/forge-runtime/internal/runnerclient/TestUDSContractAndPermissions",
+      "github.com/JDinSeattle/forge-runtime/internal/runnerclient/TestStartTimeoutInspectsSameIDWithoutResubmission/accepted",
+      "github.com/JDinSeattle/forge-runtime/internal/runnerclient/TestStartTimeoutInspectsSameIDWithoutResubmission/unknown",
+      "github.com/JDinSeattle/forge-runtime/internal/runnerclient/TestStartTimeoutInspectsSameIDWithoutResubmission",
+      "github.com/JDinSeattle/forge-runtime/internal/application/TestUnifiedPatchActuallyAppliesWithGit"
+    ],
+    "name": "race",
+    "packages": {
+      "fail": 2,
+      "pass": 21,
+      "skip": 10
+    },
+    "tests": {
+      "fail": 5,
+      "pass": 443,
+      "skip": 28
+    }
+  },
+  {
+    "argv": [
+      "go",
+      "vet",
+      "./..."
+    ],
+    "elapsed_seconds": 0.2946812530281022,
+    "exit_code": 0,
+    "name": "vet"
+  },
+  {
+    "argv": [
+      "make",
+      "check-generated"
+    ],
+    "elapsed_seconds": 0.3874447890557349,
+    "exit_code": 0,
+    "name": "generated"
+  },
+  {
+    "argv": [
+      "python3",
+      "-I",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "scripts/workspace-volumes",
+      "-p",
+      "test_*.py",
+      "-v"
+    ],
+    "elapsed_seconds": 0.10261116304900497,
+    "exit_code": 0,
+    "name": "python-volumes"
+  },
+  {
+    "argv": [
+      "python3",
+      "-I",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "cmd/forge-runner",
+      "-p",
+      "test_*.py",
+      "-v"
+    ],
+    "elapsed_seconds": 0.04134714201791212,
+    "exit_code": 0,
+    "name": "python-runner"
+  },
+  {
+    "argv": [
+      "python3",
+      "-I",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "scripts/recovery",
+      "-p",
+      "test_*.py",
+      "-v"
+    ],
+    "elapsed_seconds": 0.18419852101942524,
+    "exit_code": 0,
+    "name": "python-recovery"
+  },
+  {
+    "argv": [
+      "python3",
+      "-I",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "scripts/evaluation",
+      "-p",
+      "test_*.py",
+      "-v"
+    ],
+    "elapsed_seconds": 3.7891095430240966,
+    "exit_code": 0,
+    "name": "python-evaluation"
+  },
+  {
+    "argv": [
+      "python3",
+      "-I",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "scripts/faults",
+      "-p",
+      "test_*.py",
+      "-v"
+    ],
+    "elapsed_seconds": 0.09138909797184169,
+    "exit_code": 0,
+    "name": "python-faults"
+  }
+]

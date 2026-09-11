@@ -17,6 +17,13 @@ func TestUnifiedPatchActuallyAppliesWithGit(t *testing.T) {
 		t.Skip("git unavailable")
 	}
 	dir := t.TempDir()
+	// TempDir may be inside the checkout (for example with GOTMPDIR). Without
+	// its own repository, git apply can discover the parent and skip every
+	// patch path as outside the current prefix while still returning success.
+	cmd := exec.Command("git", "--git-dir", filepath.Join(dir, ".git"), "--work-tree", dir, "init", "--quiet")
+	if out, err := cmd.CombinedOutput(); err != nil {
+		t.Fatalf("initialize isolated patch repository: %v %s", err, out)
+	}
 	hash := func(s string) string { h := sha256.Sum256([]byte(s)); return hex.EncodeToString(h[:]) }
 	files := []runner.DiffEntry{
 		{Path: "space name.txt", Before: "old without newline", After: "new\nsecond", BeforeSHA256: hash("old without newline"), AfterSHA256: hash("new\nsecond")},
@@ -41,7 +48,7 @@ func TestUnifiedPatchActuallyAppliesWithGit(t *testing.T) {
 	if err := os.WriteFile(name, patch, 0600); err != nil {
 		t.Fatal(err)
 	}
-	cmd := exec.Command("git", "apply", "--check", name)
+	cmd = exec.Command("git", "apply", "--check", name)
 	cmd.Dir = dir
 	if out, err := cmd.CombinedOutput(); err != nil {
 		t.Fatalf("check: %v %s\n%s", err, out, patch)

@@ -52,8 +52,11 @@ those checks.
 | [E33](k6-metadata-evidence.md) | Actual 1,000-request k6 metadata workload with fixed 90:10 mix | Raw JSONL, exact status/count checks, independently recomputed percentiles; first failure retained | Real authenticated handler/PG without telemetry; no task execution or complete build/config/profile attestation |
 | [E34](integration-checks-20260911.md) | Integrated admission, capacity, approval and dependency changes | Frozen 260-input working tree; build, 368 ordinary/race passing entries each, vet, generation and five Python suites | 27 opt-in skips per Go run; separate from current CI and full runtime/operational acceptance |
 | [E35](text-batching-evidence.md) | Configurable lossless model text batching | Actual private PG timer/size/paused-text controls, complete Driver artifact, and both local native interrupted-stream cases | FakeProvider/TestBackend or native-protocol loopback; original slicing and launcher failures retained; no paid model or HTTP lock-load claim |
+| [E36](execution-evidence.md) | Real command launch/log/cancel and concurrent isolation measurements | 20 process commands, 20 file probes, 10 overlapping pairs, cgroup stop and two released workspaces; raw/binary/UDS identity audit | 10 samples per mode; daemon live logs and terminal typed logs are separate; actual existing runner revision, no PG lease or model calls; first probe failure retained |
+| [E37](snapshot-compatibility-evidence.md) | Preserve incompatible snapshots and pause their authority | Actual private PG/HTTP/CLI, queue fairness, alias/duplicate rejection, unknown ledger preservation, existing SSE termination and additive upgrade | Old issued runner capabilities expire naturally; no immediate revocation or live migration; first bypass/fixture/build failures preserved |
 | [E38](sse-reset-retirement-evidence.md) | SSE reset removes the old hub before a client can rejoin it | Original failed CI, two controlled reproductions, 200 repeats and isolated PG/HTTP race checks | In-memory Source for reset interleavings; separate from sustained load and current feature work |
 | [E39](stamped-benchmark-evidence.md) | Fixed-commit scheduler, HTTP and 1,000 simulated terminal repeats | Clean a9208e7 checkout, one retained binary, 262 source hashes, every sample and six profiles independently audited | New finite shared-host measurements; does not retroactively identify old report values or prove real model/runner performance |
+| [E40](integration-checks-e40-20260911.md) | Integrated compatibility, real-execution harness and Git fixture checks | 272 frozen inputs; build, 448 ordinary/race passing entries each, vet, generation and five Python groups | 28 explicit opt-in skips each; first two environment/fixture failures retained; local current tree, separate CI identity |
 
 ## E01 — Schemas and generated code
 
@@ -1228,3 +1231,69 @@ launcher correction uses the identical frozen Go/SQL inputs and four executables
 passes all three groups. Both OpenAI and Anthropic protocol fixtures reach actual
 TCP interruption through their SDK and Driver, preserve unknown fees/tokens and
 withhold incomplete tools. No paid endpoint or real task container is involved.
+Exact delivery commit a0b3a5da4c09181cf600e7e4f54d83df93387282 subsequently
+passes [GitHub Actions 34652651662](../benchmarks/results/github-actions-a0b3a5d/run.json).
+That CI does not include later snapshot-compatibility or P06 changes.
+
+## E37 — Snapshot compatibility and guarded operator recovery, 2026-09-11
+
+[Compatibility acceptance](snapshot-compatibility-evidence.md) passes nine
+compatibility tests with 18 leaf cases plus the additive PG6→11 upgrade under
+race detection, including the current admin executable. Unsupported snapshots
+receive separate operational holds, keep their original state/commands/leases
+and unknown effects/accounting, and no longer monopolize queue selection.
+HTTP returns actionable nonretryable 409; an already subscribed SSE stream
+terminates on incompatibility; immutable artifacts remain tenant-scoped readable.
+
+Independent review exposed a case-insensitive Go decoder bypass missed by the
+first exact-key map check. Six actual PostgreSQL failures are retained. Streaming
+header inspection and duplicate-preserving SQL now reject ASCII/Unicode aliases
+and repeated version members consistently, before interpretation or fresh
+authority. Their repeat and independent raw/source audit pass. Operator unhold
+requires known complete state, current version/hash and no live lease; it never
+migrates a body or merely relabels its schema. Already issued runner capabilities
+are not retroactively revoked. The original fixture failure and temporary-disk
+linker failure remain distinguished from the final passing execution.
+
+## E36 — Real execution boundaries, 2026-09-11
+
+[The final P06 experiment](execution-evidence.md) passes on the existing mapped
+runner: 20 process commands, 20 typed file probes and 44 hash-verified artifacts.
+All ten pairs have distinct writable sources and positive actual daemon-lifetime
+overlap. Each cancellation pair proves A's controlled cgroup is removed while B
+still runs, before cancelling B; both owned workspaces are then stopped, sealed
+and released. UID, capabilities, resource limits, rootfs/tmp and actual interface/
+route observations match the configured isolated profile.
+
+The original two-command attempt fails an interface-name assumption and releases
+both owned workspaces. Its report, program and executable identities remain.
+The revised probe tests interface flags/addresses/routes without a device-name
+allowlist; offline negative cases and the final real observations pass. The
+independent build fixes a0b3a5d plus one reviewed harness, 267 input hashes and the
+actual runner executable/UDS peer PID. A retained recomputation checks raw
+operation/receipt/snapshot bindings, overlaps, child topology and all ten metric
+distributions. Full original Start replies and separate cleanup-RPC timings were
+not retained and are not claimed as independently reconstructed facts.
+
+Normal Start acknowledgement p95 is 61.858 ms; first observed running is an upper
+bound of 501.536 ms. Operator daemon-log observation p95 is 632.044 ms; terminal
+typed Inspect log p95 is 1,848.840 ms. Cancellation RPC p95 is 234.428 ms. Each
+mode has only ten samples, with CLI/polling overhead; there is no borrowed SLO or
+paid model, worker/PG lease, CPU-fairness or lifetime-isolation claim.
+
+## E40 — Final local integration for E35–E39, 2026-09-11
+
+[The frozen-source final run](integration-checks-e40-20260911.md) passes build,
+ordinary/race tests (448 passing entries and 28 explicit opt-in skips each),
+vet, generation and all five Python groups. The current forge/admin binaries
+are explicitly used. Two earlier failures preserve the long Unix socket path
+and ancestor-Git discovery diagnostics; the final code changes only the Git
+patch fixture's explicit repository setup. Independent review confirms every
+original assertion remains. All 272 final input hashes stay unchanged.
+
+[Cross-run audit](../benchmarks/results/integration-e40-audit-20260911.json)
+verifies each original manifest and the single-file source difference. Four
+superseded, never-executed E35 binaries are removed only after hash verification
+to free the host's temporary quota; actual execution binaries and raw reports
+remain. This local result does not certify a future commit/CI or complete the
+remaining compound acceptance work.

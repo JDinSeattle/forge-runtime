@@ -1,5 +1,11 @@
 # E35 — Configurable and lossless text batching, 2026-09-11
 
+The delivered commit `a0b3a5da4c09181cf600e7e4f54d83df93387282` also passes
+[GitHub Actions 34652651662](https://github.com/JDinSeattle/forge-runtime/actions/runs/34652651662):
+build, ordinary/race, vet, generated bindings and all five Python suites. Its
+[record and original log](../benchmarks/results/github-actions-a0b3a5d/run.json)
+are separate from the targeted frozen-binary experiments below.
+
 This change adds operator-owned text delivery limits while preserving the default
 100 ms / 16 KiB behavior. Text is split at UTF-8 rune boundaries, and every emitted
 payload is checked against the actual 32 KiB JSON persistence limit. JSON escaping

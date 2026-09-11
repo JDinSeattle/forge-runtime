@@ -1,0 +1,127 @@
+syntax = "proto3";
+
+package forge.runner.v1;
+
+option go_package = "github.com/JDinSeattle/forge-runtime/proto/runner/v1;runnerv1";
+
+import "google/protobuf/timestamp.proto";
+
+message ResourceID { string value = 1; }
+
+message WorkspaceBinding {
+  ResourceID tenant_id = 1;
+  ResourceID run_id = 2;
+  ResourceID workspace_id = 3;
+  uint64 epoch = 4;
+  string capability_grant = 5;
+}
+
+message PrepareWorkspaceRequest {
+  WorkspaceBinding binding = 1;
+  string source_id = 2;
+  string profile_id = 3;
+}
+message WorkspaceRequest { WorkspaceBinding binding = 1; }
+message InspectOperationRequest {
+  WorkspaceBinding binding = 1;
+  ResourceID operation_id = 2;
+}
+
+enum ToolKind {
+  TOOL_KIND_UNSPECIFIED = 0;
+  TOOL_KIND_LIST_FILES = 1;
+  TOOL_KIND_READ_FILE = 2;
+  TOOL_KIND_SEARCH_CODE = 3;
+  TOOL_KIND_APPLY_PATCH = 4;
+  TOOL_KIND_RUN_COMMAND = 5;
+  TOOL_KIND_GET_DIFF = 6;
+  TOOL_KIND_VERIFY = 7;
+}
+
+message StartOperationRequest {
+  WorkspaceBinding binding = 1;
+  ResourceID operation_id = 2;
+  uint64 expected_revision = 3;
+  ToolKind tool_kind = 4;
+  // Bounded canonical JSON for the known tool schema. Bytes are preserved
+  // exactly: re-encoding JSON here would invalidate the approved args_hash.
+  bytes canonical_args_json = 5;
+  string args_sha256 = 6;
+  string policy_version = 7;
+  google.protobuf.Timestamp deadline = 8;
+}
+
+message Workspace {
+  ResourceID tenant_id = 1;
+  ResourceID run_id = 2;
+  ResourceID id = 3;
+  string source_id = 4;
+  string profile_id = 5;
+  uint64 epoch = 6;
+  uint64 revision = 7;
+  ResourceID active_operation_id = 8;
+  bool adopting = 9;
+  bool released = 10;
+  string baseline_sha256 = 11;
+  bool stopped = 12;
+}
+
+message ArtifactRef {
+  ResourceID tenant_id = 1;
+  ResourceID run_id = 2;
+  string kind = 3;
+  string object_key = 4;
+  string sha256 = 5;
+  int64 byte_size = 6;
+}
+
+enum OperationStatus {
+  OPERATION_STATUS_UNSPECIFIED = 0;
+  OPERATION_STATUS_PREPARED = 1;
+  OPERATION_STATUS_RUNNING = 2;
+  OPERATION_STATUS_SUCCEEDED = 3;
+  OPERATION_STATUS_FAILED = 4;
+  OPERATION_STATUS_CANCELLED = 5;
+  OPERATION_STATUS_UNKNOWN = 6;
+}
+
+message Operation {
+  StartOperationRequest request = 1;
+  OperationStatus status = 2;
+  string job_id = 3;
+  string before_sha256 = 4;
+  string expected_after_sha256 = 5;
+  string after_sha256 = 6;
+  uint64 after_revision = 7;
+  bytes result_json = 8;
+  ArtifactRef receipt = 9;
+  string error = 10;
+  bool cancel_requested = 11;
+  bool result_truncated = 12;
+}
+
+message StopReceipt {
+  Workspace workspace = 1;
+  bool no_active_operations = 2;
+  ArtifactRef receipt = 3;
+}
+message Snapshot {
+  Workspace workspace = 1;
+  string sha256 = 2;
+  ArtifactRef artifact = 3;
+}
+message ReleaseResult {
+  ResourceID workspace_id = 1;
+  bool released = 2;
+}
+
+service RunnerService {
+  rpc PrepareWorkspace(PrepareWorkspaceRequest) returns (Workspace);
+  rpc AdoptWorkspace(WorkspaceRequest) returns (StopReceipt);
+  rpc StartOperation(StartOperationRequest) returns (Operation);
+  rpc InspectOperation(InspectOperationRequest) returns (Operation);
+  rpc CancelOperation(InspectOperationRequest) returns (Operation);
+  rpc StopWorkspace(WorkspaceRequest) returns (StopReceipt);
+  rpc SealSnapshot(WorkspaceRequest) returns (Snapshot);
+  rpc ReleaseWorkspace(WorkspaceRequest) returns (ReleaseResult);
+}

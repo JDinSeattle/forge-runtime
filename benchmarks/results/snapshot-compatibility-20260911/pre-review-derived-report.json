@@ -1,0 +1,40 @@
+{
+  "evidence_id": "E37",
+  "date": "2026-09-11",
+  "passed": true,
+  "source_base": "a9208e7",
+  "current_parent_head": "7b7504711538aa8fb9a9ad3b3124d0043e545bb2",
+  "postgres_http_race": {
+    "top_level_compatibility_tests": 6,
+    "compatibility_leaf_cases": 10,
+    "additive_upgrade_tests": 1,
+    "elapsed_seconds": 6.544
+  },
+  "operator_cli_race": {
+    "tests": 1,
+    "elapsed_seconds": 1.327,
+    "binary_sha256": "98d6d9ff3803265f713397bcf7c5fd8e494a760a38e99c9ebd3ec31233fcc609",
+    "binary_bytes": 81907148,
+    "binary_retained": false
+  },
+  "header_race": {
+    "tests": 1,
+    "elapsed_seconds": 1.012
+  },
+  "scope": [
+    "Private PostgreSQL schemas with real TCP API and production Store/Driver gates.",
+    "API effective nonowner current_user uses SET ROLE from administrator session, not separate restricted LOGIN.",
+    "No provider request or runner operation: recording uncalled runner boundary, synthetic control evidence and unknown dispatch quota marker.",
+    "Actual artifact bytes remain readable; this is not paired workspace/SQLite recovery.",
+    "Operator unhold never converts data; positive test restores previously saved complete known v1 fixture first.",
+    "No live service/public schema migration.",
+    "Source snapshots copied after targeted tests, not full build input or retained executable attestation."
+  ],
+  "initial_failures": [
+    "Before change: GET schema2 returns 200 and same-tenant healthy run is blocked by repeated unsupported-snapshot claim rollback.",
+    "Initial fixture used jsonb_set on the json column without a jsonb cast; corrected fixture only.",
+    "Initial full-suite server fixture omitted Streams; SSE request returned 500. The original first-run/http-operator.json includes a mistaken passed=true field from unconditional producer metadata; its actual HTTP500 and failing test log are authoritative. compatibilitySave now derives passed from t.Failed().",
+    "CLI test import initially collided with the existing exec fixture helper; aliased os/exec, unchanged production CLI then passed."
+  ],
+  "remaining_integration": "Existing live SSE migration-error retirement is a root-owned follow-up hunk; new SSE admission 409 is verified here. Whole-tree and deployment checks are separate."
+}

@@ -1,0 +1,29 @@
+=== RUN   TestReviewUnsupportedSnapshotDoesNotStarveHealthyRuns
+    snapshot_compatibility_test.go:115: claim 0 run=run_2WNGNX6ZGLHMIQGA6ZIHSXWH6G err=<nil>
+    snapshot_compatibility_test.go:115: claim 1 run=run_RYZ3CYGKUVAHNFKRFYIVJIYOFY err=snapshot_migration_required: stored schema 2; binary supports 1; execution is paused: use forge-admin snapshot-inspect and docs/snapshot-compatibility-evidence.md
+    snapshot_compatibility_test.go:115: claim 2 run=run_6U3SNAZPPYHHASVZNIIOP5T3PK err=<nil>
+    snapshot_compatibility_test.go:115: claim 3 run= err=not_found
+    snapshot_compatibility_test.go:115: claim 4 run= err=not_found
+--- PASS: TestReviewUnsupportedSnapshotDoesNotStarveHealthyRuns (0.41s)
+=== RUN   TestReviewUnsupportedSnapshotPreservesUnknownLedgerAndAuthority
+--- PASS: TestReviewUnsupportedSnapshotPreservesUnknownLedgerAndAuthority (2.29s)
+=== RUN   TestReviewUnsupportedSnapshotHTTPAndOperatorRecovery
+    snapshot_compatibility_test.go:353: GET /v1/runs/run_IHBBNDHVT5NUPVJ2KCTHXDJ6KO/events returned 500 {"code":"internal","message":"request could not be completed","request_id":"","retryable":false}
+--- FAIL: TestReviewUnsupportedSnapshotHTTPAndOperatorRecovery (0.53s)
+=== RUN   TestReviewUnsupportedSnapshotApprovalRefusesUnknownState
+--- PASS: TestReviewUnsupportedSnapshotApprovalRefusesUnknownState (0.34s)
+=== RUN   TestReviewUnsupportedSnapshotMalformedHeadersRemainHeld
+=== RUN   TestReviewUnsupportedSnapshotMalformedHeadersRemainHeld/null
+=== RUN   TestReviewUnsupportedSnapshotMalformedHeadersRemainHeld/1.5
+=== RUN   TestReviewUnsupportedSnapshotMalformedHeadersRemainHeld/"1"
+=== RUN   TestReviewUnsupportedSnapshotMalformedHeadersRemainHeld/-1
+=== RUN   TestReviewUnsupportedSnapshotMalformedHeadersRemainHeld/999999999999999999999999999999999999999999999999999999999999999999999999
+--- PASS: TestReviewUnsupportedSnapshotMalformedHeadersRemainHeld (1.32s)
+    --- PASS: TestReviewUnsupportedSnapshotMalformedHeadersRemainHeld/null (0.27s)
+    --- PASS: TestReviewUnsupportedSnapshotMalformedHeadersRemainHeld/1.5 (0.26s)
+    --- PASS: TestReviewUnsupportedSnapshotMalformedHeadersRemainHeld/"1" (0.26s)
+    --- PASS: TestReviewUnsupportedSnapshotMalformedHeadersRemainHeld/-1 (0.27s)
+    --- PASS: TestReviewUnsupportedSnapshotMalformedHeadersRemainHeld/999999999999999999999999999999999999999999999999999999999999999999999999 (0.26s)
+FAIL
+FAIL	github.com/JDinSeattle/forge-runtime/tests/review	4.916s
+FAIL

@@ -1,0 +1,9 @@
+=== RUN   TestReviewUnsupportedSnapshotDoesNotStarveHealthyRuns
+    snapshot_compatibility_test.go:92: claim 0 run=run_WT5DLXGMRYBL3WRRTYZQA4R2XG err=<nil>
+    snapshot_compatibility_test.go:92: claim 1 run=run_E6HTB5XWLEWKOYVLKTM4EMENQL err=snapshot_migration_required: stored schema 2; binary supports 1; execution is paused: use forge-admin snapshot-inspect and docs/snapshot-compatibility-evidence.md
+    snapshot_compatibility_test.go:92: claim 2 run=run_KJXS2T4BLAWE3RDF5OOV6POM2S err=<nil>
+    snapshot_compatibility_test.go:92: claim 3 run= err=not_found
+    snapshot_compatibility_test.go:92: claim 4 run= err=not_found
+--- PASS: TestReviewUnsupportedSnapshotDoesNotStarveHealthyRuns (0.45s)
+PASS
+ok  	github.com/JDinSeattle/forge-runtime/tests/review	1.476s

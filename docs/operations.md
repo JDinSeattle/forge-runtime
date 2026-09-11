@@ -103,9 +103,20 @@ decisions. Existing deployments must run the owner migration and grant the
 configured API role EXECUTE on that one schema-qualified function before using
 the new approval binary; membership tables remain read-only to the API. See the
 [exact upgrade and permission procedure](approval-authority-evidence.md#deployment-and-reproduction).
-The [current additive rehearsal](integration-checks-20260911.md#current-additive-upgrade-coverage)
+The [earlier additive rehearsal](integration-checks-20260911.md#current-additive-upgrade-coverage)
 upgrades a private v6 fixture to v10 twice without changing its original records.
 It does not migrate the running deployment or prove rolling compatibility.
+
+Migration 00011 adds separate compatibility-hold metadata. Apply it before
+starting a binary that reads these columns. Unsupported or ambiguous snapshot
+versions return `snapshot_migration_required`; held runs retain their unknown
+state and obligations until an operator supplies a compatible recovery path.
+Use the [inspection and guarded-unhold procedure](snapshot-compatibility-evidence.md#operator-procedure),
+which checks the current raw hash/version and absence of a live lease. Never
+repair a future body by changing only its version field. The
+[current E40 rehearsal](integration-checks-e40-20260911.md) passes private 6→11
+upgrades with the actual current admin executable; it does not upgrade the live
+services. Already issued runner grants still expire on their original deadline.
 
 ## Diagnostics
 

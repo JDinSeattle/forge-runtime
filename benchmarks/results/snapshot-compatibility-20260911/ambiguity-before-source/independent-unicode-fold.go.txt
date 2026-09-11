@@ -1,0 +1,12 @@
+package main
+import ("encoding/json"; "fmt"; "os"; "strings"; "unicode"; "unicode/utf8")
+func main() {
+ matches:=map[string][]string{}
+ for r:=rune(utf8.RuneSelf);r<=unicode.MaxRune;r++ {
+  for _, letter:=range "schemavrin_o" {
+   if strings.EqualFold(string(r),string(letter)) { matches[string(letter)]=append(matches[string(letter)],fmt.Sprintf("U+%04X",r)) }
+  }
+ }
+ _=json.NewEncoder(os.Stdout).Encode(matches)
+ if len(matches)!=1 || len(matches["s"])!=1 || matches["s"][0]!="U+017F" { panic("unexpected Unicode alias set") }
+}

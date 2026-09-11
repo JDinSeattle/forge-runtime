@@ -1,0 +1,10 @@
+{
+  "closed_without_client_cancel": true,
+  "initial_http_status": 200,
+  "new_body": "{\"code\":\"snapshot_migration_required\",\"message\":\"snapshot_migration_required: stored schema 2; binary supports 1; execution is paused: use forge-admin snapshot-inspect and docs/snapshot-compatibility-evidence.md\",\"request_id\":\"request_E6G74SCUBC2FYG63LGRXQQ5PF5\",\"retryable\":false}\n",
+  "new_http_status": 409,
+  "observed_close_ms": 16.165,
+  "old_body": "id: 1\nevent: run.created\ndata: {\"run_id\":\"run_X665D24QWMEVAL4QTXOT7YSCOP\",\"seq\":1,\"type\":\"run.created\",\"schema_version\":1,\"payload\":{\"lease\":{\"epoch\":0,\"owner\":\"\",\"until\":\"0001-01-01T00:00:00Z\"},\"stage\":\"initialize\",\"limits\":{\"deadline\":\"2026-09-11T15:13:06.099543-07:00\",\"max_tool_calls\":3,\"max_model_rounds\":2,\"max_cost_microusd\":1000000},\"run_id\":\"run_X665D24QWMEVAL4QTXOT7YSCOP\",\"status\":\"queued\",\"version\":1,\"step_seq\":0,\"tenant_id\":\"review_tenant\",\"tool_calls\":0,\"model_rounds\":0,\"cost_microusd\":0,\"schema_version\":1,\"workspace_revision\":0,\"verification_status\":\"unverified\",\"verification_revision\":0},\"created_at\":\"2026-09-11T15:11:06.105143-07:00\"}\n\n: connected\n\n",
+  "passed": true,
+  "source_error": "snapshot_migration_required"
+}

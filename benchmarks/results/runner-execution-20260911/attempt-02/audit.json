@@ -1,0 +1,234 @@
+{
+  "passed": true,
+  "scope": "Independent Python recomputation of the single observed execution; not a second OS observation or independent implementation review.",
+  "artifacts": 44,
+  "typed_operations": 40,
+  "process_commands": 20,
+  "unique_containers": 20,
+  "normal_commands": 10,
+  "cancelled_commands": 10,
+  "workspaces_released": 2,
+  "normal_check_counts": [
+    50,
+    50,
+    50,
+    50,
+    50,
+    50,
+    50,
+    50,
+    50,
+    50
+  ],
+  "build_inputs": 267,
+  "runner_pid": 969928,
+  "runner_sha256": "6921c94212899fada5fabc730dcea7e4944d86c9ae2baccd5656e26dcbe969a0",
+  "test_binary_sha256": "d58fa279d9cb66d527813538d5f0961181b5708d56435b2e4768712d3b65ab4c",
+  "uds_peers": [
+    {
+      "At": {
+        "utc": "2026-09-11T22:16:20.508975929Z",
+        "since_experiment_start_ns": 82058564
+      },
+      "PID": 969928,
+      "UID": 1000,
+      "GID": 1000,
+      "MatchesRunnerPID": true
+    }
+  ],
+  "harness_duration_ns": 16352854556,
+  "wrapper_duration_seconds": 16.392388255975675,
+  "unique_network_facts": [
+    "{\"interfaces\": [{\"flags\": 73, \"ipv4\": [\"127.0.0.1\"], \"name\": \"lo\", \"operstate\": \"unknown\"}, {\"flags\": 128, \"ipv4\": [], \"name\": \"tunl0\", \"operstate\": \"down\"}], \"ipv4_route_table\": \"Iface\\tDestination\\tGateway \\tFlags\\tRefCnt\\tUse\\tMetric\\tMask\\t\\tMTU\\tWindow\\tIRTT\", \"ipv4_routes\": [], \"ipv6_route_table\": \"00000000000000000000000000000000 00 00000000000000000000000000000000 00 00000000000000000000000000000000 ffffffff 00000001 00000000 00200200       lo\\n00000000000000000000000000000001 80 00000000000000000000000000000000 00 00000000000000000000000000000000 00000000 00000002 00000000 80200001       lo\\n00000000000000000000000000000000 00 00000000000000000000000000000000 00 00000000000000000000000000000000 ffffffff 00000001 00000000 00200200       lo\", \"ipv6_routes\": [{\"destination\": \"::\", \"flags\": 2097664, \"interface\": \"lo\", \"next_hop\": \"::\", \"prefix\": 0}, {\"destination\": \"::1\", \"flags\": 2149580801, \"interface\": \"lo\", \"next_hop\": \"::\", \"prefix\": 128}, {\"destination\": \"::\", \"flags\": 2097664, \"interface\": \"lo\", \"next_hop\": \"::\", \"prefix\": 0}]}"
+  ],
+  "pairs": [
+    {
+      "mode": "normal",
+      "round": 0,
+      "ids": [
+        "p06-e3d1756b0907532f-0-normal-0",
+        "p06-e3d1756b0907532f-1-normal-0"
+      ],
+      "daemon_overlap_ns": 1213087103
+    },
+    {
+      "mode": "normal",
+      "round": 1,
+      "ids": [
+        "p06-e3d1756b0907532f-0-normal-1",
+        "p06-e3d1756b0907532f-1-normal-1"
+      ],
+      "daemon_overlap_ns": 1179101123
+    },
+    {
+      "mode": "normal",
+      "round": 2,
+      "ids": [
+        "p06-e3d1756b0907532f-0-normal-2",
+        "p06-e3d1756b0907532f-1-normal-2"
+      ],
+      "daemon_overlap_ns": 1168518745
+    },
+    {
+      "mode": "normal",
+      "round": 3,
+      "ids": [
+        "p06-e3d1756b0907532f-0-normal-3",
+        "p06-e3d1756b0907532f-1-normal-3"
+      ],
+      "daemon_overlap_ns": 1155409136
+    },
+    {
+      "mode": "normal",
+      "round": 4,
+      "ids": [
+        "p06-e3d1756b0907532f-0-normal-4",
+        "p06-e3d1756b0907532f-1-normal-4"
+      ],
+      "daemon_overlap_ns": 1176380200
+    },
+    {
+      "mode": "cancel",
+      "round": 0,
+      "ids": [
+        "p06-e3d1756b0907532f-0-cancel-0",
+        "p06-e3d1756b0907532f-1-cancel-0"
+      ],
+      "daemon_overlap_ns": 356370132,
+      "a_cgroup_empty_ns": 10676722415,
+      "peer_running_begin_ns": 10676723274,
+      "peer_running_end_ns": 10690819557,
+      "b_cancel_begin_ns": 10718482088
+    },
+    {
+      "mode": "cancel",
+      "round": 1,
+      "ids": [
+        "p06-e3d1756b0907532f-0-cancel-1",
+        "p06-e3d1756b0907532f-1-cancel-1"
+      ],
+      "daemon_overlap_ns": 346645856,
+      "a_cgroup_empty_ns": 11965679264,
+      "peer_running_begin_ns": 11965680356,
+      "peer_running_end_ns": 11981936787,
+      "b_cancel_begin_ns": 12001045654
+    },
+    {
+      "mode": "cancel",
+      "round": 2,
+      "ids": [
+        "p06-e3d1756b0907532f-0-cancel-2",
+        "p06-e3d1756b0907532f-1-cancel-2"
+      ],
+      "daemon_overlap_ns": 386454685,
+      "a_cgroup_empty_ns": 13269529503,
+      "peer_running_begin_ns": 13269530811,
+      "peer_running_end_ns": 13285060589,
+      "b_cancel_begin_ns": 13305075725
+    },
+    {
+      "mode": "cancel",
+      "round": 3,
+      "ids": [
+        "p06-e3d1756b0907532f-0-cancel-3",
+        "p06-e3d1756b0907532f-1-cancel-3"
+      ],
+      "daemon_overlap_ns": 395070813,
+      "a_cgroup_empty_ns": 14567008807,
+      "peer_running_begin_ns": 14567009554,
+      "peer_running_end_ns": 14579549151,
+      "b_cancel_begin_ns": 14597763301
+    },
+    {
+      "mode": "cancel",
+      "round": 4,
+      "ids": [
+        "p06-e3d1756b0907532f-0-cancel-4",
+        "p06-e3d1756b0907532f-1-cancel-4"
+      ],
+      "daemon_overlap_ns": 315117174,
+      "a_cgroup_empty_ns": 15765148836,
+      "peer_running_begin_ns": 15765149664,
+      "peer_running_end_ns": 15778334839,
+      "b_cancel_begin_ns": 15797766554
+    }
+  ],
+  "distributions": {
+    "cancel/cancel_rpc_ack_ms": {
+      "Count": 10,
+      "MinMS": 183.902108,
+      "P50MS": 210.6748245,
+      "P95MS": 234.42847485000001,
+      "MaxMS": 235.474296
+    },
+    "cancel/cancel_to_first_observed_stopped_upper_bound_ms": {
+      "Count": 10,
+      "MinMS": 197.260083,
+      "P50MS": 227.11049350000002,
+      "P95MS": 252.29556589999999,
+      "MaxMS": 255.553187
+    },
+    "cancel/direct_start_ack_ms": {
+      "Count": 10,
+      "MinMS": 39.754616,
+      "P50MS": 55.24534,
+      "P95MS": 67.6265683,
+      "MaxMS": 68.558323
+    },
+    "cancel/start_to_active_daemon_log_ms": {
+      "Count": 10,
+      "MinMS": 509.587238,
+      "P50MS": 588.65852,
+      "P95MS": 641.0294281,
+      "MaxMS": 641.927269
+    },
+    "cancel/start_to_first_observed_running_upper_bound_ms": {
+      "Count": 10,
+      "MinMS": 420.021905,
+      "P50MS": 487.2748865,
+      "P95MS": 538.0011985,
+      "MaxMS": 548.019148
+    },
+    "cancel/start_to_terminal_typed_inspect_log_ms": {
+      "Count": 10,
+      "MinMS": 772.070625,
+      "P50MS": 951.6851045,
+      "P95MS": 1158.52141665,
+      "MaxMS": 1160.355915
+    },
+    "normal/direct_start_ack_ms": {
+      "Count": 10,
+      "MinMS": 40.463121,
+      "P50MS": 52.919104000000004,
+      "P95MS": 61.85771429999999,
+      "MaxMS": 67.743474
+    },
+    "normal/start_to_active_daemon_log_ms": {
+      "Count": 10,
+      "MinMS": 506.246574,
+      "P50MS": 591.5734485,
+      "P95MS": 632.043781,
+      "MaxMS": 635.921647
+    },
+    "normal/start_to_first_observed_running_upper_bound_ms": {
+      "Count": 10,
+      "MinMS": 415.586342,
+      "P50MS": 465.253956,
+      "P95MS": 501.5362373,
+      "MaxMS": 506.004308
+    },
+    "normal/start_to_terminal_typed_inspect_log_ms": {
+      "Count": 10,
+      "MinMS": 1664.476596,
+      "P50MS": 1747.3223035,
+      "P95MS": 1848.8404619,
+      "MaxMS": 1855.735109
+    }
+  },
+  "limitations": [
+    "Start replies are not separately retained in full; direct Start path and intent check are source-reviewed, final/Cancel/typed/receipt intents are recomputed.",
+    "Stop/Snapshot/Release replies and frozen code order are retained; separate cleanup RPC timestamps are not captured.",
+    "Runner before/after process identity checks are source-enforced; the report retains final identity and actual SO_PEERCRED samples, not two independent process snapshots.",
+    "No PostgreSQL, model, paid API, restart, stress-test repetition, network packet probe, or global pool audit."
+  ]
+}

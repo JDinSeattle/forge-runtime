@@ -1,0 +1,96 @@
+{
+  "scope": "independent offline audit of existing E37 PostgreSQL ambiguous-header records; no database rerun",
+  "cases": [
+    {
+      "case": "lower-then-upper",
+      "after_sha256": "b83beabf02bbf62ae0bc92b3891017f0e74204e4beca0c4b66fa45db6ad2ec51",
+      "before_sha256": "76835b07eec278371c7d97372cf21c7c388c45e1eaa11f2300933bed00ec0618",
+      "snapshot_text_sha256": "7ebe43d1e85eb4d0db66005f1403ff4550daf17f7bba5c305314d08147ffa140",
+      "all_record_sets_unchanged": true,
+      "hold_after_lease_expiry": true,
+      "http_409": true,
+      "healthy_claimed": true
+    },
+    {
+      "case": "upper-then-lower",
+      "after_sha256": "66f335014e0f2b80576df3dd6740770b4c7a6afacdaeb6d8d62ccdd5dc02513e",
+      "before_sha256": "be8948ca0d875d0beadde4db7cf5d0f5779f16d382c6edb45f0313b70644d61e",
+      "snapshot_text_sha256": "29be57e1f63520a59242de77587212136121639f17cea0497838cee44883034b",
+      "all_record_sets_unchanged": true,
+      "hold_after_lease_expiry": true,
+      "http_409": true,
+      "healthy_claimed": true
+    },
+    {
+      "case": "duplicate-two-one",
+      "after_sha256": "bbdd95173c11b6c41ec869353fc7e4c8016cd4a5b1a572a797cfb2b303195c36",
+      "before_sha256": "0b30c1fa3f34bd437625b901b266f93b0514e41a6d5f0eeedfbfd95888d42d55",
+      "snapshot_text_sha256": "6ac924d07fb86c9b98acd75004b4671c3a1b17eee17ffcbd81262de8eac19177",
+      "all_record_sets_unchanged": true,
+      "hold_after_lease_expiry": true,
+      "http_409": true,
+      "healthy_claimed": true
+    },
+    {
+      "case": "duplicate-one-one",
+      "after_sha256": "720eb412a80452316c133da5c9c89366e25ca47179c5bb57d49de83c2b5c89e3",
+      "before_sha256": "69f7655896a2fb222e0b421208a735dbc0cea01a69cf46c6f9ee9ec2ce508b8b",
+      "snapshot_text_sha256": "2c2316b19c82c16c038ab24d8e61f5f9aed450a0f2fa219657bd483a69172e7b",
+      "all_record_sets_unchanged": true,
+      "hold_after_lease_expiry": true,
+      "http_409": true,
+      "healthy_claimed": true
+    },
+    {
+      "case": "unicode-long-s",
+      "after_sha256": "5b64c711c5796f33746dc8be11ee914aed6fa9ead2bfe7d4a4cfc9f95445fe68",
+      "before_sha256": "fededde80ddcadd06d693c4b0ad9bdf821fc3ca72564f7420094c0259dda8314",
+      "snapshot_text_sha256": "e743fb72a98bc490ad0507d0c6793ce445686a51e629bdd4f31b250715dc39ff",
+      "all_record_sets_unchanged": true,
+      "hold_after_lease_expiry": true,
+      "http_409": true,
+      "healthy_claimed": true
+    },
+    {
+      "case": "escaped-long-s",
+      "after_sha256": "e3913c06686e2e4aab9fe0eac4864aa3cfd8d77c57cc80d03dba06491de9cae1",
+      "before_sha256": "1eac763a492a4ea8ef7114b69cb148002bb38998fe653a88e3f82d511a2f4c71",
+      "snapshot_text_sha256": "a43c5208a48778a55f0e784d717e6ec84054dc1052ddf1eae2729367f2fa711f",
+      "all_record_sets_unchanged": true,
+      "hold_after_lease_expiry": true,
+      "http_409": true,
+      "healthy_claimed": true
+    }
+  ],
+  "source_sha256": {
+    "internal/persistence/snapshot_compatibility.go": "d1df29117fe069af0ef528c2709ba023d37c91d7f5809f69d1754441dbfb0473",
+    "internal/persistence/snapshot_compatibility_test.go": "bc8caedc37a9370b7ad4017313e2783ad12cfac5f6e1eecbb32cd33a3c04eec0",
+    "tests/review/snapshot_compatibility_test.go": "e895890d3aafb34c3fbef5e95b436facb8f440e2f5ece695b6e9ab48b028209a",
+    "db/migrations/00011_snapshot_compatibility_hold.sql": "20000bc1d77e1bafb3782e1782f4ab59d46712ef5f42569318684f9e0f8b9410",
+    "internal/runtime/snapshot.go": "4572c8233630eb6c6b6355bbb5cbc97fc64077c2c9af1a1b7c84ca9c1a515722",
+    "internal/eventstream/hub.go": "93a7d43ebd8cb1db5af691318a9432f317046dc0dbac89520d82e9a079957242"
+  },
+  "independent_logs": {
+    "/tmp/forge-e37-independent-after-overlay.log": {
+      "sha256": "4a3b9ed9892bf94715808f50a0f2e1fc4aa3deb282fc56f9710c04cc6bc443b2",
+      "executed_by_reviewer": true
+    },
+    "/tmp/forge-e37-independent-after-unit.log": {
+      "sha256": "02b36b382b5c6277ea51dac0e9f7f79b526adf6ecad341c95024c6eda9a384a5",
+      "executed_by_reviewer": true
+    },
+    "/tmp/forge-e37-ambiguous-postgres-after.log": {
+      "sha256": "611e1cd8b796c71d69a841e1d2b1077b7179a2a4dad6c9cb100defcad889c9f9",
+      "executed_by_reviewer": false
+    },
+    "/tmp/forge-e37-ambiguous-postgres-before.log": {
+      "sha256": "4ea019f14b4a4b298cd62907fb0287bddfea4a0b272f4d2a93aa5bc46a0e1772",
+      "executed_by_reviewer": false
+    }
+  },
+  "limitations": [
+    "Current source hashes are independent review identity, not a historical execution binary attestation.",
+    "Live proof/heartbeat/event rejection and repeat-not-found results are asserted by reviewed test plus execution log; raw JSON independently establishes unchanged durable records but does not contain each method return value.",
+    "No live services, paid model, Docker or production migration executed by this review."
+  ]
+}
