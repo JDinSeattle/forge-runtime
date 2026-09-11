@@ -1,0 +1,27 @@
+import importlib.util,json,os,pathlib,subprocess,sys,tempfile,time,hashlib
+repo=pathlib.Path('/home/postedism/Desktop/mini claude code/forge-runtime')
+spec=importlib.util.spec_from_file_location('lifecycle_launcher',repo/'tests/review/run_api_lifecycle.py');module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+out=repo/'benchmarks/results/api-lifecycle-e45-cleanup';out.mkdir()
+results=[]
+for scenario in ('parent_success','parent_failure','parent_timeout'):
+ with tempfile.TemporaryDirectory(prefix='forge-e45-cleanup-',dir='/tmp') as directory:
+  marker=pathlib.Path(directory)/'child-pid'
+  child="import os,signal,time,pathlib;signal.signal(signal.SIGTERM,signal.SIG_IGN);pathlib.Path("+repr(str(marker))+").write_text(str(os.getpid()));time.sleep(60)"
+  parent="import subprocess,sys,pathlib,time;subprocess.Popen([sys.executable,'-c',"+repr(child)+"]);p=pathlib.Path("+repr(str(marker))+")\nwhile not p.exists():time.sleep(.01)\n"+('time.sleep(60)' if scenario=='parent_timeout' else 'sys.exit('+('2' if scenario=='parent_failure' else '0')+')')
+  start=time.monotonic()
+  with (out/(scenario+'.log')).open('wb') as log:
+   code=module.execute_bounded([sys.executable,'-c',parent],repo,os.environ.copy(),log,.5 if scenario=='parent_timeout' else 5)
+  pid=int(marker.read_text());state='absent'
+  for _ in range(100):
+   stat=pathlib.Path('/proc')/str(pid)/'stat'
+   if not stat.exists():state='absent';break
+   state=stat.read_text().split(') ')[1].split()[0]
+   if state=='Z':break
+   time.sleep(.01)
+  expected={'parent_success':0,'parent_failure':2,'parent_timeout':124}[scenario]
+  assert code==expected and state in ('Z','absent'),(scenario,code,state)
+  results.append({'scenario':scenario,'returncode':code,'child_pid':pid,'after_state':state,'elapsed_seconds':time.monotonic()-start,'child_ignored_sigterm':True,'passed':True})
+(out/'report.json').write_text(json.dumps({'launcher_sha256':hashlib.sha256((repo/'tests/review/run_api_lifecycle.py').read_bytes()).hexdigest(),'scope':'own subprocess group only; absent or zombie proves no executing child, not that init has reaped a zombie','results':results},indent=2)+'\n')
+(out/'check.py.txt').write_text(pathlib.Path(__file__).read_text())
+(out/'manifest.json').write_text(json.dumps({p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(out.iterdir()) if p.is_file()},indent=2)+'\n')
+print(json.dumps(results,indent=2))

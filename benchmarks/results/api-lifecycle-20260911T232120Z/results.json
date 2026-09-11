@@ -1,0 +1,51 @@
+[
+  {
+    "argv": [
+      "go",
+      "build",
+      "-race",
+      "-o",
+      "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/api-lifecycle/20260911T232120Z/forge-api",
+      "./cmd/forge-api"
+    ],
+    "elapsed_seconds": 1.6988623259821907,
+    "exit_code": 0,
+    "name": "api-build"
+  },
+  {
+    "argv": [
+      "go",
+      "test",
+      "-race",
+      "-c",
+      "-o",
+      "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/api-lifecycle/20260911T232120Z/review.test",
+      "./tests/review"
+    ],
+    "elapsed_seconds": 2.43744763097493,
+    "exit_code": 0,
+    "name": "test-build"
+  },
+  {
+    "argv": [
+      "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/api-lifecycle/20260911T232120Z/review.test",
+      "-test.v",
+      "-test.run=^TestReviewAPIProcessShutdownDrainsAndSuccessorReplays$",
+      "-test.timeout=45s"
+    ],
+    "elapsed_seconds": 3.7877777589601465,
+    "exit_code": 0,
+    "name": "process-test"
+  },
+  {
+    "argv": [
+      "go",
+      "vet",
+      "./cmd/forge-api",
+      "./tests/review"
+    ],
+    "elapsed_seconds": 0.7209004039759748,
+    "exit_code": 0,
+    "name": "vet"
+  }
+]

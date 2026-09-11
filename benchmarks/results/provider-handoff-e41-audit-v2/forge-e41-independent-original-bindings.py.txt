@@ -1,0 +1,64 @@
+import json,pathlib,hashlib,base64
+root=pathlib.Path('/home/postedism/Desktop/mini claude code/forge-runtime/benchmarks/results/provider-handoff-20260911T230147Z/records')
+out=[]
+for path in sorted(root.glob('*.json')):
+ r=json.loads(path.read_text());objects=r['objects'];summary={'record':path.name}
+ for e in r['effects']:
+  receipt=objects[e['receipt_ref']];q=receipt['request']
+  for key in ('tenant_id','run_id','operation_id','kind','args_hash','policy_version','epoch','expected_revision'):
+   assert q[key]==e[key],(path.name,'effect binding',key)
+  assert q['args']==e['args'] and receipt['status']==e['status']
+  # PG bytea export retains the literal hex form; exact canonical bytes are
+  # independently hashed, not reconstructed by this Python JSON implementation.
+  h=e['canonical_args'];h=h[h.index('x')+1:];raw=bytes.fromhex(h)
+  assert hashlib.sha256(raw).hexdigest()==e['args_hash'] and json.loads(raw)==q['args']
+ summary['bound_receipts']=len(r['effects'])
+ for a in r['attempts']:
+  q=next(q for q in r['reservations'] if q['id']==a['attempt_id']);p=a['pricing']
+  rate=max(p.get(k,0) for k in ('input_price','cache_read_price','cache_write_5m_price','cache_write_1h_price'))
+  expected=(p['context_tokens']*rate+p['max_output_tokens']*p['output_price']+999999)//1000000
+  assert q['microusd']==expected,(path.name,'reservation',q['microusd'],expected)
+  if a['status']=='completed':
+   u=objects[a['raw_ref']]['usage'];assert u['final'] and u['input']['known'] and u['output']['known']
+   # These retained fixtures contain no cache use. Do not generalize this
+   # bounded oracle to arbitrary cache class ambiguity.
+   assert u['cache_read']['value']==0 and u['cache_write']['value']==0
+   actual=(u['input']['value']*p['input_price']+u['output']['value']*p['output_price']+999999)//1000000
+   assert q['status']=='settled' and q['actual_microusd']==actual
+ summary['quote_checked_attempts']=len(r['attempts'])
+ if 'primary_wire' in r:
+  a=r['attempts'][2];p=a['pricing'];body=r['target_wire'][0]['body'];ctx=objects[a['request_ref']]
+  assert body['model']==a['model_id']
+  expected=[];systems=[]
+  if r['target']=='openai':
+   assert body['max_output_tokens']==p['max_output_tokens']
+   for m in ctx['messages']:
+    if m['role']=='tool':expected.append({'type':'function_call_output','call_id':m['tool_call_id'],'output':m.get('text','')})
+    else:
+     if m.get('text') or not m.get('tool_calls'):expected.append({'role':m['role'],'content':m.get('text','')})
+     for c in m.get('tool_calls',[]):expected.append({'type':'function_call','call_id':c['id'],'name':c['name'],'arguments':c['arguments']})
+   actual=[]
+   for e in body['input']:
+    e=dict(e)
+    if e.get('type')=='function_call':e['arguments']=json.loads(e['arguments'])
+    actual.append(e)
+   assert actual==expected,(path.name,'OpenAI portable wire')
+   toolkey='parameters'
+  else:
+   assert body['max_tokens']==p['max_output_tokens']
+   for m in ctx['messages']:
+    if m['role']=='system':systems.append({'type':'text','text':m.get('text','')});continue
+    blocks=[]
+    if m['role']=='tool':blocks=[{'type':'tool_result','tool_use_id':m['tool_call_id'],'content':m.get('text',''),'is_error':m.get('is_error',False)}]
+    else:
+     if m.get('text'):blocks.append({'type':'text','text':m['text']})
+     for c in m.get('tool_calls',[]):blocks.append({'type':'tool_use','id':c['id'],'name':c['name'],'input':c['arguments']})
+    expected.append({'role':'user' if m['role']=='tool' else m['role'],'content':blocks})
+   assert body['system']==systems and body['messages']==expected,(path.name,'Anthropic portable wire')
+   toolkey='input_schema'
+  assert len(body['tools'])==len(ctx['tools'])
+  for actual,want in zip(body['tools'],ctx['tools']):
+   assert actual['name']==want['name'] and actual['description']==want['description'] and actual[toolkey]==want['schema']
+  summary['actual_native_wire_matches_frozen_portable']=True
+ out.append(summary)
+print(json.dumps({'passed':True,'records':out,'scope':'read-only exact retained originals; no provider, sockets, rerun or source changes; actual-cost oracle restricted to these zero-cache fixtures'},indent=2))

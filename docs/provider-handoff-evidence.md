@@ -94,6 +94,23 @@ four deliberate corruptions: foreign opaque leakage, retry reset, refund of an
 unknown fee, and artifact byte tampering. This is an independently recomputable
 oracle written by the implementer, not an independent reviewer claim.
 
+Independent review found three omissions in that original audit: a modified
+target wire model/history, changed settled cost, or substituted effect receipt
+could pass. The retained originals were independently checked and were internally
+consistent; the three copy-only counterexamples are preserved in the
+[v2 audit evidence](../benchmarks/results/provider-handoff-e41-audit-v2/forge-e41-independent-audit-negatives.json).
+The [current audit](../scripts/provider-handoff/audit.py) additionally binds the
+actual destination model, output cap, system/history and tool definitions to its
+hashed portable request; recomputes all 21 frozen reservation quotes and known
+zero-cache charges; and checks 17 effect receipts against their SQL request
+identity, epoch, revision, status and canonical argument bytes. It fails closed
+for cache usage outside these retained fixtures. The
+[v2 report](../benchmarks/results/provider-handoff-e41-audit-v2/report.json) passes
+all seven original records and rejects 22 copy-only corruptions. Independent
+review reran the audit and separately confirmed that its original three
+counterexamples are now rejected. The v1 script, reports and original raw
+records remain unchanged.
+
 ## Preserved terminal-heartbeat failure
 
 The first three scoped runs passed. The

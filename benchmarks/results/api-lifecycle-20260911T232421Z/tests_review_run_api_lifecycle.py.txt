@@ -1,0 +1,116 @@
+#!/usr/bin/env python3
+"""Build and exercise an isolated API lifecycle fixture, retaining input identity.
+
+Requires the explicit private loopback review database environment file. No live
+service, runner, workspace mount or paid provider is changed or invoked.
+"""
+import argparse
+import datetime
+import hashlib
+import json
+import os
+from pathlib import Path
+import shlex
+import signal
+import subprocess
+import time
+
+
+def digest(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def execute_bounded(argv, cwd, env, log, timeout):
+    # A Go test timeout panics outside its testing goroutine and skips t.Cleanup.
+    # Give every invocation its own process group so even that path cannot leave
+    # the API fixture behind. Never signal an inherited/user process group.
+    process = subprocess.Popen(argv, cwd=cwd, env=env, stdout=log,
+                               stderr=subprocess.STDOUT, start_new_session=True)
+    try:
+        try:
+            return process.wait(timeout=timeout)
+        except subprocess.TimeoutExpired:
+            return 124
+    finally:
+        try:
+            os.killpg(process.pid, signal.SIGTERM)
+        except ProcessLookupError:
+            pass
+        else:
+            time.sleep(0.1)
+            try:
+                os.killpg(process.pid, signal.SIGKILL)
+            except ProcessLookupError:
+                pass
+        process.wait(timeout=5)
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--env-file", required=True, type=Path)
+    args = parser.parse_args()
+    repo = Path(__file__).resolve().parents[2]
+    stamp = datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    output = repo / "benchmarks/results" / ("api-lifecycle-" + stamp)
+    build = repo / "var/local/api-lifecycle" / stamp
+    output.mkdir(mode=0o700)
+    build.mkdir(mode=0o700, parents=True)
+    cache = repo / "var/local/go-build-cache"
+    tmp = repo / "var/local/integration-go-tmp"
+    tmp.mkdir(parents=True, exist_ok=True)
+    env = {k: v for k, v in os.environ.items() if not k.startswith(("FORGE_", "OTEL_"))}
+    assert args.env_file.stat().st_mode & 0o077 == 0, "environment file must be private"
+    for line in args.env_file.read_text().splitlines():
+        key, sep, value = line.removeprefix("export ").strip().partition("=")
+        if sep and key in ("FORGE_REVIEW_DATABASE_URL", "FORGE_REVIEW_ALLOW_FIXTURES"):
+            fields = shlex.split(value)
+            assert len(fields) == 1
+            env[key] = fields[0]
+    assert env.get("FORGE_REVIEW_DATABASE_URL") and env.get("FORGE_REVIEW_ALLOW_FIXTURES") == "1"
+    env.update(GOCACHE=str(cache), GOTMPDIR=str(tmp), TMPDIR="/tmp", GOPROXY="off", GOSUMDB="off", GOENV="off", GOTOOLCHAIN="local")
+    env.update(FORGE_REVIEW_API_BINARY=str(build / "forge-api"), FORGE_REVIEW_LIFECYCLE_EVIDENCE=str(output))
+
+    def dump(name, value):
+        (output / name).write_text(json.dumps(value, indent=2, sort_keys=True) + "\n")
+
+    def source():
+        names = subprocess.check_output(["rg", "--files", "--hidden", "-g", "!.git", "-g", "!benchmarks/results", "-g", "!var", "-g", "!bin"], cwd=repo, text=True).splitlines()
+        return {n: digest(repo / n) for n in sorted(names) if Path(n).suffix in (".go", ".mod", ".sum", ".sql", ".yaml", ".yml", ".proto", ".py", ".sh") or n == "Makefile"}
+
+    before = source()
+    dump("source-before.json", before)
+    dump("identity.json", {"base_commit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo, text=True).strip(), "source": "working tree", "go": subprocess.check_output(["go", "version"], env=env, text=True).strip(), "binary_directory": str(build), "scope": "real API TCP and SIGTERM, isolated review PG schema; no worker/runner/model"})
+    for name in ("cmd/forge-api/main.go", "tests/review/lifecycle_test.go", "tests/review/run_api_lifecycle.py"):
+        (output / (name.replace("/", "_") + ".txt")).write_bytes((repo / name).read_bytes())
+    print(json.dumps({"evidence": str(output)}), flush=True)
+    checks = [
+        ("api-build", ["go", "build", "-race", "-o", str(build / "forge-api"), "./cmd/forge-api"]),
+        ("test-build", ["go", "test", "-race", "-c", "-o", str(build / "review.test"), "./tests/review"]),
+        ("process-test", [str(build / "review.test"), "-test.v", "-test.run=^TestReviewAPIProcessShutdownDrainsAndSuccessorReplays$", "-test.timeout=45s"]),
+        ("vet", ["go", "vet", "./cmd/forge-api", "./tests/review"]),
+    ]
+    results = []
+    for name, argv in checks:
+        start = time.monotonic()
+        with (output / (name + ".log")).open("xb") as log:
+            code = execute_bounded(argv, repo, env, log, 55 if name == "process-test" else 180)
+        row = {"name": name, "argv": argv, "exit_code": code, "elapsed_seconds": time.monotonic() - start}
+        results.append(row)
+        dump("results.json", results)
+        print(json.dumps(row), flush=True)
+        if code:
+            break
+    after = source()
+    dump("source-after.json", after)
+    dump("source-comparison.json", {"unchanged": before == after, "changes": [n for n in sorted(before.keys() | after.keys()) if before.get(n) != after.get(n)]})
+    dump("binary-sha256.json", {p.name: digest(p) for p in build.iterdir() if p.is_file()})
+    for binary in build.iterdir():
+        if binary.is_file():
+            with (output / (binary.name + "-build-info.log")).open("xb") as log:
+                subprocess.run(["go", "version", "-m", str(binary)], env=env, stdout=log, stderr=subprocess.STDOUT, check=True)
+    dump("manifest.json", {str(p.relative_to(output)): digest(p) for p in sorted(output.rglob("*")) if p.is_file() and p.name != "manifest.json"})
+    return 0 if before == after and all(r["exit_code"] == 0 for r in results) else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

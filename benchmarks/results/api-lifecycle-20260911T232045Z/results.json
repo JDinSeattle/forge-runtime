@@ -1,0 +1,29 @@
+[
+  {
+    "argv": [
+      "go",
+      "build",
+      "-race",
+      "-o",
+      "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/api-lifecycle/20260911T232045Z/forge-api",
+      "./cmd/forge-api"
+    ],
+    "elapsed_seconds": 2.8697858700179495,
+    "exit_code": 0,
+    "name": "api-build"
+  },
+  {
+    "argv": [
+      "go",
+      "test",
+      "-race",
+      "-c",
+      "-o",
+      "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/api-lifecycle/20260911T232045Z/review.test",
+      "./tests/review"
+    ],
+    "elapsed_seconds": 0.164752974989824,
+    "exit_code": 1,
+    "name": "test-build"
+  }
+]

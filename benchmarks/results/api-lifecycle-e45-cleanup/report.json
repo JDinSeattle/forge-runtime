@@ -1,0 +1,33 @@
+{
+  "launcher_sha256": "5d2d6c181cf93d9003a58f857dedf56a79dc93f64b8a0a5deef2a78a55f8f07b",
+  "scope": "own subprocess group only; absent or zombie proves no executing child, not that init has reaped a zombie",
+  "results": [
+    {
+      "scenario": "parent_success",
+      "returncode": 0,
+      "child_pid": 69,
+      "after_state": "absent",
+      "elapsed_seconds": 0.17462417000206187,
+      "child_ignored_sigterm": true,
+      "passed": true
+    },
+    {
+      "scenario": "parent_failure",
+      "returncode": 2,
+      "child_pid": 71,
+      "after_state": "absent",
+      "elapsed_seconds": 0.1746922229649499,
+      "child_ignored_sigterm": true,
+      "passed": true
+    },
+    {
+      "scenario": "parent_timeout",
+      "returncode": 124,
+      "child_pid": 73,
+      "after_state": "absent",
+      "elapsed_seconds": 0.6017624619998969,
+      "child_ignored_sigterm": true,
+      "passed": true
+    }
+  ]
+}

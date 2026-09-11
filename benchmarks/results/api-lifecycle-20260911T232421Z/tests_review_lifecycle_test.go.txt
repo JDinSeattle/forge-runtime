@@ -1,0 +1,353 @@
+package review_test
+
+import (
+	"bufio"
+	"bytes"
+	"context"
+	"crypto/sha256"
+	"encoding/hex"
+	"encoding/json"
+	"fmt"
+	"io"
+	"net"
+	"net/http"
+	"net/url"
+	"os"
+	osexec "os/exec"
+	"path/filepath"
+	"strings"
+	"syscall"
+	"testing"
+	"time"
+
+	"github.com/JDinSeattle/forge-runtime/internal/application"
+	"github.com/JDinSeattle/forge-runtime/internal/configuration"
+	"github.com/JDinSeattle/forge-runtime/internal/domain"
+	"github.com/JDinSeattle/forge-runtime/internal/httpapi"
+	"github.com/JDinSeattle/forge-runtime/internal/persistence"
+	"github.com/JDinSeattle/forge-runtime/internal/provider"
+)
+
+// This is a real TCP/process-signal/PG test. It does not start a worker, runner,
+// container or model call, and cannot establish their shutdown behavior.
+func TestReviewAPIProcessShutdownDrainsAndSuccessorReplays(t *testing.T) {
+	binary := os.Getenv("FORGE_REVIEW_API_BINARY")
+	if binary == "" {
+		t.Skip("set FORGE_REVIEW_API_BINARY to a freshly built cmd/forge-api executable")
+	}
+	binaryBytes, err := os.ReadFile(binary)
+	if err != nil {
+		t.Fatal(err)
+	}
+	binaryHash := sha256.Sum256(binaryBytes)
+	evidence := map[string]any{
+		"scope":             "actual API process, TCP HTTP/SSE, SIGTERM, isolated PostgreSQL schema; no worker/runner/model",
+		"api_binary_sha256": hex.EncodeToString(binaryHash[:]),
+	}
+	t.Cleanup(func() {
+		evidence["test_failed"] = t.Failed()
+		if dir := os.Getenv("FORGE_REVIEW_LIFECYCLE_EVIDENCE"); dir != "" {
+			b, err := json.MarshalIndent(evidence, "", "  ")
+			if err == nil {
+				err = os.WriteFile(filepath.Join(dir, "api-lifecycle.json"), append(b, '\n'), 0600)
+			}
+			if err != nil {
+				t.Errorf("write lifecycle evidence: %v", err)
+			}
+		}
+	})
+	ctx, owner, apiRole := reviewAPIStore(t)
+	r := reviewRun(t, ctx, owner)
+	token, err := owner.IssueToken(ctx, r.PrincipalID, time.Hour)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var schema, role string
+	if err := owner.Pool.QueryRow(ctx, `SELECT current_schema()`).Scan(&schema); err != nil {
+		t.Fatal(err)
+	}
+	if err := apiRole.Pool.QueryRow(ctx, `SELECT current_user`).Scan(&role); err != nil {
+		t.Fatal(err)
+	}
+	// Startup role selection reproduces the helper's NOLOGIN nonowner/RLS role.
+	// The login remains the review administrator; this is not a LOGIN-role test.
+	dsn, err := url.Parse(os.Getenv("FORGE_REVIEW_DATABASE_URL"))
+	if err != nil {
+		t.Fatal("invalid fixture database URL")
+	}
+	params := dsn.Query()
+	params.Set("search_path", schema)
+	params.Set("options", "-c role="+role)
+	params.Set("application_name", "forge_api_lifecycle_"+schema)
+	dsn.RawQuery = params.Encode()
+	check, err := persistence.Open(ctx, dsn.String())
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = check.CheckAPIRole(ctx)
+	check.Close()
+	if err != nil {
+		t.Fatal(err)
+	}
+	evidence["api_database_role"] = role
+	evidence["schema"] = schema
+	listener, err := net.Listen("tcp", "127.0.0.1:0")
+	if err != nil {
+		t.Fatal(err)
+	}
+	address := listener.Addr().String()
+	if err := listener.Close(); err != nil {
+		t.Fatal(err)
+	}
+	root := t.TempDir()
+	config := configuration.Config{
+		Listen: address, ArtifactRoot: filepath.Join(root, "objects"), SigningKeyFile: filepath.Join(root, "unused.key"),
+		WorkerID: "unused_worker", WorkerSlots: 1, RunnerID: "unused_runner",
+		Sources:   map[string]configuration.Source{"local-fixture": {Path: root, Hash: strings.Repeat("a", 64), ProfileID: "python"}},
+		Configs:   map[string]persistence.Config{"fixture": r.Config},
+		Models:    map[string]application.ModelSpec{"fake/fixture": {CredentialGroup: "fixture", PriceVersion: "fixture-v1", MaxOutputTokens: 256, ContextTokens: 2048, RequestTimeout: time.Second}},
+		Providers: map[string]provider.Registry{"fake": {"fixture": {ToolCalling: true, ContextWindow: 4096, MaxOutputTokens: 256}}},
+	}
+	configBytes, err := json.Marshal(config)
+	if err != nil {
+		t.Fatal(err)
+	}
+	configPath := filepath.Join(root, "platform.json")
+	if err := os.WriteFile(configPath, configBytes, 0600); err != nil {
+		t.Fatal(err)
+	}
+	client := &http.Client{Transport: &http.Transport{DisableKeepAlives: true}, Timeout: 8 * time.Second}
+	t.Cleanup(client.CloseIdleConnections)
+	type processResult struct {
+		done chan struct{}
+		err  error
+	}
+	start := func(name string) (*osexec.Cmd, *processResult) {
+		t.Helper()
+		logFile, err := os.Create(filepath.Join(root, name+".log"))
+		if err != nil {
+			t.Fatal(err)
+		}
+		cmd := osexec.Command(binary, "-config", configPath)
+		cmd.Env = []string{"PATH=/usr/bin:/bin", "LANG=C.UTF-8", "TZ=UTC", "FORGE_DATABASE_URL=" + dsn.String()}
+		cmd.Stdout, cmd.Stderr = logFile, logFile
+		if err := cmd.Start(); err != nil {
+			_ = logFile.Close()
+			t.Fatal(err)
+		}
+		result := &processResult{done: make(chan struct{})}
+		go func() {
+			result.err = cmd.Wait()
+			close(result.done)
+		}()
+		t.Cleanup(func() {
+			select {
+			case <-result.done:
+			default:
+				_ = cmd.Process.Kill()
+				select {
+				case <-result.done:
+				case <-time.After(2 * time.Second):
+					t.Errorf("fixture process %s did not exit", name)
+				}
+			}
+			_ = logFile.Close()
+			b, _ := os.ReadFile(logFile.Name())
+			evidence[name+"_log"] = string(b)
+		})
+		evidence[name+"_pid"] = cmd.Process.Pid
+		deadline := time.Now().Add(4 * time.Second)
+		for time.Now().Before(deadline) {
+			response, err := client.Get("http://" + address + "/healthz")
+			if err == nil {
+				_ = response.Body.Close()
+				if response.StatusCode == 200 {
+					return cmd, result
+				}
+			}
+			select {
+			case <-result.done:
+				t.Fatalf("fixture API exited during startup: %v", result.err)
+			default:
+			}
+			time.Sleep(10 * time.Millisecond)
+		}
+		t.Fatal("fixture API did not become healthy")
+		return nil, nil
+	}
+	request := func(method, path string, body []byte) *http.Request {
+		t.Helper()
+		req, err := http.NewRequestWithContext(ctx, method, "http://"+address+path, bytes.NewReader(body))
+		if err != nil {
+			t.Fatal(err)
+		}
+		req.Header.Set("Authorization", "Bearer "+token)
+		req.Header.Set("X-Forge-Tenant", string(r.TenantID))
+		if body != nil {
+			req.Header.Set("Content-Type", "application/json")
+			req.Header.Set("Idempotency-Key", "api-shutdown-accepted-request")
+		}
+		return req
+	}
+	first, firstWait := start("first")
+	sse, err := client.Do(request("GET", "/v1/runs/"+string(r.ID)+"/events", nil))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer sse.Body.Close()
+	if sse.StatusCode != 200 {
+		t.Fatalf("SSE status %d", sse.StatusCode)
+	}
+	reader := bufio.NewReader(sse.Body)
+	var initial strings.Builder
+	for {
+		line, err := reader.ReadString('\n')
+		if err != nil {
+			t.Fatal(err)
+		}
+		initial.WriteString(line)
+		if line == "\n" && strings.Contains(initial.String(), "data:") {
+			break
+		}
+	}
+	evidence["sse_initial_frame"] = initial.String()
+	sseDone := make(chan error, 1)
+	go func() { _, err := io.Copy(io.Discard, reader); sseDone <- err }()
+	lock, err := owner.Pool.Begin(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer lock.Rollback(context.Background())
+	if _, err := lock.Exec(ctx, `SELECT id FROM projects WHERE tenant_id=$1 AND id=$2 FOR UPDATE`, r.TenantID, r.ProjectID); err != nil {
+		t.Fatal(err)
+	}
+	body, err := json.Marshal(httpapi.SubmitBody{Task: "accepted before SIGTERM", BaseCommit: strings.Repeat("a", 64), ConfigID: "fixture"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	type submitResult struct {
+		Status int
+		RunID  domain.ID `json:"run_id"`
+		Reused bool      `json:"reused"`
+		Error  string    `json:"error,omitempty"`
+	}
+	postRequest := request("POST", "/v1/projects/"+string(r.ProjectID)+"/runs", body)
+	doSubmit := func(req *http.Request) submitResult {
+		response, err := client.Do(req)
+		if err != nil {
+			return submitResult{Error: err.Error()}
+		}
+		defer response.Body.Close()
+		result := submitResult{Status: response.StatusCode}
+		if err := json.NewDecoder(response.Body).Decode(&result); err != nil {
+			result.Error = err.Error()
+		}
+		return result
+	}
+	posted := make(chan submitResult, 1)
+	go func() { posted <- doSubmit(postRequest) }()
+	blocked := false
+	for deadline := time.Now().Add(time.Second); time.Now().Before(deadline); {
+		if err := owner.Pool.QueryRow(ctx, `SELECT EXISTS (SELECT 1 FROM pg_stat_activity WHERE application_name=$1 AND wait_event_type='Lock' AND query LIKE '%FOR SHARE%')`, params.Get("application_name")).Scan(&blocked); err != nil {
+			t.Fatal(err)
+		}
+		if blocked {
+			break
+		}
+		time.Sleep(5 * time.Millisecond)
+	}
+	if !blocked {
+		t.Fatal("accepted submission did not reach the controlled project-row lock")
+	}
+	evidence["inflight_submit_observed_waiting_for_project_lock"] = true
+	evidence["sigterm_at"] = time.Now().UTC()
+	if err := first.Process.Signal(syscall.SIGTERM); err != nil {
+		t.Fatal(err)
+	}
+	refused := false
+	for deadline := time.Now().Add(time.Second); time.Now().Before(deadline); {
+		conn, err := net.DialTimeout("tcp", address, 50*time.Millisecond)
+		if err != nil {
+			refused = true
+			break
+		}
+		_ = conn.Close()
+		time.Sleep(5 * time.Millisecond)
+	}
+	if !refused {
+		t.Fatal("API kept accepting new TCP connections during shutdown")
+	}
+	evidence["listener_refusal_observed_at"] = time.Now().UTC()
+	select {
+	case err := <-sseDone:
+		if err != nil {
+			t.Fatalf("SSE ended without a clean EOF: %v", err)
+		}
+	case <-time.After(time.Second):
+		t.Fatal("SSE did not drain after shutdown")
+	}
+	evidence["sse_clean_eof_observed_at"] = time.Now().UTC()
+	select {
+	case result := <-posted:
+		t.Fatalf("accepted request ended before its database lock was released: %+v", result)
+	default:
+	}
+	select {
+	case <-firstWait.done:
+		t.Fatalf("API exited while its accepted request was still blocked: %v", firstWait.err)
+	default:
+	}
+	if err := lock.Commit(ctx); err != nil {
+		t.Fatal(err)
+	}
+	evidence["project_lock_released_at"] = time.Now().UTC()
+	var submitted submitResult
+	select {
+	case submitted = <-posted:
+	case <-time.After(4 * time.Second):
+		t.Fatal("accepted request did not drain after releasing its lock")
+	}
+	evidence["accepted_submit"] = submitted
+	if submitted.Status != 202 || submitted.RunID == "" || submitted.Reused || submitted.Error != "" {
+		t.Fatalf("accepted submit failed: %+v", submitted)
+	}
+	select {
+	case <-firstWait.done:
+		if firstWait.err != nil {
+			t.Fatalf("API exited unsuccessfully: %v", firstWait.err)
+		}
+	case <-time.After(4 * time.Second):
+		t.Fatal("API did not exit after accepted requests drained")
+	}
+	evidence["first_exit_observed_at"] = time.Now().UTC()
+	second, secondWait := start("successor")
+	replayed := doSubmit(request("POST", "/v1/projects/"+string(r.ProjectID)+"/runs", body))
+	evidence["successor_submit"] = replayed
+	if replayed.Status != 202 || !replayed.Reused || replayed.RunID != submitted.RunID || replayed.Error != "" {
+		t.Fatalf("successor did not replay the committed identity: %+v", replayed)
+	}
+	var count int
+	if err := owner.Pool.QueryRow(ctx, `SELECT count(*) FROM runs WHERE tenant_id=$1 AND project_id=$2`, r.TenantID, r.ProjectID).Scan(&count); err != nil || count != 2 {
+		t.Fatalf("unexpected run count %d: %v", count, err)
+	}
+	for _, id := range []domain.ID{r.ID, submitted.RunID} {
+		current, err := owner.GetRun(ctx, r.TenantID, id)
+		if err != nil || current.State.Status != domain.StatusQueued || current.State.StopTarget != "" || current.State.Lease.Epoch != 0 {
+			t.Fatalf("process shutdown changed business state for %s: %+v %v", id, current.State, err)
+		}
+		evidence[fmt.Sprintf("run_%s", id)] = current
+	}
+	evidence["project_run_count"] = count
+	if err := second.Process.Signal(syscall.SIGTERM); err != nil {
+		t.Fatal(err)
+	}
+	select {
+	case <-secondWait.done:
+		if secondWait.err != nil {
+			t.Fatalf("successor exited unsuccessfully: %v", secondWait.err)
+		}
+	case <-time.After(4 * time.Second):
+		t.Fatal("successor API did not exit")
+	}
+	evidence["successor_exit_observed_at"] = time.Now().UTC()
+}

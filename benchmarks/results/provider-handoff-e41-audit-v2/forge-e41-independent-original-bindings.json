@@ -1,0 +1,43 @@
+{
+  "passed": true,
+  "records": [
+    {
+      "record": "TestFallbackCompatibilityBudgetAndRetryBounds-compatible_fallback_fails.json",
+      "bound_receipts": 1,
+      "quote_checked_attempts": 3
+    },
+    {
+      "record": "TestFallbackCompatibilityBudgetAndRetryBounds-context_too_small.json",
+      "bound_receipts": 1,
+      "quote_checked_attempts": 3
+    },
+    {
+      "record": "TestFallbackCompatibilityBudgetAndRetryBounds-missing_model.json",
+      "bound_receipts": 1,
+      "quote_checked_attempts": 3
+    },
+    {
+      "record": "TestFallbackCompatibilityBudgetAndRetryBounds-unknown_cost_exhausts_budget.json",
+      "bound_receipts": 1,
+      "quote_checked_attempts": 1
+    },
+    {
+      "record": "TestFallbackCompatibilityBudgetAndRetryBounds-unsupported_tools.json",
+      "bound_receipts": 1,
+      "quote_checked_attempts": 3
+    },
+    {
+      "record": "TestNativeProviderHandoffDurableRepair-anthropic.json",
+      "bound_receipts": 6,
+      "quote_checked_attempts": 4,
+      "actual_native_wire_matches_frozen_portable": true
+    },
+    {
+      "record": "TestNativeProviderHandoffDurableRepair-openai.json",
+      "bound_receipts": 6,
+      "quote_checked_attempts": 4,
+      "actual_native_wire_matches_frozen_portable": true
+    }
+  ],
+  "scope": "read-only exact retained originals; no provider, sockets, rerun or source changes; actual-cost oracle restricted to these zero-cache fixtures"
+}
