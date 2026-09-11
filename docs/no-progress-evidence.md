@@ -136,6 +136,21 @@ for exact counts and skipped names. `pre-freeze-manifest.json` describes the
 intermediate archive at commit `7ee738b`; the final `manifest.json` hashes the
 completed archive, including the refreshed `final/` records.
 
+The existing opt-in terminal benchmark also manually issues `ContextBuilt`.
+Its second context now publishes a bound v2 report using its already-completed
+attempt and simulated receipt. This is an explicitly synthetic observation, not
+Driver normalization, and does not disable the guard or downgrade snapshots.
+A separate minimal race smoke passed **10 runs / 10 simulated effects / 20 fake
+model calls**, split 5/5 across its two worker goroutines. All allocations were
+released, active/request counters were zero, and 220 event rows had no gaps.
+The test logged 2.99 s; this is a compatibility smoke, not a fresh 1000-run
+performance result. See [`terminal-smoke/`](../benchmarks/results/no-progress-20260911/terminal-smoke)
+and its [raw log](../benchmarks/results/no-progress-20260911/logs/terminal-smoke-race.log).
+Its separate race binary SHA is
+`4078ea3da5922fc94749cbe9560225d2959acb4430be96c31e706844d77e8903`;
+the dirty-base source hashes, diff and source archive are retained. Earlier
+E09/E39 benchmark measurements are unchanged and retain their original identities.
+
 Failures retained, rather than relabeled:
 
 | Cohort | Result and correction |

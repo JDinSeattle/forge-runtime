@@ -244,7 +244,7 @@ func TestTerminalSimulationEvidence(t *testing.T) {
 		latencies = append(latencies, sample{Index: index[r.RunID], Worker: r.Worker, DurationMS: r.DurationMS})
 	}
 	hashes := sourceHashes(t)
-	for _, path := range []string{"benchmarks/terminal_test.go", "internal/quota/store.go", "internal/persistence/execution.go", "internal/persistence/model_pricing.go", "internal/provider/fake.go"} {
+	for _, path := range []string{"benchmarks/terminal_test.go", "benchmarks/progress_test.go", "internal/runtime/progress.go", "internal/persistence/progress.go", "internal/quota/store.go", "internal/persistence/execution.go", "internal/persistence/model_pricing.go", "internal/provider/fake.go"} {
 		data, err := os.ReadFile(filepath.Join("..", path))
 		if err != nil {
 			t.Fatal(err)
@@ -252,7 +252,7 @@ func TestTerminalSimulationEvidence(t *testing.T) {
 		digest := sha256.Sum256(data)
 		hashes[path] = hex.EncodeToString(digest[:])
 	}
-	report := map[string]any{"schema_version": 1, "timestamp_utc": start.UTC().Format(time.RFC3339Nano), "scope": "Finite simulated controller through real PostgreSQL Store transitions/attempt/quota APIs, real local artifact bytes, actual FakeProvider stream assembly and an in-memory FakeExecutor; not application.Driver, HTTP or Docker", "machine": machine(), "database": map[string]any{"version": version, "fsync": fsync, "synchronous_commit": commit, "shared_buffers": sharedBuffers, "pool_max_connections": s.Pool.Config().MaxConns, "pool_min_connections": s.Pool.Config().MinConns}, "configuration": map[string]any{"runs": count, "tenants": tenants, "workers": workers, "submitters": submitters, "runner_slots": workers, "tenant_max_active": 2, "provider_concurrency": workers, "fake_model_turns_per_run": 2, "simulated_effects_per_run": 1, "simulated_start_requests_per_effect": 2, "synthetic_cost_per_turn_microusd": 3}, "submit_wall_seconds": submitWall.Seconds(), "execution_phase": makePhase(latencies, workWall), "run_records": records, "invariants": invariants, "source_sha256": hashes, "limitations": []string{"Two goroutines in one process, not separate OS worker processes or a crash-recovery workload.", "Finite event script uses Store APIs directly; it does not test application.Driver command routing or production runner idempotency.", "FakeExecutor map deduplication models an idempotent executor; no shell/file-write side effect occurs.", "Synthetic trusted verification sets regression_only, not verified; no code-correctness claim.", "Two actual FakeProvider assemblies per run; no native network request, paid model, automatic retries or prompt compaction.", "Synthetic cost is fixed test data; PostgreSQL settlement/replay arithmetic is measured, provider billing accuracy is not.", "Artifact bytes are real temporary local files, removed along with fixture database schema after the test.", "One shared-machine sample; no HTTP/SSE throughput or production SLO claim."}}
+	report := map[string]any{"schema_version": 1, "timestamp_utc": start.UTC().Format(time.RFC3339Nano), "scope": "Finite simulated controller through real PostgreSQL Store transitions/attempt/quota APIs, real local artifact bytes, actual FakeProvider stream assembly and an in-memory FakeExecutor; not application.Driver, HTTP or Docker", "machine": machine(), "database": map[string]any{"version": version, "fsync": fsync, "synchronous_commit": commit, "shared_buffers": sharedBuffers, "pool_max_connections": s.Pool.Config().MaxConns, "pool_min_connections": s.Pool.Config().MinConns}, "configuration": map[string]any{"runs": count, "tenants": tenants, "workers": workers, "submitters": submitters, "runner_slots": workers, "tenant_max_active": 2, "provider_concurrency": workers, "fake_model_turns_per_run": 2, "simulated_effects_per_run": 1, "simulated_start_requests_per_effect": 2, "synthetic_cost_per_turn_microusd": 3}, "submit_wall_seconds": submitWall.Seconds(), "execution_phase": makePhase(latencies, workWall), "run_records": records, "invariants": invariants, "source_sha256": hashes, "limitations": []string{"Two goroutines in one process, not separate OS worker processes or a crash-recovery workload.", "Finite event script uses Store APIs directly; it does not test application.Driver command routing or production runner idempotency.", "FakeExecutor map deduplication models an idempotent executor; no shell/file-write side effect occurs.", "Synthetic trusted verification sets regression_only, not verified; no code-correctness claim.", "The v2 progress report binds the completed attempt and simulated receipt; its fingerprint is synthetic, not production Driver normalization.", "Two actual FakeProvider assemblies per run; no native network request, paid model, automatic retries or prompt compaction.", "Synthetic cost is fixed test data; PostgreSQL settlement/replay arithmetic is measured, provider billing accuracy is not.", "Artifact bytes are real temporary local files, removed along with fixture database schema after the test.", "One shared-machine sample; no HTTP/SSE throughput or production SLO claim."}}
 	body, err := json.MarshalIndent(report, "", "  ")
 	if err != nil {
 		t.Fatal(err)
@@ -361,7 +361,11 @@ func (h *terminalHarness) drive(ctx context.Context, r persistence.Run) (termina
 	if err = advance(flow.Event{Kind: flow.EventResultsIngested, OutputRef: string(refID)}); err != nil {
 		return terminalRecord{}, err
 	}
-	if err = advance(flow.Event{Kind: flow.EventContextBuilt, OutputRef: contextRef}); err != nil {
+	closedContext, err := h.simulatedClosedContext(ctx, r, contextRef, receipt)
+	if err != nil {
+		return terminalRecord{}, err
+	}
+	if err = advance(closedContext); err != nil {
 		return terminalRecord{}, err
 	}
 	_, modelRef, err = h.model(ctx, r, contextRef, true)

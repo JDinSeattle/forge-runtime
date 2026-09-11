@@ -1,0 +1,393 @@
+{
+  "configuration": {
+    "fake_model_turns_per_run": 2,
+    "provider_concurrency": 2,
+    "runner_slots": 2,
+    "runs": 10,
+    "simulated_effects_per_run": 1,
+    "simulated_start_requests_per_effect": 2,
+    "submitters": 8,
+    "synthetic_cost_per_turn_microusd": 3,
+    "tenant_max_active": 2,
+    "tenants": 10,
+    "workers": 2
+  },
+  "database": {
+    "fsync": "on",
+    "pool_max_connections": 16,
+    "pool_min_connections": 1,
+    "shared_buffers": "128MB",
+    "synchronous_commit": "on",
+    "version": "PostgreSQL 17.11 on x86_64-pc-linux-musl, compiled by gcc (Alpine 15.2.0) 15.2.0, 64-bit"
+  },
+  "execution_phase": {
+    "wall_seconds": 2.54678014,
+    "operations_per_second": 3.9265266141112596,
+    "latency": {
+      "count": 10,
+      "min_ms": 407.078278,
+      "p50_ms": 493.717577,
+      "p95_ms": 604.353508,
+      "p99_ms": 604.353508,
+      "max_ms": 604.353508
+    },
+    "samples": [
+      {
+        "run_index": 7,
+        "worker": 1,
+        "duration_ms": 559.0390520000001
+      },
+      {
+        "run_index": 0,
+        "worker": 0,
+        "duration_ms": 604.353508
+      },
+      {
+        "run_index": 5,
+        "worker": 1,
+        "duration_ms": 493.717577
+      },
+      {
+        "run_index": 6,
+        "worker": 0,
+        "duration_ms": 483.808377
+      },
+      {
+        "run_index": 1,
+        "worker": 1,
+        "duration_ms": 497.340747
+      },
+      {
+        "run_index": 4,
+        "worker": 0,
+        "duration_ms": 559.552384
+      },
+      {
+        "run_index": 8,
+        "worker": 1,
+        "duration_ms": 513.038163
+      },
+      {
+        "run_index": 2,
+        "worker": 0,
+        "duration_ms": 439.21915
+      },
+      {
+        "run_index": 3,
+        "worker": 1,
+        "duration_ms": 411.943648
+      },
+      {
+        "run_index": 9,
+        "worker": 0,
+        "duration_ms": 407.078278
+      }
+    ]
+  },
+  "invariants": {
+    "allocations": 10,
+    "capacity_or_runner_lock_polls": 3,
+    "completed_model_attempts": 20,
+    "completed_runs": 10,
+    "confirmed_effects": 10,
+    "duplicate_confirmations_rejected": 10,
+    "duplicate_settlement_calls": 20,
+    "empty_polls": 16,
+    "event_gaps": 0,
+    "event_rows": 220,
+    "missing_ready_effect_receipts": 0,
+    "passed": true,
+    "provider_active_requests": 0,
+    "provider_committed_microusd": 60,
+    "provider_committed_tokens": 960,
+    "provider_reserved_microusd": 0,
+    "provider_reserved_tokens": 0,
+    "released_allocations": 10,
+    "run_finished_events": 10,
+    "runner_reserved_slots": 0,
+    "runs": 10,
+    "runs_by_worker": [
+      5,
+      5
+    ],
+    "simulated_executions": 10,
+    "simulated_provider_calls": 20,
+    "simulated_provider_events": 60,
+    "simulated_start_requests": 20,
+    "snapshot_rows": 120,
+    "tenant_active_total": 0,
+    "unique_simulated_effects": 10,
+    "unsettled_reservations": 0
+  },
+  "limitations": [
+    "Two goroutines in one process, not separate OS worker processes or a crash-recovery workload.",
+    "Finite event script uses Store APIs directly; it does not test application.Driver command routing or production runner idempotency.",
+    "FakeExecutor map deduplication models an idempotent executor; no shell/file-write side effect occurs.",
+    "Synthetic trusted verification sets regression_only, not verified; no code-correctness claim.",
+    "The v2 progress report binds the completed attempt and simulated receipt; its fingerprint is synthetic, not production Driver normalization.",
+    "Two actual FakeProvider assemblies per run; no native network request, paid model, automatic retries or prompt compaction.",
+    "Synthetic cost is fixed test data; PostgreSQL settlement/replay arithmetic is measured, provider billing accuracy is not.",
+    "Artifact bytes are real temporary local files, removed along with fixture database schema after the test.",
+    "One shared-machine sample; no HTTP/SSE throughput or production SLO claim."
+  ],
+  "machine": {
+    "architecture": "amd64",
+    "cpu_model": "13th Gen Intel(R) Core(TM) i9-13900K",
+    "go_version": "go1.26.8",
+    "gomaxprocs": 2,
+    "host_memory": "129209084 kB",
+    "logical_cpus": 32,
+    "os": "linux"
+  },
+  "run_records": [
+    {
+      "run_id": "run_CEUYSPV6GG74QSM52L2KO27Y4O",
+      "tenant_id": "simtenant_ELQLH3DVFA3W5KZKQ4EYOLKMLJ",
+      "worker": 1,
+      "duration_ms": 559.0390520000001,
+      "status": "completed",
+      "version": 12,
+      "covered_seq": 22,
+      "fake_provider_calls": 2,
+      "synthetic_cost_microusd": 6,
+      "simulated_receipt": {
+        "effect_id": "run_CEUYSPV6GG74QSM52L2KO27Y4O_read",
+        "args_hash": "644ae8368dd6a57c978b4189e29875850b2a323e047edc78429ceba54d3cda86",
+        "epoch": 1,
+        "status": "succeeded",
+        "before_revision": 1,
+        "after_revision": 1,
+        "ref": "simreceipt_run_CEUYSPV6GG74QSM52L2KO27Y4O",
+        "settled": true
+      },
+      "duplicate_confirmation_rejected": true,
+      "repeated_terminal_control_unchanged": true
+    },
+    {
+      "run_id": "run_XXMUIPY3H3ECBG7F2OB4WZK2VX",
+      "tenant_id": "simtenant_EV2ZQ5Q4GHUCPKVSBRCRZ7FNQH",
+      "worker": 0,
+      "duration_ms": 604.353508,
+      "status": "completed",
+      "version": 12,
+      "covered_seq": 22,
+      "fake_provider_calls": 2,
+      "synthetic_cost_microusd": 6,
+      "simulated_receipt": {
+        "effect_id": "run_XXMUIPY3H3ECBG7F2OB4WZK2VX_read",
+        "args_hash": "644ae8368dd6a57c978b4189e29875850b2a323e047edc78429ceba54d3cda86",
+        "epoch": 1,
+        "status": "succeeded",
+        "before_revision": 1,
+        "after_revision": 1,
+        "ref": "simreceipt_run_XXMUIPY3H3ECBG7F2OB4WZK2VX",
+        "settled": true
+      },
+      "duplicate_confirmation_rejected": true,
+      "repeated_terminal_control_unchanged": true
+    },
+    {
+      "run_id": "run_DZP7RJYAEGIHLMK3ZKJOT4MTQK",
+      "tenant_id": "simtenant_G5OSQZSPPYJ6XNBTWPGLJ4XRN4",
+      "worker": 1,
+      "duration_ms": 493.717577,
+      "status": "completed",
+      "version": 12,
+      "covered_seq": 22,
+      "fake_provider_calls": 2,
+      "synthetic_cost_microusd": 6,
+      "simulated_receipt": {
+        "effect_id": "run_DZP7RJYAEGIHLMK3ZKJOT4MTQK_read",
+        "args_hash": "644ae8368dd6a57c978b4189e29875850b2a323e047edc78429ceba54d3cda86",
+        "epoch": 1,
+        "status": "succeeded",
+        "before_revision": 1,
+        "after_revision": 1,
+        "ref": "simreceipt_run_DZP7RJYAEGIHLMK3ZKJOT4MTQK",
+        "settled": true
+      },
+      "duplicate_confirmation_rejected": true,
+      "repeated_terminal_control_unchanged": true
+    },
+    {
+      "run_id": "run_FWGCKXMTIMUG3JP3SLAK4XAYV4",
+      "tenant_id": "simtenant_KJJHHQHV5QCRSBPPQWKBC7DR3R",
+      "worker": 0,
+      "duration_ms": 483.808377,
+      "status": "completed",
+      "version": 12,
+      "covered_seq": 22,
+      "fake_provider_calls": 2,
+      "synthetic_cost_microusd": 6,
+      "simulated_receipt": {
+        "effect_id": "run_FWGCKXMTIMUG3JP3SLAK4XAYV4_read",
+        "args_hash": "644ae8368dd6a57c978b4189e29875850b2a323e047edc78429ceba54d3cda86",
+        "epoch": 1,
+        "status": "succeeded",
+        "before_revision": 1,
+        "after_revision": 1,
+        "ref": "simreceipt_run_FWGCKXMTIMUG3JP3SLAK4XAYV4",
+        "settled": true
+      },
+      "duplicate_confirmation_rejected": true,
+      "repeated_terminal_control_unchanged": true
+    },
+    {
+      "run_id": "run_CVANPAEBQYIKAQ3U5XKBJWM5GP",
+      "tenant_id": "simtenant_MDGSZZR3Z7KFG2JVVWKU624MXP",
+      "worker": 1,
+      "duration_ms": 497.340747,
+      "status": "completed",
+      "version": 12,
+      "covered_seq": 22,
+      "fake_provider_calls": 2,
+      "synthetic_cost_microusd": 6,
+      "simulated_receipt": {
+        "effect_id": "run_CVANPAEBQYIKAQ3U5XKBJWM5GP_read",
+        "args_hash": "644ae8368dd6a57c978b4189e29875850b2a323e047edc78429ceba54d3cda86",
+        "epoch": 1,
+        "status": "succeeded",
+        "before_revision": 1,
+        "after_revision": 1,
+        "ref": "simreceipt_run_CVANPAEBQYIKAQ3U5XKBJWM5GP",
+        "settled": true
+      },
+      "duplicate_confirmation_rejected": true,
+      "repeated_terminal_control_unchanged": true
+    },
+    {
+      "run_id": "run_5NITFVYQQ6DBS2MCGYHVPLNRL3",
+      "tenant_id": "simtenant_UOY467VV5D47CGQJ4ASONZ5H5R",
+      "worker": 0,
+      "duration_ms": 559.552384,
+      "status": "completed",
+      "version": 12,
+      "covered_seq": 22,
+      "fake_provider_calls": 2,
+      "synthetic_cost_microusd": 6,
+      "simulated_receipt": {
+        "effect_id": "run_5NITFVYQQ6DBS2MCGYHVPLNRL3_read",
+        "args_hash": "644ae8368dd6a57c978b4189e29875850b2a323e047edc78429ceba54d3cda86",
+        "epoch": 1,
+        "status": "succeeded",
+        "before_revision": 1,
+        "after_revision": 1,
+        "ref": "simreceipt_run_5NITFVYQQ6DBS2MCGYHVPLNRL3",
+        "settled": true
+      },
+      "duplicate_confirmation_rejected": true,
+      "repeated_terminal_control_unchanged": true
+    },
+    {
+      "run_id": "run_5E6EQJFEHNBO6ANBV7KMWBCNHU",
+      "tenant_id": "simtenant_ZIZ6IJWFFJKPCWVP7FN3P7SRG3",
+      "worker": 1,
+      "duration_ms": 513.038163,
+      "status": "completed",
+      "version": 12,
+      "covered_seq": 22,
+      "fake_provider_calls": 2,
+      "synthetic_cost_microusd": 6,
+      "simulated_receipt": {
+        "effect_id": "run_5E6EQJFEHNBO6ANBV7KMWBCNHU_read",
+        "args_hash": "644ae8368dd6a57c978b4189e29875850b2a323e047edc78429ceba54d3cda86",
+        "epoch": 1,
+        "status": "succeeded",
+        "before_revision": 1,
+        "after_revision": 1,
+        "ref": "simreceipt_run_5E6EQJFEHNBO6ANBV7KMWBCNHU",
+        "settled": true
+      },
+      "duplicate_confirmation_rejected": true,
+      "repeated_terminal_control_unchanged": true
+    },
+    {
+      "run_id": "run_EIEDUGBIQDONAIDJGJZJKXXAKU",
+      "tenant_id": "simtenant_3YV3M4M3NRHTFFLHNM4YETEUHL",
+      "worker": 0,
+      "duration_ms": 439.21915,
+      "status": "completed",
+      "version": 12,
+      "covered_seq": 22,
+      "fake_provider_calls": 2,
+      "synthetic_cost_microusd": 6,
+      "simulated_receipt": {
+        "effect_id": "run_EIEDUGBIQDONAIDJGJZJKXXAKU_read",
+        "args_hash": "644ae8368dd6a57c978b4189e29875850b2a323e047edc78429ceba54d3cda86",
+        "epoch": 1,
+        "status": "succeeded",
+        "before_revision": 1,
+        "after_revision": 1,
+        "ref": "simreceipt_run_EIEDUGBIQDONAIDJGJZJKXXAKU",
+        "settled": true
+      },
+      "duplicate_confirmation_rejected": true,
+      "repeated_terminal_control_unchanged": true
+    },
+    {
+      "run_id": "run_3AOFZJGQI2XCU4QGUUD5ZSAYCF",
+      "tenant_id": "simtenant_EQLA3ANOIQ5EYPDBUGJSMCJV3T",
+      "worker": 1,
+      "duration_ms": 411.943648,
+      "status": "completed",
+      "version": 12,
+      "covered_seq": 22,
+      "fake_provider_calls": 2,
+      "synthetic_cost_microusd": 6,
+      "simulated_receipt": {
+        "effect_id": "run_3AOFZJGQI2XCU4QGUUD5ZSAYCF_read",
+        "args_hash": "644ae8368dd6a57c978b4189e29875850b2a323e047edc78429ceba54d3cda86",
+        "epoch": 1,
+        "status": "succeeded",
+        "before_revision": 1,
+        "after_revision": 1,
+        "ref": "simreceipt_run_3AOFZJGQI2XCU4QGUUD5ZSAYCF",
+        "settled": true
+      },
+      "duplicate_confirmation_rejected": true,
+      "repeated_terminal_control_unchanged": true
+    },
+    {
+      "run_id": "run_OWF6ONYIDQOBFSX3CS4MWEK5PH",
+      "tenant_id": "simtenant_G7CVIGOZTKC6F5X5Y5VFE7PXVX",
+      "worker": 0,
+      "duration_ms": 407.078278,
+      "status": "completed",
+      "version": 12,
+      "covered_seq": 22,
+      "fake_provider_calls": 2,
+      "synthetic_cost_microusd": 6,
+      "simulated_receipt": {
+        "effect_id": "run_OWF6ONYIDQOBFSX3CS4MWEK5PH_read",
+        "args_hash": "644ae8368dd6a57c978b4189e29875850b2a323e047edc78429ceba54d3cda86",
+        "epoch": 1,
+        "status": "succeeded",
+        "before_revision": 1,
+        "after_revision": 1,
+        "ref": "simreceipt_run_OWF6ONYIDQOBFSX3CS4MWEK5PH",
+        "settled": true
+      },
+      "duplicate_confirmation_rejected": true,
+      "repeated_terminal_control_unchanged": true
+    }
+  ],
+  "schema_version": 1,
+  "scope": "Finite simulated controller through real PostgreSQL Store transitions/attempt/quota APIs, real local artifact bytes, actual FakeProvider stream assembly and an in-memory FakeExecutor; not application.Driver, HTTP or Docker",
+  "source_sha256": {
+    "benchmarks/progress_test.go": "f9ff7ffccdbd1d5fce1b5375f7dabd53ceb43a03baf50b12d1d6bb209f07764d",
+    "benchmarks/scheduler_test.go": "94f44aebc51290e6b8b6dff69f15706051078850c242e69e9a29df95247ce0c6",
+    "benchmarks/terminal_test.go": "88b5acec1bb185851cb5eb75b227df7173f73a235ff8ad0cca5882eaef4f4013",
+    "go.mod": "61a96a6dbfdc546edcc7abab472adc49313db486443c47f2272ad75cdae21682",
+    "internal/persistence/execution.go": "b421bcbe4a6ecf11428f4e59db85cf18e1df64e0daad84f9fde3f0c30920f71a",
+    "internal/persistence/model_pricing.go": "1c26dc6bddbb8bc85f532842fccb04e47add200c8f96bb21ca3122f9afd63042",
+    "internal/persistence/progress.go": "8df5d49e9b3fd966f04c547ad6dbacc974b70e27b8fccde0a24a3762e03b2408",
+    "internal/persistence/scheduler.go": "5703329fc4776d4188e3362b7fdb12940f189e3b4fcce2e04d318b2ff50d6909",
+    "internal/persistence/store.go": "257ff3be210999c9c89008236db9e2b00f96dc43e73169a691f9b1feb5ab3df3",
+    "internal/provider/fake.go": "e242740b70804034199514935d3fe979b2fcaa7e337f3ee35eef697cd972d614",
+    "internal/quota/store.go": "8af04c467890ef4f3f5b84dfb75987f1b6458205154152ccf27f394a3e13cc3c",
+    "internal/runtime/progress.go": "a4d614cc40028b6c43deca9798b558129ae84cc505fdf9007e27f36aeac5cd3a",
+    "internal/runtime/reducer.go": "0f485de96b0fdb790e0227b2b51492ce5167ef250a1ee576158c44752f3a5316"
+  },
+  "submit_wall_seconds": 0.04052789,
+  "timestamp_utc": "2026-09-11T23:27:10.415038075Z"
+}
