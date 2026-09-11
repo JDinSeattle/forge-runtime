@@ -1,0 +1,7 @@
+{
+  "finding": "P2: initial audit accepted a fabricated F08 summary with both writers before lease expiry; real raw execution remained correct.",
+  "correction": "Bind proof timestamps to archived/hash-checked command receipts and stdout; require old writes across lease expiry and old write < Docker die < new write.",
+  "validation": "Original three-case raw audit passes strengthened checks. Two offline regression tests pass, including rejection of the exact fabricated summary.",
+  "original_audit_preserved": "independent-audit.json",
+  "strengthened_audit": "independent-audit-strengthened.json"
+}

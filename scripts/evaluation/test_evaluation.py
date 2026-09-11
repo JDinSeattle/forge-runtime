@@ -1,13 +1,17 @@
 #!/usr/bin/python3
 """No-network unit tests. Synthetic registration/ledger values are not model results."""
 import copy
+import contextlib
 import importlib.util
 import json
 import os
 import hashlib
+import io
 from pathlib import Path
 import tempfile
 import subprocess
+import sys
+import time
 import unittest
 from unittest.mock import patch
 
@@ -33,14 +37,51 @@ def registration():
 
 
 class EvaluationTests(unittest.TestCase):
+    def test_go_cache_inherits_explicit_configuration_or_go_default(self):
+        with patch.dict(os.environ, {}, clear=True):
+            self.assertNotIn("GOCACHE", common.go_environment())
+        with patch.dict(os.environ, {"GOCACHE": "/operator-selected-cache"}, clear=True):
+            self.assertEqual(common.go_environment()["GOCACHE"], "/operator-selected-cache")
+            self.assertEqual(common.go_environment()["GOPROXY"], "off")
+
+    def test_timeout_stops_owned_helper_and_its_child(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            proof = Path(temporary) / "processes.json"
+            # A process tree like Python -> go run -> compiler, with inherited
+            # stdout. A direct-child-only kill would leave communicate blocked.
+            script = "import subprocess,sys,os,json,time; from pathlib import Path; child=subprocess.Popen([sys.executable,'-c','import time; time.sleep(60)']); Path(sys.argv[1]).write_text(json.dumps([os.getpid(),child.pid])); time.sleep(60)"
+            with self.assertRaises(subprocess.TimeoutExpired):
+                common.local_output([sys.executable, "-c", script, str(proof)], timeout=2)
+            pids = json.loads(proof.read_text())
+            for pid in pids:
+                stat = Path(f"/proc/{pid}/stat")
+                # A killed descendant may briefly await PID 1 reaping on Linux.
+                deadline = time.monotonic() + 2
+                while True:
+                    try:
+                        state = stat.read_text().rsplit(")", 1)[1].split()[0]
+                    except FileNotFoundError:
+                        break
+                    if state in {"Z", "X"}:
+                        break
+                    self.assertLess(time.monotonic(), deadline, f"helper descendant {pid} remained live")
+                    time.sleep(0.01)
+
     def test_prepare_writes_candidate_only_and_validation_never_runs_cli(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             common.save_json(root / "registration.json", registration())
             common.save_json(root / "platform-template.json", {"worker_id": "synthetic_worker", "fake_scripts": {"unused": []}})
             common.save_json(root / "runner-template.json", {"allow_test_backend": False, "runner_id": "synthetic_runner", "journal": "preserve-template-path"})
-            command = ["python3", "-B", str(HERE / "prepare.py"), "--registration", str(root / "registration.json"), "--platform-template", str(root / "platform-template.json"), "--runner-template", str(root / "runner-template.json"), "--python-image", "synthetic@sha256:" + "a" * 64, "--go-image", "synthetic@sha256:" + "b" * 64, "--output", str(root / "candidate")]
-            subprocess.check_output(command, text=True, timeout=90)
+            arguments = ["--registration", str(root / "registration.json"), "--platform-template", str(root / "platform-template.json"), "--runner-template", str(root / "runner-template.json"), "--python-image", "synthetic@sha256:" + "a" * 64, "--go-image", "synthetic@sha256:" + "b" * 64, "--output", str(root / "candidate")]
+            # Let the helper's own timeout reap go and compiler children rather
+            # than killing an outer Python process before its cleanup can run.
+            original_umask = os.umask(0o077)
+            try:
+                with contextlib.redirect_stdout(io.StringIO()):
+                    prepare.main(arguments)
+            finally:
+                os.umask(original_umask)
             _, _, _, platform = evaluate.load_bundle(root / "candidate")
             runner = json.loads((root / "candidate/runner.json").read_text())
             self.assertNotIn("fake_scripts", platform)
@@ -66,7 +107,7 @@ class EvaluationTests(unittest.TestCase):
             if exact:
                 r["model_spec"].update(input_price=0, output_price=0)
             registrations.append(prepare.validate_registration(r))
-        raw = subprocess.check_output(["go", "run", str(HERE / "hash-sources.go"), "--model-spec-json"], input=json.dumps([r["model_spec"] for r in registrations]), cwd=common.REPO, env=dict(os.environ, GOCACHE="/tmp/forge-runtime-gocache", GOPROXY="off"), text=True, timeout=90)
+        raw = common.local_output(["go", "run", str(HERE / "hash-sources.go"), "--model-spec-json"], input=json.dumps([r["model_spec"] for r in registrations]), cwd=common.REPO, env=common.go_environment())
         actual = json.loads(raw)
         for r, serialized in zip(registrations, actual, strict=True):
             self.assertEqual(serialized, r["model_spec"])

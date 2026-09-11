@@ -4,6 +4,8 @@ The application F05/F07/F08 matrix passed **3 cases in 39.72 seconds**, using tw
 
 The harness author's [saved-evidence audit](../benchmarks/results/application-faults-audit-20260911.json) checked the records below. A separate agent independently recomputed bindings, ledger balances, trusted reports, daemon history and all 81 archived artifact digests with [audit-application.py](../scripts/faults/audit-application.py); its [independent audit result](../benchmarks/results/application-faults-20260911T194600Z/independent-audit.json) is preserved. These are reviews of the same saved execution, not a second OS experiment or an independent implementation review.
 
+A subsequent review found that the first auditor could accept a fabricated F08 summary with both writers before expiry. The [correction record](../benchmarks/results/application-faults-20260911T194600Z/audit-review-correction.json) preserves that limitation. The [strengthened audit](../benchmarks/results/application-faults-20260911T194600Z/independent-audit-strengthened.json) now binds both writers to hash-checked command receipts and raw stdout, requires the old writes to cross the actual lease expiry, and checks `last old write < original Docker die < first new write`. The original execution satisfies all checks; the exact fabricated-summary regression is rejected. The first audit and its source snapshot remain unchanged.
+
 ## Tested boundaries
 
 | Case | Actual boundary and recovery | Before worker death | Original effect result | Duration |

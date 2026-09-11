@@ -1,0 +1,24 @@
+diff --git "a/app-counter.txt" "b/app-counter.txt"
+new file mode 100644
+--- /dev/null
++++ "b/app-counter.txt"
+@@ -0,0 +1,1 @@
++1
+diff --git "a/app.py" "b/app.py"
+--- "a/app.py"
++++ "b/app.py"
+@@ -1,4 +1,4 @@
+-def clamp(value, low, high):
+-    if low > high:
+-        raise ValueError("inverted bounds")
+-    return min(low, max(value, high))
++def clamp(value, low, high):
++    if low > high:
++        raise ValueError("inverted bounds")
++    return max(low, min(value, high))
+diff --git "a/new-writer.txt" "b/new-writer.txt"
+new file mode 100644
+--- /dev/null
++++ "b/new-writer.txt"
+@@ -0,0 +1,1 @@
++1789157406991832693

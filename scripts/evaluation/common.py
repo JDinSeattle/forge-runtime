@@ -4,6 +4,8 @@ import json
 import os
 from pathlib import Path
 import re
+import signal
+import subprocess
 
 HERE = Path(__file__).absolute().parent
 REPO = HERE.parents[1]
@@ -11,6 +13,32 @@ CORPUS = HERE / "corpus"
 CASES = ("py-utf8-chunks", "py-latest-records", "go-midpoint", "go-rune-rle")
 VERSION = "eval-v2"
 SOURCE_PREFIX = "evalv2_"
+
+
+def go_environment():
+    # Reuse the caller's cache (including CI setup-go), or Go's normal default.
+    return dict(os.environ, GOPROXY="off")
+
+
+def local_output(command, *, input=None, cwd=None, env=None, timeout=90):
+    """Bound a local helper and its inherited descendants to one owned group."""
+    process = subprocess.Popen(command, cwd=cwd, env=env, text=True,
+                               stdin=subprocess.PIPE if input is not None else subprocess.DEVNULL,
+                               stdout=subprocess.PIPE, start_new_session=True)
+    try:
+        output, _ = process.communicate(input, timeout=timeout)
+    except BaseException:
+        # subprocess.run(timeout=...) kills only the direct child. go run also
+        # starts compiler/linker children, so stop the group we created first.
+        try:
+            os.killpg(process.pid, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
+        process.communicate()
+        raise
+    if process.returncode:
+        raise subprocess.CalledProcessError(process.returncode, command, output=output)
+    return output
 
 
 def file_hash(path):

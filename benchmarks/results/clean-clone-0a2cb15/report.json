@@ -1,0 +1,28 @@
+{
+  "tested_commit": "0a2cb15e1de83de509aaf0afabd90bb669c3cf45",
+  "clone": "/tmp/forge-runtime-clean-0a2cb15",
+  "source": "Local --no-hardlinks Git clone of committed source; not a fresh machine or independent person executing a second deployment. Installed toolchain, module/cache and existing local PG reused.",
+  "commands": [
+    "make build check-generated",
+    "go test -p 2 -json ./... -count=1",
+    "python3 -I -m unittest discover -s scripts/evaluation -p test_*.py -v"
+  ],
+  "results": {
+    "build": "pass",
+    "generated": "pass",
+    "ordinary_tests": "pass",
+    "evaluation_python_13_tests": "pass",
+    "tracked_and_untracked_git_diff": "empty"
+  },
+  "passing_test_subtest_entries": 296,
+  "opt_in_skips": 16,
+  "passed_packages": 19,
+  "race_rerun_in_clone": false,
+  "module_cache_warning": "Go could not write a self-module version stat-cache entry to the read-only shared cache; build/generation exited zero.",
+  "sha256": {
+    "build-generated.log": "8cf1e42abc1ff3a943b9996ef9bf3ce478d08e3ca57063e3f0674d1868304f73",
+    "tests.jsonl": "9e3c79859ebdbcaa5122e262d27c763b1c59e5d543332e739987cfa42667ae7d",
+    "tests.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "evaluation-tests.log": "47a54f1a773d69593701ca9a3b581f915b56c863dba3806bdbb792f795c69242"
+  }
+}

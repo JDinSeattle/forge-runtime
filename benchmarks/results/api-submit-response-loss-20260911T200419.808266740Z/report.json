@@ -1,0 +1,438 @@
+{
+  "attempts": [
+    {
+      "label": "committed_response_deliberately_lost",
+      "started_at": "2026-09-11T13:04:19.978756348-07:00",
+      "finished_at": "2026-09-11T13:04:20.012966845-07:00",
+      "tenant": "f01_tenant",
+      "request_sha256": "603c67cbc92a1aeb88995eca6e92e5875294801ade66dc07e555efd34f3d5535",
+      "http_status": 0,
+      "http_response_received": false,
+      "client_error": "Post \"http://127.0.0.1:32841/v1/projects/project_HIT7STX2VBZMISHBF5XD4PAQDT/runs\": EOF"
+    },
+    {
+      "label": "explicit_same_key_and_body_retry",
+      "started_at": "2026-09-11T13:04:20.01339535-07:00",
+      "finished_at": "2026-09-11T13:04:20.015860936-07:00",
+      "tenant": "f01_tenant",
+      "request_sha256": "603c67cbc92a1aeb88995eca6e92e5875294801ade66dc07e555efd34f3d5535",
+      "http_status": 202,
+      "http_response_received": true,
+      "response_location": "/v1/runs/run_MMTFCLEJVVHFEKNTNQ6QYNXK6A",
+      "response_body": {
+        "reused": true,
+        "run_id": "run_MMTFCLEJVVHFEKNTNQ6QYNXK6A"
+      }
+    },
+    {
+      "label": "same_key_different_body",
+      "started_at": "2026-09-11T13:04:20.016151942-07:00",
+      "finished_at": "2026-09-11T13:04:20.01809274-07:00",
+      "tenant": "f01_tenant",
+      "request_sha256": "eb3c344b75bb5938396fce98a995dfc71b1a2032922897d98a831cecb213688e",
+      "http_status": 409,
+      "http_response_received": true,
+      "response_body": {
+        "code": "conflict",
+        "message": "conflict: idempotency key has different request",
+        "request_id": "request_S3S5UH66YNEPRXBMWXVCLNKGRN",
+        "retryable": false
+      }
+    },
+    {
+      "label": "same_token_unrelated_tenant",
+      "started_at": "2026-09-11T13:04:20.018093588-07:00",
+      "finished_at": "2026-09-11T13:04:20.018965933-07:00",
+      "tenant": "f01_other_tenant",
+      "request_sha256": "603c67cbc92a1aeb88995eca6e92e5875294801ade66dc07e555efd34f3d5535",
+      "http_status": 403,
+      "http_response_received": true,
+      "response_body": {
+        "code": "forbidden",
+        "message": "authentication or permission denied",
+        "request_id": "request_U4SN45TPIKZGXMV44WJQOUVWOF",
+        "retryable": false
+      }
+    }
+  ],
+  "calls_after_first_client_failure": {
+    "proxy": 1,
+    "upstream": 1
+  },
+  "calls_at_end": {
+    "proxy": 4,
+    "upstream": 4
+  },
+  "database": {
+    "api_pool_max": 16,
+    "api_role": "nonowner NOSUPERUSER NOBYPASSRLS NOINHERIT with private-schema CRUD grants",
+    "fsync": "on",
+    "owner_pool_max": 16,
+    "private_schema": "test_ykjjz24lhxa2zfzsto5kfymhao",
+    "synchronous_commit": "on",
+    "version": "PostgreSQL 17.11 on x86_64-pc-linux-musl, compiled by gcc (Alpine 15.2.0) 15.2.0, 64-bit"
+  },
+  "invariants": {
+    "conflicting_body_rejected": true,
+    "durable_commit_proved_before_socket_close": true,
+    "first_client_saw_unknown_transport_outcome": true,
+    "one_run_event_and_key": true,
+    "passed": true,
+    "retry_reused": true,
+    "retry_same_run": true,
+    "unrelated_tenant_rejected": true
+  },
+  "limitations": [
+    "This is a single deterministic after-commit/before-response transport cut. It is not a production reverse-proxy change, distributed packet-loss rate test or worker crash.",
+    "The proxy's upstream response and independent PG proof are fixture observations unavailable to the failed client. The client retry uses only its original request/key, not that hidden run ID.",
+    "Both HTTP legs use real loopback TCP. Fresh client/proxy connections avoid hidden automatic replay; per-hop call counters prove exactly one initial upstream call.",
+    "Only the test's private schema and synthetic tenant/principal/key are used. Bearer tokens and DSNs are not retained.",
+    "No worker, runner, executor or model is started. The single run remains queued with one run.created event; model/effect/allocation tables stay empty."
+  ],
+  "manifest": {
+    "git_base_commit": "0a2cb15e1de83de509aaf0afabd90bb669c3cf45",
+    "machine": {
+      "architecture": "amd64",
+      "cpu_model": "13th Gen Intel(R) Core(TM) i9-13900K",
+      "go_version": "go1.26.8",
+      "gomaxprocs": 32,
+      "host_memory": "129209084 kB",
+      "logical_cpus": 32,
+      "os": "linux"
+    },
+    "source_sha256": {
+      "benchmarks/api_fault_test.go": "ee6d7baaf1ba2c14271471a893839d6a9c03df2ab2be48bce6f0fcb62c33cff3",
+      "benchmarks/sse_sustained_test.go": "9688593ae971731f30fe44dc78aa7e0937889f932654c82abb151474a9ea0789",
+      "benchmarks/sse_test.go": "a3fb78d3329cdc4c39eb433573084ec2d25451f8b477d66139affabc5fb0e3e2",
+      "go.mod": "61a96a6dbfdc546edcc7abab472adc49313db486443c47f2272ad75cdae21682",
+      "internal/eventstream/hub.go": "b68eb36971c13e0542421247304ff73d04f99e137b3a184e98492d242f6e8bd9",
+      "internal/httpapi/server.go": "6e592ac5c860084ee994fb353d33599fb992c9e521cef1df7e35c8c207f2301f",
+      "internal/httpapi/sse.go": "9e1cf3e540cc0c22970cda5731cb9428272245dd25a25311d988447f2248996c",
+      "internal/persistence/identity.go": "7a4c65b48e6e6d5bfe139689ce248fd7df7977f0c823fe456c78281a9fc62151",
+      "internal/persistence/store.go": "a60c400be7d3ab9dff474f84066b598e8f6c915e4b73de55d6277e2340c72eb8"
+    },
+    "working_tree_dirty": true
+  },
+  "pg_after_first_client_failure": {
+    "runs": [
+      {
+        "id": "run_MMTFCLEJVVHFEKNTNQ6QYNXK6A",
+        "state": "queued",
+        "version": 1,
+        "runner_id": null,
+        "tenant_id": "f01_tenant",
+        "created_at": "2026-09-11T20:04:19.988954+00:00",
+        "project_id": "project_HIT7STX2VBZMISHBF5XD4PAQDT",
+        "covered_seq": 1,
+        "lease_epoch": 0,
+        "principal_id": "f01_developer"
+      }
+    ],
+    "events": [
+      {
+        "seq": 1,
+        "type": "run.created",
+        "run_id": "run_MMTFCLEJVVHFEKNTNQ6QYNXK6A",
+        "payload": {
+          "lease": {
+            "epoch": 0,
+            "owner": "",
+            "until": "0001-01-01T00:00:00Z"
+          },
+          "stage": "initialize",
+          "limits": {
+            "deadline": "2026-09-11T13:05:19.983339-07:00",
+            "max_tool_calls": 1,
+            "max_model_rounds": 1,
+            "max_cost_microusd": 0
+          },
+          "run_id": "run_MMTFCLEJVVHFEKNTNQ6QYNXK6A",
+          "status": "queued",
+          "version": 1,
+          "step_seq": 0,
+          "tenant_id": "f01_tenant",
+          "tool_calls": 0,
+          "model_rounds": 0,
+          "cost_microusd": 0,
+          "schema_version": 1,
+          "workspace_revision": 0,
+          "verification_status": "unverified",
+          "verification_revision": 0
+        },
+        "step_seq": null,
+        "tenant_id": "f01_tenant",
+        "attempt_id": null,
+        "created_at": "2026-09-11T20:04:19.995654+00:00",
+        "schema_version": 1
+      }
+    ],
+    "effects": 0,
+    "captured_at": "2026-09-11T20:04:20.013111+00:00",
+    "model_attempts": 0,
+    "idempotency_keys": [
+      {
+        "key": "f01-response-lost-exact-key",
+        "route": "/v1/projects/project_HIT7STX2VBZMISHBF5XD4PAQDT/runs",
+        "response": {
+          "run_id": "run_MMTFCLEJVVHFEKNTNQ6QYNXK6A"
+        },
+        "tenant_id": "f01_tenant",
+        "created_at": "2026-09-11T20:04:19.984401+00:00",
+        "expires_at": "2026-09-12T20:04:19.983339+00:00",
+        "resource_id": "run_MMTFCLEJVVHFEKNTNQ6QYNXK6A",
+        "principal_id": "f01_developer",
+        "request_hash": "82aeb9d9f1f03b4023133b737368a6d540b04201283aac2dd9c5235562aa06ac"
+      }
+    ],
+    "runner_allocations": 0
+  },
+  "pg_after_retry": {
+    "runs": [
+      {
+        "id": "run_MMTFCLEJVVHFEKNTNQ6QYNXK6A",
+        "state": "queued",
+        "version": 1,
+        "runner_id": null,
+        "tenant_id": "f01_tenant",
+        "created_at": "2026-09-11T20:04:19.988954+00:00",
+        "project_id": "project_HIT7STX2VBZMISHBF5XD4PAQDT",
+        "covered_seq": 1,
+        "lease_epoch": 0,
+        "principal_id": "f01_developer"
+      }
+    ],
+    "events": [
+      {
+        "seq": 1,
+        "type": "run.created",
+        "run_id": "run_MMTFCLEJVVHFEKNTNQ6QYNXK6A",
+        "payload": {
+          "lease": {
+            "epoch": 0,
+            "owner": "",
+            "until": "0001-01-01T00:00:00Z"
+          },
+          "stage": "initialize",
+          "limits": {
+            "deadline": "2026-09-11T13:05:19.983339-07:00",
+            "max_tool_calls": 1,
+            "max_model_rounds": 1,
+            "max_cost_microusd": 0
+          },
+          "run_id": "run_MMTFCLEJVVHFEKNTNQ6QYNXK6A",
+          "status": "queued",
+          "version": 1,
+          "step_seq": 0,
+          "tenant_id": "f01_tenant",
+          "tool_calls": 0,
+          "model_rounds": 0,
+          "cost_microusd": 0,
+          "schema_version": 1,
+          "workspace_revision": 0,
+          "verification_status": "unverified",
+          "verification_revision": 0
+        },
+        "step_seq": null,
+        "tenant_id": "f01_tenant",
+        "attempt_id": null,
+        "created_at": "2026-09-11T20:04:19.995654+00:00",
+        "schema_version": 1
+      }
+    ],
+    "effects": 0,
+    "captured_at": "2026-09-11T20:04:20.015951+00:00",
+    "model_attempts": 0,
+    "idempotency_keys": [
+      {
+        "key": "f01-response-lost-exact-key",
+        "route": "/v1/projects/project_HIT7STX2VBZMISHBF5XD4PAQDT/runs",
+        "response": {
+          "run_id": "run_MMTFCLEJVVHFEKNTNQ6QYNXK6A"
+        },
+        "tenant_id": "f01_tenant",
+        "created_at": "2026-09-11T20:04:19.984401+00:00",
+        "expires_at": "2026-09-12T20:04:19.983339+00:00",
+        "resource_id": "run_MMTFCLEJVVHFEKNTNQ6QYNXK6A",
+        "principal_id": "f01_developer",
+        "request_hash": "82aeb9d9f1f03b4023133b737368a6d540b04201283aac2dd9c5235562aa06ac"
+      }
+    ],
+    "runner_allocations": 0
+  },
+  "pg_final": {
+    "runs": [
+      {
+        "id": "run_MMTFCLEJVVHFEKNTNQ6QYNXK6A",
+        "state": "queued",
+        "version": 1,
+        "runner_id": null,
+        "tenant_id": "f01_tenant",
+        "created_at": "2026-09-11T20:04:19.988954+00:00",
+        "project_id": "project_HIT7STX2VBZMISHBF5XD4PAQDT",
+        "covered_seq": 1,
+        "lease_epoch": 0,
+        "principal_id": "f01_developer"
+      }
+    ],
+    "events": [
+      {
+        "seq": 1,
+        "type": "run.created",
+        "run_id": "run_MMTFCLEJVVHFEKNTNQ6QYNXK6A",
+        "payload": {
+          "lease": {
+            "epoch": 0,
+            "owner": "",
+            "until": "0001-01-01T00:00:00Z"
+          },
+          "stage": "initialize",
+          "limits": {
+            "deadline": "2026-09-11T13:05:19.983339-07:00",
+            "max_tool_calls": 1,
+            "max_model_rounds": 1,
+            "max_cost_microusd": 0
+          },
+          "run_id": "run_MMTFCLEJVVHFEKNTNQ6QYNXK6A",
+          "status": "queued",
+          "version": 1,
+          "step_seq": 0,
+          "tenant_id": "f01_tenant",
+          "tool_calls": 0,
+          "model_rounds": 0,
+          "cost_microusd": 0,
+          "schema_version": 1,
+          "workspace_revision": 0,
+          "verification_status": "unverified",
+          "verification_revision": 0
+        },
+        "step_seq": null,
+        "tenant_id": "f01_tenant",
+        "attempt_id": null,
+        "created_at": "2026-09-11T20:04:19.995654+00:00",
+        "schema_version": 1
+      }
+    ],
+    "effects": 0,
+    "captured_at": "2026-09-11T20:04:20.01909+00:00",
+    "model_attempts": 0,
+    "idempotency_keys": [
+      {
+        "key": "f01-response-lost-exact-key",
+        "route": "/v1/projects/project_HIT7STX2VBZMISHBF5XD4PAQDT/runs",
+        "response": {
+          "run_id": "run_MMTFCLEJVVHFEKNTNQ6QYNXK6A"
+        },
+        "tenant_id": "f01_tenant",
+        "created_at": "2026-09-11T20:04:19.984401+00:00",
+        "expires_at": "2026-09-12T20:04:19.983339+00:00",
+        "resource_id": "run_MMTFCLEJVVHFEKNTNQ6QYNXK6A",
+        "principal_id": "f01_developer",
+        "request_hash": "82aeb9d9f1f03b4023133b737368a6d540b04201283aac2dd9c5235562aa06ac"
+      }
+    ],
+    "runner_allocations": 0
+  },
+  "problems": null,
+  "proxy_fault": {
+    "upstream_response_at": "2026-09-11T13:04:20.001184658-07:00",
+    "upstream_status": 202,
+    "upstream_location": "/v1/runs/run_MMTFCLEJVVHFEKNTNQ6QYNXK6A",
+    "upstream_body": {
+      "reused": false,
+      "run_id": "run_MMTFCLEJVVHFEKNTNQ6QYNXK6A"
+    },
+    "durable_proof_at": "2026-09-11T13:04:20.012832254-07:00",
+    "durable_proof_before_connection_close": {
+      "runs": [
+        {
+          "id": "run_MMTFCLEJVVHFEKNTNQ6QYNXK6A",
+          "state": "queued",
+          "version": 1,
+          "runner_id": null,
+          "tenant_id": "f01_tenant",
+          "created_at": "2026-09-11T20:04:19.988954+00:00",
+          "project_id": "project_HIT7STX2VBZMISHBF5XD4PAQDT",
+          "covered_seq": 1,
+          "lease_epoch": 0,
+          "principal_id": "f01_developer"
+        }
+      ],
+      "events": [
+        {
+          "seq": 1,
+          "type": "run.created",
+          "run_id": "run_MMTFCLEJVVHFEKNTNQ6QYNXK6A",
+          "payload": {
+            "lease": {
+              "epoch": 0,
+              "owner": "",
+              "until": "0001-01-01T00:00:00Z"
+            },
+            "stage": "initialize",
+            "limits": {
+              "deadline": "2026-09-11T13:05:19.983339-07:00",
+              "max_tool_calls": 1,
+              "max_model_rounds": 1,
+              "max_cost_microusd": 0
+            },
+            "run_id": "run_MMTFCLEJVVHFEKNTNQ6QYNXK6A",
+            "status": "queued",
+            "version": 1,
+            "step_seq": 0,
+            "tenant_id": "f01_tenant",
+            "tool_calls": 0,
+            "model_rounds": 0,
+            "cost_microusd": 0,
+            "schema_version": 1,
+            "workspace_revision": 0,
+            "verification_status": "unverified",
+            "verification_revision": 0
+          },
+          "step_seq": null,
+          "tenant_id": "f01_tenant",
+          "attempt_id": null,
+          "created_at": "2026-09-11T20:04:19.995654+00:00",
+          "schema_version": 1
+        }
+      ],
+      "effects": 0,
+      "captured_at": "2026-09-11T20:04:20.012292+00:00",
+      "model_attempts": 0,
+      "idempotency_keys": [
+        {
+          "key": "f01-response-lost-exact-key",
+          "route": "/v1/projects/project_HIT7STX2VBZMISHBF5XD4PAQDT/runs",
+          "response": {
+            "run_id": "run_MMTFCLEJVVHFEKNTNQ6QYNXK6A"
+          },
+          "tenant_id": "f01_tenant",
+          "created_at": "2026-09-11T20:04:19.984401+00:00",
+          "expires_at": "2026-09-12T20:04:19.983339+00:00",
+          "resource_id": "run_MMTFCLEJVVHFEKNTNQ6QYNXK6A",
+          "principal_id": "f01_developer",
+          "request_hash": "82aeb9d9f1f03b4023133b737368a6d540b04201283aac2dd9c5235562aa06ac"
+        }
+      ],
+      "runner_allocations": 0
+    },
+    "client_connection_closed_at": "2026-09-11T13:04:20.012899423-07:00",
+    "client_socket_closed_without_http_response": true
+  },
+  "request": {
+    "authorization_header": "present; bearer token intentionally excluded",
+    "body": {
+      "task": "Response was lost after this synthetic task committed",
+      "base_commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "config_id": "f01",
+      "budget": {}
+    },
+    "key": "f01-response-lost-exact-key",
+    "method": "POST",
+    "principal": "f01_developer",
+    "route": "/v1/projects/project_HIT7STX2VBZMISHBF5XD4PAQDT/runs",
+    "tenant": "f01_tenant"
+  },
+  "schema_version": 1,
+  "scope": "Actual HTTP API commits once; fixture reverse proxy confirms durable PG records, drops the accepted response before forwarding, then the client explicitly retries the same bound key and body",
+  "timestamp_utc": "2026-09-11T20:04:19.80826674Z"
+}

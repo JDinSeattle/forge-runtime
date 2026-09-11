@@ -1,0 +1,42 @@
+{
+  "request": {
+    "tenant_id": "app-fault-c4gixa7njs4n53balr5yap3b6o",
+    "run_id": "run_I6W6UUU5HPBZFYV44W6OQOTTS4",
+    "workspace_id": "run_I6W6UUU5HPBZFYV44W6OQOTTS4",
+    "epoch": 3,
+    "grant": "",
+    "operation_id": "run_I6W6UUU5HPBZFYV44W6OQOTTS4_step_3_op_0",
+    "expected_revision": 3,
+    "kind": "apply_patch",
+    "args": {
+      "files": [
+        {
+          "content": "def clamp(value, low, high):\n    if low \u003e high:\n        raise ValueError(\"inverted bounds\")\n    return max(low, min(value, high))\n",
+          "expected_sha256": "74dbba6926c7c09da1cbaf9063c78e47eef6bd461e3341bed825ee8b1f34027b",
+          "path": "app.py"
+        }
+      ]
+    },
+    "args_hash": "e5e62e5a341f8ccba140b2af3b4ccc7d31133294116f399587fc5031717b2028",
+    "policy_version": "workspace-v1",
+    "deadline": "2026-09-11T20:11:26.391827Z"
+  },
+  "status": "succeeded",
+  "job_id": "forge-4be90bbd95ff935af6a76f1ff3bde3e150d76b01",
+  "before_hash": "97cbcadee2414cf6716e341acf03f560457bf0148c73b1cfbbd401ae65c157c6",
+  "expected_after_hash": "d8fb198068602034f4323c0b2fc5d242d1160f27204dfc9b092d5e02e8799e93",
+  "after_hash": "d8fb198068602034f4323c0b2fc5d242d1160f27204dfc9b092d5e02e8799e93",
+  "after_revision": 4,
+  "result": {
+    "changed_files": 1
+  },
+  "receipt": {
+    "tenant_id": "app-fault-c4gixa7njs4n53balr5yap3b6o",
+    "run_id": "run_I6W6UUU5HPBZFYV44W6OQOTTS4",
+    "kind": "operation_receipt",
+    "object_key": "app-fault-c4gixa7njs4n53balr5yap3b6o/run_I6W6UUU5HPBZFYV44W6OQOTTS4/d73dca9a062c2f4ce8278385a8545f0a83c17cac884ed7005d7e3c1540675360",
+    "sha256": "d73dca9a062c2f4ce8278385a8545f0a83c17cac884ed7005d7e3c1540675360",
+    "size": 1194
+  },
+  "cancel_requested": false
+}

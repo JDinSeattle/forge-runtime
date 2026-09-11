@@ -6,7 +6,6 @@ import json
 import os
 from pathlib import Path
 import re
-import subprocess
 import sys
 
 sys.dont_write_bytecode = True
@@ -67,7 +66,7 @@ def validate_registration(r):
     return r
 
 
-def main():
+def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--registration", required=True)
     parser.add_argument("--platform-template", required=True)
@@ -75,7 +74,7 @@ def main():
     parser.add_argument("--python-image", required=True)
     parser.add_argument("--go-image", required=True)
     parser.add_argument("--output", required=True)
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
     manifest = common.verify_corpus()
     registration = validate_registration(json.loads(Path(args.registration).read_text()))
     platform = json.loads(Path(args.platform_template).read_text())
@@ -85,7 +84,7 @@ def main():
     for image in (args.python_image, args.go_image):
         if not re.fullmatch(r"[a-z0-9][a-z0-9._/:+-]*@sha256:[0-9a-f]{64}", image):
             raise ValueError("explicit digest-pinned Python and Go images required")
-    hashes = json.loads(subprocess.check_output(["go", "run", str(HERE / "hash-sources.go"), str(common.CORPUS)], cwd=common.REPO, env=dict(os.environ, GOCACHE="/tmp/forge-runtime-gocache", GOPROXY="off"), text=True))
+    hashes = json.loads(common.local_output(["go", "run", str(HERE / "hash-sources.go"), str(common.CORPUS)], cwd=common.REPO, env=common.go_environment()))
     platform["sources"], runner["sources"], runner["profiles"] = {}, {}, {}
     for case in common.CASES:
         identity = common.SOURCE_PREFIX + case

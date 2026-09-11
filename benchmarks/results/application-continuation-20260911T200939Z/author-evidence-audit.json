@@ -1,0 +1,109 @@
+{
+  "evidence": "E25",
+  "passed": true,
+  "scope": "Recomputed saved evidence by the harness author, not an independent implementation review or second OS run. PostgreSQL captures are sequential non-atomic table reads; costs and usage are deterministic fixture values. F02 SQLite zero counts and F09 rejection outcomes are harness assertions retained in reports, not a separately queried historical SQLite snapshot.",
+  "verified_READY_artifacts": 79,
+  "provenance_matches_current_bytes": true,
+  "cases": [
+    {
+      "case": "F02",
+      "run_id": "run_PB56H7PUGG4B6KAKYZHLKHYOV6",
+      "schema": "appfault_slwbx6zofqpi4wndvuyrkt4i43",
+      "workers": [
+        437105,
+        437145
+      ],
+      "worker_sigkill_requested": "2026-09-11T20:09:40.979436726Z",
+      "first_replacement_epoch": 2,
+      "replacement_claim_db_time": "2026-09-11T13:09:46.002725-07:00",
+      "original_command_dispatch_epoch": 3,
+      "events": 63,
+      "verified_READY_artifacts": 26,
+      "synthetic_microusd": 570,
+      "fixture_tokens": 570,
+      "claim_epochs": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "cleanup_epoch": 5,
+      "original_lease_until": "2026-09-11T13:09:45.942514-07:00",
+      "claim_after_expiry_ns": 60211000,
+      "zero_external_work": {
+        "pg_approvals": 0,
+        "pg_artifacts": 0,
+        "pg_effects": 0,
+        "pg_model_attempts": 0,
+        "pg_quota_reservations": 0,
+        "sqlite_operations": 0,
+        "sqlite_volume_leases": 0,
+        "sqlite_workspaces": 0
+      }
+    },
+    {
+      "case": "F06",
+      "run_id": "run_I6W6UUU5HPBZFYV44W6OQOTTS4",
+      "schema": "appfault_g33vm4tonlxkikhoosmvwosrnt",
+      "workers": [
+        440613,
+        441863
+      ],
+      "worker_sigkill_requested": "2026-09-11T20:09:55.387129727Z",
+      "first_replacement_epoch": 4,
+      "replacement_claim_db_time": "2026-09-11T13:09:59.517069-07:00",
+      "original_command_dispatch_epoch": 2,
+      "events": 65,
+      "verified_READY_artifacts": 27,
+      "synthetic_microusd": 570,
+      "fixture_tokens": 570,
+      "claim_epochs": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "cleanup_epoch": 5,
+      "original_lease_until": "2026-09-11T13:09:59.422783-07:00",
+      "claim_after_expiry_ns": 94286000,
+      "patch_operation": "run_I6W6UUU5HPBZFYV44W6OQOTTS4_step_3_op_0",
+      "patch_dispatch_epoch": 3,
+      "patch_before_hash": "97cbcadee2414cf6716e341acf03f560457bf0148c73b1cfbbd401ae65c157c6",
+      "patch_after_hash": "d8fb198068602034f4323c0b2fc5d242d1160f27204dfc9b092d5e02e8799e93",
+      "patch_receipt_sha256": "d73dca9a062c2f4ce8278385a8545f0a83c17cac884ed7005d7e3c1540675360",
+      "patch_original_receipt_preserved": true
+    },
+    {
+      "case": "F09",
+      "run_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW",
+      "schema": "appfault_bns5hwve2hwy4fw5jt2cfprbbf",
+      "workers": [
+        443963,
+        444583
+      ],
+      "worker_sigkill_requested": "2026-09-11T20:10:04.05495487Z",
+      "first_replacement_epoch": 2,
+      "replacement_claim_db_time": "2026-09-11T13:10:05.434188-07:00",
+      "original_command_dispatch_epoch": 2,
+      "events": 62,
+      "verified_READY_artifacts": 26,
+      "synthetic_microusd": 570,
+      "fixture_tokens": 570,
+      "claim_epochs": [
+        1,
+        2,
+        3
+      ],
+      "cleanup_epoch": 4,
+      "runners": [
+        443758,
+        444419
+      ],
+      "runner_sigkill_requested": "2026-09-11T20:10:04.059776584Z",
+      "first_valid_approval_db_time": "2026-09-11T13:10:05.348807-07:00",
+      "workspace_hash": "66ee6f4ae415b0735c6eb4d0645f5a8d72d33e7946d0219e319aa9158a375659",
+      "approval_five_wrong_bindings_rejected": true,
+      "recovery_trigger": "exact durable approval, not lease expiry"
+    }
+  ]
+}

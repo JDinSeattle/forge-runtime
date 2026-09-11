@@ -40,6 +40,7 @@ those checks.
 | [E21](application-fault-evidence.md) | Real worker F05/F07/F08 and PostgreSQL effect/quota/capacity reconciliation | Two worker PIDs, actual SIGKILL, natural lease expiry, Docker effects and 81 checked artifact files | Fake models and synthetic rates; phase exports are sequential, not atomic |
 | [E22](../benchmarks/results/evaluation-oracle-v2-20260911/report.json) | Fixed eval-v2 source/oracle target and regression checks | All 16 actual isolated container outcomes match trusted grader assertions | Corpus validation only; no real-model quality or paid usage result |
 | [E23](../benchmarks/results/delivery-validation-20260911/report.json) | Continuation whole-tree checks | Build, ordinary/race tests, vet, generated bindings and helper tests | Local working tree; original exact-commit CI remains separately identified |
+| [E24](api-response-loss-evidence.md) | HTTP acceptance response lost after real PG commit, followed by same-key retry | Actual two-leg loopback TCP, four unchanged PG snapshots, raw responses and independent audit | One fixture proxy cut; no worker, runner or model execution |
 
 ## E01 — Schemas and generated code
 
@@ -899,13 +900,45 @@ from skipped tests. Python checks cover 14 volume-helper, 8 runner-helper,
 10 recovery and 13 evaluation tests. This working-tree record is anchored at
 `a4541a1`; it is not relabeled as a test of an as-yet-uncreated commit.
 
+The resulting commit `0a2cb15e1de83de509aaf0afabd90bb669c3cf45` subsequently
+passes build, generation, ordinary tests and all 13 evaluation helper tests in a
+[separate local clone](../benchmarks/results/clean-clone-0a2cb15/report.json),
+with no tracked or untracked changes. The clone reuses installed tools/caches
+and the local PG fixture; it is not a fresh-machine deployment. Its
+[GitHub Actions run](https://github.com/JDinSeattle/forge-runtime/actions/runs/34641822549)
+passes the Go checks but fails the evaluation helper step: candidate preparation
+times out while an explicitly hard-coded temporary cache bypasses CI's warmed
+default cache. The [failed log](../benchmarks/results/clean-clone-0a2cb15/github-actions-failure.log)
+is preserved; cache inheritance and child-process cleanup are being corrected.
+
+## E25 — Claim, patch and approval process faults, 2026-09-11
+
+The [continuation record](application-continuation-evidence.md) links the real
+F02/F06/F09 matrix, all three cases passing in 30.13 seconds. F02 uses an actual
+claim-only child before Driver execution, then a separate production Driver
+worker resumes after natural expiry. F06 preserves a real native patch and its
+durable receipt while PostgreSQL is still in flight, then settles the same
+operation after worker death. F09 kills both worker and runner during approval
+wait, preserves the original workspace/binding/version, rejects five incorrect
+bindings and proceeds only after the exact original approval.
+
+Source snapshots and matching binary hashes are retained. The saved-evidence
+audit checks 79 READY artifacts (26/27/26), real trusted verification, four
+fake-model attempts and four settlements per run, 570 synthetic microdollars
+and 570 fixture tokens, zero remaining capacity/reservations, and snapshot
+publication before volume release. Natural-expiry claim delays are 60.211 ms
+and 94.286 ms for F02/F06; F09 resumes on approval rather than expiry.
+PostgreSQL captures are sequential non-atomic table reads. This result does not
+claim PostgreSQL outage, native model billing or execution of the separate
+failed-fixture recovery entry point. The original E21 harness is unchanged.
+
 ## Updating this record
 
 Last committed delivery fields: `tested_commit: b924f1c`;
 `final_tree_validation: pass`; `clean_clone_reproduction: pass (bounded scope above)`;
 `github_actions_execution: success (34206855353)`; `native_provider_evaluation: pending`.
-The 2026-09-11 local working-tree continuation is recorded separately in E23;
-its new GitHub Actions and clean-clone checks remain pending.
+The 2026-09-11 continuation is recorded separately in E23, including its passing
+local clone and the failed GitHub Actions evaluation-helper step at `0a2cb15`.
 The earlier generator command reported by the integration agent and retained
 raw workload reports are listed separately above.
 

@@ -54,3 +54,5 @@ Each table is read separately, without a common snapshot transaction. These are 
 A PASS is application/runner protocol and recovery evidence with a fake model. It is not model-quality, actual provider billing, or external collector-delivery evidence. No application matrix result is claimed until the operator executes this harness and preserves its raw output.
 
 The executed 2026-09-11 three-case result, earlier failed attempts and the precise evidence scope are recorded in [E21 application fault evidence](../../../docs/application-fault-evidence.md).
+
+The separate [F02/F06/F09 continuation executable and retained-fixture recovery](CONTINUATION.md) reuse the fixture helpers without changing this matrix's parameters or assertions.

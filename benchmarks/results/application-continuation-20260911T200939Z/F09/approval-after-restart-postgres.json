@@ -1,0 +1,1071 @@
+{
+  "approvals": [
+    {
+      "id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW_step_1_op_0_approval",
+      "run_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW",
+      "version": 1,
+      "decision": null,
+      "args_hash": "d79e739401109bc390df0e84bf97a5fd3acff00fd1ca08aa65dafb5d6d72c534",
+      "effect_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW_step_1_op_0",
+      "tenant_id": "app-fault-nxerj6ajpy2atwvi7a3darhlku",
+      "decided_at": null,
+      "principal_id": null,
+      "policy_version": "workspace-v1",
+      "workspace_revision": 1
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "artifact_b6664767471b58125f393bd7a5258c4ef4ed230c28cda12232e5e525af88adab",
+      "kind": "operation_receipt",
+      "state": "ready",
+      "run_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW",
+      "sha256": "6f70d728fcca4577bb754850067cced8b007d0b6d1e1c564c176786950e10193",
+      "byte_size": 1122,
+      "tenant_id": "app-fault-nxerj6ajpy2atwvi7a3darhlku",
+      "created_at": "2026-09-11T20:10:03.871248+00:00",
+      "object_key": "app-fault-nxerj6ajpy2atwvi7a3darhlku/run_BVQGO2DWZ2LNV6YG7IFUFUBZOW/6f70d728fcca4577bb754850067cced8b007d0b6d1e1c564c176786950e10193"
+    },
+    {
+      "id": "artifact_029387e2d46473671b8437a31981996ddcfeb8c4ab62b1df25f53db5d92ab772",
+      "kind": "baseline",
+      "state": "ready",
+      "run_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW",
+      "sha256": "2ebb88d9370394fb1335e8491bc0c82b1ea3ff7adbb166f692f99cad2adb69c3",
+      "byte_size": 206,
+      "tenant_id": "app-fault-nxerj6ajpy2atwvi7a3darhlku",
+      "created_at": "2026-09-11T20:10:03.901783+00:00",
+      "object_key": "app-fault-nxerj6ajpy2atwvi7a3darhlku/run_BVQGO2DWZ2LNV6YG7IFUFUBZOW/2ebb88d9370394fb1335e8491bc0c82b1ea3ff7adbb166f692f99cad2adb69c3"
+    },
+    {
+      "id": "artifact_6c4a87556d400e1eea2405e633e4229eb94e927895eaaf3ac42a5e5f8889134a",
+      "kind": "context",
+      "state": "ready",
+      "run_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW",
+      "sha256": "acad1f47ee26d0ca66d36ad6838c2ae72740b0a5ec1d46aaf1c24e950cf0faa6",
+      "byte_size": 2641,
+      "tenant_id": "app-fault-nxerj6ajpy2atwvi7a3darhlku",
+      "created_at": "2026-09-11T20:10:03.939805+00:00",
+      "object_key": "app-fault-nxerj6ajpy2atwvi7a3darhlku/run_BVQGO2DWZ2LNV6YG7IFUFUBZOW/acad1f47ee26d0ca66d36ad6838c2ae72740b0a5ec1d46aaf1c24e950cf0faa6"
+    },
+    {
+      "id": "artifact_c0d54111990cb4c83e9eb7edc078f58e91088565c638f9a0f34a8c286ebb8ff6",
+      "kind": "model_response",
+      "state": "ready",
+      "run_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW",
+      "sha256": "e830b54c6b011b896d02f4877bd2dd44854839b161586dd4b3dfd33fede3f11e",
+      "byte_size": 571,
+      "tenant_id": "app-fault-nxerj6ajpy2atwvi7a3darhlku",
+      "created_at": "2026-09-11T20:10:04.002375+00:00",
+      "object_key": "app-fault-nxerj6ajpy2atwvi7a3darhlku/run_BVQGO2DWZ2LNV6YG7IFUFUBZOW/e830b54c6b011b896d02f4877bd2dd44854839b161586dd4b3dfd33fede3f11e"
+    }
+  ],
+  "effects": [
+    {
+      "args": {
+        "target": true
+      },
+      "kind": "verify",
+      "epoch": 1,
+      "run_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW",
+      "status": "failed",
+      "ordinal": -1,
+      "step_seq": 0,
+      "args_hash": "c56810ebca495ac55b599570ff113f60c83411e488cefe803421335131ab0944",
+      "tenant_id": "app-fault-nxerj6ajpy2atwvi7a3darhlku",
+      "receipt_ref": "artifact_b6664767471b58125f393bd7a5258c4ef4ed230c28cda12232e5e525af88adab",
+      "operation_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW_0_initial_target",
+      "canonical_args": "\\x7b22746172676574223a747275657d",
+      "policy_version": "trusted-profile-v1",
+      "expected_revision": 1
+    },
+    {
+      "args": {
+        "command": [
+          "python",
+          "-I",
+          "-B",
+          "-c",
+          "import os,json\nwith open('app-counter.txt','a') as f:\n f.write('1\\n');f.flush();os.fsync(f.fileno())\nprint(json.dumps({'counter':1}),flush=True)"
+        ]
+      },
+      "kind": "run_command",
+      "epoch": 1,
+      "run_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW",
+      "status": "planned",
+      "ordinal": 0,
+      "step_seq": 1,
+      "args_hash": "d79e739401109bc390df0e84bf97a5fd3acff00fd1ca08aa65dafb5d6d72c534",
+      "tenant_id": "app-fault-nxerj6ajpy2atwvi7a3darhlku",
+      "receipt_ref": null,
+      "operation_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW_step_1_op_0",
+      "canonical_args": "\\x7b22636f6d6d616e64223a5b22707974686f6e222c222d49222c222d42222c222d63222c22696d706f7274206f732c6a736f6e5c6e77697468206f70656e28276170702d636f756e7465722e747874272c2761272920617320663a5c6e20662e77726974652827315c5c6e27293b662e666c75736828293b6f732e6673796e6328662e66696c656e6f2829295c6e7072696e74286a736f6e2e64756d7073287b27636f756e746572273a317d292c666c7573683d5472756529225d7d",
+      "policy_version": "workspace-v1",
+      "expected_revision": 1
+    }
+  ],
+  "model_attempts": [
+    {
+      "usage": {
+        "final": true,
+        "input": {
+          "known": true,
+          "value": 100
+        },
+        "output": {
+          "known": true,
+          "value": 50
+        },
+        "cache_read": {
+          "known": false,
+          "value": 0
+        },
+        "cache_write": {
+          "known": false,
+          "value": 0
+        }
+      },
+      "run_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW",
+      "status": "completed",
+      "attempt": 1,
+      "pricing": {
+        "model": "fake",
+        "provider": "fake",
+        "input_price": 1000000,
+        "output_price": 1000000,
+        "exact_pricing": true,
+        "price_version": "synthetic-1microusd-per-token-v1",
+        "context_tokens": 32768,
+        "schema_version": 1,
+        "credential_group": "application-faults-fake",
+        "max_output_tokens": 1024,
+        "request_timeout_ns": 3000000000
+      },
+      "raw_ref": "artifact_c0d54111990cb4c83e9eb7edc078f58e91088565c638f9a0f34a8c286ebb8ff6",
+      "deadline": "2026-09-11T20:10:06.953427+00:00",
+      "model_id": "fake",
+      "provider": "fake",
+      "step_seq": 1,
+      "tenant_id": "app-fault-nxerj6ajpy2atwvi7a3darhlku",
+      "attempt_id": "attempt_ZOIIYMATBRD7CEBZI553QFAAO5",
+      "error_code": null,
+      "request_id": "",
+      "started_at": "2026-09-11T20:10:03.954454+00:00",
+      "request_ref": "artifact_6c4a87556d400e1eea2405e633e4229eb94e927895eaaf3ac42a5e5f8889134a",
+      "price_version": "synthetic-1microusd-per-token-v1",
+      "failure_policy": null
+    }
+  ],
+  "provider_quotas": [
+    {
+      "max_tokens": 1000000,
+      "max_microusd": 100000000,
+      "breaker_until": null,
+      "max_concurrent": 2,
+      "window_ends_at": "2026-09-11T21:10:02.056076+00:00",
+      "active_requests": 0,
+      "probe_tenant_id": null,
+      "reserved_tokens": 0,
+      "committed_tokens": 150,
+      "credential_group": "application-faults-fake",
+      "failure_threshold": 3,
+      "reserved_microusd": 0,
+      "window_generation": 1,
+      "committed_microusd": 150,
+      "window_duration_ms": 3600000,
+      "breaker_cooldown_ms": 1000,
+      "consecutive_failures": 0,
+      "probe_reservation_id": null
+    }
+  ],
+  "quota_reservations": [
+    {
+      "id": "attempt_ZOIIYMATBRD7CEBZI553QFAAO5",
+      "run_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW",
+      "status": "settled",
+      "tokens": 33792,
+      "outcome": "success",
+      "microusd": 33792,
+      "tenant_id": "app-fault-nxerj6ajpy2atwvi7a3darhlku",
+      "settled_at": "2026-09-11T20:10:04.014553+00:00",
+      "request_hash": "1d3c2018be32e605a953ab5fc801baeba803de15684972c82669b2641846540a",
+      "actual_tokens": 150,
+      "dispatched_at": "2026-09-11T20:10:03.971707+00:00",
+      "actual_microusd": 150,
+      "settlement_kind": "actual_usage",
+      "credential_group": "application-faults-fake",
+      "request_deadline": "2026-09-11T20:10:06.953427+00:00",
+      "window_generation": 1,
+      "request_slot_released": true
+    }
+  ],
+  "run_events": [
+    {
+      "seq": 1,
+      "type": "run.created",
+      "run_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW",
+      "payload": {
+        "lease": {
+          "epoch": 0,
+          "owner": "",
+          "until": "0001-01-01T00:00:00Z"
+        },
+        "stage": "initialize",
+        "limits": {
+          "deadline": "2026-09-11T13:11:37.058528-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW",
+        "status": "queued",
+        "version": 1,
+        "step_seq": 0,
+        "tenant_id": "app-fault-nxerj6ajpy2atwvi7a3darhlku",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 0,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "step_seq": null,
+      "tenant_id": "app-fault-nxerj6ajpy2atwvi7a3darhlku",
+      "attempt_id": null,
+      "created_at": "2026-09-11T20:10:02.062469+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 2,
+      "type": "run.claimed",
+      "run_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW",
+      "payload": {
+        "stage": "initialize",
+        "state": "running",
+        "reason": "",
+        "version": 2,
+        "step_seq": 0,
+        "output_ref": "",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "workspace_revision": 0,
+        "verification_status": "unverified",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "app-fault-nxerj6ajpy2atwvi7a3darhlku",
+      "attempt_id": null,
+      "created_at": "2026-09-11T20:10:03.153969+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 3,
+      "type": "artifact.ready",
+      "run_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW",
+      "payload": {
+        "id": "artifact_b6664767471b58125f393bd7a5258c4ef4ed230c28cda12232e5e525af88adab",
+        "kind": "operation_receipt",
+        "state": "ready",
+        "run_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW",
+        "sha256": "6f70d728fcca4577bb754850067cced8b007d0b6d1e1c564c176786950e10193",
+        "byte_size": 1122,
+        "tenant_id": "app-fault-nxerj6ajpy2atwvi7a3darhlku",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "app-fault-nxerj6ajpy2atwvi7a3darhlku/run_BVQGO2DWZ2LNV6YG7IFUFUBZOW/6f70d728fcca4577bb754850067cced8b007d0b6d1e1c564c176786950e10193"
+      },
+      "step_seq": null,
+      "tenant_id": "app-fault-nxerj6ajpy2atwvi7a3darhlku",
+      "attempt_id": null,
+      "created_at": "2026-09-11T20:10:03.871889+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 4,
+      "type": "artifact.ready",
+      "run_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW",
+      "payload": {
+        "id": "artifact_029387e2d46473671b8437a31981996ddcfeb8c4ab62b1df25f53db5d92ab772",
+        "kind": "baseline",
+        "state": "ready",
+        "run_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW",
+        "sha256": "2ebb88d9370394fb1335e8491bc0c82b1ea3ff7adbb166f692f99cad2adb69c3",
+        "byte_size": 206,
+        "tenant_id": "app-fault-nxerj6ajpy2atwvi7a3darhlku",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "app-fault-nxerj6ajpy2atwvi7a3darhlku/run_BVQGO2DWZ2LNV6YG7IFUFUBZOW/2ebb88d9370394fb1335e8491bc0c82b1ea3ff7adbb166f692f99cad2adb69c3"
+      },
+      "step_seq": null,
+      "tenant_id": "app-fault-nxerj6ajpy2atwvi7a3darhlku",
+      "attempt_id": null,
+      "created_at": "2026-09-11T20:10:03.902322+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 5,
+      "type": "workspace.prepared",
+      "run_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW",
+      "payload": {
+        "stage": "build_context",
+        "state": "running",
+        "reason": "",
+        "version": 3,
+        "step_seq": 0,
+        "output_ref": "artifact_029387e2d46473671b8437a31981996ddcfeb8c4ab62b1df25f53db5d92ab772",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "app-fault-nxerj6ajpy2atwvi7a3darhlku",
+      "attempt_id": null,
+      "created_at": "2026-09-11T20:10:03.90707+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 6,
+      "type": "artifact.ready",
+      "run_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW",
+      "payload": {
+        "id": "artifact_6c4a87556d400e1eea2405e633e4229eb94e927895eaaf3ac42a5e5f8889134a",
+        "kind": "context",
+        "state": "ready",
+        "run_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW",
+        "sha256": "acad1f47ee26d0ca66d36ad6838c2ae72740b0a5ec1d46aaf1c24e950cf0faa6",
+        "byte_size": 2641,
+        "tenant_id": "app-fault-nxerj6ajpy2atwvi7a3darhlku",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "app-fault-nxerj6ajpy2atwvi7a3darhlku/run_BVQGO2DWZ2LNV6YG7IFUFUBZOW/acad1f47ee26d0ca66d36ad6838c2ae72740b0a5ec1d46aaf1c24e950cf0faa6"
+      },
+      "step_seq": null,
+      "tenant_id": "app-fault-nxerj6ajpy2atwvi7a3darhlku",
+      "attempt_id": null,
+      "created_at": "2026-09-11T20:10:03.94082+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 7,
+      "type": "step.started",
+      "run_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW",
+      "payload": {
+        "stage": "model_step",
+        "state": "running",
+        "reason": "",
+        "version": 4,
+        "step_seq": 1,
+        "output_ref": "artifact_6c4a87556d400e1eea2405e633e4229eb94e927895eaaf3ac42a5e5f8889134a",
+        "tool_calls": 0,
+        "model_rounds": 1,
+        "cost_microusd": 0,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "app-fault-nxerj6ajpy2atwvi7a3darhlku",
+      "attempt_id": null,
+      "created_at": "2026-09-11T20:10:03.948614+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 8,
+      "type": "model.started",
+      "run_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW",
+      "payload": {
+        "step_seq": 1,
+        "attempt_id": "attempt_ZOIIYMATBRD7CEBZI553QFAAO5",
+        "price_version": "synthetic-1microusd-per-token-v1"
+      },
+      "step_seq": null,
+      "tenant_id": "app-fault-nxerj6ajpy2atwvi7a3darhlku",
+      "attempt_id": null,
+      "created_at": "2026-09-11T20:10:03.955488+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 9,
+      "type": "artifact.ready",
+      "run_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW",
+      "payload": {
+        "id": "artifact_c0d54111990cb4c83e9eb7edc078f58e91088565c638f9a0f34a8c286ebb8ff6",
+        "kind": "model_response",
+        "state": "ready",
+        "run_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW",
+        "sha256": "e830b54c6b011b896d02f4877bd2dd44854839b161586dd4b3dfd33fede3f11e",
+        "byte_size": 571,
+        "tenant_id": "app-fault-nxerj6ajpy2atwvi7a3darhlku",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "app-fault-nxerj6ajpy2atwvi7a3darhlku/run_BVQGO2DWZ2LNV6YG7IFUFUBZOW/e830b54c6b011b896d02f4877bd2dd44854839b161586dd4b3dfd33fede3f11e"
+      },
+      "step_seq": null,
+      "tenant_id": "app-fault-nxerj6ajpy2atwvi7a3darhlku",
+      "attempt_id": null,
+      "created_at": "2026-09-11T20:10:04.003039+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 10,
+      "type": "model.completed",
+      "run_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW",
+      "payload": {
+        "stage": "validate_tool_calls",
+        "state": "running",
+        "reason": "",
+        "version": 5,
+        "step_seq": 1,
+        "output_ref": "artifact_c0d54111990cb4c83e9eb7edc078f58e91088565c638f9a0f34a8c286ebb8ff6",
+        "tool_calls": 0,
+        "model_rounds": 1,
+        "cost_microusd": 150,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "app-fault-nxerj6ajpy2atwvi7a3darhlku",
+      "attempt_id": null,
+      "created_at": "2026-09-11T20:10:04.024193+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 11,
+      "type": "tool.planned",
+      "run_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW",
+      "payload": {
+        "stage": "approval_gate",
+        "state": "waiting_approval",
+        "reason": "",
+        "version": 6,
+        "step_seq": 1,
+        "args_hash": "d79e739401109bc390df0e84bf97a5fd3acff00fd1ca08aa65dafb5d6d72c534",
+        "output_ref": "artifact_c0d54111990cb4c83e9eb7edc078f58e91088565c638f9a0f34a8c286ebb8ff6",
+        "tool_calls": 0,
+        "model_rounds": 1,
+        "operation_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW_step_1_op_0",
+        "cost_microusd": 150,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "app-fault-nxerj6ajpy2atwvi7a3darhlku",
+      "attempt_id": null,
+      "created_at": "2026-09-11T20:10:04.029524+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 12,
+      "type": "approval.required",
+      "run_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW",
+      "payload": {
+        "binding": {
+          "granted": false,
+          "version": 1,
+          "args_hash": "d79e739401109bc390df0e84bf97a5fd3acff00fd1ca08aa65dafb5d6d72c534",
+          "effect_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW_step_1_op_0",
+          "policy_version": "workspace-v1",
+          "workspace_revision": 1
+        },
+        "approval_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW_step_1_op_0_approval"
+      },
+      "step_seq": null,
+      "tenant_id": "app-fault-nxerj6ajpy2atwvi7a3darhlku",
+      "attempt_id": null,
+      "created_at": "2026-09-11T20:10:04.029685+00:00",
+      "schema_version": 1
+    }
+  ],
+  "run_snapshots": [
+    {
+      "body": {
+        "lease": {
+          "epoch": 0,
+          "owner": "",
+          "until": "0001-01-01T00:00:00Z"
+        },
+        "stage": "initialize",
+        "limits": {
+          "deadline": "2026-09-11T13:11:37.058528-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW",
+        "status": "queued",
+        "version": 1,
+        "step_seq": 0,
+        "tenant_id": "app-fault-nxerj6ajpy2atwvi7a3darhlku",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 0,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW",
+      "version": 1,
+      "step_seq": 0,
+      "tenant_id": "app-fault-nxerj6ajpy2atwvi7a3darhlku",
+      "created_at": "2026-09-11T20:10:02.060837+00:00",
+      "input_event": null,
+      "input_state": null,
+      "schema_version": 1
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "worker1-0",
+          "until": "2026-09-11T13:10:08.13749-07:00"
+        },
+        "stage": "initialize",
+        "limits": {
+          "deadline": "2026-09-11T13:11:37.058528-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW",
+        "status": "running",
+        "version": 2,
+        "step_seq": 0,
+        "tenant_id": "app-fault-nxerj6ajpy2atwvi7a3darhlku",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 0,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW",
+      "version": 2,
+      "step_seq": 0,
+      "tenant_id": "app-fault-nxerj6ajpy2atwvi7a3darhlku",
+      "created_at": "2026-09-11T20:10:03.153127+00:00",
+      "input_event": {
+        "at": "2026-09-11T13:10:03.13749-07:00",
+        "kind": "claimed",
+        "epoch": 1,
+        "lease": {
+          "epoch": 1,
+          "owner": "worker1-0",
+          "until": "2026-09-11T13:10:08.13749-07:00"
+        },
+        "owner": "worker1-0",
+        "expected_version": 1
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 0,
+          "owner": "",
+          "until": "0001-01-01T00:00:00Z"
+        },
+        "stage": "initialize",
+        "limits": {
+          "deadline": "2026-09-11T13:11:37.058528-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW",
+        "status": "queued",
+        "version": 1,
+        "step_seq": 0,
+        "tenant_id": "app-fault-nxerj6ajpy2atwvi7a3darhlku",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 0,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 1
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "worker1-0",
+          "until": "2026-09-11T13:10:08.13749-07:00"
+        },
+        "stage": "build_context",
+        "limits": {
+          "deadline": "2026-09-11T13:11:37.058528-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW",
+        "status": "running",
+        "version": 3,
+        "step_seq": 0,
+        "tenant_id": "app-fault-nxerj6ajpy2atwvi7a3darhlku",
+        "output_ref": "artifact_029387e2d46473671b8437a31981996ddcfeb8c4ab62b1df25f53db5d92ab772",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW",
+      "version": 3,
+      "step_seq": 0,
+      "tenant_id": "app-fault-nxerj6ajpy2atwvi7a3darhlku",
+      "created_at": "2026-09-11T20:10:03.90608+00:00",
+      "input_event": {
+        "at": "2026-09-11T13:10:03.90511-07:00",
+        "kind": "workspace_ready",
+        "epoch": 1,
+        "owner": "worker1-0",
+        "output_ref": "artifact_029387e2d46473671b8437a31981996ddcfeb8c4ab62b1df25f53db5d92ab772",
+        "expected_version": 2,
+        "workspace_revision": 1
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "worker1-0",
+          "until": "2026-09-11T13:10:08.13749-07:00"
+        },
+        "stage": "initialize",
+        "limits": {
+          "deadline": "2026-09-11T13:11:37.058528-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW",
+        "status": "running",
+        "version": 2,
+        "step_seq": 0,
+        "tenant_id": "app-fault-nxerj6ajpy2atwvi7a3darhlku",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 0,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 1
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "worker1-0",
+          "until": "2026-09-11T13:10:08.13749-07:00"
+        },
+        "stage": "model_step",
+        "limits": {
+          "deadline": "2026-09-11T13:11:37.058528-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW",
+        "status": "running",
+        "version": 4,
+        "step_seq": 1,
+        "tenant_id": "app-fault-nxerj6ajpy2atwvi7a3darhlku",
+        "output_ref": "artifact_6c4a87556d400e1eea2405e633e4229eb94e927895eaaf3ac42a5e5f8889134a",
+        "tool_calls": 0,
+        "model_rounds": 1,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW",
+      "version": 4,
+      "step_seq": 1,
+      "tenant_id": "app-fault-nxerj6ajpy2atwvi7a3darhlku",
+      "created_at": "2026-09-11T20:10:03.94693+00:00",
+      "input_event": {
+        "at": "2026-09-11T13:10:03.944913-07:00",
+        "kind": "context_built",
+        "epoch": 1,
+        "owner": "worker1-0",
+        "output_ref": "artifact_6c4a87556d400e1eea2405e633e4229eb94e927895eaaf3ac42a5e5f8889134a",
+        "expected_version": 3
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "worker1-0",
+          "until": "2026-09-11T13:10:08.13749-07:00"
+        },
+        "stage": "build_context",
+        "limits": {
+          "deadline": "2026-09-11T13:11:37.058528-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW",
+        "status": "running",
+        "version": 3,
+        "step_seq": 0,
+        "tenant_id": "app-fault-nxerj6ajpy2atwvi7a3darhlku",
+        "output_ref": "artifact_029387e2d46473671b8437a31981996ddcfeb8c4ab62b1df25f53db5d92ab772",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 1
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "worker1-0",
+          "until": "2026-09-11T13:10:08.13749-07:00"
+        },
+        "stage": "validate_tool_calls",
+        "limits": {
+          "deadline": "2026-09-11T13:11:37.058528-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW",
+        "status": "running",
+        "version": 5,
+        "step_seq": 1,
+        "tenant_id": "app-fault-nxerj6ajpy2atwvi7a3darhlku",
+        "output_ref": "artifact_c0d54111990cb4c83e9eb7edc078f58e91088565c638f9a0f34a8c286ebb8ff6",
+        "tool_calls": 0,
+        "model_rounds": 1,
+        "cost_microusd": 150,
+        "schema_version": 1,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW",
+      "version": 5,
+      "step_seq": 1,
+      "tenant_id": "app-fault-nxerj6ajpy2atwvi7a3darhlku",
+      "created_at": "2026-09-11T20:10:04.023294+00:00",
+      "input_event": {
+        "at": "2026-09-11T13:10:04.022194-07:00",
+        "kind": "model_completed",
+        "epoch": 1,
+        "owner": "worker1-0",
+        "complete": true,
+        "output_ref": "artifact_c0d54111990cb4c83e9eb7edc078f58e91088565c638f9a0f34a8c286ebb8ff6",
+        "cost_microusd": 150,
+        "expected_version": 4
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "worker1-0",
+          "until": "2026-09-11T13:10:08.13749-07:00"
+        },
+        "stage": "model_step",
+        "limits": {
+          "deadline": "2026-09-11T13:11:37.058528-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW",
+        "status": "running",
+        "version": 4,
+        "step_seq": 1,
+        "tenant_id": "app-fault-nxerj6ajpy2atwvi7a3darhlku",
+        "output_ref": "artifact_6c4a87556d400e1eea2405e633e4229eb94e927895eaaf3ac42a5e5f8889134a",
+        "tool_calls": 0,
+        "model_rounds": 1,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 1
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "",
+          "until": "2026-09-11T13:10:04.027102-07:00"
+        },
+        "stage": "approval_gate",
+        "limits": {
+          "deadline": "2026-09-11T13:11:37.058528-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW",
+        "status": "waiting_approval",
+        "version": 6,
+        "approval": {
+          "granted": false,
+          "version": 1,
+          "args_hash": "d79e739401109bc390df0e84bf97a5fd3acff00fd1ca08aa65dafb5d6d72c534",
+          "effect_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW_step_1_op_0",
+          "policy_version": "workspace-v1",
+          "workspace_revision": 1
+        },
+        "step_seq": 1,
+        "tenant_id": "app-fault-nxerj6ajpy2atwvi7a3darhlku",
+        "output_ref": "artifact_c0d54111990cb4c83e9eb7edc078f58e91088565c638f9a0f34a8c286ebb8ff6",
+        "tool_calls": 0,
+        "model_rounds": 1,
+        "cost_microusd": 150,
+        "pending_effect": {
+          "args": {
+            "command": [
+              "python",
+              "-I",
+              "-B",
+              "-c",
+              "import os,json\nwith open('app-counter.txt','a') as f:\n f.write('1\\n');f.flush();os.fsync(f.fileno())\nprint(json.dumps({'counter':1}),flush=True)"
+            ]
+          },
+          "kind": "run_command",
+          "status": "planned",
+          "args_hash": "d79e739401109bc390df0e84bf97a5fd3acff00fd1ca08aa65dafb5d6d72c534",
+          "operation_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW_step_1_op_0",
+          "dispatch_epoch": 0,
+          "policy_version": "workspace-v1",
+          "expected_revision": 1,
+          "requires_approval": true
+        },
+        "schema_version": 1,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW",
+      "version": 6,
+      "step_seq": 1,
+      "tenant_id": "app-fault-nxerj6ajpy2atwvi7a3darhlku",
+      "created_at": "2026-09-11T20:10:04.028933+00:00",
+      "input_event": {
+        "at": "2026-09-11T13:10:04.027102-07:00",
+        "kind": "tools_validated",
+        "epoch": 1,
+        "owner": "worker1-0",
+        "effects": [
+          {
+            "args": {
+              "command": [
+                "python",
+                "-I",
+                "-B",
+                "-c",
+                "import os,json\nwith open('app-counter.txt','a') as f:\n f.write('1\\n');f.flush();os.fsync(f.fileno())\nprint(json.dumps({'counter':1}),flush=True)"
+              ]
+            },
+            "kind": "run_command",
+            "status": "planned",
+            "args_hash": "d79e739401109bc390df0e84bf97a5fd3acff00fd1ca08aa65dafb5d6d72c534",
+            "operation_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW_step_1_op_0",
+            "dispatch_epoch": 0,
+            "policy_version": "workspace-v1",
+            "expected_revision": 1,
+            "requires_approval": true
+          }
+        ],
+        "complete": true,
+        "output_ref": "artifact_c0d54111990cb4c83e9eb7edc078f58e91088565c638f9a0f34a8c286ebb8ff6",
+        "expected_version": 5
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "worker1-0",
+          "until": "2026-09-11T13:10:08.13749-07:00"
+        },
+        "stage": "validate_tool_calls",
+        "limits": {
+          "deadline": "2026-09-11T13:11:37.058528-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW",
+        "status": "running",
+        "version": 5,
+        "step_seq": 1,
+        "tenant_id": "app-fault-nxerj6ajpy2atwvi7a3darhlku",
+        "output_ref": "artifact_c0d54111990cb4c83e9eb7edc078f58e91088565c638f9a0f34a8c286ebb8ff6",
+        "tool_calls": 0,
+        "model_rounds": 1,
+        "cost_microusd": 150,
+        "schema_version": 1,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 1
+    }
+  ],
+  "runner_allocations": [
+    {
+      "slots": 1,
+      "state": "released",
+      "run_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW",
+      "runner_id": "application-fault-runner",
+      "tenant_id": "app-fault-nxerj6ajpy2atwvi7a3darhlku",
+      "lease_epoch": 1,
+      "memory_bytes": 0
+    }
+  ],
+  "runners": [
+    {
+      "id": "application-fault-runner",
+      "enabled": true,
+      "endpoint": "private-uds",
+      "max_slots": 1,
+      "reserved_slots": 0
+    }
+  ],
+  "runs": [
+    {
+      "id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW",
+      "task": "Execute only the literal approved fixture commands and repair clamp; deterministic fake model.",
+      "state": "waiting_approval",
+      "version": 6,
+      "snapshot": {
+        "lease": {
+          "epoch": 1,
+          "owner": "",
+          "until": "2026-09-11T13:10:04.027102-07:00"
+        },
+        "stage": "approval_gate",
+        "limits": {
+          "deadline": "2026-09-11T13:11:37.058528-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW",
+        "status": "waiting_approval",
+        "version": 6,
+        "approval": {
+          "granted": false,
+          "version": 1,
+          "args_hash": "d79e739401109bc390df0e84bf97a5fd3acff00fd1ca08aa65dafb5d6d72c534",
+          "effect_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW_step_1_op_0",
+          "policy_version": "workspace-v1",
+          "workspace_revision": 1
+        },
+        "step_seq": 1,
+        "tenant_id": "app-fault-nxerj6ajpy2atwvi7a3darhlku",
+        "output_ref": "artifact_c0d54111990cb4c83e9eb7edc078f58e91088565c638f9a0f34a8c286ebb8ff6",
+        "tool_calls": 0,
+        "model_rounds": 1,
+        "cost_microusd": 150,
+        "pending_effect": {
+          "args": {
+            "command": [
+              "python",
+              "-I",
+              "-B",
+              "-c",
+              "import os,json\nwith open('app-counter.txt','a') as f:\n f.write('1\\n');f.flush();os.fsync(f.fileno())\nprint(json.dumps({'counter':1}),flush=True)"
+            ]
+          },
+          "kind": "run_command",
+          "status": "planned",
+          "args_hash": "d79e739401109bc390df0e84bf97a5fd3acff00fd1ca08aa65dafb5d6d72c534",
+          "operation_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW_step_1_op_0",
+          "dispatch_epoch": 0,
+          "policy_version": "workspace-v1",
+          "expected_revision": 1,
+          "requires_approval": true
+        },
+        "schema_version": 1,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "runner_id": "application-fault-runner",
+      "tenant_id": "app-fault-nxerj6ajpy2atwvi7a3darhlku",
+      "created_at": "2026-09-11T20:10:02.059722+00:00",
+      "not_before": "-infinity",
+      "project_id": "project_HOHRZD3SKT3P5IPP2JBLOHSKAM",
+      "updated_at": "2026-09-11T20:10:04.027302+00:00",
+      "base_commit": "66ee6f4ae415b0735c6eb4d0645f5a8d72d33e7946d0219e319aa9158a375659",
+      "lease_epoch": 1,
+      "lease_owner": "",
+      "lease_until": "2026-09-11T20:10:04.027102+00:00",
+      "traceparent": "",
+      "principal_id": "fixture-operator",
+      "workspace_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW",
+      "parent_run_id": null,
+      "input_snapshot": "",
+      "next_event_seq": 13,
+      "config_snapshot": {
+        "model": "fake",
+        "provider": "fake",
+        "max_tool_calls": 20,
+        "max_model_rounds": 8,
+        "max_cost_microusd": 1000000,
+        "max_runtime_seconds": 95
+      },
+      "pending_commands": [
+        {
+          "kind": "request_approval",
+          "effect": {
+            "args": {
+              "command": [
+                "python",
+                "-I",
+                "-B",
+                "-c",
+                "import os,json\nwith open('app-counter.txt','a') as f:\n f.write('1\\n');f.flush();os.fsync(f.fileno())\nprint(json.dumps({'counter':1}),flush=True)"
+              ]
+            },
+            "kind": "run_command",
+            "status": "planned",
+            "args_hash": "d79e739401109bc390df0e84bf97a5fd3acff00fd1ca08aa65dafb5d6d72c534",
+            "operation_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW_step_1_op_0",
+            "dispatch_epoch": 0,
+            "policy_version": "workspace-v1",
+            "expected_revision": 1,
+            "requires_approval": true
+          },
+          "binding": {
+            "granted": false,
+            "version": 1,
+            "args_hash": "d79e739401109bc390df0e84bf97a5fd3acff00fd1ca08aa65dafb5d6d72c534",
+            "effect_id": "run_BVQGO2DWZ2LNV6YG7IFUFUBZOW_step_1_op_0",
+            "policy_version": "workspace-v1",
+            "workspace_revision": 1
+          }
+        }
+      ],
+      "retained_from_seq": 1
+    }
+  ],
+  "tenant_runtime": [
+    {
+      "tenant_id": "app-fault-nxerj6ajpy2atwvi7a3darhlku",
+      "max_active": 2,
+      "active_count": 0,
+      "last_dispatched_at": "2026-09-11T20:10:03.13749+00:00"
+    }
+  ],
+  "workspace_cleanup": []
+}

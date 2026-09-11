@@ -1,0 +1,38 @@
+test_actual_continuation_evidence_is_accepted (test_audit_application.EvidenceAuditTests.test_actual_continuation_evidence_is_accepted) ... ok
+test_actual_writer_evidence_crosses_expiry_and_orders_container_death (test_audit_application.EvidenceAuditTests.test_actual_writer_evidence_crosses_expiry_and_orders_container_death) ... ok
+test_f02_replaced_task_after_claim_is_rejected (test_audit_application.EvidenceAuditTests.test_f02_replaced_task_after_claim_is_rejected) ... FAIL
+test_f06_summary_hashes_and_revision_must_match_archived_patch_receipt (test_audit_application.EvidenceAuditTests.test_f06_summary_hashes_and_revision_must_match_archived_patch_receipt) ... FAIL
+test_f09_original_approval_must_match_the_actual_resumed_action (test_audit_application.EvidenceAuditTests.test_f09_original_approval_must_match_the_actual_resumed_action) ... FAIL
+test_summary_with_both_writers_before_expiry_is_rejected (test_audit_application.EvidenceAuditTests.test_summary_with_both_writers_before_expiry_is_rejected) ... ok
+
+======================================================================
+FAIL: test_f02_replaced_task_after_claim_is_rejected (test_audit_application.EvidenceAuditTests.test_f02_replaced_task_after_claim_is_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/postedism/Desktop/mini claude code/forge-runtime/scripts/faults/test_audit_application.py", line 33, in test_f02_replaced_task_after_claim_is_rejected
+    with self.assertRaises(AssertionError):
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: AssertionError not raised
+
+======================================================================
+FAIL: test_f06_summary_hashes_and_revision_must_match_archived_patch_receipt (test_audit_application.EvidenceAuditTests.test_f06_summary_hashes_and_revision_must_match_archived_patch_receipt)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/postedism/Desktop/mini claude code/forge-runtime/scripts/faults/test_audit_application.py", line 51, in test_f06_summary_hashes_and_revision_must_match_archived_patch_receipt
+    with self.assertRaises(AssertionError):
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: AssertionError not raised
+
+======================================================================
+FAIL: test_f09_original_approval_must_match_the_actual_resumed_action (test_audit_application.EvidenceAuditTests.test_f09_original_approval_must_match_the_actual_resumed_action)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/postedism/Desktop/mini claude code/forge-runtime/scripts/faults/test_audit_application.py", line 67, in test_f09_original_approval_must_match_the_actual_resumed_action
+    with self.assertRaises(AssertionError):
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: AssertionError not raised
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.020s
+
+FAILED (failures=3)

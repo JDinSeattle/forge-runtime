@@ -1,0 +1,16 @@
+{
+  "scope": "Independent audit correction only; original six executions and their raw evidence are unchanged. Initial continuation audit had three binding omissions; it was not used to promote rows before correction.",
+  "findings": [
+    "F02 immutable task/run identity not tied across phases",
+    "F06 summary hashes and revision not tied to digest-checked receipt payload",
+    "F09 persisted approval binding not tied to final allow and actual resumed action"
+  ],
+  "fixes": [
+    "Cross-phase immutable run fields and worker2 epoch+1",
+    "Patch payload equality, full PG effect request bindings and canonical argument hashes",
+    "Pending/snapshot/final decision/receipt bindings plus restart-decision-claim-Docker ordering"
+  ],
+  "negative_tests_before_fix": "3 failed as expected",
+  "after_fix": "6 passed, including three continuation cases, three rejected continuation mutations and two existing F08 checks (positive continuation is one test with three subtests)",
+  "recorded_at": "2026-09-11T20:20:49.582815+00:00"
+}
