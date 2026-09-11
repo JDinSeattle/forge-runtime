@@ -1,0 +1,20 @@
+{
+  "manifest_files": 14,
+  "sources_stable": 268,
+  "actions": {
+    "pass": 102,
+    "skip": 3
+  },
+  "shutdown_test": [
+    {
+      "Time": "2026-09-11T16:56:41.477580687-07:00",
+      "Action": "pass",
+      "Package": "github.com/JDinSeattle/forge-runtime/internal/runner",
+      "Test": "TestShutdownFencesQueuedAdmissionAndPreservesJobForSuccessor",
+      "Elapsed": 0.42
+    }
+  ],
+  "negative_contains_expected_failure": true,
+  "production_p1_p2": [],
+  "scope": "Engine/TestBackend lifecycle proof; not real Docker/SIGTERM evidence"
+}

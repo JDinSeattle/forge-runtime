@@ -62,6 +62,7 @@ those checks.
 | [E43](telemetry-chain-evidence.md) | Actual component trace propagation and committed metric observations | Independent Collector graph bound to PG/SQLite IDs; retry/adoption links, counter deltas, convention mapping and negative graph checks | TestBackend; no runner-process context continuity; explicit commit-to-observation gaps and uncalled RPCs |
 | [E45](api-lifecycle-evidence.md) | API SIGTERM drain and successor replay | Actual API subprocess, TCP SSE, locked inflight PG submission, new-connection refusal and same-ID successor replay | API portion of S16.4 only; own-process-group cleanup tests; no live service replacement |
 | [E46](integration-checks-e46-20260911.md) | Integrated routing/progress/telemetry/lifecycle checks | 303 unchanged inputs; 515 ordinary/race entries each, build/vet/generation, six Python groups, new Collector run and 14 recomputed handoff records | 29 opt-in skips per suite; final port/auditor changes checked separately; live deployment/paid models/full delivery remain open |
+| [E47](runner-admission-evidence.md) | Close runner admission before RPC drain | Deterministic queued-request/unknown-job/successor journal test, controlled old-order failure, 102 affected race passes, vet and ten progress audit regressions | Engine/TestBackend only; full worker/runner OS SIGTERM and Docker scenario still open |
 
 ## E01 — Schemas and generated code
 

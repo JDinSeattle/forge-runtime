@@ -1,0 +1,35 @@
+import pathlib,json,hashlib,subprocess,os,datetime,importlib.util
+repo=pathlib.Path('/home/postedism/Desktop/mini claude code/forge-runtime')
+out=repo/'benchmarks/results/runner-admission-e47-20260911';out.mkdir(exist_ok=False)
+spec=importlib.util.spec_from_file_location('bounded',repo/'tests/review/run_api_lifecycle.py');m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
+files=['internal/runner/engine.go','internal/runner/shutdown_test.go','cmd/forge-runner/main.go','.github/workflows/ci.yml']
+def digest(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+def dump(n,x): (out/n).write_text(json.dumps(x,indent=2,sort_keys=True)+'\n')
+def sources():
+ names=subprocess.check_output(['git','ls-files','*.go','go.mod','go.sum','*.sql','*.proto','*.yml'],cwd=repo,text=True).splitlines()+['internal/runner/shutdown_test.go']
+ return {n:digest(repo/n) for n in sorted(set(names))}
+before=sources();dump('source-before.json',before)
+for n in files:(out/(n.replace('/','_')+'.txt')).write_bytes((repo/n).read_bytes())
+(out/'check.py.txt').write_bytes(pathlib.Path(__file__).read_bytes())
+source=(repo/'internal/runner/engine.go').read_text()
+body='\te.mu.Lock()\n\te.closed = true\n\tfor _, cancel := range e.cancels {\n\t\tcancel()\n\t}\n\te.mu.Unlock()'
+assert ('func (e *Engine) BeginShutdown() {\n'+body+'\n}') in source
+control=source.replace('func (e *Engine) BeginShutdown() {\n'+body+'\n}', 'func (e *Engine) BeginShutdown() {}').replace('func (e *Engine) Close() error {\n\te.BeginShutdown()', 'func (e *Engine) Close() error {\n'+body)
+# Copy-only negative control models the old ordering: no admission stop until
+# Close, which the executable calls only after RPC drain. Never changes source.
+(out/'late-close-control.go.txt').write_text(control)
+overlay_file=repo/'var/local/runner-admission-e47-overlay.json'
+overlay_file.write_text(json.dumps({'Replace':{str(repo/'internal/runner/engine.go'):str(out/'late-close-control.go.txt')}}))
+env={k:v for k,v in os.environ.items() if not k.startswith(('FORGE_','OTEL_'))}
+env.update(GOCACHE=str(repo/'var/local/go-build-cache'),GOTMPDIR=str(repo/'var/local/integration-go-tmp'),TMPDIR='/tmp',GOPROXY='off',GOSUMDB='off',GOENV='off',GOTOOLCHAIN='local')
+checks=[('late-close-negative',['go','test','-overlay='+str(overlay_file),'-race','./internal/runner','-run=^TestShutdownFencesQueuedAdmissionAndPreservesJobForSuccessor$','-count=1','-timeout=15s','-v'],1),('affected-race',['go','test','-race','./internal/runner','./internal/runnerclient','./cmd/forge-runner','-count=1','-timeout=90s','-json'],0),('affected-vet',['go','vet','./internal/runner','./internal/runnerclient','./cmd/forge-runner'],0),('progress-audit-python',['python3','-I','-m','unittest','discover','-s','scripts/progress','-p','test_*.py','-v'],0)]
+results=[]
+for name,cmd,expected in checks:
+ with (out/(name+'.log')).open('xb') as log:rc=m.execute_bounded(cmd,repo,env,log,180)
+ row={'name':name,'exit_code':rc,'expected_exit_code':expected};results.append(row);dump('results.json',results);print(json.dumps(row),flush=True)
+ assert rc==expected,row
+ if name=='late-close-negative':assert 'queued handler did not drain after shutdown' in (out/(name+'.log')).read_text()
+after=sources();dump('source-after.json',after);assert before==after
+dump('identity.json',{'base_commit':subprocess.check_output(['git','rev-parse','HEAD'],cwd=repo,text=True).strip(),'source':'working tree + hashed new test','source_input_count':len(before),'scope':'deterministic TestBackend + real SQLite/filesystem; no OS SIGTERM, Docker or paid provider; negative control simulates delayed Close ordering'})
+dump('manifest.json',{p.name:digest(p) for p in sorted(out.iterdir()) if p.name!='manifest.json'})
+print(json.dumps({'stable_inputs':len(before),'evidence':str(out)}),flush=True)

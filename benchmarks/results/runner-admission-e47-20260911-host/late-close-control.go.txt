@@ -81,19 +81,17 @@ func Open(config Config) (*Engine, error) {
 // It keeps the journal and pool locks open until Close, so already accepted RPCs
 // can finish without racing database closure or a successor's pool ownership.
 // It does not assert business cancellation or remove containers.
-func (e *Engine) BeginShutdown() {
+func (e *Engine) BeginShutdown() {}
+
+// Close preserves durable jobs for inspection by a successor. The caller must
+// first drain its RPC handlers; BeginShutdown can start that sequence early.
+func (e *Engine) Close() error {
 	e.mu.Lock()
 	e.closed = true
 	for _, cancel := range e.cancels {
 		cancel()
 	}
 	e.mu.Unlock()
-}
-
-// Close preserves durable jobs for inspection by a successor. The caller must
-// first drain its RPC handlers; BeginShutdown can start that sequence early.
-func (e *Engine) Close() error {
-	e.BeginShutdown()
 	e.wg.Wait()
 	err := e.journal.db.Close()
 	for _, unlock := range e.storageUnlocks {
