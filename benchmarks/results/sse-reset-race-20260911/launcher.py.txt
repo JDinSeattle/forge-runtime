@@ -1,0 +1,33 @@
+import datetime, hashlib,json,os,pathlib,shlex,shutil,subprocess,sys,time
+repo=pathlib.Path('/home/postedism/Desktop/mini claude code/forge-runtime')
+out=repo/'benchmarks/results/sse-reset-race-20260911'
+clone=pathlib.Path('/tmp/forge-sse-fix-a9208e7-20260911')
+env=dict(os.environ,GOCACHE='/tmp/forge-runtime-gocache',GOPROXY='off')
+for k in list(env):
+ if k.startswith('FORGE_'):del env[k]
+for line in (repo/'var/local/review-database.env').read_text().splitlines():
+ k,sep,v=line.partition('=')
+ if sep and k in ('FORGE_REVIEW_DATABASE_URL','FORGE_REVIEW_ALLOW_FIXTURES'):env[k]=shlex.split(v)[0]
+env['FORGE_TEST_DATABASE_URL']=env['FORGE_REVIEW_DATABASE_URL']
+def call(argv,log):
+ start=time.monotonic()
+ with (out/log).open('xb') as f:p=subprocess.run(argv,cwd=clone if clone.exists() else repo,env=env,stdout=f,stderr=subprocess.STDOUT)
+ r={'argv':argv,'log':log,'exit_code':p.returncode,'elapsed_seconds':time.monotonic()-start};print(json.dumps(r),flush=True);return r
+assert call(['git','clone','--local','--no-hardlinks','--no-checkout',str(repo),str(clone)],'isolated-clone.log')['exit_code']==0
+assert call(['git','checkout','--detach','a9208e79879d29373eb3964e098eff286aa6de82'],'isolated-checkout.log')['exit_code']==0
+name='internal/eventstream/hub_test.go';shutil.copyfile(repo/name,clone/name)
+results=[call(['go','test','-race','./internal/eventstream','-run','^TestResetDetachesHubBeforeNotification$','-count=1','-v'],'controlled-before-race.log')]
+for name in ('internal/eventstream/hub.go','tests/review/eventstream_test.go'):shutil.copyfile(repo/name,clone/name)
+owned=['internal/eventstream/hub.go','internal/eventstream/hub_test.go','tests/review/eventstream_test.go']
+for name in owned:
+ target=out/'after-source'/name;target.parent.mkdir(parents=True,exist_ok=True);target.with_suffix(target.suffix+'.txt').write_bytes((clone/name).read_bytes())
+inputs=subprocess.check_output(['git','ls-files','-z'],cwd=clone,text=True).split('\0');inputs=[p for p in inputs if p and (p.endswith(('.go','.mod','.sum','.sql','.yaml','.proto')) and not p.startswith('benchmarks/results/'))]+['internal/eventstream/hub_test.go']
+def hashes():return {p:hashlib.sha256((clone/p).read_bytes()).hexdigest() for p in inputs}
+before=hashes();(out/'source-before.json').write_text(json.dumps(before,indent=2,sort_keys=True)+'\n')
+results.append(call(['go','test','-race','./internal/eventstream','./tests/review','-run','^(TestResetDetachesHubBeforeNotification|TestReviewSSE.*)$','-count=200'],'repeated-after-race.log'))
+results.append(call(['go','test','-race','./internal/eventstream','./internal/httpapi','./tests/review','-count=1','-v'],'postgres-http-after-race.log'))
+after=hashes();(out/'source-after.json').write_text(json.dumps(after,indent=2,sort_keys=True)+'\n')
+(out/'results.json').write_text(json.dumps({'base_commit':'a9208e79879d29373eb3964e098eff286aa6de82','isolated_clone':str(clone),'source_unchanged_during_checks':before==after,'changes':owned,'executions':results,'scope':'before controlled regression then after repeated SSE and actual private-PG/HTTP race; no load or real runner replay'},indent=2)+'\n')
+shutil.copyfile(__file__,out/'launcher.py.txt')
+(out/'manifest.json').write_text(json.dumps({str(p.relative_to(out)):hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(out.rglob('*')) if p.is_file() and p.name!='manifest.json'},indent=2)+'\n')
+sys.exit(0 if results[0]['exit_code']!=0 and all(r['exit_code']==0 for r in results[1:]) and before==after else 1)

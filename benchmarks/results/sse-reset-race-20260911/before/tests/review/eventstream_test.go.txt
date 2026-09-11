@@ -149,9 +149,6 @@ func TestReviewSSEReconnectAfterGapStartsFreshHub(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer second.Close()
-	// An old handler can finish cleanup after the replacement subscribed. Its
-	// late Close must not remove or cancel that replacement generation.
-	first.Close()
 	source.set(4, 4)
 	reviewStreamEvent(t, second, 4)
 }

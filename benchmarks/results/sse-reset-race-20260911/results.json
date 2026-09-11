@@ -1,0 +1,58 @@
+{
+  "base_commit": "a9208e79879d29373eb3964e098eff286aa6de82",
+  "isolated_clone": "/tmp/forge-sse-fix-a9208e7-20260911",
+  "source_unchanged_during_checks": true,
+  "changes": [
+    "internal/eventstream/hub.go",
+    "internal/eventstream/hub_test.go",
+    "tests/review/eventstream_test.go"
+  ],
+  "executions": [
+    {
+      "argv": [
+        "go",
+        "test",
+        "-race",
+        "./internal/eventstream",
+        "-run",
+        "^TestResetDetachesHubBeforeNotification$",
+        "-count=1",
+        "-v"
+      ],
+      "log": "controlled-before-race.log",
+      "exit_code": 1,
+      "elapsed_seconds": 1.061499142961111
+    },
+    {
+      "argv": [
+        "go",
+        "test",
+        "-race",
+        "./internal/eventstream",
+        "./tests/review",
+        "-run",
+        "^(TestResetDetachesHubBeforeNotification|TestReviewSSE.*)$",
+        "-count=200"
+      ],
+      "log": "repeated-after-race.log",
+      "exit_code": 1,
+      "elapsed_seconds": 1.4381700020167045
+    },
+    {
+      "argv": [
+        "go",
+        "test",
+        "-race",
+        "./internal/eventstream",
+        "./internal/httpapi",
+        "./tests/review",
+        "-count=1",
+        "-v"
+      ],
+      "log": "postgres-http-after-race.log",
+      "exit_code": 1,
+      "elapsed_seconds": 1.3396840349887498
+    }
+  ],
+  "scope": "before controlled regression then after repeated SSE and actual private-PG/HTTP race; no load or real runner replay"
+}

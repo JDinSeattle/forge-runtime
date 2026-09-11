@@ -1,0 +1,37 @@
+{
+  "executions": [
+    {
+      "argv": [
+        "go",
+        "test",
+        "-race",
+        "./internal/eventstream",
+        "./tests/review",
+        "-run",
+        "^(TestResetDetachesHubBeforeNotification|TestReviewSSE.*)$",
+        "-count=200"
+      ],
+      "log": "repeat-after-race.log",
+      "exit_code": 0,
+      "elapsed_seconds": 14.906718464975711
+    },
+    {
+      "argv": [
+        "go",
+        "test",
+        "-race",
+        "./internal/eventstream",
+        "./internal/httpapi",
+        "./tests/review",
+        "-count=1",
+        "-v"
+      ],
+      "log": "repeat-postgres-http-race.log",
+      "exit_code": 0,
+      "elapsed_seconds": 18.95721537998179
+    }
+  ],
+  "GOTMPDIR": "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/sse-check-go-tmp",
+  "reason": "initial after-fix build hit /tmp disk quota; source unchanged",
+  "source_unchanged": true
+}

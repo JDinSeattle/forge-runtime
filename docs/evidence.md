@@ -51,6 +51,7 @@ those checks.
 | [E32](approval-authority-evidence.md) | Approval checks current membership inside its decision transaction | Real TCP/PG lock ordering, downgrade/removal regressions and narrow-function privileges under race | Private migration10/control fixtures; original services not claimed upgraded |
 | [E33](k6-metadata-evidence.md) | Actual 1,000-request k6 metadata workload with fixed 90:10 mix | Raw JSONL, exact status/count checks, independently recomputed percentiles; first failure retained | Real authenticated handler/PG without telemetry; no task execution or complete build/config/profile attestation |
 | [E34](integration-checks-20260911.md) | Integrated admission, capacity, approval and dependency changes | Frozen 260-input working tree; build, 368 ordinary/race passing entries each, vet, generation and five Python suites | 27 opt-in skips per Go run; separate from current CI and full runtime/operational acceptance |
+| [E38](sse-reset-retirement-evidence.md) | SSE reset removes the old hub before a client can rejoin it | Original failed CI, two controlled reproductions, 200 repeats and isolated PG/HTTP race checks | In-memory Source for reset interleavings; separate from sustained load and current feature work |
 
 ## E01 — Schemas and generated code
 
@@ -1177,3 +1178,14 @@ and [final passing results](../benchmarks/results/integration-checks-20260911T21
 remain distinct. These checks do not deploy the live services, rerun all opt-in
 experiments or close the remaining runtime, operations, paired restore and
 paid-model requirements.
+
+## E38 — Atomic SSE reset retirement, 2026-09-11
+
+[CI for a9208e7](../benchmarks/results/github-actions-a9208e7/run.json) fails
+the race step when a replacement SSE subscription joins a hub that has announced
+reset but is not yet removed. The [controlled regression and fix](sse-reset-retirement-evidence.md)
+reproduce both reset variants on the old source and pass 200 repeats plus real
+private-PG/HTTP package race checks in an isolated a9208e7 checkout with only
+the three SSE files changed. Independent review finds no P1/P2. Original CI,
+controlled failures and the unrelated temporary-disk build failures stay
+preserved. Later feature work is excluded from this acceptance.

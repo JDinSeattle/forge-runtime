@@ -11,6 +11,12 @@ Its first transaction-timeout classification failure is preserved separately.
 Private schema6→10 upgrades pass; this does not migrate the running services.
 The checked working tree and earlier exact-commit CI retain separate identities.
 
+CI for the subsequent `a9208e7` [fails its race step](../benchmarks/results/github-actions-a9208e7/run.json)
+on an SSE reset/reconnection interleaving. [E38](sse-reset-retirement-evidence.md)
+retains that failure, reproduces it under a controlled source and verifies the
+three-file correction in an isolated checkout. The new CI result is pending;
+local success is not substituted for it.
+
 Independent [section 1–8](reviews/acceptance-s01-s08-20260911.md), [section 9–14](reviews/acceptance-s09-s14-20260911.md), and [section 16–20](reviews/acceptance-s16-s20-20260911.md) scope reviews reconcile stale pending notes with retained evidence and identify concrete remaining implementation gaps, preserving every original row.
 
 Status: **U** means not implemented or no matching execution evidence; **I** means implementation or a useful subset exists but the full row remains open; **V** means the stated scope was verified with the cited evidence; **X** means an explicitly optional extension is deferred. V does not promote neighboring or broader requirements. Some earlier results are recorded in the independent review rather than retained raw output; that limitation is explicit in evidence.md. The initial implementation is commit `191cb89`; clean-checkout failures led to fixture isolation in `818d78f` and self-contained empty-database review tests in `b924f1c`. Earlier raw workloads retain their own execution identity; they are not relabeled as measurements of the latest commit. Compilation cannot prove authorization/recovery, and a fake runner cannot prove Docker behavior.

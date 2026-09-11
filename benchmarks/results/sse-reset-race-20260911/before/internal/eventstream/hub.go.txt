@@ -155,29 +155,22 @@ func (h *hub) remove(s *subscriber, err error) {
 	close(s.errors)
 	close(s.events)
 }
-
-// retire detaches this generation before publishing a terminal error. A client
-// may reconnect immediately on ErrReset, while its old handler has not called
-// Close yet. It must never find this dying hub in the manager's admission map.
-// Preserve the same manager -> hub lock order used by Subscribe and Close.
-func (h *hub) retire(err error) {
-	h.manager.mu.Lock()
-	h.mu.Lock()
-	if h.manager.hubs[h.key] == h {
-		delete(h.manager.hubs, h.key)
-	}
-	h.cancel()
-	for s := range h.subs {
-		h.remove(s, err)
-	}
-	h.mu.Unlock()
-	h.manager.mu.Unlock()
-}
-
 func (h *hub) run() {
 	ticker := time.NewTicker(h.manager.cfg.PollInterval)
 	defer ticker.Stop()
-	defer h.retire(context.Canceled)
+	defer func() {
+		h.manager.mu.Lock()
+		h.mu.Lock()
+		if h.manager.hubs[h.key] == h {
+			delete(h.manager.hubs, h.key)
+		}
+		h.cancel()
+		for s := range h.subs {
+			h.remove(s, context.Canceled)
+		}
+		h.mu.Unlock()
+		h.manager.mu.Unlock()
+	}()
 	for {
 		select {
 		case <-h.ctx.Done():
@@ -192,7 +185,11 @@ func (h *hub) run() {
 		cancel()
 		if err != nil {
 			if errors.Is(err, domain.ErrReset) {
-				h.retire(ErrReset)
+				h.mu.Lock()
+				for s := range h.subs {
+					h.remove(s, ErrReset)
+				}
+				h.mu.Unlock()
 				return
 			}
 			if errors.Is(err, domain.ErrNotFound) {
@@ -203,8 +200,10 @@ func (h *hub) run() {
 		h.mu.Lock()
 		for _, e := range events {
 			if e.Seq != h.cursor+1 {
+				for s := range h.subs {
+					h.remove(s, ErrReset)
+				}
 				h.mu.Unlock()
-				h.retire(ErrReset)
 				return
 			}
 			h.cursor = e.Seq

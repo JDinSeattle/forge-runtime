@@ -1,0 +1,13 @@
+=== RUN   TestResetDetachesHubBeforeNotification
+=== RUN   TestResetDetachesHubBeforeNotification/history-gap
+    hub_test.go:76: reset published while the dying hub was still admissible
+    hub_test.go:103: replacement subscription failed: context canceled
+=== RUN   TestResetDetachesHubBeforeNotification/source-reset
+    hub_test.go:76: reset published while the dying hub was still admissible
+    hub_test.go:103: replacement subscription failed: context canceled
+--- FAIL: TestResetDetachesHubBeforeNotification (0.00s)
+    --- FAIL: TestResetDetachesHubBeforeNotification/history-gap (0.00s)
+    --- FAIL: TestResetDetachesHubBeforeNotification/source-reset (0.00s)
+FAIL
+FAIL	github.com/JDinSeattle/forge-runtime/internal/eventstream	0.014s
+FAIL

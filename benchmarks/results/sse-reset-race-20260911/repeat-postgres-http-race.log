@@ -1,0 +1,154 @@
+=== RUN   TestResetDetachesHubBeforeNotification
+=== RUN   TestResetDetachesHubBeforeNotification/history-gap
+=== RUN   TestResetDetachesHubBeforeNotification/source-reset
+--- PASS: TestResetDetachesHubBeforeNotification (0.07s)
+    --- PASS: TestResetDetachesHubBeforeNotification/history-gap (0.03s)
+    --- PASS: TestResetDetachesHubBeforeNotification/source-reset (0.03s)
+PASS
+ok  	github.com/JDinSeattle/forge-runtime/internal/eventstream	1.080s
+=== RUN   TestDependencyErrorsSeparateAvailabilityFromPermanentFailures
+=== RUN   TestDependencyErrorsSeparateAvailabilityFromPermanentFailures/connection
+=== RUN   TestDependencyErrorsSeparateAvailabilityFromPermanentFailures/lost_response
+=== RUN   TestDependencyErrorsSeparateAvailabilityFromPermanentFailures/restart
+=== RUN   TestDependencyErrorsSeparateAvailabilityFromPermanentFailures/timeout
+=== RUN   TestDependencyErrorsSeparateAvailabilityFromPermanentFailures/sql_bug
+=== RUN   TestDependencyErrorsSeparateAvailabilityFromPermanentFailures/database_authentication
+--- PASS: TestDependencyErrorsSeparateAvailabilityFromPermanentFailures (0.00s)
+    --- PASS: TestDependencyErrorsSeparateAvailabilityFromPermanentFailures/connection (0.00s)
+    --- PASS: TestDependencyErrorsSeparateAvailabilityFromPermanentFailures/lost_response (0.00s)
+    --- PASS: TestDependencyErrorsSeparateAvailabilityFromPermanentFailures/restart (0.00s)
+    --- PASS: TestDependencyErrorsSeparateAvailabilityFromPermanentFailures/timeout (0.00s)
+    --- PASS: TestDependencyErrorsSeparateAvailabilityFromPermanentFailures/sql_bug (0.00s)
+    --- PASS: TestDependencyErrorsSeparateAvailabilityFromPermanentFailures/database_authentication (0.00s)
+=== RUN   TestReadinessClassifiesActualDatabaseTransportLoss
+--- PASS: TestReadinessClassifiesActualDatabaseTransportLoss (0.00s)
+=== RUN   TestSSESurvivesIndependentDatabaseDeadline
+--- PASS: TestSSESurvivesIndependentDatabaseDeadline (3.46s)
+PASS
+ok  	github.com/JDinSeattle/forge-runtime/internal/httpapi	4.479s
+=== RUN   TestReviewFixedRunnerClaimAndTakeoverRemainOnAssignedTransport
+--- PASS: TestReviewFixedRunnerClaimAndTakeoverRemainOnAssignedTransport (0.30s)
+=== RUN   TestReviewFailedVerifierDiagnosticsEnableNextRepair
+=== RUN   TestReviewFailedVerifierDiagnosticsEnableNextRepair/native_false
+=== RUN   TestReviewFailedVerifierDiagnosticsEnableNextRepair/native_false/cleanup_after_snapshot_publication
+=== RUN   TestReviewFailedVerifierDiagnosticsEnableNextRepair/native_true
+=== RUN   TestReviewFailedVerifierDiagnosticsEnableNextRepair/native_true/cleanup_after_release_before_commit
+--- PASS: TestReviewFailedVerifierDiagnosticsEnableNextRepair (4.23s)
+    --- PASS: TestReviewFailedVerifierDiagnosticsEnableNextRepair/native_false (2.21s)
+        --- PASS: TestReviewFailedVerifierDiagnosticsEnableNextRepair/native_false/cleanup_after_snapshot_publication (0.23s)
+    --- PASS: TestReviewFailedVerifierDiagnosticsEnableNextRepair/native_true (2.03s)
+        --- PASS: TestReviewFailedVerifierDiagnosticsEnableNextRepair/native_true/cleanup_after_release_before_commit (0.15s)
+=== RUN   TestReviewModelInputMustFitFrozenReservationBeforeDispatch
+--- PASS: TestReviewModelInputMustFitFrozenReservationBeforeDispatch (0.39s)
+=== RUN   TestReviewApprovalRejectsMembershipChangedAfterAuthentication
+=== RUN   TestReviewApprovalRejectsMembershipChangedAfterAuthentication/downgrade
+=== RUN   TestReviewApprovalRejectsMembershipChangedAfterAuthentication/remove
+--- PASS: TestReviewApprovalRejectsMembershipChangedAfterAuthentication (0.80s)
+    --- PASS: TestReviewApprovalRejectsMembershipChangedAfterAuthentication/downgrade (0.42s)
+    --- PASS: TestReviewApprovalRejectsMembershipChangedAfterAuthentication/remove (0.38s)
+=== RUN   TestReviewApprovalMembershipLockHelperIsScopedAndReadOnly
+--- PASS: TestReviewApprovalMembershipLockHelperIsScopedAndReadOnly (0.28s)
+=== RUN   TestReviewApprovalMembershipRemainsLockedUntilDecisionCommit
+--- PASS: TestReviewApprovalMembershipRemainsLockedUntilDecisionCommit (0.48s)
+=== RUN   TestReviewApprovalDenialAndTerminalDuplicatesKeepTheirSemantics
+--- PASS: TestReviewApprovalDenialAndTerminalDuplicatesKeepTheirSemantics (0.39s)
+=== RUN   TestReviewCleanupRequiresTerminalSettledAgedStateAndIndependentLease
+--- PASS: TestReviewCleanupRequiresTerminalSettledAgedStateAndIndependentLease (0.48s)
+=== RUN   TestRecoveryIndependentCollectorDelivery
+    collector_test.go:27: requires separately running collector and its file-exporter output
+--- SKIP: TestRecoveryIndependentCollectorDelivery (0.00s)
+=== RUN   TestReviewSSESnapshotToRegistrationGapReplaysHistory
+--- PASS: TestReviewSSESnapshotToRegistrationGapReplaysHistory (0.00s)
+=== RUN   TestReviewSSEReconnectAfterGapStartsFreshHub
+--- PASS: TestReviewSSEReconnectAfterGapStartsFreshHub (0.00s)
+=== RUN   TestReviewHTTPExpiredCursorRequiresSnapshotReset
+=== RUN   TestReviewHTTPExpiredCursorRequiresSnapshotReset/cutoff_during_subscribe_false
+=== RUN   TestReviewHTTPExpiredCursorRequiresSnapshotReset/cutoff_during_subscribe_true
+--- PASS: TestReviewHTTPExpiredCursorRequiresSnapshotReset (0.61s)
+    --- PASS: TestReviewHTTPExpiredCursorRequiresSnapshotReset/cutoff_during_subscribe_false (0.31s)
+    --- PASS: TestReviewHTTPExpiredCursorRequiresSnapshotReset/cutoff_during_subscribe_true (0.30s)
+=== RUN   TestReviewHTTPUsesRealNonOwnerTenantScopeAndArtifactBytes
+=== RUN   TestReviewHTTPUsesRealNonOwnerTenantScopeAndArtifactBytes/missing_bearer
+=== RUN   TestReviewHTTPUsesRealNonOwnerTenantScopeAndArtifactBytes/valid_own_run
+=== RUN   TestReviewHTTPUsesRealNonOwnerTenantScopeAndArtifactBytes/same_principal_wrong_tenant
+=== RUN   TestReviewHTTPUsesRealNonOwnerTenantScopeAndArtifactBytes/missing_membership
+=== RUN   TestReviewHTTPUsesRealNonOwnerTenantScopeAndArtifactBytes/viewer_read
+=== RUN   TestReviewHTTPUsesRealNonOwnerTenantScopeAndArtifactBytes/viewer_cancel
+=== RUN   TestReviewHTTPUsesRealNonOwnerTenantScopeAndArtifactBytes/viewer_message
+=== RUN   TestReviewHTTPUsesRealNonOwnerTenantScopeAndArtifactBytes/cross_tenant_artifact_list
+--- PASS: TestReviewHTTPUsesRealNonOwnerTenantScopeAndArtifactBytes (0.50s)
+    --- PASS: TestReviewHTTPUsesRealNonOwnerTenantScopeAndArtifactBytes/missing_bearer (0.00s)
+    --- PASS: TestReviewHTTPUsesRealNonOwnerTenantScopeAndArtifactBytes/valid_own_run (0.00s)
+    --- PASS: TestReviewHTTPUsesRealNonOwnerTenantScopeAndArtifactBytes/same_principal_wrong_tenant (0.00s)
+    --- PASS: TestReviewHTTPUsesRealNonOwnerTenantScopeAndArtifactBytes/missing_membership (0.00s)
+    --- PASS: TestReviewHTTPUsesRealNonOwnerTenantScopeAndArtifactBytes/viewer_read (0.00s)
+    --- PASS: TestReviewHTTPUsesRealNonOwnerTenantScopeAndArtifactBytes/viewer_cancel (0.00s)
+    --- PASS: TestReviewHTTPUsesRealNonOwnerTenantScopeAndArtifactBytes/viewer_message (0.00s)
+    --- PASS: TestReviewHTTPUsesRealNonOwnerTenantScopeAndArtifactBytes/cross_tenant_artifact_list (0.00s)
+=== RUN   TestReviewReservedPriorityIsBoundedAndPreservesFIFO
+--- PASS: TestReviewReservedPriorityIsBoundedAndPreservesFIFO (0.29s)
+=== RUN   TestRecoverySourceProcess
+    recovery_test.go:235: operator-only paired recovery rehearsal: FORGE_RECOVERY_CONFIG is required
+--- SKIP: TestRecoverySourceProcess (0.00s)
+=== RUN   TestRecoveryRestoredProcess
+    recovery_test.go:335: operator-only paired recovery rehearsal: FORGE_RECOVERY_CONFIG is required
+--- SKIP: TestRecoveryRestoredProcess (0.00s)
+=== RUN   TestReviewHTTPResumePreservesIdentityAndCapacity
+--- PASS: TestReviewHTTPResumePreservesIdentityAndCapacity (0.49s)
+=== RUN   TestReviewConcurrentFinalizeDoesNotReleaseSentinelCapacity
+--- PASS: TestReviewConcurrentFinalizeDoesNotReleaseSentinelCapacity (0.58s)
+=== RUN   TestReviewCLIResumeSucceedsThroughRealHTTP
+    resume_capacity_test.go:374: set FORGE_REVIEW_FORGE_BINARY to a freshly built cmd/forge executable
+--- SKIP: TestReviewCLIResumeSucceedsThroughRealHTTP (0.00s)
+=== RUN   TestReviewTrimEventsPreservesActiveStatesAndReplayEvidence
+--- PASS: TestReviewTrimEventsPreservesActiveStatesAndReplayEvidence (0.76s)
+=== RUN   TestReviewWholeTaskRetryCreatesOneChildWithoutReopeningParent
+=== RUN   TestReviewWholeTaskRetryCreatesOneChildWithoutReopeningParent/changed_task
+=== RUN   TestReviewWholeTaskRetryCreatesOneChildWithoutReopeningParent/missing_parent
+=== RUN   TestReviewWholeTaskRetryCreatesOneChildWithoutReopeningParent/foreign_parent
+=== RUN   TestReviewWholeTaskRetryCreatesOneChildWithoutReopeningParent/unregistered_base
+--- PASS: TestReviewWholeTaskRetryCreatesOneChildWithoutReopeningParent (0.40s)
+    --- PASS: TestReviewWholeTaskRetryCreatesOneChildWithoutReopeningParent/changed_task (0.00s)
+    --- PASS: TestReviewWholeTaskRetryCreatesOneChildWithoutReopeningParent/missing_parent (0.00s)
+    --- PASS: TestReviewWholeTaskRetryCreatesOneChildWithoutReopeningParent/foreign_parent (0.00s)
+    --- PASS: TestReviewWholeTaskRetryCreatesOneChildWithoutReopeningParent/unregistered_base (0.00s)
+=== RUN   TestReviewStoppedWorkspaceRejectsDelayedSameEpochAdoption
+--- PASS: TestReviewStoppedWorkspaceRejectsDelayedSameEpochAdoption (0.29s)
+=== RUN   TestReviewReleaseRechecksGrantAfterWaitingForWriter
+--- PASS: TestReviewReleaseRechecksGrantAfterWaitingForWriter (0.37s)
+=== RUN   TestReviewCancelPreservesAlreadyCompletedJobOutcome
+--- PASS: TestReviewCancelPreservesAlreadyCompletedJobOutcome (0.37s)
+=== RUN   TestReviewDockerRejectsMissingOrUnverifiedWorkspaceQuota
+=== RUN   TestReviewDockerRejectsMissingOrUnverifiedWorkspaceQuota/missing
+=== RUN   TestReviewDockerRejectsMissingOrUnverifiedWorkspaceQuota/rejected
+--- PASS: TestReviewDockerRejectsMissingOrUnverifiedWorkspaceQuota (0.00s)
+    --- PASS: TestReviewDockerRejectsMissingOrUnverifiedWorkspaceQuota/missing (0.00s)
+    --- PASS: TestReviewDockerRejectsMissingOrUnverifiedWorkspaceQuota/rejected (0.00s)
+=== RUN   TestReviewEffectsAndApprovalsBindDurableParents
+=== RUN   TestReviewEffectsAndApprovalsBindDurableParents/effect_requires_its_step
+=== RUN   TestReviewEffectsAndApprovalsBindDurableParents/approval_binds_effect_and_run_together
+=== RUN   TestReviewEffectsAndApprovalsBindDurableParents/run_cannot_reference_another_tenant_project
+--- PASS: TestReviewEffectsAndApprovalsBindDurableParents (0.20s)
+    --- PASS: TestReviewEffectsAndApprovalsBindDurableParents/effect_requires_its_step (0.00s)
+    --- PASS: TestReviewEffectsAndApprovalsBindDurableParents/approval_binds_effect_and_run_together (0.00s)
+    --- PASS: TestReviewEffectsAndApprovalsBindDurableParents/run_cannot_reference_another_tenant_project (0.00s)
+=== RUN   TestReviewRLSUsesActualNonOwnerRoleAndLocalContext
+--- PASS: TestReviewRLSUsesActualNonOwnerRoleAndLocalContext (0.24s)
+=== RUN   TestReviewHeartbeatRemainsAuthoritativeAcrossTransitions
+--- PASS: TestReviewHeartbeatRemainsAuthoritativeAcrossTransitions (1.28s)
+=== RUN   TestReviewLeaseExpiryDuringEvidenceWaitFencesCommit
+--- PASS: TestReviewLeaseExpiryDuringEvidenceWaitFencesCommit (1.34s)
+=== RUN   TestReviewDeferredModelRunCanBeReclaimed
+--- PASS: TestReviewDeferredModelRunCanBeReclaimed (0.26s)
+=== RUN   TestReviewAPIRoleGuardChecksResolvedSchemaAndInheritedOwnership
+--- PASS: TestReviewAPIRoleGuardChecksResolvedSchemaAndInheritedOwnership (0.26s)
+=== RUN   TestReviewHTMLCharactersPreserveToolArgumentHashAcrossPersistence
+--- PASS: TestReviewHTMLCharactersPreserveToolArgumentHashAcrossPersistence (0.27s)
+=== RUN   TestRecoveryPostgresAdditiveUpgrade
+    upgrade_test.go:146: private PostgreSQL schema upgraded 6 -> 10 twice; original run columns, unknown effect, artifact metadata and snapshot bytes unchanged; new priority defaults to zero
+--- PASS: TestRecoveryPostgresAdditiveUpgrade (0.27s)
+=== RUN   TestRecoverySQLiteV3AdditiveUpgrade
+    upgrade_test.go:307: real SQLite 3 -> 4 migration preserved two immutable operations/receipt; missing legacy dispatch evidence stays unknown; zero new backend launches
+--- PASS: TestRecoverySQLiteV3AdditiveUpgrade (0.61s)
+PASS
+ok  	github.com/JDinSeattle/forge-runtime/tests/review	17.807s
