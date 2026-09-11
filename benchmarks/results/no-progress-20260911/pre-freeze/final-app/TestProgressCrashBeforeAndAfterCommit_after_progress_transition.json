@@ -1,0 +1,4461 @@
+{
+  "artifact_bytes": {
+    "artifact_3a833a0b00a845263c07d8878236b56dd15bdd8d00d43a19d88e007821183922": "{\"context_ref\":\"artifact_a9e8a5027b01af338b7e13201503ace17cd60fc176c4901a6bf3c76c8a2f1dfe\",\"policy_version\":1,\"step_seq\":4,\"message_seq\":0,\"attempt_id\":\"attempt_HGKTOYAFXE6WG7SWNI3XY6N7PP\",\"observations\":[{\"effect_id\":\"run_U35Z44LLC5FVHHFWQAY2CYG24T_step_4_op_0\",\"receipt_ref\":\"artifact_eaab2c2ca021c1427c48a6f6ff977e9c47fe58ff6538a0acc36ba7567a5b6c1c\",\"fingerprint\":\"544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687\",\"before_hash\":\"ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c\",\"after_hash\":\"ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c\"}]}",
+    "artifact_3feeeafa253853c84ea955551ae314a9e41b1b075b4c33b98a825adeec1775e0": "{\"request\":{\"tenant_id\":\"tenant\",\"run_id\":\"run_U35Z44LLC5FVHHFWQAY2CYG24T\",\"workspace_id\":\"run_U35Z44LLC5FVHHFWQAY2CYG24T\",\"epoch\":1,\"grant\":\"\",\"operation_id\":\"run_U35Z44LLC5FVHHFWQAY2CYG24T_0_initial_target\",\"expected_revision\":1,\"kind\":\"verify\",\"args\":{\"target\":true},\"args_hash\":\"c56810ebca495ac55b599570ff113f60c83411e488cefe803421335131ab0944\",\"policy_version\":\"trusted-profile-v1\",\"deadline\":\"2026-09-11T16:05:14.398849-07:00\"},\"status\":\"failed\",\"job_id\":\"forge-a598d35b126f7218bdd4b872814e193de02b12b4\",\"before_hash\":\"ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c\",\"after_hash\":\"ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c\",\"after_revision\":1,\"result\":{\"id\":\"forge-a598d35b126f7218bdd4b872814e193de02b12b4\",\"running\":false,\"exit_code\":1,\"started\":true,\"output\":\"cHJvdG9jb2wgZml4dHVyZSBvbmx5OyBubyBQeXRob24gZXhlY3V0ZWQ=\",\"truncated\":false},\"receipt\":{\"tenant_id\":\"\",\"run_id\":\"\",\"kind\":\"\",\"object_key\":\"\",\"sha256\":\"\",\"size\":0},\"cancel_requested\":false}",
+    "artifact_43df0bd9f00ee3572811310a37126af28007af6a9fa8efc5bf3f29ffdb1917b7": "{\"context_ref\":\"artifact_beb4a68b304bd82d8489df6dfa13bf30801339acce615d0029741c9d7e8d4880\",\"policy_version\":1,\"step_seq\":0,\"message_seq\":0,\"observations\":[]}",
+    "artifact_46052fa2e123355e1de56883674f99e52aeda85df4063cffd51ee50aa4a53389": "{\"request\":{\"tenant_id\":\"tenant\",\"run_id\":\"run_U35Z44LLC5FVHHFWQAY2CYG24T\",\"workspace_id\":\"run_U35Z44LLC5FVHHFWQAY2CYG24T\",\"epoch\":1,\"grant\":\"\",\"operation_id\":\"run_U35Z44LLC5FVHHFWQAY2CYG24T_step_1_op_0\",\"expected_revision\":1,\"kind\":\"read_file\",\"args\":{\"path\":\"clamp.py\"},\"args_hash\":\"31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6\",\"policy_version\":\"workspace-v1\",\"deadline\":\"2026-09-11T16:05:14.398849-07:00\"},\"status\":\"succeeded\",\"job_id\":\"forge-f658759db6e4b9c054b11011f73a40ed71203466\",\"before_hash\":\"ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c\",\"after_hash\":\"ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c\",\"after_revision\":1,\"result\":{\"content\":\"def clamp(value, low, high):\\n    return min(low, max(value, high))\\n\",\"path\":\"clamp.py\",\"sha256\":\"5ce9939a494a0ebeb2ed030c5f45258d0e22be107290c2b887b632418ef73363\",\"start_line\":1},\"receipt\":{\"tenant_id\":\"\",\"run_id\":\"\",\"kind\":\"\",\"object_key\":\"\",\"sha256\":\"\",\"size\":0},\"cancel_requested\":false}",
+    "artifact_523064ec8bf63d703522863c98778eaecfa073472a18b7d18527d333487e8b93": "{\"request\":{\"tenant_id\":\"tenant\",\"run_id\":\"run_U35Z44LLC5FVHHFWQAY2CYG24T\",\"workspace_id\":\"run_U35Z44LLC5FVHHFWQAY2CYG24T\",\"epoch\":1,\"grant\":\"\",\"operation_id\":\"run_U35Z44LLC5FVHHFWQAY2CYG24T_step_3_op_0\",\"expected_revision\":1,\"kind\":\"read_file\",\"args\":{\"path\":\"clamp.py\"},\"args_hash\":\"31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6\",\"policy_version\":\"workspace-v1\",\"deadline\":\"2026-09-11T16:05:14.398849-07:00\"},\"status\":\"succeeded\",\"job_id\":\"forge-2b95d590a5e48c706cbde4bdd840817cce99347c\",\"before_hash\":\"ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c\",\"after_hash\":\"ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c\",\"after_revision\":1,\"result\":{\"content\":\"def clamp(value, low, high):\\n    return min(low, max(value, high))\\n\",\"path\":\"clamp.py\",\"sha256\":\"5ce9939a494a0ebeb2ed030c5f45258d0e22be107290c2b887b632418ef73363\",\"start_line\":1},\"receipt\":{\"tenant_id\":\"\",\"run_id\":\"\",\"kind\":\"\",\"object_key\":\"\",\"sha256\":\"\",\"size\":0},\"cancel_requested\":false}",
+    "artifact_b187da243d661497eefd8976d82af97847e999605fd7529c9765e33e7a236eae": "{\"request\":{\"tenant_id\":\"tenant\",\"run_id\":\"run_U35Z44LLC5FVHHFWQAY2CYG24T\",\"workspace_id\":\"run_U35Z44LLC5FVHHFWQAY2CYG24T\",\"epoch\":1,\"grant\":\"\",\"operation_id\":\"run_U35Z44LLC5FVHHFWQAY2CYG24T_step_2_op_0\",\"expected_revision\":1,\"kind\":\"read_file\",\"args\":{\"path\":\"clamp.py\"},\"args_hash\":\"31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6\",\"policy_version\":\"workspace-v1\",\"deadline\":\"2026-09-11T16:05:14.398849-07:00\"},\"status\":\"succeeded\",\"job_id\":\"forge-f89a8507e57f76cb121be38dc36d02c0efef70e1\",\"before_hash\":\"ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c\",\"after_hash\":\"ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c\",\"after_revision\":1,\"result\":{\"content\":\"def clamp(value, low, high):\\n    return min(low, max(value, high))\\n\",\"path\":\"clamp.py\",\"sha256\":\"5ce9939a494a0ebeb2ed030c5f45258d0e22be107290c2b887b632418ef73363\",\"start_line\":1},\"receipt\":{\"tenant_id\":\"\",\"run_id\":\"\",\"kind\":\"\",\"object_key\":\"\",\"sha256\":\"\",\"size\":0},\"cancel_requested\":false}",
+    "artifact_eaab2c2ca021c1427c48a6f6ff977e9c47fe58ff6538a0acc36ba7567a5b6c1c": "{\"request\":{\"tenant_id\":\"tenant\",\"run_id\":\"run_U35Z44LLC5FVHHFWQAY2CYG24T\",\"workspace_id\":\"run_U35Z44LLC5FVHHFWQAY2CYG24T\",\"epoch\":1,\"grant\":\"\",\"operation_id\":\"run_U35Z44LLC5FVHHFWQAY2CYG24T_step_4_op_0\",\"expected_revision\":1,\"kind\":\"read_file\",\"args\":{\"path\":\"clamp.py\"},\"args_hash\":\"31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6\",\"policy_version\":\"workspace-v1\",\"deadline\":\"2026-09-11T16:05:14.398849-07:00\"},\"status\":\"succeeded\",\"job_id\":\"forge-8c97a0452800e216916134eaae3ea3e3f318aa68\",\"before_hash\":\"ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c\",\"after_hash\":\"ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c\",\"after_revision\":1,\"result\":{\"content\":\"def clamp(value, low, high):\\n    return min(low, max(value, high))\\n\",\"path\":\"clamp.py\",\"sha256\":\"5ce9939a494a0ebeb2ed030c5f45258d0e22be107290c2b887b632418ef73363\",\"start_line\":1},\"receipt\":{\"tenant_id\":\"\",\"run_id\":\"\",\"kind\":\"\",\"object_key\":\"\",\"sha256\":\"\",\"size\":0},\"cancel_requested\":false}",
+    "artifact_f55a60557bda1c42cd798f3fd7aab8006951ff40948ff7cf7c4844da915ee583": "{\"context_ref\":\"artifact_042b0e46b3a2c5d6d6ce661a7b34e1cf0ccd6c45ca53ced103bf4502c4770722\",\"policy_version\":1,\"step_seq\":3,\"message_seq\":0,\"attempt_id\":\"attempt_UDYFOOEOZ7XDN4LJ5VH2ZGOXPP\",\"observations\":[{\"effect_id\":\"run_U35Z44LLC5FVHHFWQAY2CYG24T_step_3_op_0\",\"receipt_ref\":\"artifact_523064ec8bf63d703522863c98778eaecfa073472a18b7d18527d333487e8b93\",\"fingerprint\":\"544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687\",\"before_hash\":\"ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c\",\"after_hash\":\"ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c\"}]}",
+    "artifact_f5a5bd54716360712fc0cdff8da4ec4eef5f91deade9866311598c7b6f6cc128": "{\"context_ref\":\"artifact_cdbcc1a9a91a46be1421044f34ab474823c70f483fd5b6a1e19fc5e17452c18e\",\"policy_version\":1,\"step_seq\":2,\"message_seq\":0,\"attempt_id\":\"attempt_TMDTA3TSCV3D4RH3I3RN3RRZ3L\",\"observations\":[{\"effect_id\":\"run_U35Z44LLC5FVHHFWQAY2CYG24T_step_2_op_0\",\"receipt_ref\":\"artifact_b187da243d661497eefd8976d82af97847e999605fd7529c9765e33e7a236eae\",\"fingerprint\":\"544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687\",\"before_hash\":\"ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c\",\"after_hash\":\"ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c\"}]}",
+    "artifact_f8fef3cc41959619799ababf5ce4dc3e03d447b059a4d9c7f35b5f5b55ee4770": "{\"context_ref\":\"artifact_fb86580e79c82de157e8ceee2fc4fbc7ff038465319c4f6bf6e8760a18da137e\",\"policy_version\":1,\"step_seq\":1,\"message_seq\":0,\"attempt_id\":\"attempt_PDXCCSRJMZV3L5XWW3RT6IKK4P\",\"observations\":[{\"effect_id\":\"run_U35Z44LLC5FVHHFWQAY2CYG24T_step_1_op_0\",\"receipt_ref\":\"artifact_46052fa2e123355e1de56883674f99e52aeda85df4063cffd51ee50aa4a53389\",\"fingerprint\":\"544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687\",\"before_hash\":\"ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c\",\"after_hash\":\"ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c\"}]}"
+  },
+  "effects": [
+    {
+      "args": {
+        "target": true
+      },
+      "kind": "verify",
+      "epoch": 1,
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "status": "failed",
+      "ordinal": -1,
+      "step_seq": 0,
+      "args_hash": "c56810ebca495ac55b599570ff113f60c83411e488cefe803421335131ab0944",
+      "tenant_id": "tenant",
+      "receipt_ref": "artifact_3feeeafa253853c84ea955551ae314a9e41b1b075b4c33b98a825adeec1775e0",
+      "operation_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T_0_initial_target",
+      "canonical_args": "\\x7b22746172676574223a747275657d",
+      "policy_version": "trusted-profile-v1",
+      "expected_revision": 1
+    },
+    {
+      "args": {
+        "path": "clamp.py"
+      },
+      "kind": "read_file",
+      "epoch": 1,
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "status": "succeeded",
+      "ordinal": 0,
+      "step_seq": 1,
+      "args_hash": "31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6",
+      "tenant_id": "tenant",
+      "receipt_ref": "artifact_46052fa2e123355e1de56883674f99e52aeda85df4063cffd51ee50aa4a53389",
+      "operation_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T_step_1_op_0",
+      "canonical_args": "\\x7b2270617468223a22636c616d702e7079227d",
+      "policy_version": "workspace-v1",
+      "expected_revision": 1
+    },
+    {
+      "args": {
+        "path": "clamp.py"
+      },
+      "kind": "read_file",
+      "epoch": 1,
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "status": "succeeded",
+      "ordinal": 0,
+      "step_seq": 2,
+      "args_hash": "31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6",
+      "tenant_id": "tenant",
+      "receipt_ref": "artifact_b187da243d661497eefd8976d82af97847e999605fd7529c9765e33e7a236eae",
+      "operation_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T_step_2_op_0",
+      "canonical_args": "\\x7b2270617468223a22636c616d702e7079227d",
+      "policy_version": "workspace-v1",
+      "expected_revision": 1
+    },
+    {
+      "args": {
+        "path": "clamp.py"
+      },
+      "kind": "read_file",
+      "epoch": 1,
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "status": "succeeded",
+      "ordinal": 0,
+      "step_seq": 3,
+      "args_hash": "31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6",
+      "tenant_id": "tenant",
+      "receipt_ref": "artifact_523064ec8bf63d703522863c98778eaecfa073472a18b7d18527d333487e8b93",
+      "operation_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T_step_3_op_0",
+      "canonical_args": "\\x7b2270617468223a22636c616d702e7079227d",
+      "policy_version": "workspace-v1",
+      "expected_revision": 1
+    },
+    {
+      "args": {
+        "path": "clamp.py"
+      },
+      "kind": "read_file",
+      "epoch": 1,
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "status": "succeeded",
+      "ordinal": 0,
+      "step_seq": 4,
+      "args_hash": "31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6",
+      "tenant_id": "tenant",
+      "receipt_ref": "artifact_eaab2c2ca021c1427c48a6f6ff977e9c47fe58ff6538a0acc36ba7567a5b6c1c",
+      "operation_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T_step_4_op_0",
+      "canonical_args": "\\x7b2270617468223a22636c616d702e7079227d",
+      "policy_version": "workspace-v1",
+      "expected_revision": 1
+    }
+  ],
+  "extra": {
+    "interrupted_state": {
+      "progress": {
+        "last_checked_step": 4,
+        "message_seq": 0,
+        "repeated_batches": 3,
+        "classification": "repeated",
+        "recent_evidence": [
+          "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+        ],
+        "recent_trees": [
+          "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+        ]
+      },
+      "schema_version": 2,
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "tenant_id": "tenant",
+      "version": 24,
+      "status": "cancel_requested",
+      "stage": "build_context",
+      "lease": {
+        "owner": "crash-worker",
+        "epoch": 1,
+        "until": "2026-09-11T16:04:18.435738-07:00"
+      },
+      "step_seq": 4,
+      "workspace_revision": 1,
+      "output_ref": "artifact_ccabce59c7b3ea74aad766fa6cc23e2cfb41d0211c30880e99bb2b191687eef5",
+      "verification_status": "unverified",
+      "verification_revision": 0,
+      "model_rounds": 4,
+      "tool_calls": 4,
+      "cost_microusd": 0,
+      "limits": {
+        "max_no_progress_batches": 3,
+        "max_model_rounds": 8,
+        "max_tool_calls": 20,
+        "max_cost_microusd": 1000000,
+        "deadline": "2026-09-11T16:05:14.398849-07:00"
+      },
+      "failure_reason": "repeated_no_progress",
+      "stop_target": "budget_exhausted"
+    },
+    "model_calls": 4
+  },
+  "model_attempts": [
+    {
+      "usage": {
+        "final": true,
+        "input": {
+          "known": false,
+          "value": 0
+        },
+        "output": {
+          "known": false,
+          "value": 0
+        },
+        "cache_read": {
+          "known": false,
+          "value": 0
+        },
+        "cache_write": {
+          "known": false,
+          "value": 0
+        }
+      },
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "status": "completed",
+      "attempt": 1,
+      "pricing": {
+        "model": "fake",
+        "provider": "fake",
+        "input_price": 0,
+        "output_price": 0,
+        "exact_pricing": true,
+        "price_version": "fixture-zero-v1",
+        "context_tokens": 8192,
+        "schema_version": 1,
+        "credential_group": "fake",
+        "max_output_tokens": 1024,
+        "request_timeout_ns": 5000000000
+      },
+      "raw_ref": "artifact_54495cb39593c24e7074b373f204af16bb48183781a5cdbae252af9f4210b097",
+      "deadline": "2026-09-11T23:04:19.668646+00:00",
+      "model_id": "fake",
+      "provider": "fake",
+      "step_seq": 1,
+      "tenant_id": "tenant",
+      "attempt_id": "attempt_PDXCCSRJMZV3L5XWW3RT6IKK4P",
+      "error_code": null,
+      "request_id": "",
+      "started_at": "2026-09-11T23:04:14.669129+00:00",
+      "request_ref": "artifact_beb4a68b304bd82d8489df6dfa13bf30801339acce615d0029741c9d7e8d4880",
+      "price_version": "fixture-zero-v1",
+      "failure_policy": null
+    },
+    {
+      "usage": {
+        "final": true,
+        "input": {
+          "known": false,
+          "value": 0
+        },
+        "output": {
+          "known": false,
+          "value": 0
+        },
+        "cache_read": {
+          "known": false,
+          "value": 0
+        },
+        "cache_write": {
+          "known": false,
+          "value": 0
+        }
+      },
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "status": "completed",
+      "attempt": 1,
+      "pricing": {
+        "model": "fake",
+        "provider": "fake",
+        "input_price": 0,
+        "output_price": 0,
+        "exact_pricing": true,
+        "price_version": "fixture-zero-v1",
+        "context_tokens": 8192,
+        "schema_version": 1,
+        "credential_group": "fake",
+        "max_output_tokens": 1024,
+        "request_timeout_ns": 5000000000
+      },
+      "raw_ref": "artifact_9832e123cb2f48044637472b41f739620e0829c838603ccc8399c2537444021c",
+      "deadline": "2026-09-11T23:04:19.998725+00:00",
+      "model_id": "fake",
+      "provider": "fake",
+      "step_seq": 2,
+      "tenant_id": "tenant",
+      "attempt_id": "attempt_TMDTA3TSCV3D4RH3I3RN3RRZ3L",
+      "error_code": null,
+      "request_id": "",
+      "started_at": "2026-09-11T23:04:14.999271+00:00",
+      "request_ref": "artifact_fb86580e79c82de157e8ceee2fc4fbc7ff038465319c4f6bf6e8760a18da137e",
+      "price_version": "fixture-zero-v1",
+      "failure_policy": null
+    },
+    {
+      "usage": {
+        "final": true,
+        "input": {
+          "known": false,
+          "value": 0
+        },
+        "output": {
+          "known": false,
+          "value": 0
+        },
+        "cache_read": {
+          "known": false,
+          "value": 0
+        },
+        "cache_write": {
+          "known": false,
+          "value": 0
+        }
+      },
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "status": "completed",
+      "attempt": 1,
+      "pricing": {
+        "model": "fake",
+        "provider": "fake",
+        "input_price": 0,
+        "output_price": 0,
+        "exact_pricing": true,
+        "price_version": "fixture-zero-v1",
+        "context_tokens": 8192,
+        "schema_version": 1,
+        "credential_group": "fake",
+        "max_output_tokens": 1024,
+        "request_timeout_ns": 5000000000
+      },
+      "raw_ref": "artifact_e4e6e889c473326d05e74c52623d663ec7a28f77d26a2ed9f7d14651cc742ee3",
+      "deadline": "2026-09-11T23:04:20.338668+00:00",
+      "model_id": "fake",
+      "provider": "fake",
+      "step_seq": 3,
+      "tenant_id": "tenant",
+      "attempt_id": "attempt_UDYFOOEOZ7XDN4LJ5VH2ZGOXPP",
+      "error_code": null,
+      "request_id": "",
+      "started_at": "2026-09-11T23:04:15.339547+00:00",
+      "request_ref": "artifact_cdbcc1a9a91a46be1421044f34ab474823c70f483fd5b6a1e19fc5e17452c18e",
+      "price_version": "fixture-zero-v1",
+      "failure_policy": null
+    },
+    {
+      "usage": {
+        "final": true,
+        "input": {
+          "known": false,
+          "value": 0
+        },
+        "output": {
+          "known": false,
+          "value": 0
+        },
+        "cache_read": {
+          "known": false,
+          "value": 0
+        },
+        "cache_write": {
+          "known": false,
+          "value": 0
+        }
+      },
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "status": "completed",
+      "attempt": 1,
+      "pricing": {
+        "model": "fake",
+        "provider": "fake",
+        "input_price": 0,
+        "output_price": 0,
+        "exact_pricing": true,
+        "price_version": "fixture-zero-v1",
+        "context_tokens": 8192,
+        "schema_version": 1,
+        "credential_group": "fake",
+        "max_output_tokens": 1024,
+        "request_timeout_ns": 5000000000
+      },
+      "raw_ref": "artifact_612b613c6bc1cbbd40dd9bd3c4fea5158921470303d824c9e3b946a82b789330",
+      "deadline": "2026-09-11T23:04:20.681514+00:00",
+      "model_id": "fake",
+      "provider": "fake",
+      "step_seq": 4,
+      "tenant_id": "tenant",
+      "attempt_id": "attempt_HGKTOYAFXE6WG7SWNI3XY6N7PP",
+      "error_code": null,
+      "request_id": "",
+      "started_at": "2026-09-11T23:04:15.68181+00:00",
+      "request_ref": "artifact_042b0e46b3a2c5d6d6ce661a7b34e1cf0ccd6c45ca53ced103bf4502c4770722",
+      "price_version": "fixture-zero-v1",
+      "failure_policy": null
+    }
+  ],
+  "passed": true,
+  "quota_reservations": [
+    {
+      "id": "attempt_HGKTOYAFXE6WG7SWNI3XY6N7PP",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "status": "unknown",
+      "tokens": 9216,
+      "outcome": "success",
+      "microusd": 0,
+      "tenant_id": "tenant",
+      "settled_at": null,
+      "request_hash": "8d534b4035f603f1c415ebecd5422457a869660595e225b5a695059cf0512f4e",
+      "actual_tokens": null,
+      "dispatched_at": "2026-09-11T23:04:15.688891+00:00",
+      "actual_microusd": null,
+      "settlement_kind": null,
+      "credential_group": "fake",
+      "request_deadline": "2026-09-11T23:04:20.681514+00:00",
+      "window_generation": 1,
+      "request_slot_released": false
+    },
+    {
+      "id": "attempt_PDXCCSRJMZV3L5XWW3RT6IKK4P",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "status": "unknown",
+      "tokens": 9216,
+      "outcome": "success",
+      "microusd": 0,
+      "tenant_id": "tenant",
+      "settled_at": null,
+      "request_hash": "b83fde3a06323b22d9571b63fc43f5f8990329c48c3927bd89570c3f0af567a7",
+      "actual_tokens": null,
+      "dispatched_at": "2026-09-11T23:04:14.679818+00:00",
+      "actual_microusd": null,
+      "settlement_kind": null,
+      "credential_group": "fake",
+      "request_deadline": "2026-09-11T23:04:19.668646+00:00",
+      "window_generation": 1,
+      "request_slot_released": false
+    },
+    {
+      "id": "attempt_TMDTA3TSCV3D4RH3I3RN3RRZ3L",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "status": "unknown",
+      "tokens": 9216,
+      "outcome": "success",
+      "microusd": 0,
+      "tenant_id": "tenant",
+      "settled_at": null,
+      "request_hash": "40d54d2fcd9f2e467f616b5de72ab5d8df25bef9009cb296bef1e2161054bddc",
+      "actual_tokens": null,
+      "dispatched_at": "2026-09-11T23:04:15.009299+00:00",
+      "actual_microusd": null,
+      "settlement_kind": null,
+      "credential_group": "fake",
+      "request_deadline": "2026-09-11T23:04:19.998725+00:00",
+      "window_generation": 1,
+      "request_slot_released": false
+    },
+    {
+      "id": "attempt_UDYFOOEOZ7XDN4LJ5VH2ZGOXPP",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "status": "unknown",
+      "tokens": 9216,
+      "outcome": "success",
+      "microusd": 0,
+      "tenant_id": "tenant",
+      "settled_at": null,
+      "request_hash": "fa48479181356c6c339dc42c14690e06363d8fdb434faaee27c26810e0550b96",
+      "actual_tokens": null,
+      "dispatched_at": "2026-09-11T23:04:15.351738+00:00",
+      "actual_microusd": null,
+      "settlement_kind": null,
+      "credential_group": "fake",
+      "request_deadline": "2026-09-11T23:04:20.338668+00:00",
+      "window_generation": 1,
+      "request_slot_released": false
+    }
+  ],
+  "run": {
+    "tenant_id": "tenant",
+    "id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+    "project_id": "project_B7MODTUSLCNPA2LX3PX7CZEI3S",
+    "principal_id": "developer",
+    "task": "Fix clamp boundary behavior.",
+    "base_commit": "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c",
+    "runner_id": "runner",
+    "commands": [
+      {
+        "kind": "publish_terminal"
+      }
+    ],
+    "state": {
+      "progress": {
+        "last_checked_step": 4,
+        "message_seq": 0,
+        "repeated_batches": 3,
+        "classification": "repeated",
+        "recent_evidence": [
+          "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+        ],
+        "recent_trees": [
+          "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+        ]
+      },
+      "schema_version": 2,
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "tenant_id": "tenant",
+      "version": 26,
+      "status": "budget_exhausted",
+      "stage": "stopped",
+      "lease": {
+        "owner": "recovery-worker",
+        "epoch": 2,
+        "until": "2026-09-11T16:04:21.467489-07:00"
+      },
+      "step_seq": 4,
+      "workspace_revision": 1,
+      "output_ref": "artifact_3eea29509a671c04b51999209be1363749fa1959cf3fafcb1df65af76572fa48",
+      "verification_status": "unverified",
+      "verification_revision": 0,
+      "model_rounds": 4,
+      "tool_calls": 4,
+      "cost_microusd": 0,
+      "limits": {
+        "max_no_progress_batches": 3,
+        "max_model_rounds": 8,
+        "max_tool_calls": 20,
+        "max_cost_microusd": 1000000,
+        "deadline": "2026-09-11T16:05:14.398849-07:00"
+      },
+      "failure_reason": "repeated_no_progress",
+      "stop_target": "budget_exhausted"
+    },
+    "config": {
+      "max_no_progress_batches": 3,
+      "provider": "fake",
+      "model": "fake",
+      "max_model_rounds": 8,
+      "max_tool_calls": 20,
+      "max_cost_microusd": 1000000,
+      "max_runtime_seconds": 60
+    },
+    "created_at": "2026-09-11T16:04:14.400123-07:00",
+    "covered_seq": 55
+  },
+  "run_events": [
+    {
+      "seq": 1,
+      "type": "run.created",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "lease": {
+          "epoch": 0,
+          "owner": "",
+          "until": "0001-01-01T00:00:00Z"
+        },
+        "stage": "initialize",
+        "limits": {
+          "deadline": "2026-09-11T16:05:14.398849-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "status": "queued",
+        "version": 1,
+        "step_seq": 0,
+        "tenant_id": "tenant",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 0,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:14.401792+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 2,
+      "type": "run.claimed",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "stage": "initialize",
+        "state": "running",
+        "reason": "",
+        "version": 2,
+        "step_seq": 0,
+        "output_ref": "",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "workspace_revision": 0,
+        "verification_status": "unverified",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:14.411059+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 3,
+      "type": "artifact.ready",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "id": "artifact_3feeeafa253853c84ea955551ae314a9e41b1b075b4c33b98a825adeec1775e0",
+        "kind": "operation_receipt",
+        "state": "ready",
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "sha256": "12704a462c4cdaebaf6eb6a2665ee9bb6a751b9e732feb0960b14b7c26d00912",
+        "byte_size": 997,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_U35Z44LLC5FVHHFWQAY2CYG24T/12704a462c4cdaebaf6eb6a2665ee9bb6a751b9e732feb0960b14b7c26d00912"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:14.566467+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 4,
+      "type": "artifact.ready",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "id": "artifact_ac0615426b248911ba7be908b8fe0d58e09f84dce850ec22fb43540b2a3687ad",
+        "kind": "baseline",
+        "state": "ready",
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "sha256": "8f28ac9f0184135b2f470970cae4cd5d37c2a9a184c2de6be305112f9895934f",
+        "byte_size": 206,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_U35Z44LLC5FVHHFWQAY2CYG24T/8f28ac9f0184135b2f470970cae4cd5d37c2a9a184c2de6be305112f9895934f"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:14.58653+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 5,
+      "type": "workspace.prepared",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "stage": "build_context",
+        "state": "running",
+        "reason": "",
+        "version": 3,
+        "step_seq": 0,
+        "output_ref": "artifact_ac0615426b248911ba7be908b8fe0d58e09f84dce850ec22fb43540b2a3687ad",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:14.592786+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 6,
+      "type": "artifact.ready",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "id": "artifact_beb4a68b304bd82d8489df6dfa13bf30801339acce615d0029741c9d7e8d4880",
+        "kind": "context",
+        "state": "ready",
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "sha256": "5d3564efb7e6c2a1261f91dbdc33c7a9a12b7bda8f4690f225d6fdd683921a63",
+        "byte_size": 2575,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_U35Z44LLC5FVHHFWQAY2CYG24T/5d3564efb7e6c2a1261f91dbdc33c7a9a12b7bda8f4690f225d6fdd683921a63"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:14.628484+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 7,
+      "type": "artifact.ready",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "id": "artifact_43df0bd9f00ee3572811310a37126af28007af6a9fa8efc5bf3f29ffdb1917b7",
+        "kind": "progress_report",
+        "state": "ready",
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "sha256": "e01ff851bf6689cb5fd63a11d82e9f117f02175b0e89db273764b096bb996def",
+        "byte_size": 157,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_U35Z44LLC5FVHHFWQAY2CYG24T/e01ff851bf6689cb5fd63a11d82e9f117f02175b0e89db273764b096bb996def"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:14.65736+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 8,
+      "type": "step.started",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "stage": "model_step",
+        "state": "running",
+        "reason": "",
+        "version": 4,
+        "step_seq": 1,
+        "output_ref": "artifact_beb4a68b304bd82d8489df6dfa13bf30801339acce615d0029741c9d7e8d4880",
+        "tool_calls": 0,
+        "model_rounds": 1,
+        "cost_microusd": 0,
+        "repeated_batches": 0,
+        "workspace_revision": 1,
+        "progress_report_ref": "artifact_43df0bd9f00ee3572811310a37126af28007af6a9fa8efc5bf3f29ffdb1917b7",
+        "verification_status": "unverified",
+        "progress_classification": "initial",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:14.663975+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 9,
+      "type": "model.started",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "step_seq": 1,
+        "attempt_id": "attempt_PDXCCSRJMZV3L5XWW3RT6IKK4P",
+        "price_version": "fixture-zero-v1"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:14.669537+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 10,
+      "type": "artifact.ready",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "id": "artifact_54495cb39593c24e7074b373f204af16bb48183781a5cdbae252af9f4210b097",
+        "kind": "model_response",
+        "state": "ready",
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "sha256": "11bf9a6e451b8f7b2538251e97bb8cfd5f3bf3264c1eaf68e8b9b40d120901ea",
+        "byte_size": 399,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_U35Z44LLC5FVHHFWQAY2CYG24T/11bf9a6e451b8f7b2538251e97bb8cfd5f3bf3264c1eaf68e8b9b40d120901ea"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:14.709816+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 11,
+      "type": "model.completed",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "stage": "validate_tool_calls",
+        "state": "running",
+        "reason": "",
+        "version": 5,
+        "step_seq": 1,
+        "output_ref": "artifact_54495cb39593c24e7074b373f204af16bb48183781a5cdbae252af9f4210b097",
+        "tool_calls": 0,
+        "model_rounds": 1,
+        "cost_microusd": 0,
+        "repeated_batches": 0,
+        "workspace_revision": 1,
+        "progress_report_ref": "",
+        "verification_status": "unverified",
+        "progress_classification": "initial",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:14.738635+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 12,
+      "type": "tool.planned",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "stage": "execute_effects",
+        "state": "running",
+        "reason": "",
+        "version": 6,
+        "step_seq": 1,
+        "args_hash": "31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6",
+        "output_ref": "artifact_54495cb39593c24e7074b373f204af16bb48183781a5cdbae252af9f4210b097",
+        "tool_calls": 1,
+        "model_rounds": 1,
+        "operation_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T_step_1_op_0",
+        "cost_microusd": 0,
+        "repeated_batches": 0,
+        "workspace_revision": 1,
+        "progress_report_ref": "",
+        "verification_status": "unverified",
+        "progress_classification": "initial",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:14.749757+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 13,
+      "type": "artifact.ready",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "id": "artifact_46052fa2e123355e1de56883674f99e52aeda85df4063cffd51ee50aa4a53389",
+        "kind": "operation_receipt",
+        "state": "ready",
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "sha256": "81297e48093004e958fefaea982e99af3128d36a8caa0f6a0ed2090c955818d2",
+        "byte_size": 1002,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_U35Z44LLC5FVHHFWQAY2CYG24T/81297e48093004e958fefaea982e99af3128d36a8caa0f6a0ed2090c955818d2"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:14.870289+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 14,
+      "type": "tool.finished",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "stage": "ingest_results",
+        "state": "running",
+        "reason": "",
+        "version": 7,
+        "step_seq": 1,
+        "output_ref": "artifact_46052fa2e123355e1de56883674f99e52aeda85df4063cffd51ee50aa4a53389",
+        "tool_calls": 1,
+        "receipt_ref": "artifact_46052fa2e123355e1de56883674f99e52aeda85df4063cffd51ee50aa4a53389",
+        "model_rounds": 1,
+        "cost_microusd": 0,
+        "repeated_batches": 0,
+        "workspace_revision": 1,
+        "progress_report_ref": "",
+        "verification_status": "unverified",
+        "progress_classification": "initial",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:14.877371+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 15,
+      "type": "artifact.ready",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "id": "artifact_a1d0d16ea8a1414936cf54350e09322c63d6b269266deef130c03eb55236af69",
+        "kind": "tool_batch",
+        "state": "ready",
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "sha256": "5f40ec8447a50fe1051265e73b9c57831cf834623c93b892cdc866f75aaa6664",
+        "byte_size": 23,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_U35Z44LLC5FVHHFWQAY2CYG24T/5f40ec8447a50fe1051265e73b9c57831cf834623c93b892cdc866f75aaa6664"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:14.903174+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 16,
+      "type": "run.results_ingested",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "stage": "build_context",
+        "state": "running",
+        "reason": "",
+        "version": 8,
+        "step_seq": 1,
+        "output_ref": "artifact_a1d0d16ea8a1414936cf54350e09322c63d6b269266deef130c03eb55236af69",
+        "tool_calls": 1,
+        "model_rounds": 1,
+        "cost_microusd": 0,
+        "repeated_batches": 0,
+        "workspace_revision": 1,
+        "progress_report_ref": "",
+        "verification_status": "unverified",
+        "progress_classification": "initial",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:14.917728+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 17,
+      "type": "artifact.ready",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "id": "artifact_fb86580e79c82de157e8ceee2fc4fbc7ff038465319c4f6bf6e8760a18da137e",
+        "kind": "context",
+        "state": "ready",
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "sha256": "c514c2f07b9e4459a34d0ac963a4998f617c1469888046a5026202b10ff04789",
+        "byte_size": 2936,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_U35Z44LLC5FVHHFWQAY2CYG24T/c514c2f07b9e4459a34d0ac963a4998f617c1469888046a5026202b10ff04789"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:14.963787+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 18,
+      "type": "artifact.ready",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "id": "artifact_f8fef3cc41959619799ababf5ce4dc3e03d447b059a4d9c7f35b5f5b55ee4770",
+        "kind": "progress_report",
+        "state": "ready",
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "sha256": "2ea34adaafa24741f6189ae5c926c4809514494fbe7e424d68ae9c830bf9e891",
+        "byte_size": 597,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_U35Z44LLC5FVHHFWQAY2CYG24T/2ea34adaafa24741f6189ae5c926c4809514494fbe7e424d68ae9c830bf9e891"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:14.984371+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 19,
+      "type": "step.started",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "stage": "model_step",
+        "state": "running",
+        "reason": "",
+        "version": 9,
+        "step_seq": 2,
+        "output_ref": "artifact_fb86580e79c82de157e8ceee2fc4fbc7ff038465319c4f6bf6e8760a18da137e",
+        "tool_calls": 1,
+        "model_rounds": 2,
+        "cost_microusd": 0,
+        "repeated_batches": 0,
+        "workspace_revision": 1,
+        "progress_report_ref": "artifact_f8fef3cc41959619799ababf5ce4dc3e03d447b059a4d9c7f35b5f5b55ee4770",
+        "verification_status": "unverified",
+        "progress_classification": "new_evidence",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:14.993268+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 20,
+      "type": "model.started",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "step_seq": 2,
+        "attempt_id": "attempt_TMDTA3TSCV3D4RH3I3RN3RRZ3L",
+        "price_version": "fixture-zero-v1"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:14.999846+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 21,
+      "type": "artifact.ready",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "id": "artifact_9832e123cb2f48044637472b41f739620e0829c838603ccc8399c2537444021c",
+        "kind": "model_response",
+        "state": "ready",
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "sha256": "08229e4d0c39a59f7924d4b712f0e6f3d9a38c4a52947dacb38b2e5b0b7d7e98",
+        "byte_size": 399,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_U35Z44LLC5FVHHFWQAY2CYG24T/08229e4d0c39a59f7924d4b712f0e6f3d9a38c4a52947dacb38b2e5b0b7d7e98"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:15.041933+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 22,
+      "type": "model.completed",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "stage": "validate_tool_calls",
+        "state": "running",
+        "reason": "",
+        "version": 10,
+        "step_seq": 2,
+        "output_ref": "artifact_9832e123cb2f48044637472b41f739620e0829c838603ccc8399c2537444021c",
+        "tool_calls": 1,
+        "model_rounds": 2,
+        "cost_microusd": 0,
+        "repeated_batches": 0,
+        "workspace_revision": 1,
+        "progress_report_ref": "",
+        "verification_status": "unverified",
+        "progress_classification": "new_evidence",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:15.068716+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 23,
+      "type": "tool.planned",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "stage": "execute_effects",
+        "state": "running",
+        "reason": "",
+        "version": 11,
+        "step_seq": 2,
+        "args_hash": "31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6",
+        "output_ref": "artifact_9832e123cb2f48044637472b41f739620e0829c838603ccc8399c2537444021c",
+        "tool_calls": 2,
+        "model_rounds": 2,
+        "operation_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T_step_2_op_0",
+        "cost_microusd": 0,
+        "repeated_batches": 0,
+        "workspace_revision": 1,
+        "progress_report_ref": "",
+        "verification_status": "unverified",
+        "progress_classification": "new_evidence",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:15.083985+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 24,
+      "type": "artifact.ready",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "id": "artifact_b187da243d661497eefd8976d82af97847e999605fd7529c9765e33e7a236eae",
+        "kind": "operation_receipt",
+        "state": "ready",
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "sha256": "952f61b9ba36f4156d461f82c0c8eb1929ce473d3394c1533ae6ba41c7549245",
+        "byte_size": 1002,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_U35Z44LLC5FVHHFWQAY2CYG24T/952f61b9ba36f4156d461f82c0c8eb1929ce473d3394c1533ae6ba41c7549245"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:15.206973+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 25,
+      "type": "tool.finished",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "stage": "ingest_results",
+        "state": "running",
+        "reason": "",
+        "version": 12,
+        "step_seq": 2,
+        "output_ref": "artifact_b187da243d661497eefd8976d82af97847e999605fd7529c9765e33e7a236eae",
+        "tool_calls": 2,
+        "receipt_ref": "artifact_b187da243d661497eefd8976d82af97847e999605fd7529c9765e33e7a236eae",
+        "model_rounds": 2,
+        "cost_microusd": 0,
+        "repeated_batches": 0,
+        "workspace_revision": 1,
+        "progress_report_ref": "",
+        "verification_status": "unverified",
+        "progress_classification": "new_evidence",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:15.213565+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 26,
+      "type": "artifact.ready",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "id": "artifact_c7f630b04cecfb8ede829f07d067237965027e33639766b7f14e6bdccb8fd376",
+        "kind": "tool_batch",
+        "state": "ready",
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "sha256": "172ec084de4380b3de0d742d06fa2f7776eb71a67ca39ff74ebe459e1d88fdbf",
+        "byte_size": 23,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_U35Z44LLC5FVHHFWQAY2CYG24T/172ec084de4380b3de0d742d06fa2f7776eb71a67ca39ff74ebe459e1d88fdbf"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:15.231211+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 27,
+      "type": "run.results_ingested",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "stage": "build_context",
+        "state": "running",
+        "reason": "",
+        "version": 13,
+        "step_seq": 2,
+        "output_ref": "artifact_c7f630b04cecfb8ede829f07d067237965027e33639766b7f14e6bdccb8fd376",
+        "tool_calls": 2,
+        "model_rounds": 2,
+        "cost_microusd": 0,
+        "repeated_batches": 0,
+        "workspace_revision": 1,
+        "progress_report_ref": "",
+        "verification_status": "unverified",
+        "progress_classification": "new_evidence",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:15.236028+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 28,
+      "type": "artifact.ready",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "id": "artifact_cdbcc1a9a91a46be1421044f34ab474823c70f483fd5b6a1e19fc5e17452c18e",
+        "kind": "context",
+        "state": "ready",
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "sha256": "7f66857fcc76e3393c407892534cec9cdd6b1267b5a886790dd9c59314a5bcab",
+        "byte_size": 3297,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_U35Z44LLC5FVHHFWQAY2CYG24T/7f66857fcc76e3393c407892534cec9cdd6b1267b5a886790dd9c59314a5bcab"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:15.273368+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 29,
+      "type": "artifact.ready",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "id": "artifact_f5a5bd54716360712fc0cdff8da4ec4eef5f91deade9866311598c7b6f6cc128",
+        "kind": "progress_report",
+        "state": "ready",
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "sha256": "7aaf0079b7f1192d13ab2eddb9dad0d93a2e48fcfa54a34ec9aa9b5ceb2ef09b",
+        "byte_size": 597,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_U35Z44LLC5FVHHFWQAY2CYG24T/7aaf0079b7f1192d13ab2eddb9dad0d93a2e48fcfa54a34ec9aa9b5ceb2ef09b"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:15.313373+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 30,
+      "type": "step.started",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "stage": "model_step",
+        "state": "running",
+        "reason": "",
+        "version": 14,
+        "step_seq": 3,
+        "output_ref": "artifact_cdbcc1a9a91a46be1421044f34ab474823c70f483fd5b6a1e19fc5e17452c18e",
+        "tool_calls": 2,
+        "model_rounds": 3,
+        "cost_microusd": 0,
+        "repeated_batches": 1,
+        "workspace_revision": 1,
+        "progress_report_ref": "artifact_f5a5bd54716360712fc0cdff8da4ec4eef5f91deade9866311598c7b6f6cc128",
+        "verification_status": "unverified",
+        "progress_classification": "repeated",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:15.329485+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 31,
+      "type": "model.started",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "step_seq": 3,
+        "attempt_id": "attempt_UDYFOOEOZ7XDN4LJ5VH2ZGOXPP",
+        "price_version": "fixture-zero-v1"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:15.340567+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 32,
+      "type": "artifact.ready",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "id": "artifact_e4e6e889c473326d05e74c52623d663ec7a28f77d26a2ed9f7d14651cc742ee3",
+        "kind": "model_response",
+        "state": "ready",
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "sha256": "0cb776a9ab27f9f46a9ed3bc5790e730b72a6f8e204de6d43db27c2f3a73cdc9",
+        "byte_size": 399,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_U35Z44LLC5FVHHFWQAY2CYG24T/0cb776a9ab27f9f46a9ed3bc5790e730b72a6f8e204de6d43db27c2f3a73cdc9"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:15.389281+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 33,
+      "type": "model.completed",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "stage": "validate_tool_calls",
+        "state": "running",
+        "reason": "",
+        "version": 15,
+        "step_seq": 3,
+        "output_ref": "artifact_e4e6e889c473326d05e74c52623d663ec7a28f77d26a2ed9f7d14651cc742ee3",
+        "tool_calls": 2,
+        "model_rounds": 3,
+        "cost_microusd": 0,
+        "repeated_batches": 1,
+        "workspace_revision": 1,
+        "progress_report_ref": "",
+        "verification_status": "unverified",
+        "progress_classification": "repeated",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:15.431611+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 34,
+      "type": "tool.planned",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "stage": "execute_effects",
+        "state": "running",
+        "reason": "",
+        "version": 16,
+        "step_seq": 3,
+        "args_hash": "31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6",
+        "output_ref": "artifact_e4e6e889c473326d05e74c52623d663ec7a28f77d26a2ed9f7d14651cc742ee3",
+        "tool_calls": 3,
+        "model_rounds": 3,
+        "operation_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T_step_3_op_0",
+        "cost_microusd": 0,
+        "repeated_batches": 1,
+        "workspace_revision": 1,
+        "progress_report_ref": "",
+        "verification_status": "unverified",
+        "progress_classification": "repeated",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:15.442009+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 35,
+      "type": "artifact.ready",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "id": "artifact_523064ec8bf63d703522863c98778eaecfa073472a18b7d18527d333487e8b93",
+        "kind": "operation_receipt",
+        "state": "ready",
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "sha256": "84f2355872454cd8492bef1a5f22ff580614f021c02accd71cf4361897f97f24",
+        "byte_size": 1002,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_U35Z44LLC5FVHHFWQAY2CYG24T/84f2355872454cd8492bef1a5f22ff580614f021c02accd71cf4361897f97f24"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:15.568893+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 36,
+      "type": "tool.finished",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "stage": "ingest_results",
+        "state": "running",
+        "reason": "",
+        "version": 17,
+        "step_seq": 3,
+        "output_ref": "artifact_523064ec8bf63d703522863c98778eaecfa073472a18b7d18527d333487e8b93",
+        "tool_calls": 3,
+        "receipt_ref": "artifact_523064ec8bf63d703522863c98778eaecfa073472a18b7d18527d333487e8b93",
+        "model_rounds": 3,
+        "cost_microusd": 0,
+        "repeated_batches": 1,
+        "workspace_revision": 1,
+        "progress_report_ref": "",
+        "verification_status": "unverified",
+        "progress_classification": "repeated",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:15.577566+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 37,
+      "type": "artifact.ready",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "id": "artifact_cf606c5590d155ba517729507a652bda6ef5365eff254468c0b2d9c7c84d6d2a",
+        "kind": "tool_batch",
+        "state": "ready",
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "sha256": "d9847af821b0539cb1f1daea6695da623bbd7ab3a367068275d9f4aa851c9a9b",
+        "byte_size": 23,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_U35Z44LLC5FVHHFWQAY2CYG24T/d9847af821b0539cb1f1daea6695da623bbd7ab3a367068275d9f4aa851c9a9b"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:15.596774+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 38,
+      "type": "run.results_ingested",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "stage": "build_context",
+        "state": "running",
+        "reason": "",
+        "version": 18,
+        "step_seq": 3,
+        "output_ref": "artifact_cf606c5590d155ba517729507a652bda6ef5365eff254468c0b2d9c7c84d6d2a",
+        "tool_calls": 3,
+        "model_rounds": 3,
+        "cost_microusd": 0,
+        "repeated_batches": 1,
+        "workspace_revision": 1,
+        "progress_report_ref": "",
+        "verification_status": "unverified",
+        "progress_classification": "repeated",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:15.60309+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 39,
+      "type": "artifact.ready",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "id": "artifact_042b0e46b3a2c5d6d6ce661a7b34e1cf0ccd6c45ca53ced103bf4502c4770722",
+        "kind": "context",
+        "state": "ready",
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "sha256": "a3dc63e9bf6662a073d3a33a9c4fd9896a238a8c979c7b00222701c12720be7a",
+        "byte_size": 3658,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_U35Z44LLC5FVHHFWQAY2CYG24T/a3dc63e9bf6662a073d3a33a9c4fd9896a238a8c979c7b00222701c12720be7a"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:15.635081+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 40,
+      "type": "artifact.ready",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "id": "artifact_f55a60557bda1c42cd798f3fd7aab8006951ff40948ff7cf7c4844da915ee583",
+        "kind": "progress_report",
+        "state": "ready",
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "sha256": "5f3056d6328bb3034fe199582251423db9887d2b983968aabfb8811107c6cb09",
+        "byte_size": 597,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_U35Z44LLC5FVHHFWQAY2CYG24T/5f3056d6328bb3034fe199582251423db9887d2b983968aabfb8811107c6cb09"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:15.666164+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 41,
+      "type": "step.started",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "stage": "model_step",
+        "state": "running",
+        "reason": "",
+        "version": 19,
+        "step_seq": 4,
+        "output_ref": "artifact_042b0e46b3a2c5d6d6ce661a7b34e1cf0ccd6c45ca53ced103bf4502c4770722",
+        "tool_calls": 3,
+        "model_rounds": 4,
+        "cost_microusd": 0,
+        "repeated_batches": 2,
+        "workspace_revision": 1,
+        "progress_report_ref": "artifact_f55a60557bda1c42cd798f3fd7aab8006951ff40948ff7cf7c4844da915ee583",
+        "verification_status": "unverified",
+        "progress_classification": "repeated",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:15.676969+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 42,
+      "type": "model.started",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "step_seq": 4,
+        "attempt_id": "attempt_HGKTOYAFXE6WG7SWNI3XY6N7PP",
+        "price_version": "fixture-zero-v1"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:15.682145+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 43,
+      "type": "artifact.ready",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "id": "artifact_612b613c6bc1cbbd40dd9bd3c4fea5158921470303d824c9e3b946a82b789330",
+        "kind": "model_response",
+        "state": "ready",
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "sha256": "7cd631bcec0ca7d6d4dd5af00bec30003b8ce4ff74efc8d8e4e76b5095c54cfa",
+        "byte_size": 399,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_U35Z44LLC5FVHHFWQAY2CYG24T/7cd631bcec0ca7d6d4dd5af00bec30003b8ce4ff74efc8d8e4e76b5095c54cfa"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:15.718018+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 44,
+      "type": "model.completed",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "stage": "validate_tool_calls",
+        "state": "running",
+        "reason": "",
+        "version": 20,
+        "step_seq": 4,
+        "output_ref": "artifact_612b613c6bc1cbbd40dd9bd3c4fea5158921470303d824c9e3b946a82b789330",
+        "tool_calls": 3,
+        "model_rounds": 4,
+        "cost_microusd": 0,
+        "repeated_batches": 2,
+        "workspace_revision": 1,
+        "progress_report_ref": "",
+        "verification_status": "unverified",
+        "progress_classification": "repeated",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:15.739781+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 45,
+      "type": "tool.planned",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "stage": "execute_effects",
+        "state": "running",
+        "reason": "",
+        "version": 21,
+        "step_seq": 4,
+        "args_hash": "31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6",
+        "output_ref": "artifact_612b613c6bc1cbbd40dd9bd3c4fea5158921470303d824c9e3b946a82b789330",
+        "tool_calls": 4,
+        "model_rounds": 4,
+        "operation_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T_step_4_op_0",
+        "cost_microusd": 0,
+        "repeated_batches": 2,
+        "workspace_revision": 1,
+        "progress_report_ref": "",
+        "verification_status": "unverified",
+        "progress_classification": "repeated",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:15.751189+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 46,
+      "type": "artifact.ready",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "id": "artifact_eaab2c2ca021c1427c48a6f6ff977e9c47fe58ff6538a0acc36ba7567a5b6c1c",
+        "kind": "operation_receipt",
+        "state": "ready",
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "sha256": "83b6afa45978c8d5fe6c21cb9d03114a5d9a8bc8fc4c969c2e9c6733fc7f6b3b",
+        "byte_size": 1002,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_U35Z44LLC5FVHHFWQAY2CYG24T/83b6afa45978c8d5fe6c21cb9d03114a5d9a8bc8fc4c969c2e9c6733fc7f6b3b"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:15.876995+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 47,
+      "type": "tool.finished",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "stage": "ingest_results",
+        "state": "running",
+        "reason": "",
+        "version": 22,
+        "step_seq": 4,
+        "output_ref": "artifact_eaab2c2ca021c1427c48a6f6ff977e9c47fe58ff6538a0acc36ba7567a5b6c1c",
+        "tool_calls": 4,
+        "receipt_ref": "artifact_eaab2c2ca021c1427c48a6f6ff977e9c47fe58ff6538a0acc36ba7567a5b6c1c",
+        "model_rounds": 4,
+        "cost_microusd": 0,
+        "repeated_batches": 2,
+        "workspace_revision": 1,
+        "progress_report_ref": "",
+        "verification_status": "unverified",
+        "progress_classification": "repeated",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:15.888777+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 48,
+      "type": "artifact.ready",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "id": "artifact_ccabce59c7b3ea74aad766fa6cc23e2cfb41d0211c30880e99bb2b191687eef5",
+        "kind": "tool_batch",
+        "state": "ready",
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "sha256": "4a729cd0b292d7539763e0509b154a96faf0043f4ea12e1ad5eafc6439e28367",
+        "byte_size": 23,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_U35Z44LLC5FVHHFWQAY2CYG24T/4a729cd0b292d7539763e0509b154a96faf0043f4ea12e1ad5eafc6439e28367"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:15.924364+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 49,
+      "type": "run.results_ingested",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "stage": "build_context",
+        "state": "running",
+        "reason": "",
+        "version": 23,
+        "step_seq": 4,
+        "output_ref": "artifact_ccabce59c7b3ea74aad766fa6cc23e2cfb41d0211c30880e99bb2b191687eef5",
+        "tool_calls": 4,
+        "model_rounds": 4,
+        "cost_microusd": 0,
+        "repeated_batches": 2,
+        "workspace_revision": 1,
+        "progress_report_ref": "",
+        "verification_status": "unverified",
+        "progress_classification": "repeated",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:15.929553+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 50,
+      "type": "artifact.ready",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "id": "artifact_a9e8a5027b01af338b7e13201503ace17cd60fc176c4901a6bf3c76c8a2f1dfe",
+        "kind": "context",
+        "state": "ready",
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "sha256": "cbc3487d523e51fb08f314a02dc14d7e57f6be20764c49a7e51443211922fdfa",
+        "byte_size": 4019,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_U35Z44LLC5FVHHFWQAY2CYG24T/cbc3487d523e51fb08f314a02dc14d7e57f6be20764c49a7e51443211922fdfa"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:15.971583+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 51,
+      "type": "artifact.ready",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "id": "artifact_3a833a0b00a845263c07d8878236b56dd15bdd8d00d43a19d88e007821183922",
+        "kind": "progress_report",
+        "state": "ready",
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "sha256": "5b77bbe97caf4cd12b96d4a9d4d04b97507ca7129d903207beba48107ff09146",
+        "byte_size": 597,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_U35Z44LLC5FVHHFWQAY2CYG24T/5b77bbe97caf4cd12b96d4a9d4d04b97507ca7129d903207beba48107ff09146"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:16.017005+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 52,
+      "type": "step.started",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "stage": "build_context",
+        "state": "cancel_requested",
+        "reason": "repeated_no_progress",
+        "version": 24,
+        "step_seq": 4,
+        "output_ref": "artifact_ccabce59c7b3ea74aad766fa6cc23e2cfb41d0211c30880e99bb2b191687eef5",
+        "tool_calls": 4,
+        "model_rounds": 4,
+        "cost_microusd": 0,
+        "repeated_batches": 3,
+        "workspace_revision": 1,
+        "progress_report_ref": "artifact_3a833a0b00a845263c07d8878236b56dd15bdd8d00d43a19d88e007821183922",
+        "verification_status": "unverified",
+        "progress_classification": "repeated",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:16.030627+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 53,
+      "type": "run.claimed",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "stage": "build_context",
+        "state": "cancel_requested",
+        "reason": "repeated_no_progress",
+        "version": 25,
+        "step_seq": 4,
+        "output_ref": "artifact_ccabce59c7b3ea74aad766fa6cc23e2cfb41d0211c30880e99bb2b191687eef5",
+        "tool_calls": 4,
+        "model_rounds": 4,
+        "cost_microusd": 0,
+        "repeated_batches": 3,
+        "workspace_revision": 1,
+        "progress_report_ref": "",
+        "verification_status": "unverified",
+        "progress_classification": "repeated",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:18.48148+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 54,
+      "type": "artifact.ready",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "id": "artifact_3eea29509a671c04b51999209be1363749fa1959cf3fafcb1df65af76572fa48",
+        "kind": "workspace_stop",
+        "state": "ready",
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "sha256": "101ede448471fab026202d94ab26a6fc0fa16f14317279d57b959df2e4d9c410",
+        "byte_size": 424,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_U35Z44LLC5FVHHFWQAY2CYG24T/101ede448471fab026202d94ab26a6fc0fa16f14317279d57b959df2e4d9c410"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:18.535857+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 55,
+      "type": "run.finished",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "payload": {
+        "stage": "stopped",
+        "state": "budget_exhausted",
+        "reason": "repeated_no_progress",
+        "version": 26,
+        "step_seq": 4,
+        "output_ref": "artifact_3eea29509a671c04b51999209be1363749fa1959cf3fafcb1df65af76572fa48",
+        "tool_calls": 4,
+        "model_rounds": 4,
+        "cost_microusd": 0,
+        "repeated_batches": 3,
+        "workspace_revision": 1,
+        "progress_report_ref": "",
+        "verification_status": "unverified",
+        "progress_classification": "repeated",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T23:04:18.546749+00:00",
+      "schema_version": 1
+    }
+  ],
+  "run_messages": [],
+  "run_snapshots": [
+    {
+      "body": {
+        "lease": {
+          "epoch": 0,
+          "owner": "",
+          "until": "0001-01-01T00:00:00Z"
+        },
+        "stage": "initialize",
+        "limits": {
+          "deadline": "2026-09-11T16:05:14.398849-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "status": "queued",
+        "version": 1,
+        "step_seq": 0,
+        "tenant_id": "tenant",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 0,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "version": 1,
+      "step_seq": 0,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T23:04:14.40084+00:00",
+      "input_event": null,
+      "input_state": null,
+      "schema_version": 2
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "crash-worker",
+          "until": "2026-09-11T16:04:17.404691-07:00"
+        },
+        "stage": "initialize",
+        "limits": {
+          "deadline": "2026-09-11T16:05:14.398849-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "status": "running",
+        "version": 2,
+        "step_seq": 0,
+        "tenant_id": "tenant",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 0,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "version": 2,
+      "step_seq": 0,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T23:04:14.410288+00:00",
+      "input_event": {
+        "at": "2026-09-11T16:04:14.404691-07:00",
+        "kind": "claimed",
+        "epoch": 1,
+        "lease": {
+          "epoch": 1,
+          "owner": "crash-worker",
+          "until": "2026-09-11T16:04:17.404691-07:00"
+        },
+        "owner": "crash-worker",
+        "expected_version": 1
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 0,
+          "owner": "",
+          "until": "0001-01-01T00:00:00Z"
+        },
+        "stage": "initialize",
+        "limits": {
+          "deadline": "2026-09-11T16:05:14.398849-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "status": "queued",
+        "version": 1,
+        "step_seq": 0,
+        "tenant_id": "tenant",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 0,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 2
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "crash-worker",
+          "until": "2026-09-11T16:04:17.404691-07:00"
+        },
+        "stage": "build_context",
+        "limits": {
+          "deadline": "2026-09-11T16:05:14.398849-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "status": "running",
+        "version": 3,
+        "step_seq": 0,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_ac0615426b248911ba7be908b8fe0d58e09f84dce850ec22fb43540b2a3687ad",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "version": 3,
+      "step_seq": 0,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T23:04:14.591706+00:00",
+      "input_event": {
+        "at": "2026-09-11T16:04:14.590135-07:00",
+        "kind": "workspace_ready",
+        "epoch": 1,
+        "owner": "crash-worker",
+        "output_ref": "artifact_ac0615426b248911ba7be908b8fe0d58e09f84dce850ec22fb43540b2a3687ad",
+        "expected_version": 2,
+        "workspace_revision": 1
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "crash-worker",
+          "until": "2026-09-11T16:04:17.404691-07:00"
+        },
+        "stage": "initialize",
+        "limits": {
+          "deadline": "2026-09-11T16:05:14.398849-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "status": "running",
+        "version": 2,
+        "step_seq": 0,
+        "tenant_id": "tenant",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 0,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 2
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "crash-worker",
+          "until": "2026-09-11T16:04:17.404691-07:00"
+        },
+        "stage": "model_step",
+        "limits": {
+          "deadline": "2026-09-11T16:05:14.398849-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "status": "running",
+        "version": 4,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [],
+          "classification": "initial",
+          "recent_evidence": [],
+          "repeated_batches": 0,
+          "last_checked_step": 0
+        },
+        "step_seq": 1,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_beb4a68b304bd82d8489df6dfa13bf30801339acce615d0029741c9d7e8d4880",
+        "tool_calls": 0,
+        "model_rounds": 1,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "version": 4,
+      "step_seq": 1,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T23:04:14.662999+00:00",
+      "input_event": {
+        "at": "2026-09-11T16:04:14.660569-07:00",
+        "kind": "context_built",
+        "epoch": 1,
+        "owner": "crash-worker",
+        "progress": {
+          "step_seq": 0,
+          "context_ref": "artifact_beb4a68b304bd82d8489df6dfa13bf30801339acce615d0029741c9d7e8d4880",
+          "message_seq": 0,
+          "observations": [],
+          "policy_version": 1
+        },
+        "output_ref": "artifact_beb4a68b304bd82d8489df6dfa13bf30801339acce615d0029741c9d7e8d4880",
+        "progress_ref": "artifact_43df0bd9f00ee3572811310a37126af28007af6a9fa8efc5bf3f29ffdb1917b7",
+        "expected_version": 3
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "crash-worker",
+          "until": "2026-09-11T16:04:17.404691-07:00"
+        },
+        "stage": "build_context",
+        "limits": {
+          "deadline": "2026-09-11T16:05:14.398849-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "status": "running",
+        "version": 3,
+        "step_seq": 0,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_ac0615426b248911ba7be908b8fe0d58e09f84dce850ec22fb43540b2a3687ad",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 2
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "crash-worker",
+          "until": "2026-09-11T16:04:17.404691-07:00"
+        },
+        "stage": "validate_tool_calls",
+        "limits": {
+          "deadline": "2026-09-11T16:05:14.398849-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "status": "running",
+        "version": 5,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [],
+          "classification": "initial",
+          "recent_evidence": [],
+          "repeated_batches": 0,
+          "last_checked_step": 0
+        },
+        "step_seq": 1,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_54495cb39593c24e7074b373f204af16bb48183781a5cdbae252af9f4210b097",
+        "tool_calls": 0,
+        "model_rounds": 1,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "version": 5,
+      "step_seq": 1,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T23:04:14.737529+00:00",
+      "input_event": {
+        "at": "2026-09-11T16:04:14.735775-07:00",
+        "kind": "model_completed",
+        "epoch": 1,
+        "owner": "crash-worker",
+        "complete": true,
+        "output_ref": "artifact_54495cb39593c24e7074b373f204af16bb48183781a5cdbae252af9f4210b097",
+        "expected_version": 4
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "crash-worker",
+          "until": "2026-09-11T16:04:17.404691-07:00"
+        },
+        "stage": "model_step",
+        "limits": {
+          "deadline": "2026-09-11T16:05:14.398849-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "status": "running",
+        "version": 4,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [],
+          "classification": "initial",
+          "recent_evidence": [],
+          "repeated_batches": 0,
+          "last_checked_step": 0
+        },
+        "step_seq": 1,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_beb4a68b304bd82d8489df6dfa13bf30801339acce615d0029741c9d7e8d4880",
+        "tool_calls": 0,
+        "model_rounds": 1,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 2
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "crash-worker",
+          "until": "2026-09-11T16:04:17.404691-07:00"
+        },
+        "stage": "execute_effects",
+        "limits": {
+          "deadline": "2026-09-11T16:05:14.398849-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "status": "running",
+        "version": 6,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [],
+          "classification": "initial",
+          "recent_evidence": [],
+          "repeated_batches": 0,
+          "last_checked_step": 0
+        },
+        "step_seq": 1,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_54495cb39593c24e7074b373f204af16bb48183781a5cdbae252af9f4210b097",
+        "tool_calls": 1,
+        "model_rounds": 1,
+        "cost_microusd": 0,
+        "pending_effect": {
+          "args": {
+            "path": "clamp.py"
+          },
+          "kind": "read_file",
+          "status": "in_flight",
+          "args_hash": "31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6",
+          "operation_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T_step_1_op_0",
+          "dispatch_epoch": 1,
+          "policy_version": "workspace-v1",
+          "expected_revision": 1,
+          "requires_approval": false
+        },
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "version": 6,
+      "step_seq": 1,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T23:04:14.748266+00:00",
+      "input_event": {
+        "at": "2026-09-11T16:04:14.745398-07:00",
+        "kind": "tools_validated",
+        "epoch": 1,
+        "owner": "crash-worker",
+        "effects": [
+          {
+            "args": {
+              "path": "clamp.py"
+            },
+            "kind": "read_file",
+            "status": "planned",
+            "args_hash": "31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6",
+            "operation_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T_step_1_op_0",
+            "dispatch_epoch": 0,
+            "policy_version": "workspace-v1",
+            "expected_revision": 1,
+            "requires_approval": false
+          }
+        ],
+        "complete": true,
+        "output_ref": "artifact_54495cb39593c24e7074b373f204af16bb48183781a5cdbae252af9f4210b097",
+        "expected_version": 5
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "crash-worker",
+          "until": "2026-09-11T16:04:17.404691-07:00"
+        },
+        "stage": "validate_tool_calls",
+        "limits": {
+          "deadline": "2026-09-11T16:05:14.398849-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "status": "running",
+        "version": 5,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [],
+          "classification": "initial",
+          "recent_evidence": [],
+          "repeated_batches": 0,
+          "last_checked_step": 0
+        },
+        "step_seq": 1,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_54495cb39593c24e7074b373f204af16bb48183781a5cdbae252af9f4210b097",
+        "tool_calls": 0,
+        "model_rounds": 1,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 2
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "crash-worker",
+          "until": "2026-09-11T16:04:17.404691-07:00"
+        },
+        "stage": "ingest_results",
+        "limits": {
+          "deadline": "2026-09-11T16:05:14.398849-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "status": "running",
+        "version": 7,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [],
+          "classification": "initial",
+          "recent_evidence": [],
+          "repeated_batches": 0,
+          "last_checked_step": 0
+        },
+        "step_seq": 1,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_46052fa2e123355e1de56883674f99e52aeda85df4063cffd51ee50aa4a53389",
+        "tool_calls": 1,
+        "model_rounds": 1,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "version": 7,
+      "step_seq": 1,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T23:04:14.876226+00:00",
+      "input_event": {
+        "at": "2026-09-11T16:04:14.874268-07:00",
+        "kind": "effect_completed",
+        "epoch": 1,
+        "owner": "crash-worker",
+        "receipt": {
+          "ref": "artifact_46052fa2e123355e1de56883674f99e52aeda85df4063cffd51ee50aa4a53389",
+          "epoch": 1,
+          "status": "succeeded",
+          "settled": true,
+          "args_hash": "31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6",
+          "effect_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T_step_1_op_0",
+          "after_revision": 1,
+          "before_revision": 1
+        },
+        "expected_version": 6
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "crash-worker",
+          "until": "2026-09-11T16:04:17.404691-07:00"
+        },
+        "stage": "execute_effects",
+        "limits": {
+          "deadline": "2026-09-11T16:05:14.398849-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "status": "running",
+        "version": 6,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [],
+          "classification": "initial",
+          "recent_evidence": [],
+          "repeated_batches": 0,
+          "last_checked_step": 0
+        },
+        "step_seq": 1,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_54495cb39593c24e7074b373f204af16bb48183781a5cdbae252af9f4210b097",
+        "tool_calls": 1,
+        "model_rounds": 1,
+        "cost_microusd": 0,
+        "pending_effect": {
+          "args": {
+            "path": "clamp.py"
+          },
+          "kind": "read_file",
+          "status": "in_flight",
+          "args_hash": "31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6",
+          "operation_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T_step_1_op_0",
+          "dispatch_epoch": 1,
+          "policy_version": "workspace-v1",
+          "expected_revision": 1,
+          "requires_approval": false
+        },
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 2
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "crash-worker",
+          "until": "2026-09-11T16:04:17.404691-07:00"
+        },
+        "stage": "build_context",
+        "limits": {
+          "deadline": "2026-09-11T16:05:14.398849-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "status": "running",
+        "version": 8,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [],
+          "classification": "initial",
+          "recent_evidence": [],
+          "repeated_batches": 0,
+          "last_checked_step": 0
+        },
+        "step_seq": 1,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_a1d0d16ea8a1414936cf54350e09322c63d6b269266deef130c03eb55236af69",
+        "tool_calls": 1,
+        "model_rounds": 1,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "version": 8,
+      "step_seq": 1,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T23:04:14.914723+00:00",
+      "input_event": {
+        "at": "2026-09-11T16:04:14.9106-07:00",
+        "kind": "results_ingested",
+        "epoch": 1,
+        "owner": "crash-worker",
+        "output_ref": "artifact_a1d0d16ea8a1414936cf54350e09322c63d6b269266deef130c03eb55236af69",
+        "expected_version": 7
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "crash-worker",
+          "until": "2026-09-11T16:04:17.404691-07:00"
+        },
+        "stage": "ingest_results",
+        "limits": {
+          "deadline": "2026-09-11T16:05:14.398849-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "status": "running",
+        "version": 7,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [],
+          "classification": "initial",
+          "recent_evidence": [],
+          "repeated_batches": 0,
+          "last_checked_step": 0
+        },
+        "step_seq": 1,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_46052fa2e123355e1de56883674f99e52aeda85df4063cffd51ee50aa4a53389",
+        "tool_calls": 1,
+        "model_rounds": 1,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 2
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "crash-worker",
+          "until": "2026-09-11T16:04:17.404691-07:00"
+        },
+        "stage": "model_step",
+        "limits": {
+          "deadline": "2026-09-11T16:05:14.398849-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "status": "running",
+        "version": 9,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "new_evidence",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 0,
+          "last_checked_step": 1
+        },
+        "step_seq": 2,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_fb86580e79c82de157e8ceee2fc4fbc7ff038465319c4f6bf6e8760a18da137e",
+        "tool_calls": 1,
+        "model_rounds": 2,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "version": 9,
+      "step_seq": 2,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T23:04:14.991939+00:00",
+      "input_event": {
+        "at": "2026-09-11T16:04:14.987068-07:00",
+        "kind": "context_built",
+        "epoch": 1,
+        "owner": "crash-worker",
+        "progress": {
+          "step_seq": 1,
+          "attempt_id": "attempt_PDXCCSRJMZV3L5XWW3RT6IKK4P",
+          "context_ref": "artifact_fb86580e79c82de157e8ceee2fc4fbc7ff038465319c4f6bf6e8760a18da137e",
+          "message_seq": 0,
+          "observations": [
+            {
+              "effect_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T_step_1_op_0",
+              "after_hash": "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c",
+              "before_hash": "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c",
+              "fingerprint": "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687",
+              "receipt_ref": "artifact_46052fa2e123355e1de56883674f99e52aeda85df4063cffd51ee50aa4a53389"
+            }
+          ],
+          "policy_version": 1
+        },
+        "output_ref": "artifact_fb86580e79c82de157e8ceee2fc4fbc7ff038465319c4f6bf6e8760a18da137e",
+        "progress_ref": "artifact_f8fef3cc41959619799ababf5ce4dc3e03d447b059a4d9c7f35b5f5b55ee4770",
+        "expected_version": 8
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "crash-worker",
+          "until": "2026-09-11T16:04:17.404691-07:00"
+        },
+        "stage": "build_context",
+        "limits": {
+          "deadline": "2026-09-11T16:05:14.398849-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "status": "running",
+        "version": 8,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [],
+          "classification": "initial",
+          "recent_evidence": [],
+          "repeated_batches": 0,
+          "last_checked_step": 0
+        },
+        "step_seq": 1,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_a1d0d16ea8a1414936cf54350e09322c63d6b269266deef130c03eb55236af69",
+        "tool_calls": 1,
+        "model_rounds": 1,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 2
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "crash-worker",
+          "until": "2026-09-11T16:04:17.404691-07:00"
+        },
+        "stage": "validate_tool_calls",
+        "limits": {
+          "deadline": "2026-09-11T16:05:14.398849-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "status": "running",
+        "version": 10,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "new_evidence",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 0,
+          "last_checked_step": 1
+        },
+        "step_seq": 2,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_9832e123cb2f48044637472b41f739620e0829c838603ccc8399c2537444021c",
+        "tool_calls": 1,
+        "model_rounds": 2,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "version": 10,
+      "step_seq": 2,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T23:04:15.066536+00:00",
+      "input_event": {
+        "at": "2026-09-11T16:04:15.064498-07:00",
+        "kind": "model_completed",
+        "epoch": 1,
+        "owner": "crash-worker",
+        "complete": true,
+        "output_ref": "artifact_9832e123cb2f48044637472b41f739620e0829c838603ccc8399c2537444021c",
+        "expected_version": 9
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "crash-worker",
+          "until": "2026-09-11T16:04:17.404691-07:00"
+        },
+        "stage": "model_step",
+        "limits": {
+          "deadline": "2026-09-11T16:05:14.398849-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "status": "running",
+        "version": 9,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "new_evidence",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 0,
+          "last_checked_step": 1
+        },
+        "step_seq": 2,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_fb86580e79c82de157e8ceee2fc4fbc7ff038465319c4f6bf6e8760a18da137e",
+        "tool_calls": 1,
+        "model_rounds": 2,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 2
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "crash-worker",
+          "until": "2026-09-11T16:04:17.404691-07:00"
+        },
+        "stage": "execute_effects",
+        "limits": {
+          "deadline": "2026-09-11T16:05:14.398849-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "status": "running",
+        "version": 11,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "new_evidence",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 0,
+          "last_checked_step": 1
+        },
+        "step_seq": 2,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_9832e123cb2f48044637472b41f739620e0829c838603ccc8399c2537444021c",
+        "tool_calls": 2,
+        "model_rounds": 2,
+        "cost_microusd": 0,
+        "pending_effect": {
+          "args": {
+            "path": "clamp.py"
+          },
+          "kind": "read_file",
+          "status": "in_flight",
+          "args_hash": "31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6",
+          "operation_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T_step_2_op_0",
+          "dispatch_epoch": 1,
+          "policy_version": "workspace-v1",
+          "expected_revision": 1,
+          "requires_approval": false
+        },
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "version": 11,
+      "step_seq": 2,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T23:04:15.081763+00:00",
+      "input_event": {
+        "at": "2026-09-11T16:04:15.078765-07:00",
+        "kind": "tools_validated",
+        "epoch": 1,
+        "owner": "crash-worker",
+        "effects": [
+          {
+            "args": {
+              "path": "clamp.py"
+            },
+            "kind": "read_file",
+            "status": "planned",
+            "args_hash": "31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6",
+            "operation_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T_step_2_op_0",
+            "dispatch_epoch": 0,
+            "policy_version": "workspace-v1",
+            "expected_revision": 1,
+            "requires_approval": false
+          }
+        ],
+        "complete": true,
+        "output_ref": "artifact_9832e123cb2f48044637472b41f739620e0829c838603ccc8399c2537444021c",
+        "expected_version": 10
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "crash-worker",
+          "until": "2026-09-11T16:04:17.404691-07:00"
+        },
+        "stage": "validate_tool_calls",
+        "limits": {
+          "deadline": "2026-09-11T16:05:14.398849-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "status": "running",
+        "version": 10,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "new_evidence",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 0,
+          "last_checked_step": 1
+        },
+        "step_seq": 2,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_9832e123cb2f48044637472b41f739620e0829c838603ccc8399c2537444021c",
+        "tool_calls": 1,
+        "model_rounds": 2,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 2
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "crash-worker",
+          "until": "2026-09-11T16:04:17.404691-07:00"
+        },
+        "stage": "ingest_results",
+        "limits": {
+          "deadline": "2026-09-11T16:05:14.398849-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "status": "running",
+        "version": 12,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "new_evidence",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 0,
+          "last_checked_step": 1
+        },
+        "step_seq": 2,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_b187da243d661497eefd8976d82af97847e999605fd7529c9765e33e7a236eae",
+        "tool_calls": 2,
+        "model_rounds": 2,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "version": 12,
+      "step_seq": 2,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T23:04:15.212303+00:00",
+      "input_event": {
+        "at": "2026-09-11T16:04:15.210768-07:00",
+        "kind": "effect_completed",
+        "epoch": 1,
+        "owner": "crash-worker",
+        "receipt": {
+          "ref": "artifact_b187da243d661497eefd8976d82af97847e999605fd7529c9765e33e7a236eae",
+          "epoch": 1,
+          "status": "succeeded",
+          "settled": true,
+          "args_hash": "31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6",
+          "effect_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T_step_2_op_0",
+          "after_revision": 1,
+          "before_revision": 1
+        },
+        "expected_version": 11
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "crash-worker",
+          "until": "2026-09-11T16:04:17.404691-07:00"
+        },
+        "stage": "execute_effects",
+        "limits": {
+          "deadline": "2026-09-11T16:05:14.398849-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "status": "running",
+        "version": 11,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "new_evidence",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 0,
+          "last_checked_step": 1
+        },
+        "step_seq": 2,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_9832e123cb2f48044637472b41f739620e0829c838603ccc8399c2537444021c",
+        "tool_calls": 2,
+        "model_rounds": 2,
+        "cost_microusd": 0,
+        "pending_effect": {
+          "args": {
+            "path": "clamp.py"
+          },
+          "kind": "read_file",
+          "status": "in_flight",
+          "args_hash": "31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6",
+          "operation_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T_step_2_op_0",
+          "dispatch_epoch": 1,
+          "policy_version": "workspace-v1",
+          "expected_revision": 1,
+          "requires_approval": false
+        },
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 2
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "crash-worker",
+          "until": "2026-09-11T16:04:17.404691-07:00"
+        },
+        "stage": "build_context",
+        "limits": {
+          "deadline": "2026-09-11T16:05:14.398849-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "status": "running",
+        "version": 13,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "new_evidence",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 0,
+          "last_checked_step": 1
+        },
+        "step_seq": 2,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_c7f630b04cecfb8ede829f07d067237965027e33639766b7f14e6bdccb8fd376",
+        "tool_calls": 2,
+        "model_rounds": 2,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "version": 13,
+      "step_seq": 2,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T23:04:15.235148+00:00",
+      "input_event": {
+        "at": "2026-09-11T16:04:15.234284-07:00",
+        "kind": "results_ingested",
+        "epoch": 1,
+        "owner": "crash-worker",
+        "output_ref": "artifact_c7f630b04cecfb8ede829f07d067237965027e33639766b7f14e6bdccb8fd376",
+        "expected_version": 12
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "crash-worker",
+          "until": "2026-09-11T16:04:17.404691-07:00"
+        },
+        "stage": "ingest_results",
+        "limits": {
+          "deadline": "2026-09-11T16:05:14.398849-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "status": "running",
+        "version": 12,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "new_evidence",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 0,
+          "last_checked_step": 1
+        },
+        "step_seq": 2,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_b187da243d661497eefd8976d82af97847e999605fd7529c9765e33e7a236eae",
+        "tool_calls": 2,
+        "model_rounds": 2,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 2
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "crash-worker",
+          "until": "2026-09-11T16:04:17.404691-07:00"
+        },
+        "stage": "model_step",
+        "limits": {
+          "deadline": "2026-09-11T16:05:14.398849-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "status": "running",
+        "version": 14,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "repeated",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 1,
+          "last_checked_step": 2
+        },
+        "step_seq": 3,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_cdbcc1a9a91a46be1421044f34ab474823c70f483fd5b6a1e19fc5e17452c18e",
+        "tool_calls": 2,
+        "model_rounds": 3,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "version": 14,
+      "step_seq": 3,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T23:04:15.326231+00:00",
+      "input_event": {
+        "at": "2026-09-11T16:04:15.317733-07:00",
+        "kind": "context_built",
+        "epoch": 1,
+        "owner": "crash-worker",
+        "progress": {
+          "step_seq": 2,
+          "attempt_id": "attempt_TMDTA3TSCV3D4RH3I3RN3RRZ3L",
+          "context_ref": "artifact_cdbcc1a9a91a46be1421044f34ab474823c70f483fd5b6a1e19fc5e17452c18e",
+          "message_seq": 0,
+          "observations": [
+            {
+              "effect_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T_step_2_op_0",
+              "after_hash": "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c",
+              "before_hash": "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c",
+              "fingerprint": "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687",
+              "receipt_ref": "artifact_b187da243d661497eefd8976d82af97847e999605fd7529c9765e33e7a236eae"
+            }
+          ],
+          "policy_version": 1
+        },
+        "output_ref": "artifact_cdbcc1a9a91a46be1421044f34ab474823c70f483fd5b6a1e19fc5e17452c18e",
+        "progress_ref": "artifact_f5a5bd54716360712fc0cdff8da4ec4eef5f91deade9866311598c7b6f6cc128",
+        "expected_version": 13
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "crash-worker",
+          "until": "2026-09-11T16:04:17.404691-07:00"
+        },
+        "stage": "build_context",
+        "limits": {
+          "deadline": "2026-09-11T16:05:14.398849-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "status": "running",
+        "version": 13,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "new_evidence",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 0,
+          "last_checked_step": 1
+        },
+        "step_seq": 2,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_c7f630b04cecfb8ede829f07d067237965027e33639766b7f14e6bdccb8fd376",
+        "tool_calls": 2,
+        "model_rounds": 2,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 2
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "crash-worker",
+          "until": "2026-09-11T16:04:17.404691-07:00"
+        },
+        "stage": "validate_tool_calls",
+        "limits": {
+          "deadline": "2026-09-11T16:05:14.398849-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "status": "running",
+        "version": 15,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "repeated",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 1,
+          "last_checked_step": 2
+        },
+        "step_seq": 3,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_e4e6e889c473326d05e74c52623d663ec7a28f77d26a2ed9f7d14651cc742ee3",
+        "tool_calls": 2,
+        "model_rounds": 3,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "version": 15,
+      "step_seq": 3,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T23:04:15.430294+00:00",
+      "input_event": {
+        "at": "2026-09-11T16:04:15.429107-07:00",
+        "kind": "model_completed",
+        "epoch": 1,
+        "owner": "crash-worker",
+        "complete": true,
+        "output_ref": "artifact_e4e6e889c473326d05e74c52623d663ec7a28f77d26a2ed9f7d14651cc742ee3",
+        "expected_version": 14
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "crash-worker",
+          "until": "2026-09-11T16:04:17.404691-07:00"
+        },
+        "stage": "model_step",
+        "limits": {
+          "deadline": "2026-09-11T16:05:14.398849-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "status": "running",
+        "version": 14,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "repeated",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 1,
+          "last_checked_step": 2
+        },
+        "step_seq": 3,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_cdbcc1a9a91a46be1421044f34ab474823c70f483fd5b6a1e19fc5e17452c18e",
+        "tool_calls": 2,
+        "model_rounds": 3,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 2
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "crash-worker",
+          "until": "2026-09-11T16:04:18.435738-07:00"
+        },
+        "stage": "execute_effects",
+        "limits": {
+          "deadline": "2026-09-11T16:05:14.398849-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "status": "running",
+        "version": 16,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "repeated",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 1,
+          "last_checked_step": 2
+        },
+        "step_seq": 3,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_e4e6e889c473326d05e74c52623d663ec7a28f77d26a2ed9f7d14651cc742ee3",
+        "tool_calls": 3,
+        "model_rounds": 3,
+        "cost_microusd": 0,
+        "pending_effect": {
+          "args": {
+            "path": "clamp.py"
+          },
+          "kind": "read_file",
+          "status": "in_flight",
+          "args_hash": "31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6",
+          "operation_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T_step_3_op_0",
+          "dispatch_epoch": 1,
+          "policy_version": "workspace-v1",
+          "expected_revision": 1,
+          "requires_approval": false
+        },
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "version": 16,
+      "step_seq": 3,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T23:04:15.440835+00:00",
+      "input_event": {
+        "at": "2026-09-11T16:04:15.438818-07:00",
+        "kind": "tools_validated",
+        "epoch": 1,
+        "owner": "crash-worker",
+        "effects": [
+          {
+            "args": {
+              "path": "clamp.py"
+            },
+            "kind": "read_file",
+            "status": "planned",
+            "args_hash": "31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6",
+            "operation_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T_step_3_op_0",
+            "dispatch_epoch": 0,
+            "policy_version": "workspace-v1",
+            "expected_revision": 1,
+            "requires_approval": false
+          }
+        ],
+        "complete": true,
+        "output_ref": "artifact_e4e6e889c473326d05e74c52623d663ec7a28f77d26a2ed9f7d14651cc742ee3",
+        "expected_version": 15
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "crash-worker",
+          "until": "2026-09-11T16:04:18.435738-07:00"
+        },
+        "stage": "validate_tool_calls",
+        "limits": {
+          "deadline": "2026-09-11T16:05:14.398849-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "status": "running",
+        "version": 15,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "repeated",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 1,
+          "last_checked_step": 2
+        },
+        "step_seq": 3,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_e4e6e889c473326d05e74c52623d663ec7a28f77d26a2ed9f7d14651cc742ee3",
+        "tool_calls": 2,
+        "model_rounds": 3,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 2
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "crash-worker",
+          "until": "2026-09-11T16:04:18.435738-07:00"
+        },
+        "stage": "ingest_results",
+        "limits": {
+          "deadline": "2026-09-11T16:05:14.398849-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "status": "running",
+        "version": 17,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "repeated",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 1,
+          "last_checked_step": 2
+        },
+        "step_seq": 3,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_523064ec8bf63d703522863c98778eaecfa073472a18b7d18527d333487e8b93",
+        "tool_calls": 3,
+        "model_rounds": 3,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "version": 17,
+      "step_seq": 3,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T23:04:15.575727+00:00",
+      "input_event": {
+        "at": "2026-09-11T16:04:15.573073-07:00",
+        "kind": "effect_completed",
+        "epoch": 1,
+        "owner": "crash-worker",
+        "receipt": {
+          "ref": "artifact_523064ec8bf63d703522863c98778eaecfa073472a18b7d18527d333487e8b93",
+          "epoch": 1,
+          "status": "succeeded",
+          "settled": true,
+          "args_hash": "31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6",
+          "effect_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T_step_3_op_0",
+          "after_revision": 1,
+          "before_revision": 1
+        },
+        "expected_version": 16
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "crash-worker",
+          "until": "2026-09-11T16:04:18.435738-07:00"
+        },
+        "stage": "execute_effects",
+        "limits": {
+          "deadline": "2026-09-11T16:05:14.398849-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "status": "running",
+        "version": 16,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "repeated",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 1,
+          "last_checked_step": 2
+        },
+        "step_seq": 3,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_e4e6e889c473326d05e74c52623d663ec7a28f77d26a2ed9f7d14651cc742ee3",
+        "tool_calls": 3,
+        "model_rounds": 3,
+        "cost_microusd": 0,
+        "pending_effect": {
+          "args": {
+            "path": "clamp.py"
+          },
+          "kind": "read_file",
+          "status": "in_flight",
+          "args_hash": "31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6",
+          "operation_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T_step_3_op_0",
+          "dispatch_epoch": 1,
+          "policy_version": "workspace-v1",
+          "expected_revision": 1,
+          "requires_approval": false
+        },
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 2
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "crash-worker",
+          "until": "2026-09-11T16:04:18.435738-07:00"
+        },
+        "stage": "build_context",
+        "limits": {
+          "deadline": "2026-09-11T16:05:14.398849-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "status": "running",
+        "version": 18,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "repeated",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 1,
+          "last_checked_step": 2
+        },
+        "step_seq": 3,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_cf606c5590d155ba517729507a652bda6ef5365eff254468c0b2d9c7c84d6d2a",
+        "tool_calls": 3,
+        "model_rounds": 3,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "version": 18,
+      "step_seq": 3,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T23:04:15.601857+00:00",
+      "input_event": {
+        "at": "2026-09-11T16:04:15.600593-07:00",
+        "kind": "results_ingested",
+        "epoch": 1,
+        "owner": "crash-worker",
+        "output_ref": "artifact_cf606c5590d155ba517729507a652bda6ef5365eff254468c0b2d9c7c84d6d2a",
+        "expected_version": 17
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "crash-worker",
+          "until": "2026-09-11T16:04:18.435738-07:00"
+        },
+        "stage": "ingest_results",
+        "limits": {
+          "deadline": "2026-09-11T16:05:14.398849-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "status": "running",
+        "version": 17,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "repeated",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 1,
+          "last_checked_step": 2
+        },
+        "step_seq": 3,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_523064ec8bf63d703522863c98778eaecfa073472a18b7d18527d333487e8b93",
+        "tool_calls": 3,
+        "model_rounds": 3,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 2
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "crash-worker",
+          "until": "2026-09-11T16:04:18.435738-07:00"
+        },
+        "stage": "model_step",
+        "limits": {
+          "deadline": "2026-09-11T16:05:14.398849-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "status": "running",
+        "version": 19,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "repeated",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 2,
+          "last_checked_step": 3
+        },
+        "step_seq": 4,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_042b0e46b3a2c5d6d6ce661a7b34e1cf0ccd6c45ca53ced103bf4502c4770722",
+        "tool_calls": 3,
+        "model_rounds": 4,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "version": 19,
+      "step_seq": 4,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T23:04:15.676014+00:00",
+      "input_event": {
+        "at": "2026-09-11T16:04:15.670732-07:00",
+        "kind": "context_built",
+        "epoch": 1,
+        "owner": "crash-worker",
+        "progress": {
+          "step_seq": 3,
+          "attempt_id": "attempt_UDYFOOEOZ7XDN4LJ5VH2ZGOXPP",
+          "context_ref": "artifact_042b0e46b3a2c5d6d6ce661a7b34e1cf0ccd6c45ca53ced103bf4502c4770722",
+          "message_seq": 0,
+          "observations": [
+            {
+              "effect_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T_step_3_op_0",
+              "after_hash": "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c",
+              "before_hash": "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c",
+              "fingerprint": "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687",
+              "receipt_ref": "artifact_523064ec8bf63d703522863c98778eaecfa073472a18b7d18527d333487e8b93"
+            }
+          ],
+          "policy_version": 1
+        },
+        "output_ref": "artifact_042b0e46b3a2c5d6d6ce661a7b34e1cf0ccd6c45ca53ced103bf4502c4770722",
+        "progress_ref": "artifact_f55a60557bda1c42cd798f3fd7aab8006951ff40948ff7cf7c4844da915ee583",
+        "expected_version": 18
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "crash-worker",
+          "until": "2026-09-11T16:04:18.435738-07:00"
+        },
+        "stage": "build_context",
+        "limits": {
+          "deadline": "2026-09-11T16:05:14.398849-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "status": "running",
+        "version": 18,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "repeated",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 1,
+          "last_checked_step": 2
+        },
+        "step_seq": 3,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_cf606c5590d155ba517729507a652bda6ef5365eff254468c0b2d9c7c84d6d2a",
+        "tool_calls": 3,
+        "model_rounds": 3,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 2
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "crash-worker",
+          "until": "2026-09-11T16:04:18.435738-07:00"
+        },
+        "stage": "validate_tool_calls",
+        "limits": {
+          "deadline": "2026-09-11T16:05:14.398849-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "status": "running",
+        "version": 20,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "repeated",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 2,
+          "last_checked_step": 3
+        },
+        "step_seq": 4,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_612b613c6bc1cbbd40dd9bd3c4fea5158921470303d824c9e3b946a82b789330",
+        "tool_calls": 3,
+        "model_rounds": 4,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "version": 20,
+      "step_seq": 4,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T23:04:15.738211+00:00",
+      "input_event": {
+        "at": "2026-09-11T16:04:15.73682-07:00",
+        "kind": "model_completed",
+        "epoch": 1,
+        "owner": "crash-worker",
+        "complete": true,
+        "output_ref": "artifact_612b613c6bc1cbbd40dd9bd3c4fea5158921470303d824c9e3b946a82b789330",
+        "expected_version": 19
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "crash-worker",
+          "until": "2026-09-11T16:04:18.435738-07:00"
+        },
+        "stage": "model_step",
+        "limits": {
+          "deadline": "2026-09-11T16:05:14.398849-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "status": "running",
+        "version": 19,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "repeated",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 2,
+          "last_checked_step": 3
+        },
+        "step_seq": 4,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_042b0e46b3a2c5d6d6ce661a7b34e1cf0ccd6c45ca53ced103bf4502c4770722",
+        "tool_calls": 3,
+        "model_rounds": 4,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 2
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "crash-worker",
+          "until": "2026-09-11T16:04:18.435738-07:00"
+        },
+        "stage": "execute_effects",
+        "limits": {
+          "deadline": "2026-09-11T16:05:14.398849-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "status": "running",
+        "version": 21,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "repeated",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 2,
+          "last_checked_step": 3
+        },
+        "step_seq": 4,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_612b613c6bc1cbbd40dd9bd3c4fea5158921470303d824c9e3b946a82b789330",
+        "tool_calls": 4,
+        "model_rounds": 4,
+        "cost_microusd": 0,
+        "pending_effect": {
+          "args": {
+            "path": "clamp.py"
+          },
+          "kind": "read_file",
+          "status": "in_flight",
+          "args_hash": "31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6",
+          "operation_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T_step_4_op_0",
+          "dispatch_epoch": 1,
+          "policy_version": "workspace-v1",
+          "expected_revision": 1,
+          "requires_approval": false
+        },
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "version": 21,
+      "step_seq": 4,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T23:04:15.74977+00:00",
+      "input_event": {
+        "at": "2026-09-11T16:04:15.748141-07:00",
+        "kind": "tools_validated",
+        "epoch": 1,
+        "owner": "crash-worker",
+        "effects": [
+          {
+            "args": {
+              "path": "clamp.py"
+            },
+            "kind": "read_file",
+            "status": "planned",
+            "args_hash": "31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6",
+            "operation_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T_step_4_op_0",
+            "dispatch_epoch": 0,
+            "policy_version": "workspace-v1",
+            "expected_revision": 1,
+            "requires_approval": false
+          }
+        ],
+        "complete": true,
+        "output_ref": "artifact_612b613c6bc1cbbd40dd9bd3c4fea5158921470303d824c9e3b946a82b789330",
+        "expected_version": 20
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "crash-worker",
+          "until": "2026-09-11T16:04:18.435738-07:00"
+        },
+        "stage": "validate_tool_calls",
+        "limits": {
+          "deadline": "2026-09-11T16:05:14.398849-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "status": "running",
+        "version": 20,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "repeated",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 2,
+          "last_checked_step": 3
+        },
+        "step_seq": 4,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_612b613c6bc1cbbd40dd9bd3c4fea5158921470303d824c9e3b946a82b789330",
+        "tool_calls": 3,
+        "model_rounds": 4,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 2
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "crash-worker",
+          "until": "2026-09-11T16:04:18.435738-07:00"
+        },
+        "stage": "ingest_results",
+        "limits": {
+          "deadline": "2026-09-11T16:05:14.398849-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "status": "running",
+        "version": 22,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "repeated",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 2,
+          "last_checked_step": 3
+        },
+        "step_seq": 4,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_eaab2c2ca021c1427c48a6f6ff977e9c47fe58ff6538a0acc36ba7567a5b6c1c",
+        "tool_calls": 4,
+        "model_rounds": 4,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "version": 22,
+      "step_seq": 4,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T23:04:15.886431+00:00",
+      "input_event": {
+        "at": "2026-09-11T16:04:15.882571-07:00",
+        "kind": "effect_completed",
+        "epoch": 1,
+        "owner": "crash-worker",
+        "receipt": {
+          "ref": "artifact_eaab2c2ca021c1427c48a6f6ff977e9c47fe58ff6538a0acc36ba7567a5b6c1c",
+          "epoch": 1,
+          "status": "succeeded",
+          "settled": true,
+          "args_hash": "31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6",
+          "effect_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T_step_4_op_0",
+          "after_revision": 1,
+          "before_revision": 1
+        },
+        "expected_version": 21
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "crash-worker",
+          "until": "2026-09-11T16:04:18.435738-07:00"
+        },
+        "stage": "execute_effects",
+        "limits": {
+          "deadline": "2026-09-11T16:05:14.398849-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "status": "running",
+        "version": 21,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "repeated",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 2,
+          "last_checked_step": 3
+        },
+        "step_seq": 4,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_612b613c6bc1cbbd40dd9bd3c4fea5158921470303d824c9e3b946a82b789330",
+        "tool_calls": 4,
+        "model_rounds": 4,
+        "cost_microusd": 0,
+        "pending_effect": {
+          "args": {
+            "path": "clamp.py"
+          },
+          "kind": "read_file",
+          "status": "in_flight",
+          "args_hash": "31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6",
+          "operation_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T_step_4_op_0",
+          "dispatch_epoch": 1,
+          "policy_version": "workspace-v1",
+          "expected_revision": 1,
+          "requires_approval": false
+        },
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 2
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "crash-worker",
+          "until": "2026-09-11T16:04:18.435738-07:00"
+        },
+        "stage": "build_context",
+        "limits": {
+          "deadline": "2026-09-11T16:05:14.398849-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "status": "running",
+        "version": 23,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "repeated",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 2,
+          "last_checked_step": 3
+        },
+        "step_seq": 4,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_ccabce59c7b3ea74aad766fa6cc23e2cfb41d0211c30880e99bb2b191687eef5",
+        "tool_calls": 4,
+        "model_rounds": 4,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "version": 23,
+      "step_seq": 4,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T23:04:15.92863+00:00",
+      "input_event": {
+        "at": "2026-09-11T16:04:15.927734-07:00",
+        "kind": "results_ingested",
+        "epoch": 1,
+        "owner": "crash-worker",
+        "output_ref": "artifact_ccabce59c7b3ea74aad766fa6cc23e2cfb41d0211c30880e99bb2b191687eef5",
+        "expected_version": 22
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "crash-worker",
+          "until": "2026-09-11T16:04:18.435738-07:00"
+        },
+        "stage": "ingest_results",
+        "limits": {
+          "deadline": "2026-09-11T16:05:14.398849-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "status": "running",
+        "version": 22,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "repeated",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 2,
+          "last_checked_step": 3
+        },
+        "step_seq": 4,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_eaab2c2ca021c1427c48a6f6ff977e9c47fe58ff6538a0acc36ba7567a5b6c1c",
+        "tool_calls": 4,
+        "model_rounds": 4,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 2
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "crash-worker",
+          "until": "2026-09-11T16:04:18.435738-07:00"
+        },
+        "stage": "build_context",
+        "limits": {
+          "deadline": "2026-09-11T16:05:14.398849-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "status": "cancel_requested",
+        "version": 24,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "repeated",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 3,
+          "last_checked_step": 4
+        },
+        "step_seq": 4,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_ccabce59c7b3ea74aad766fa6cc23e2cfb41d0211c30880e99bb2b191687eef5",
+        "tool_calls": 4,
+        "stop_target": "budget_exhausted",
+        "model_rounds": 4,
+        "cost_microusd": 0,
+        "failure_reason": "repeated_no_progress",
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "version": 24,
+      "step_seq": 4,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T23:04:16.028579+00:00",
+      "input_event": {
+        "at": "2026-09-11T16:04:16.023253-07:00",
+        "kind": "context_built",
+        "epoch": 1,
+        "owner": "crash-worker",
+        "progress": {
+          "step_seq": 4,
+          "attempt_id": "attempt_HGKTOYAFXE6WG7SWNI3XY6N7PP",
+          "context_ref": "artifact_a9e8a5027b01af338b7e13201503ace17cd60fc176c4901a6bf3c76c8a2f1dfe",
+          "message_seq": 0,
+          "observations": [
+            {
+              "effect_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T_step_4_op_0",
+              "after_hash": "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c",
+              "before_hash": "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c",
+              "fingerprint": "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687",
+              "receipt_ref": "artifact_eaab2c2ca021c1427c48a6f6ff977e9c47fe58ff6538a0acc36ba7567a5b6c1c"
+            }
+          ],
+          "policy_version": 1
+        },
+        "output_ref": "artifact_a9e8a5027b01af338b7e13201503ace17cd60fc176c4901a6bf3c76c8a2f1dfe",
+        "progress_ref": "artifact_3a833a0b00a845263c07d8878236b56dd15bdd8d00d43a19d88e007821183922",
+        "expected_version": 23
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "crash-worker",
+          "until": "2026-09-11T16:04:18.435738-07:00"
+        },
+        "stage": "build_context",
+        "limits": {
+          "deadline": "2026-09-11T16:05:14.398849-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "status": "running",
+        "version": 23,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "repeated",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 2,
+          "last_checked_step": 3
+        },
+        "step_seq": 4,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_ccabce59c7b3ea74aad766fa6cc23e2cfb41d0211c30880e99bb2b191687eef5",
+        "tool_calls": 4,
+        "model_rounds": 4,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 2
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 2,
+          "owner": "recovery-worker",
+          "until": "2026-09-11T16:04:21.467489-07:00"
+        },
+        "stage": "build_context",
+        "limits": {
+          "deadline": "2026-09-11T16:05:14.398849-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "status": "cancel_requested",
+        "version": 25,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "repeated",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 3,
+          "last_checked_step": 4
+        },
+        "step_seq": 4,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_ccabce59c7b3ea74aad766fa6cc23e2cfb41d0211c30880e99bb2b191687eef5",
+        "tool_calls": 4,
+        "stop_target": "budget_exhausted",
+        "model_rounds": 4,
+        "cost_microusd": 0,
+        "failure_reason": "repeated_no_progress",
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "version": 25,
+      "step_seq": 4,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T23:04:18.478143+00:00",
+      "input_event": {
+        "at": "2026-09-11T16:04:18.467489-07:00",
+        "kind": "claimed",
+        "epoch": 2,
+        "lease": {
+          "epoch": 2,
+          "owner": "recovery-worker",
+          "until": "2026-09-11T16:04:21.467489-07:00"
+        },
+        "owner": "recovery-worker",
+        "expected_version": 24
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "crash-worker",
+          "until": "2026-09-11T16:04:18.435738-07:00"
+        },
+        "stage": "build_context",
+        "limits": {
+          "deadline": "2026-09-11T16:05:14.398849-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "status": "cancel_requested",
+        "version": 24,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "repeated",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 3,
+          "last_checked_step": 4
+        },
+        "step_seq": 4,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_ccabce59c7b3ea74aad766fa6cc23e2cfb41d0211c30880e99bb2b191687eef5",
+        "tool_calls": 4,
+        "stop_target": "budget_exhausted",
+        "model_rounds": 4,
+        "cost_microusd": 0,
+        "failure_reason": "repeated_no_progress",
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 2
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 2,
+          "owner": "recovery-worker",
+          "until": "2026-09-11T16:04:21.467489-07:00"
+        },
+        "stage": "stopped",
+        "limits": {
+          "deadline": "2026-09-11T16:05:14.398849-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "status": "budget_exhausted",
+        "version": 26,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "repeated",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 3,
+          "last_checked_step": 4
+        },
+        "step_seq": 4,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_3eea29509a671c04b51999209be1363749fa1959cf3fafcb1df65af76572fa48",
+        "tool_calls": 4,
+        "stop_target": "budget_exhausted",
+        "model_rounds": 4,
+        "cost_microusd": 0,
+        "failure_reason": "repeated_no_progress",
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "version": 26,
+      "step_seq": 4,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T23:04:18.544951+00:00",
+      "input_event": {
+        "at": "2026-09-11T16:04:18.540381-07:00",
+        "kind": "cancellation_confirmed",
+        "stop": {
+          "ref": "artifact_3eea29509a671c04b51999209be1363749fa1959cf3fafcb1df65af76572fa48",
+          "workspace_revision": 1,
+          "no_active_operations": true
+        },
+        "epoch": 2,
+        "owner": "recovery-worker",
+        "expected_version": 25
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 2,
+          "owner": "recovery-worker",
+          "until": "2026-09-11T16:04:21.467489-07:00"
+        },
+        "stage": "build_context",
+        "limits": {
+          "deadline": "2026-09-11T16:05:14.398849-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+        "status": "cancel_requested",
+        "version": 25,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "repeated",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 3,
+          "last_checked_step": 4
+        },
+        "step_seq": 4,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_ccabce59c7b3ea74aad766fa6cc23e2cfb41d0211c30880e99bb2b191687eef5",
+        "tool_calls": 4,
+        "stop_target": "budget_exhausted",
+        "model_rounds": 4,
+        "cost_microusd": 0,
+        "failure_reason": "repeated_no_progress",
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 2
+    }
+  ],
+  "runner_allocations": [
+    {
+      "slots": 1,
+      "state": "released",
+      "run_id": "run_U35Z44LLC5FVHHFWQAY2CYG24T",
+      "runner_id": "runner",
+      "tenant_id": "tenant",
+      "lease_epoch": 2,
+      "memory_bytes": 0
+    }
+  ],
+  "scope": "real private PostgreSQL + production Driver + SQLite runner with TestBackend; no Docker or paid provider",
+  "test_binary_sha256": "4d12bf3c60c7167d32c3d280730436e4b7e9e4a750f18337ece8df60567da548"
+}

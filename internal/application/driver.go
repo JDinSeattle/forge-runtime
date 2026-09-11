@@ -232,7 +232,10 @@ func (d *Driver) step(ctx context.Context, r persistence.Run) error {
 	event.ExpectedVersion = r.State.Version
 	event.Owner = r.State.Lease.Owner
 	event.Epoch = r.State.Lease.Epoch
-	if _, err = d.Store.Advance(ctx, r.TenantID, r.ID, event); errors.Is(err, domain.ErrConflict) || errors.Is(err, domain.ErrTransition) {
+	if _, err = d.Store.Advance(ctx, r.TenantID, r.ID, event); errors.Is(err, domain.ErrContextStale) {
+		telemetry.Event(ctx, "reload")
+		return nil
+	} else if errors.Is(err, domain.ErrConflict) || errors.Is(err, domain.ErrTransition) {
 		fresh, readErr := d.Store.GetRun(ctx, r.TenantID, r.ID)
 		if readErr != nil {
 			return readErr
@@ -248,6 +251,11 @@ func (d *Driver) step(ctx context.Context, r persistence.Run) error {
 	outcome = telemetry.Success
 	if executionFailed {
 		outcome = telemetry.Failed
+	}
+	if event.Kind == flow.EventContextBuilt {
+		if err = d.fault("after_progress_transition"); err != nil {
+			return err
+		}
 	}
 	return d.fault("after_advance_before_reload")
 }

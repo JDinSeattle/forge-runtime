@@ -88,7 +88,16 @@ func newResumeControlFixture(t *testing.T, label string) *resumeControlFixture {
 	f.ref = recoveryPublish(t, ctx, owner, ref)
 	f.record("control-fixture-artifact.json", map[string]any{"ref": ref, "bytes": string(proof)})
 	f.advance(flow.Event{Kind: flow.EventWorkspaceReady, WorkspaceRevision: 1, OutputRef: f.ref})
-	f.advance(flow.Event{Kind: flow.EventContextBuilt, OutputRef: f.ref})
+	f.advance(reviewContext(t, f.ctx, f.store, f.run, f.ref))
+	// A completed declarative attempt is now part of the closed-batch contract.
+	attempt, err := owner.BeginAttempt(ctx, f.run, f.ref, "control-fixture-v1", time.Minute)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err = owner.CompleteAttempt(ctx, attempt, f.ref, "control-fixture", json.RawMessage(`{}`)); err != nil {
+		t.Fatal(err)
+	}
+
 	f.advance(flow.Event{Kind: flow.EventModelCompleted, Complete: true, OutputRef: f.ref})
 	args := json.RawMessage(`{"path":"control-fixture.py"}`)
 	hash := sha256.Sum256(args)
@@ -310,7 +319,7 @@ func TestReviewConcurrentFinalizeDoesNotReleaseSentinelCapacity(t *testing.T) {
 	effect := f.run.State.PendingEffect
 	f.advance(flow.Event{Kind: flow.EventReconciled, Receipt: &flow.EffectReceipt{EffectID: effect.ID, ArgsHash: effect.ArgsHash, Epoch: effect.DispatchEpoch, BeforeRevision: 1, AfterRevision: 1, Ref: f.ref, Settled: true, Status: flow.EffectSucceeded}})
 	f.advance(flow.Event{Kind: flow.EventResultsIngested, OutputRef: f.ref})
-	f.advance(flow.Event{Kind: flow.EventContextBuilt, OutputRef: f.ref})
+	f.advance(reviewContext(t, f.ctx, f.store, f.run, f.ref))
 	f.advance(flow.Event{Kind: flow.EventModelCompleted, Complete: true, Finish: true, OutputRef: f.ref})
 	f.advance(flow.Event{Kind: flow.EventVerificationCompleted, Verification: &flow.VerificationEvidence{Trusted: true, ReportRef: f.ref, WorkspaceRevision: 1, BaselineTargetFailed: true, TargetPassed: true, RegressionPassed: true}})
 	f.capture("before-finalize")

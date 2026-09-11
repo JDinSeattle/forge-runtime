@@ -352,6 +352,11 @@ func progressEvent(state flow.State, event flow.Event) map[string]any {
 		reason = reason[:2048] + " [truncated]"
 	}
 	payload := map[string]any{"version": state.Version, "state": state.Status, "stage": state.Stage, "step_seq": state.StepSeq, "workspace_revision": state.WorkspaceRevision, "model_rounds": state.ModelRounds, "tool_calls": state.ToolCalls, "cost_microusd": state.Cost, "verification_status": state.Verification, "output_ref": state.OutputRef, "verification_report_ref": state.VerificationReportRef, "reason": reason}
+	if state.Progress != nil {
+		payload["repeated_batches"] = state.Progress.RepeatedBatches
+		payload["progress_classification"] = state.Progress.Classification
+		payload["progress_report_ref"] = event.ProgressRef
+	}
 	if event.NotBefore != nil {
 		payload["not_before"] = event.NotBefore
 	}
@@ -419,6 +424,9 @@ func (s *Store) apply(ctx context.Context, tenant, id domain.ID, event flow.Even
 	if err = validateEvidence(ctx, tx, tenant, id, event); err != nil {
 		return r, err
 	}
+	if err = validateContextProgress(ctx, tx, r, event); err != nil {
+		return r, err
+	}
 	next, commands, err := flow.Transition(r.State, event)
 	if err != nil {
 		return r, err
@@ -438,7 +446,7 @@ func (s *Store) apply(ctx context.Context, tenant, id domain.ID, event flow.Even
 }
 
 func validateEvidence(ctx context.Context, tx pgx.Tx, tenant, id domain.ID, event flow.Event) error {
-	refs := []string{event.OutputRef}
+	refs := []string{event.OutputRef, event.ProgressRef}
 	if event.Receipt != nil {
 		refs = append(refs, event.Receipt.Ref)
 	}

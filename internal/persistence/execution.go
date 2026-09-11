@@ -211,7 +211,7 @@ func (s *Store) Defer(ctx context.Context, r Run, notBefore time.Time, kind stri
 	if tag.RowsAffected() != 1 {
 		return domain.ErrFenced
 	}
-	if r.State.PendingEffect == nil && (r.State.Stage == domain.StageModel || r.State.Stage == domain.StageBuildContext) {
+	if r.State.Status == domain.StatusRunning && r.State.StopTarget == "" && r.State.PendingEffect == nil && (r.State.Stage == domain.StageModel || r.State.Stage == domain.StageBuildContext) {
 		if err = releaseAllocation(ctx, tx, r.TenantID, r.ID); err != nil {
 			return err
 		}

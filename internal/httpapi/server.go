@@ -201,10 +201,11 @@ func (s *Server) createProject(w http.ResponseWriter, r *http.Request) {
 }
 
 type Budget struct {
-	MaxModelRounds    *uint64       `json:"max_model_rounds,omitempty"`
-	MaxToolCalls      *uint64       `json:"max_tool_calls,omitempty"`
-	MaxCost           *domain.Money `json:"max_cost_microusd,omitempty"`
-	MaxRuntimeSeconds *int64        `json:"max_runtime_seconds,omitempty"`
+	MaxNoProgressBatches *uint64       `json:"max_no_progress_batches,omitempty"`
+	MaxModelRounds       *uint64       `json:"max_model_rounds,omitempty"`
+	MaxToolCalls         *uint64       `json:"max_tool_calls,omitempty"`
+	MaxCost              *domain.Money `json:"max_cost_microusd,omitempty"`
+	MaxRuntimeSeconds    *int64        `json:"max_runtime_seconds,omitempty"`
 }
 type SubmitBody struct {
 	Task        string    `json:"task"`
@@ -216,6 +217,16 @@ type SubmitBody struct {
 }
 
 func (b Budget) apply(c persistence.Config) (persistence.Config, error) {
+	if b.MaxNoProgressBatches != nil {
+		ceiling := c.MaxNoProgressBatches
+		if ceiling == 0 {
+			ceiling = 3
+		}
+		if *b.MaxNoProgressBatches == 0 || *b.MaxNoProgressBatches > ceiling {
+			return c, domain.ErrInvalid
+		}
+		c.MaxNoProgressBatches = *b.MaxNoProgressBatches
+	}
 	if b.MaxModelRounds != nil {
 		if *b.MaxModelRounds > c.MaxModelRounds {
 			return c, domain.ErrInvalid

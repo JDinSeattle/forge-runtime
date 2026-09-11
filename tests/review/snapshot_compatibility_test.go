@@ -89,7 +89,7 @@ func TestReviewUnsupportedSnapshotDoesNotStarveHealthyRuns(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	compatibilityFuture(t, ctx, owner, bad, "2")
+	compatibilityFuture(t, ctx, owner, bad, "3")
 	if got, err := owner.GetRun(ctx, bad.TenantID, bad.ID); err == nil {
 		t.Errorf("unsupported snapshot exposed as current projection: schema=%d version=%d", got.State.SchemaVersion, got.State.Version)
 	}
@@ -120,7 +120,7 @@ func TestReviewUnsupportedSnapshotDoesNotStarveHealthyRuns(t *testing.T) {
 		t.Errorf("future snapshot monopolized claims: bad=%t same_tenant=%t other_tenant=%t", seen[bad.ID], seen[healthy.ID], seen[other.ID])
 	}
 	inspection, err := owner.InspectSnapshot(ctx, bad.TenantID, bad.ID)
-	if err != nil || inspection.Hold == nil || inspection.Hold.ObservedSchema != "2" {
+	if err != nil || inspection.Hold == nil || inspection.Hold.ObservedSchema != "3" {
 		t.Fatalf("hold not persisted: %+v %v", inspection, err)
 	}
 	reopened, err := persistence.Open(ctx, owner.Pool.Config().ConnString())
@@ -195,11 +195,11 @@ func TestReviewUnsupportedSnapshotAmbiguousMembersFenceAndHold(t *testing.T) {
 			if err = owner.Pool.QueryRow(ctx, `SELECT snapshot::text FROM runs WHERE tenant_id=$1 AND id=$2`, bad.TenantID, bad.ID).Scan(&original); err != nil {
 				t.Fatal(err)
 			}
-			if strings.Count(original, `"schema_version":1`) != 1 {
+			if strings.Count(original, `"schema_version":2`) != 1 {
 				t.Fatal("fixture requires one original schema member")
 			}
 			// Keep PostgreSQL json text, order, duplicates and escapes intact.
-			ambiguous := strings.Replace(original, `"schema_version":1`, fixture.members, 1)
+			ambiguous := strings.Replace(original, `"schema_version":2`, fixture.members, 1)
 			if _, err = owner.Pool.Exec(ctx, `UPDATE runs SET snapshot=$3::json WHERE tenant_id=$1 AND id=$2`, bad.TenantID, bad.ID, ambiguous); err != nil {
 				t.Fatal(err)
 			}
@@ -274,7 +274,7 @@ func TestReviewUnsupportedSnapshotOperatorCLI(t *testing.T) {
 	if err := s.Pool.QueryRow(ctx, `SELECT snapshot::text FROM runs WHERE tenant_id=$1 AND id=$2`, r.TenantID, r.ID).Scan(&original); err != nil {
 		t.Fatal(err)
 	}
-	compatibilityFuture(t, ctx, s, r, "2")
+	compatibilityFuture(t, ctx, s, r, "3")
 	if _, err := s.ClaimOnRunner(ctx, "cli-fixture", time.Minute, "review_runner"); !errors.Is(err, domain.ErrSnapshotMigration) {
 		t.Fatal(err)
 	}
@@ -468,7 +468,7 @@ func TestReviewUnsupportedSnapshotHTTPAndOperatorRecovery(t *testing.T) {
 	if err = owner.PublishArtifact(ctx, persistence.Artifact{TenantID: r.TenantID, RunID: r.ID, ID: "compatibility_file", Kind: ref.Kind, ObjectKey: ref.ObjectKey, SHA256: ref.SHA256, ByteSize: ref.Size}); err != nil {
 		t.Fatal(err)
 	}
-	compatibilityFuture(t, ctx, owner, r, "2")
+	compatibilityFuture(t, ctx, owner, r, "3")
 	if _, err = owner.ClaimOnRunner(ctx, "compatibility", time.Minute, "review_runner"); !errors.Is(err, domain.ErrSnapshotMigration) {
 		t.Fatal(err)
 	}
@@ -570,7 +570,7 @@ func TestReviewUnsupportedSnapshotApprovalRefusesUnknownState(t *testing.T) {
 	ctx, owner, api := reviewAPIStore(t)
 	restrictApprovalAuthTables(t, ctx, owner, api)
 	r := reviewApprovalWaiting(t, ctx, owner)
-	compatibilityFuture(t, ctx, owner, r, "2")
+	compatibilityFuture(t, ctx, owner, r, "3")
 	before := compatibilityRecords(t, ctx, owner, r)
 	token, err := owner.IssueToken(ctx, r.PrincipalID, time.Hour)
 	if err != nil {
@@ -642,7 +642,7 @@ func TestReviewUnsupportedSnapshotStopsCleanupAndRetentionOfTerminalEvidence(t *
 	if _, _, err = s.CleanupProof(ctx, cleanup, false); err != nil {
 		t.Fatal(err)
 	}
-	compatibilityFuture(t, ctx, s, r, "2")
+	compatibilityFuture(t, ctx, s, r, "3")
 	before := compatibilityRecords(t, ctx, s, r)
 	if _, _, err = s.CleanupProof(ctx, cleanup, false); !errors.Is(err, domain.ErrFenced) {
 		t.Fatalf("old cleanup issued new authority: %v", err)
@@ -708,7 +708,7 @@ func TestReviewUnsupportedSnapshotEndsExistingSSEGeneration(t *testing.T) {
 	ended := make(chan ending, 1)
 	go func() { raw, err := io.ReadAll(response.Body); ended <- ending{raw, err} }()
 	started := time.Now()
-	compatibilityFuture(t, ctx, owner, r, "2")
+	compatibilityFuture(t, ctx, owner, r, "3")
 	select {
 	case err := <-sub.Errors:
 		if !errors.Is(err, domain.ErrSnapshotMigration) {

@@ -1,0 +1,564 @@
+diff --git a/api/openapi.yaml b/api/openapi.yaml
+index a6332a2..15ae063 100644
+--- a/api/openapi.yaml
++++ b/api/openapi.yaml
+@@ -328,6 +328,7 @@ components:
+       additionalProperties: false
+       description: Optional overrides may only reduce the named server configuration limits.
+       properties:
++        max_no_progress_batches: { type: integer, minimum: 1, maximum: 20, x-go-type: uint64 }
+         max_model_rounds: { type: integer, minimum: 1, maximum: 1000, x-go-type: uint64 }
+         max_tool_calls: { type: integer, minimum: 1, maximum: 10000, x-go-type: uint64 }
+         max_cost_microusd: { type: integer, format: int64, minimum: 1 }
+@@ -416,6 +417,7 @@ components:
+       properties:
+         provider: { type: string }
+         model: { type: string }
++        max_no_progress_batches: { type: integer, format: uint64, minimum: 1, maximum: 20 }
+         max_model_rounds: { $ref: '#/components/schemas/Counter' }
+         max_tool_calls: { $ref: '#/components/schemas/Counter' }
+         max_cost_microusd: { $ref: '#/components/schemas/Money' }
+@@ -437,6 +439,7 @@ components:
+       type: object
+       required: [max_model_rounds, max_tool_calls, max_cost_microusd, deadline]
+       properties:
++        max_no_progress_batches: { type: integer, format: uint64, minimum: 1, maximum: 20 }
+         max_model_rounds: { $ref: '#/components/schemas/Counter' }
+         max_tool_calls: { $ref: '#/components/schemas/Counter' }
+         max_cost_microusd: { $ref: '#/components/schemas/Money' }
+@@ -455,10 +458,21 @@ components:
+         requires_approval: { type: boolean }
+         status: { type: string, enum: [planned, in_flight, succeeded, failed, cancelled, unknown] }
+         receipt_ref: { type: string }
++    ProgressState:
++      type: object
++      required: [last_checked_step, message_seq, repeated_batches, classification, recent_evidence, recent_trees]
++      properties:
++        last_checked_step: { $ref: '#/components/schemas/Counter' }
++        message_seq: { $ref: '#/components/schemas/Counter' }
++        repeated_batches: { $ref: '#/components/schemas/Counter' }
++        classification: { type: string, enum: [initial, message, new_evidence, repeated, indeterminate] }
++        recent_evidence: { type: array, maxItems: 512, items: { type: string } }
++        recent_trees: { type: array, maxItems: 32, items: { type: string } }
+     State:
+       type: object
+       required: [schema_version, run_id, tenant_id, version, status, stage, lease, step_seq, workspace_revision, verification_status, verification_revision, model_rounds, tool_calls, cost_microusd, limits]
+       properties:
++        progress: { $ref: "#/components/schemas/ProgressState" }
+         schema_version: { type: integer, x-go-type: uint32 }
+         run_id: { $ref: '#/components/schemas/ID' }
+         tenant_id: { $ref: '#/components/schemas/ID' }
+diff --git a/internal/application/context.go b/internal/application/context.go
+index 488f7c5..8e94a92 100644
+--- a/internal/application/context.go
++++ b/internal/application/context.go
+@@ -156,7 +156,10 @@ func (d *Driver) buildContext(ctx context.Context, r persistence.Run) (flow.Even
+ 		return flow.Event{}, fmt.Errorf("%w: context exceeds 512 KiB; compact or start a child run", domain.ErrCapacity)
+ 	}
+ 	ref, err := d.put(ctx, r, "context", envelope)
+-	return flow.Event{Kind: flow.EventContextBuilt, OutputRef: ref}, err
++	if err != nil {
++		return flow.Event{}, err
++	}
++	return d.contextProgress(ctx, r, ref, envelope.AppliedMessageSeq)
+ }
+ 
+ // Verification diagnostics come only from the published trusted report and its
+diff --git a/internal/application/driver.go b/internal/application/driver.go
+index 734d767..d659335 100644
+--- a/internal/application/driver.go
++++ b/internal/application/driver.go
+@@ -197,7 +197,9 @@ func (d *Driver) Drive(parent context.Context, claimed persistence.Run) error {
+ 		event.ExpectedVersion = r.State.Version
+ 		event.Owner = r.State.Lease.Owner
+ 		event.Epoch = r.State.Lease.Epoch
+-		if _, err = d.Store.Advance(ctx, r.TenantID, r.ID, event); errors.Is(err, domain.ErrConflict) || errors.Is(err, domain.ErrTransition) {
++		if _, err = d.Store.Advance(ctx, r.TenantID, r.ID, event); errors.Is(err, domain.ErrContextStale) {
++			continue
++		} else if errors.Is(err, domain.ErrConflict) || errors.Is(err, domain.ErrTransition) {
+ 			fresh, readErr := d.Store.GetRun(ctx, r.TenantID, r.ID)
+ 			if readErr != nil {
+ 				return readErr
+@@ -209,6 +211,11 @@ func (d *Driver) Drive(parent context.Context, claimed persistence.Run) error {
+ 		} else if err != nil {
+ 			return err
+ 		}
++		if event.Kind == flow.EventContextBuilt {
++			if err = d.fault("after_progress_transition"); err != nil {
++				return err
++			}
++		}
+ 	}
+ 	return ctx.Err()
+ }
+diff --git a/internal/domain/types.go b/internal/domain/types.go
+index 153e432..f63f9bf 100644
+--- a/internal/domain/types.go
++++ b/internal/domain/types.go
+@@ -151,6 +151,7 @@ func Cost(tokens int64, rate Money) (Money, error) {
+ }
+ 
+ var (
++	ErrContextStale      = errors.New("context_message_watermark_stale")
+ 	ErrInvalid           = errors.New("invalid_argument")
+ 	ErrNotFound          = errors.New("not_found")
+ 	ErrForbidden         = errors.New("forbidden")
+diff --git a/internal/httpapi/server.go b/internal/httpapi/server.go
+index 24e3628..0ab3b86 100644
+--- a/internal/httpapi/server.go
++++ b/internal/httpapi/server.go
+@@ -201,10 +201,11 @@ func (s *Server) createProject(w http.ResponseWriter, r *http.Request) {
+ }
+ 
+ type Budget struct {
+-	MaxModelRounds    *uint64       `json:"max_model_rounds,omitempty"`
+-	MaxToolCalls      *uint64       `json:"max_tool_calls,omitempty"`
+-	MaxCost           *domain.Money `json:"max_cost_microusd,omitempty"`
+-	MaxRuntimeSeconds *int64        `json:"max_runtime_seconds,omitempty"`
++	MaxNoProgressBatches *uint64       `json:"max_no_progress_batches,omitempty"`
++	MaxModelRounds       *uint64       `json:"max_model_rounds,omitempty"`
++	MaxToolCalls         *uint64       `json:"max_tool_calls,omitempty"`
++	MaxCost              *domain.Money `json:"max_cost_microusd,omitempty"`
++	MaxRuntimeSeconds    *int64        `json:"max_runtime_seconds,omitempty"`
+ }
+ type SubmitBody struct {
+ 	Task        string    `json:"task"`
+@@ -216,6 +217,16 @@ type SubmitBody struct {
+ }
+ 
+ func (b Budget) apply(c persistence.Config) (persistence.Config, error) {
++	if b.MaxNoProgressBatches != nil {
++		ceiling := c.MaxNoProgressBatches
++		if ceiling == 0 {
++			ceiling = 3
++		}
++		if *b.MaxNoProgressBatches == 0 || *b.MaxNoProgressBatches > ceiling {
++			return c, domain.ErrInvalid
++		}
++		c.MaxNoProgressBatches = *b.MaxNoProgressBatches
++	}
+ 	if b.MaxModelRounds != nil {
+ 		if *b.MaxModelRounds > c.MaxModelRounds {
+ 			return c, domain.ErrInvalid
+diff --git a/internal/httpcontract/client.gen.go b/internal/httpcontract/client.gen.go
+index 5636c91..0c6ed2b 100644
+--- a/internal/httpcontract/client.gen.go
++++ b/internal/httpcontract/client.gen.go
+@@ -62,6 +62,33 @@ func (e EffectStatus) Valid() bool {
+ 	}
+ }
+ 
++// Defines values for ProgressStateClassification.
++const (
++	ProgressStateClassificationIndeterminate ProgressStateClassification = "indeterminate"
++	ProgressStateClassificationInitial       ProgressStateClassification = "initial"
++	ProgressStateClassificationMessage       ProgressStateClassification = "message"
++	ProgressStateClassificationNewEvidence   ProgressStateClassification = "new_evidence"
++	ProgressStateClassificationRepeated      ProgressStateClassification = "repeated"
++)
++
++// Valid indicates whether the value is a known member of the ProgressStateClassification enum.
++func (e ProgressStateClassification) Valid() bool {
++	switch e {
++	case ProgressStateClassificationIndeterminate:
++		return true
++	case ProgressStateClassificationInitial:
++		return true
++	case ProgressStateClassificationMessage:
++		return true
++	case ProgressStateClassificationNewEvidence:
++		return true
++	case ProgressStateClassificationRepeated:
++		return true
++	default:
++		return false
++	}
++}
++
+ // Defines values for RunStatus.
+ const (
+ 	RunStatusBudgetExhausted     RunStatus = "budget_exhausted"
+@@ -225,21 +252,23 @@ type ArtifactState string
+ 
+ // Budget Optional overrides may only reduce the named server configuration limits.
+ type Budget struct {
+-	MaxCostMicrousd   *int64  `json:"max_cost_microusd,omitempty"`
+-	MaxModelRounds    *uint64 `json:"max_model_rounds,omitempty"`
+-	MaxRuntimeSeconds *int64  `json:"max_runtime_seconds,omitempty"`
+-	MaxToolCalls      *uint64 `json:"max_tool_calls,omitempty"`
++	MaxCostMicrousd      *int64  `json:"max_cost_microusd,omitempty"`
++	MaxModelRounds       *uint64 `json:"max_model_rounds,omitempty"`
++	MaxNoProgressBatches *uint64 `json:"max_no_progress_batches,omitempty"`
++	MaxRuntimeSeconds    *int64  `json:"max_runtime_seconds,omitempty"`
++	MaxToolCalls         *uint64 `json:"max_tool_calls,omitempty"`
+ }
+ 
+ // Config defines model for Config.
+ type Config struct {
+ 	// MaxCostMicrousd Integer micro-US dollars; 1 USD equals 1000000.
+-	MaxCostMicrousd   Money   `json:"max_cost_microusd"`
+-	MaxModelRounds    Counter `json:"max_model_rounds"`
+-	MaxRuntimeSeconds int64   `json:"max_runtime_seconds"`
+-	MaxToolCalls      Counter `json:"max_tool_calls"`
+-	Model             string  `json:"model"`
+-	Provider          string  `json:"provider"`
++	MaxCostMicrousd      Money   `json:"max_cost_microusd"`
++	MaxModelRounds       Counter `json:"max_model_rounds"`
++	MaxNoProgressBatches *uint64 `json:"max_no_progress_batches,omitempty"`
++	MaxRuntimeSeconds    int64   `json:"max_runtime_seconds"`
++	MaxToolCalls         Counter `json:"max_tool_calls"`
++	Model                string  `json:"model"`
++	Provider             string  `json:"provider"`
+ }
+ 
+ // Counter defines model for Counter.
+@@ -299,9 +328,10 @@ type Limits struct {
+ 	Deadline time.Time `json:"deadline"`
+ 
+ 	// MaxCostMicrousd Integer micro-US dollars; 1 USD equals 1000000.
+-	MaxCostMicrousd Money   `json:"max_cost_microusd"`
+-	MaxModelRounds  Counter `json:"max_model_rounds"`
+-	MaxToolCalls    Counter `json:"max_tool_calls"`
++	MaxCostMicrousd      Money   `json:"max_cost_microusd"`
++	MaxModelRounds       Counter `json:"max_model_rounds"`
++	MaxNoProgressBatches *uint64 `json:"max_no_progress_batches,omitempty"`
++	MaxToolCalls         Counter `json:"max_tool_calls"`
+ }
+ 
+ // Message defines model for Message.
+@@ -323,6 +353,19 @@ type Money = int64
+ // Priority Bounded reserved metadata. This release continues tenant rotation and FIFO within each tenant; priority does not change dispatch order.
+ type Priority = int
+ 
++// ProgressState defines model for ProgressState.
++type ProgressState struct {
++	Classification  ProgressStateClassification `json:"classification"`
++	LastCheckedStep Counter                     `json:"last_checked_step"`
++	MessageSeq      Counter                     `json:"message_seq"`
++	RecentEvidence  []string                    `json:"recent_evidence"`
++	RecentTrees     []string                    `json:"recent_trees"`
++	RepeatedBatches Counter                     `json:"repeated_batches"`
++}
++
++// ProgressStateClassification defines model for ProgressState.Classification.
++type ProgressStateClassification string
++
+ // Project defines model for Project.
+ type Project struct {
+ 	CreatedAt time.Time `json:"created_at"`
+@@ -375,6 +418,7 @@ type State struct {
+ 	ModelRounds            Counter                 `json:"model_rounds"`
+ 	OutputRef              *string                 `json:"output_ref,omitempty"`
+ 	PendingEffect          *Effect                 `json:"pending_effect,omitempty"`
++	Progress               *ProgressState          `json:"progress,omitempty"`
+ 	ReconciliationRevision *Counter                `json:"reconciliation_revision,omitempty"`
+ 	RemainingEffects       *[]Effect               `json:"remaining_effects,omitempty"`
+ 	ResumeStage            *Stage                  `json:"resume_stage,omitempty"`
+diff --git a/internal/persistence/control.go b/internal/persistence/control.go
+index 1b40272..5a9f0d9 100644
+--- a/internal/persistence/control.go
++++ b/internal/persistence/control.go
+@@ -226,6 +226,9 @@ func (s *Store) AddMessage(ctx context.Context, identity Identity, id domain.ID,
+ 	if r.State.Status.Terminal() {
+ 		return Message{}, false, domain.ErrTerminal
+ 	}
++	if r.State.Status == domain.StatusCancelRequested && r.State.FailureReason == "repeated_no_progress" {
++		return Message{}, false, domain.ErrTransition
++	}
+ 	var count, bytes int64
+ 	if err = tx.QueryRow(ctx, `SELECT count(*),coalesce(sum(octet_length(body)),0) FROM run_messages WHERE tenant_id=$1 AND run_id=$2`, identity.TenantID, id).Scan(&count, &bytes); err != nil {
+ 		return Message{}, false, err
+diff --git a/internal/persistence/scheduler.go b/internal/persistence/scheduler.go
+index 758c34f..f659489 100644
+--- a/internal/persistence/scheduler.go
++++ b/internal/persistence/scheduler.go
+@@ -310,6 +310,11 @@ func progressEvent(state flow.State, event flow.Event) map[string]any {
+ 		reason = reason[:2048] + " [truncated]"
+ 	}
+ 	payload := map[string]any{"version": state.Version, "state": state.Status, "stage": state.Stage, "step_seq": state.StepSeq, "workspace_revision": state.WorkspaceRevision, "model_rounds": state.ModelRounds, "tool_calls": state.ToolCalls, "cost_microusd": state.Cost, "verification_status": state.Verification, "output_ref": state.OutputRef, "verification_report_ref": state.VerificationReportRef, "reason": reason}
++	if state.Progress != nil {
++		payload["repeated_batches"] = state.Progress.RepeatedBatches
++		payload["progress_classification"] = state.Progress.Classification
++		payload["progress_report_ref"] = event.ProgressRef
++	}
+ 	if event.NotBefore != nil {
+ 		payload["not_before"] = event.NotBefore
+ 	}
+@@ -377,6 +382,9 @@ func (s *Store) apply(ctx context.Context, tenant, id domain.ID, event flow.Even
+ 	if err = validateEvidence(ctx, tx, tenant, id, event); err != nil {
+ 		return r, err
+ 	}
++	if err = validateContextProgress(ctx, tx, r, event); err != nil {
++		return r, err
++	}
+ 	next, commands, err := flow.Transition(r.State, event)
+ 	if err != nil {
+ 		return r, err
+@@ -396,7 +404,7 @@ func (s *Store) apply(ctx context.Context, tenant, id domain.ID, event flow.Even
+ }
+ 
+ func validateEvidence(ctx context.Context, tx pgx.Tx, tenant, id domain.ID, event flow.Event) error {
+-	refs := []string{event.OutputRef}
++	refs := []string{event.OutputRef, event.ProgressRef}
+ 	if event.Receipt != nil {
+ 		refs = append(refs, event.Receipt.Ref)
+ 	}
+diff --git a/internal/persistence/snapshot_compatibility.go b/internal/persistence/snapshot_compatibility.go
+index 12d0d6b..e292766 100644
+--- a/internal/persistence/snapshot_compatibility.go
++++ b/internal/persistence/snapshot_compatibility.go
+@@ -27,7 +27,7 @@ import (
+ // test checks that property against the Go Unicode tables, without relying on
+ // the database locale. Only one candidate, spelled exactly, may authorize work.
+ const supportedSnapshotSQL = `snapshot_hold_at IS NULL AND (
+- SELECT count(*)=1 AND bool_and((header.key COLLATE "C")='schema_version' AND json_typeof(header.value)='number' AND header.value::text='1')
++ SELECT count(*)=1 AND bool_and((header.key COLLATE "C")='schema_version' AND json_typeof(header.value)='number' AND header.value::text IN ('1','2'))
+  FROM json_each(CASE WHEN json_typeof(snapshot)='object' THEN snapshot ELSE '{}'::json END) AS header
+  WHERE (translate(header.key,'ABCDEFGHIJKLMNOPQRSTUVWXYZſ','abcdefghijklmnopqrstuvwxyzs') COLLATE "C")='schema_version')`
+ 
+@@ -59,7 +59,7 @@ func DecodeSnapshotHeader(raw []byte) error {
+ 		}
+ 		if digits {
+ 			observed, reason = candidate, "unsupported_schema"
+-			if candidate == strconv.FormatUint(uint64(flow.SnapshotSchemaVersion), 10) {
++			if candidate == "1" || candidate == strconv.FormatUint(uint64(flow.SnapshotSchemaVersion), 10) {
+ 				return nil
+ 			}
+ 		}
+diff --git a/internal/persistence/snapshot_compatibility_test.go b/internal/persistence/snapshot_compatibility_test.go
+index 59db0fb..4509b18 100644
+--- a/internal/persistence/snapshot_compatibility_test.go
++++ b/internal/persistence/snapshot_compatibility_test.go
+@@ -11,15 +11,15 @@ import (
+ )
+ 
+ func TestSnapshotHeaderUsesExactVersionWithoutInterpretingFutureFields(t *testing.T) {
+-	if flow.SnapshotSchemaVersion != 1 {
++	if flow.SnapshotSchemaVersion != 2 {
+ 		t.Fatal("update and review supportedSnapshotSQL for the new reader version")
+ 	}
+-	for _, raw := range []string{`{"schema_version":1}`, `{"\u0073chema_version": 1 }`, `{"schema_version":1,"future":{"large":9007199254740993,"html":"<>&"}}`} {
++	for _, raw := range []string{`{"schema_version":1}`, `{"schema_version":2}`, `{"\u0073chema_version": 1 }`, `{"schema_version":1,"future":{"large":9007199254740993,"html":"<>&"}}`} {
+ 		if err := DecodeSnapshotHeader([]byte(raw)); err != nil {
+ 			t.Fatal(err)
+ 		}
+ 	}
+-	for _, raw := range []string{`{}`, `null`, `[]`, `{"schema_version":null}`, `{"Schema_Version":1}`, `{"schema_version":1.0}`, `{"schema_version":1e0}`, `{"schema_version":"1"}`, `{"schema_version":2}`, `{"schema_version":4294967296}`, `{"schema_version":1,"schema_version":2}`, `{"schema_version":1} {}`, `{"schema_version":1} garbage`} {
++	for _, raw := range []string{`{}`, `null`, `[]`, `{"schema_version":null}`, `{"Schema_Version":1}`, `{"schema_version":1.0}`, `{"schema_version":1e0}`, `{"schema_version":"1"}`, `{"schema_version":3}`, `{"schema_version":4294967296}`, `{"schema_version":1,"schema_version":2}`, `{"schema_version":1} {}`, `{"schema_version":1} garbage`} {
+ 		err := DecodeSnapshotHeader([]byte(raw))
+ 		var mismatch *SnapshotCompatibilityError
+ 		if !errors.Is(err, domain.ErrSnapshotMigration) || !errors.As(err, &mismatch) || len(mismatch.SHA256) != 64 || len(mismatch.ObservedSchema) > 64 {
+diff --git a/internal/persistence/store.go b/internal/persistence/store.go
+index c1d3edd..66a30af 100644
+--- a/internal/persistence/store.go
++++ b/internal/persistence/store.go
+@@ -61,16 +61,17 @@ func (s *Store) Tx(ctx context.Context, tenant domain.ID, options pgx.TxOptions)
+ }
+ 
+ type Config struct {
+-	Provider          string       `json:"provider"`
+-	Model             string       `json:"model"`
+-	MaxModelRounds    uint64       `json:"max_model_rounds"`
+-	MaxToolCalls      uint64       `json:"max_tool_calls"`
+-	MaxCost           domain.Money `json:"max_cost_microusd"`
+-	MaxRuntimeSeconds int64        `json:"max_runtime_seconds"`
++	MaxNoProgressBatches uint64       `json:"max_no_progress_batches,omitempty"`
++	Provider             string       `json:"provider"`
++	Model                string       `json:"model"`
++	MaxModelRounds       uint64       `json:"max_model_rounds"`
++	MaxToolCalls         uint64       `json:"max_tool_calls"`
++	MaxCost              domain.Money `json:"max_cost_microusd"`
++	MaxRuntimeSeconds    int64        `json:"max_runtime_seconds"`
+ }
+ 
+ func (c Config) Validate() error {
+-	if c.Provider == "" || c.Model == "" || c.MaxModelRounds == 0 || c.MaxToolCalls == 0 ||
++	if c.MaxNoProgressBatches > 20 || c.Provider == "" || c.Model == "" || c.MaxModelRounds == 0 || c.MaxToolCalls == 0 ||
+ 		c.MaxModelRounds > 1000 || c.MaxToolCalls > 10000 || c.MaxCost < 0 ||
+ 		c.MaxRuntimeSeconds < 1 || c.MaxRuntimeSeconds > 86400 {
+ 		return fmt.Errorf("%w: invalid run limits", domain.ErrInvalid)
+@@ -210,7 +211,11 @@ func (s *Store) Submit(ctx context.Context, req SubmitRequest, key string) (Run,
+ 			return Run{}, false, err
+ 		}
+ 	}
+-	state := flow.NewState(req.TenantID, id, flow.Limits{MaxModelRounds: req.Config.MaxModelRounds,
++	// Resolve only new runs, after the original request hash/idempotency lookup.
++	if req.Config.MaxNoProgressBatches == 0 {
++		req.Config.MaxNoProgressBatches = flow.DefaultNoProgressBatches
++	}
++	state := flow.NewState(req.TenantID, id, flow.Limits{MaxNoProgressBatches: req.Config.MaxNoProgressBatches, MaxModelRounds: req.Config.MaxModelRounds,
+ 		MaxToolCalls: req.Config.MaxToolCalls, MaxCost: req.Config.MaxCost, Deadline: now.Add(time.Duration(req.Config.MaxRuntimeSeconds) * time.Second)})
+ 	snapshot, _ := json.Marshal(state)
+ 	config, _ := json.Marshal(req.Config)
+diff --git a/internal/runtime/reducer.go b/internal/runtime/reducer.go
+index dd4aed2..41a6e73 100644
+--- a/internal/runtime/reducer.go
++++ b/internal/runtime/reducer.go
+@@ -87,10 +87,17 @@ func Transition(state State, event Event) (State, []Command, error) {
+ 			err = fmt.Errorf("%w: context is not durably referenced", domain.ErrInvalid)
+ 			break
+ 		}
++		if err = observeProgress(&next, event); err != nil {
++			break
++		}
+ 		if budgetReached(next, event, true, false) {
+ 			commands = stop(&next, domain.StatusBudgetExhausted, "model budget reached")
+ 			break
+ 		}
++		if next.Progress != nil && next.Limits.MaxNoProgressBatches > 0 && next.Progress.RepeatedBatches >= next.Limits.MaxNoProgressBatches {
++			commands = stop(&next, domain.StatusBudgetExhausted, "repeated_no_progress")
++			break
++		}
+ 		next.OutputRef = event.OutputRef
+ 		next.Stage = domain.StageModel
+ 		next.ModelRounds++
+@@ -480,9 +487,12 @@ func budgetReached(state State, event Event, model, tool bool) bool {
+ }
+ 
+ func validateState(state State) error {
+-	if state.SchemaVersion != SnapshotSchemaVersion || state.Version == 0 || !state.Status.Valid() || !state.Stage.Valid() || state.Cost < 0 || state.Limits.MaxCost < 0 {
++	if (state.SchemaVersion != 1 && state.SchemaVersion != SnapshotSchemaVersion) || state.Version == 0 || !state.Status.Valid() || !state.Stage.Valid() || state.Cost < 0 || state.Limits.MaxCost < 0 {
+ 		return fmt.Errorf("%w: unsupported or malformed snapshot", domain.ErrInvalid)
+ 	}
++	if err := validateProgressState(state); err != nil {
++		return err
++	}
+ 	if err := state.RunID.Validate(); err != nil {
+ 		return err
+ 	}
+@@ -644,6 +654,12 @@ func cloneEffects(effects []Effect) []Effect {
+ 	return result
+ }
+ func cloneState(state State) State {
++	if state.Progress != nil {
++		p := *state.Progress
++		p.RecentEvidence = append([]string{}, p.RecentEvidence...)
++		p.RecentTrees = append([]string{}, p.RecentTrees...)
++		state.Progress = &p
++	}
+ 	state.PendingEffect = cloneEffect(state.PendingEffect)
+ 	state.RemainingEffects = cloneEffects(state.RemainingEffects)
+ 	state.Approval = cloneApproval(state.Approval)
+diff --git a/internal/runtime/types.go b/internal/runtime/types.go
+index 830cfb5..ac0ded9 100644
+--- a/internal/runtime/types.go
++++ b/internal/runtime/types.go
+@@ -11,7 +11,7 @@ import (
+ 	"github.com/JDinSeattle/forge-runtime/internal/domain"
+ )
+ 
+-const SnapshotSchemaVersion = 1
++const SnapshotSchemaVersion = 2
+ 
+ type EffectStatus string
+ 
+@@ -50,13 +50,15 @@ type ApprovalBinding struct {
+ }
+ 
+ type Limits struct {
+-	MaxModelRounds uint64       `json:"max_model_rounds"`
+-	MaxToolCalls   uint64       `json:"max_tool_calls"`
+-	MaxCost        domain.Money `json:"max_cost_microusd"`
+-	Deadline       time.Time    `json:"deadline"`
++	MaxNoProgressBatches uint64       `json:"max_no_progress_batches,omitempty"`
++	MaxModelRounds       uint64       `json:"max_model_rounds"`
++	MaxToolCalls         uint64       `json:"max_tool_calls"`
++	MaxCost              domain.Money `json:"max_cost_microusd"`
++	Deadline             time.Time    `json:"deadline"`
+ }
+ 
+ type State struct {
++	Progress               *ProgressState            `json:"progress,omitempty"`
+ 	SchemaVersion          uint32                    `json:"schema_version"`
+ 	RunID                  domain.ID                 `json:"run_id"`
+ 	TenantID               domain.ID                 `json:"tenant_id"`
+@@ -116,6 +118,8 @@ const (
+ // The reducer validates structure; the transaction/driver authenticates sources
+ // and proves persistence of referenced evidence before committing an event.
+ type Event struct {
++	Progress          *ProgressFrame        `json:"progress,omitempty"`
++	ProgressRef       string                `json:"progress_ref,omitempty"`
+ 	Kind              EventKind             `json:"kind"`
+ 	ExpectedVersion   uint64                `json:"expected_version"`
+ 	Owner             string                `json:"owner"`
+diff --git a/tests/review/snapshot_compatibility_test.go b/tests/review/snapshot_compatibility_test.go
+index 77ad645..2d84742 100644
+--- a/tests/review/snapshot_compatibility_test.go
++++ b/tests/review/snapshot_compatibility_test.go
+@@ -89,7 +89,7 @@ func TestReviewUnsupportedSnapshotDoesNotStarveHealthyRuns(t *testing.T) {
+ 	if err != nil {
+ 		t.Fatal(err)
+ 	}
+-	compatibilityFuture(t, ctx, owner, bad, "2")
++	compatibilityFuture(t, ctx, owner, bad, "3")
+ 	if got, err := owner.GetRun(ctx, bad.TenantID, bad.ID); err == nil {
+ 		t.Errorf("unsupported snapshot exposed as current projection: schema=%d version=%d", got.State.SchemaVersion, got.State.Version)
+ 	}
+@@ -120,7 +120,7 @@ func TestReviewUnsupportedSnapshotDoesNotStarveHealthyRuns(t *testing.T) {
+ 		t.Errorf("future snapshot monopolized claims: bad=%t same_tenant=%t other_tenant=%t", seen[bad.ID], seen[healthy.ID], seen[other.ID])
+ 	}
+ 	inspection, err := owner.InspectSnapshot(ctx, bad.TenantID, bad.ID)
+-	if err != nil || inspection.Hold == nil || inspection.Hold.ObservedSchema != "2" {
++	if err != nil || inspection.Hold == nil || inspection.Hold.ObservedSchema != "3" {
+ 		t.Fatalf("hold not persisted: %+v %v", inspection, err)
+ 	}
+ 	reopened, err := persistence.Open(ctx, owner.Pool.Config().ConnString())
+@@ -195,11 +195,11 @@ func TestReviewUnsupportedSnapshotAmbiguousMembersFenceAndHold(t *testing.T) {
+ 			if err = owner.Pool.QueryRow(ctx, `SELECT snapshot::text FROM runs WHERE tenant_id=$1 AND id=$2`, bad.TenantID, bad.ID).Scan(&original); err != nil {
+ 				t.Fatal(err)
+ 			}
+-			if strings.Count(original, `"schema_version":1`) != 1 {
++			if strings.Count(original, `"schema_version":2`) != 1 {
+ 				t.Fatal("fixture requires one original schema member")
+ 			}
+ 			// Keep PostgreSQL json text, order, duplicates and escapes intact.
+-			ambiguous := strings.Replace(original, `"schema_version":1`, fixture.members, 1)
++			ambiguous := strings.Replace(original, `"schema_version":2`, fixture.members, 1)
+ 			if _, err = owner.Pool.Exec(ctx, `UPDATE runs SET snapshot=$3::json WHERE tenant_id=$1 AND id=$2`, bad.TenantID, bad.ID, ambiguous); err != nil {
+ 				t.Fatal(err)
+ 			}
+@@ -274,7 +274,7 @@ func TestReviewUnsupportedSnapshotOperatorCLI(t *testing.T) {
+ 	if err := s.Pool.QueryRow(ctx, `SELECT snapshot::text FROM runs WHERE tenant_id=$1 AND id=$2`, r.TenantID, r.ID).Scan(&original); err != nil {
+ 		t.Fatal(err)
+ 	}
+-	compatibilityFuture(t, ctx, s, r, "2")
++	compatibilityFuture(t, ctx, s, r, "3")
+ 	if _, err := s.ClaimOnRunner(ctx, "cli-fixture", time.Minute, "review_runner"); !errors.Is(err, domain.ErrSnapshotMigration) {
+ 		t.Fatal(err)
+ 	}
+@@ -468,7 +468,7 @@ func TestReviewUnsupportedSnapshotHTTPAndOperatorRecovery(t *testing.T) {
+ 	if err = owner.PublishArtifact(ctx, persistence.Artifact{TenantID: r.TenantID, RunID: r.ID, ID: "compatibility_file", Kind: ref.Kind, ObjectKey: ref.ObjectKey, SHA256: ref.SHA256, ByteSize: ref.Size}); err != nil {
+ 		t.Fatal(err)
+ 	}
+-	compatibilityFuture(t, ctx, owner, r, "2")
++	compatibilityFuture(t, ctx, owner, r, "3")
+ 	if _, err = owner.ClaimOnRunner(ctx, "compatibility", time.Minute, "review_runner"); !errors.Is(err, domain.ErrSnapshotMigration) {
+ 		t.Fatal(err)
+ 	}
+@@ -570,7 +570,7 @@ func TestReviewUnsupportedSnapshotApprovalRefusesUnknownState(t *testing.T) {
+ 	ctx, owner, api := reviewAPIStore(t)
+ 	restrictApprovalAuthTables(t, ctx, owner, api)
+ 	r := reviewApprovalWaiting(t, ctx, owner)
+-	compatibilityFuture(t, ctx, owner, r, "2")
++	compatibilityFuture(t, ctx, owner, r, "3")
+ 	before := compatibilityRecords(t, ctx, owner, r)
+ 	token, err := owner.IssueToken(ctx, r.PrincipalID, time.Hour)
+ 	if err != nil {
+@@ -642,7 +642,7 @@ func TestReviewUnsupportedSnapshotStopsCleanupAndRetentionOfTerminalEvidence(t *
+ 	if _, _, err = s.CleanupProof(ctx, cleanup, false); err != nil {
+ 		t.Fatal(err)
+ 	}
+-	compatibilityFuture(t, ctx, s, r, "2")
++	compatibilityFuture(t, ctx, s, r, "3")
+ 	before := compatibilityRecords(t, ctx, s, r)
+ 	if _, _, err = s.CleanupProof(ctx, cleanup, false); !errors.Is(err, domain.ErrFenced) {
+ 		t.Fatalf("old cleanup issued new authority: %v", err)
+@@ -708,7 +708,7 @@ func TestReviewUnsupportedSnapshotEndsExistingSSEGeneration(t *testing.T) {
+ 	ended := make(chan ending, 1)
+ 	go func() { raw, err := io.ReadAll(response.Body); ended <- ending{raw, err} }()
+ 	started := time.Now()
+-	compatibilityFuture(t, ctx, owner, r, "2")
++	compatibilityFuture(t, ctx, owner, r, "3")
+ 	select {
+ 	case err := <-sub.Errors:
+ 		if !errors.Is(err, domain.ErrSnapshotMigration) {

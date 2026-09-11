@@ -151,6 +151,7 @@ func Cost(tokens int64, rate Money) (Money, error) {
 }
 
 var (
+	ErrContextStale      = errors.New("context_message_watermark_stale")
 	ErrInvalid           = errors.New("invalid_argument")
 	ErrNotFound          = errors.New("not_found")
 	ErrForbidden         = errors.New("forbidden")

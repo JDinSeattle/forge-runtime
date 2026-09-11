@@ -68,15 +68,16 @@ type Config struct {
 	Model    string `json:"model"`
 	// Fallback is an operator-selected, one-way route frozen at submission.
 	// It is not a credential, a model-family alias, or a new retry budget.
-	Fallback          *ModelRoute  `json:"fallback,omitempty"`
-	MaxModelRounds    uint64       `json:"max_model_rounds"`
-	MaxToolCalls      uint64       `json:"max_tool_calls"`
-	MaxCost           domain.Money `json:"max_cost_microusd"`
-	MaxRuntimeSeconds int64        `json:"max_runtime_seconds"`
+	Fallback             *ModelRoute  `json:"fallback,omitempty"`
+	MaxModelRounds       uint64       `json:"max_model_rounds"`
+	MaxToolCalls         uint64       `json:"max_tool_calls"`
+	MaxCost              domain.Money `json:"max_cost_microusd"`
+	MaxRuntimeSeconds    int64        `json:"max_runtime_seconds"`
+	MaxNoProgressBatches uint64       `json:"max_no_progress_batches,omitempty"`
 }
 
 func (c Config) Validate() error {
-	if c.Provider == "" || c.Model == "" || c.MaxModelRounds == 0 || c.MaxToolCalls == 0 ||
+	if c.MaxNoProgressBatches > 20 || c.Provider == "" || c.Model == "" || c.MaxModelRounds == 0 || c.MaxToolCalls == 0 ||
 		c.MaxModelRounds > 1000 || c.MaxToolCalls > 10000 || c.MaxCost < 0 ||
 		c.MaxRuntimeSeconds < 1 || c.MaxRuntimeSeconds > 86400 {
 		return fmt.Errorf("%w: invalid run limits", domain.ErrInvalid)
@@ -235,7 +236,11 @@ func (s *Store) Submit(ctx context.Context, req SubmitRequest, key string) (Run,
 			return Run{}, false, err
 		}
 	}
-	state := flow.NewState(req.TenantID, id, flow.Limits{MaxModelRounds: req.Config.MaxModelRounds,
+	// Resolve only new runs, after the original request hash/idempotency lookup.
+	if req.Config.MaxNoProgressBatches == 0 {
+		req.Config.MaxNoProgressBatches = flow.DefaultNoProgressBatches
+	}
+	state := flow.NewState(req.TenantID, id, flow.Limits{MaxNoProgressBatches: req.Config.MaxNoProgressBatches, MaxModelRounds: req.Config.MaxModelRounds,
 		MaxToolCalls: req.Config.MaxToolCalls, MaxCost: req.Config.MaxCost, Deadline: now.Add(time.Duration(req.Config.MaxRuntimeSeconds) * time.Second)})
 	snapshot, _ := json.Marshal(state)
 	config, _ := json.Marshal(req.Config)

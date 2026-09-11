@@ -66,7 +66,7 @@ func retentionRun(t *testing.T, ctx context.Context, s *persistence.Store, proje
 	} else if status == domain.StatusBudgetExhausted {
 		advance(flow.Event{Kind: flow.EventBudgetReached, Reason: "review budget stop"})
 	} else {
-		advance(flow.Event{Kind: flow.EventContextBuilt, OutputRef: string(ref)})
+		advance(reviewContext(t, ctx, s, r, string(ref)))
 		advance(flow.Event{Kind: flow.EventModelCompleted, Complete: true, Finish: status == domain.StatusCompleted, OutputRef: string(ref)})
 		if status == domain.StatusCompleted {
 			advance(flow.Event{Kind: flow.EventVerificationCompleted, Verification: &flow.VerificationEvidence{Trusted: true, ReportRef: string(ref), WorkspaceRevision: 1, BaselineTargetFailed: true, TargetPassed: true, RegressionPassed: true}})

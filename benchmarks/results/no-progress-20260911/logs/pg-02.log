@@ -1,0 +1,19 @@
+=== RUN   TestProgressDurableClosedBatches
+=== RUN   TestProgressDurableClosedBatches/read
+=== RUN   TestProgressDurableClosedBatches/finish
+=== RUN   TestProgressDurableClosedBatches/failed_batch
+--- PASS: TestProgressDurableClosedBatches (7.68s)
+    --- PASS: TestProgressDurableClosedBatches/read (2.33s)
+    --- PASS: TestProgressDurableClosedBatches/finish (2.90s)
+    --- PASS: TestProgressDurableClosedBatches/failed_batch (2.46s)
+=== RUN   TestProgressMessageRaceRebuildsBeforeStopping
+--- PASS: TestProgressMessageRaceRebuildsBeforeStopping (3.65s)
+=== RUN   TestProgressCrashBeforeAndAfterCommit
+=== RUN   TestProgressCrashBeforeAndAfterCommit/after_progress_report_before_transition
+=== RUN   TestProgressCrashBeforeAndAfterCommit/after_progress_transition
+--- PASS: TestProgressCrashBeforeAndAfterCommit (9.68s)
+    --- PASS: TestProgressCrashBeforeAndAfterCommit/after_progress_report_before_transition (4.90s)
+    --- PASS: TestProgressCrashBeforeAndAfterCommit/after_progress_transition (4.78s)
+=== RUN   TestProgressNormalizesActualReceiptFacts
+--- PASS: TestProgressNormalizesActualReceiptFacts (0.00s)
+PASS

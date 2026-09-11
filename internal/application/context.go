@@ -163,7 +163,10 @@ func (d *Driver) buildContext(ctx context.Context, r persistence.Run) (flow.Even
 		return flow.Event{}, fmt.Errorf("%w: context exceeds 512 KiB; compact or start a child run", domain.ErrCapacity)
 	}
 	ref, err := d.put(ctx, r, "context", envelope)
-	return flow.Event{Kind: flow.EventContextBuilt, OutputRef: ref}, err
+	if err != nil {
+		return flow.Event{}, err
+	}
+	return d.contextProgress(ctx, r, ref, envelope.AppliedMessageSeq)
 }
 
 // Verification diagnostics come only from the published trusted report and its

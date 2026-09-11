@@ -27,7 +27,7 @@ import (
 // test checks that property against the Go Unicode tables, without relying on
 // the database locale. Only one candidate, spelled exactly, may authorize work.
 const supportedSnapshotSQL = `snapshot_hold_at IS NULL AND (
- SELECT count(*)=1 AND bool_and((header.key COLLATE "C")='schema_version' AND json_typeof(header.value)='number' AND header.value::text='1')
+ SELECT count(*)=1 AND bool_and((header.key COLLATE "C")='schema_version' AND json_typeof(header.value)='number' AND header.value::text IN ('1','2'))
  FROM json_each(CASE WHEN json_typeof(snapshot)='object' THEN snapshot ELSE '{}'::json END) AS header
  WHERE (translate(header.key,'ABCDEFGHIJKLMNOPQRSTUVWXYZſ','abcdefghijklmnopqrstuvwxyzs') COLLATE "C")='schema_version')`
 
@@ -59,7 +59,7 @@ func DecodeSnapshotHeader(raw []byte) error {
 		}
 		if digits {
 			observed, reason = candidate, "unsupported_schema"
-			if candidate == strconv.FormatUint(uint64(flow.SnapshotSchemaVersion), 10) {
+			if candidate == "1" || candidate == strconv.FormatUint(uint64(flow.SnapshotSchemaVersion), 10) {
 				return nil
 			}
 		}

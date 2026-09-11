@@ -1,0 +1,22 @@
+=== RUN   TestProgressDurableClosedBatches
+=== RUN   TestProgressDurableClosedBatches/read
+=== RUN   TestProgressDurableClosedBatches/finish
+=== RUN   TestProgressDurableClosedBatches/failed_batch
+--- PASS: TestProgressDurableClosedBatches (6.99s)
+    --- PASS: TestProgressDurableClosedBatches/read (2.23s)
+    --- PASS: TestProgressDurableClosedBatches/finish (2.63s)
+    --- PASS: TestProgressDurableClosedBatches/failed_batch (2.13s)
+=== RUN   TestProgressMessageRaceRebuildsBeforeStopping
+    progress_integration_test.go:227: run durably deferred
+--- FAIL: TestProgressMessageRaceRebuildsBeforeStopping (2.20s)
+=== RUN   TestProgressCrashBeforeAndAfterCommit
+=== RUN   TestProgressCrashBeforeAndAfterCommit/after_progress_report_before_transition
+    progress_integration_test.go:265: fault not reached: lease_fenced
+=== RUN   TestProgressCrashBeforeAndAfterCommit/after_progress_transition
+    progress_integration_test.go:265: fault not reached: lease_fenced
+--- FAIL: TestProgressCrashBeforeAndAfterCommit (1.27s)
+    --- FAIL: TestProgressCrashBeforeAndAfterCommit/after_progress_report_before_transition (0.62s)
+    --- FAIL: TestProgressCrashBeforeAndAfterCommit/after_progress_transition (0.65s)
+=== RUN   TestProgressNormalizesActualReceiptFacts
+--- PASS: TestProgressNormalizesActualReceiptFacts (0.00s)
+FAIL

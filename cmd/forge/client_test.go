@@ -56,7 +56,7 @@ func TestSubmitUncertaintyRetainsKeyWithoutAutomaticReplay(t *testing.T) {
 		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 			t.Error(err)
 		}
-		if body.Task != "fix fixture" || body.ConfigId != "demo" || body.Budget.MaxModelRounds == nil || *body.Budget.MaxModelRounds != 3 {
+		if body.Task != "fix fixture" || body.ConfigId != "demo" || body.Budget.MaxModelRounds == nil || *body.Budget.MaxModelRounds != 3 || body.Budget.MaxNoProgressBatches == nil || *body.Budget.MaxNoProgressBatches != 2 {
 			t.Errorf("body=%+v", body)
 		}
 		mu.Lock()
@@ -75,7 +75,7 @@ func TestSubmitUncertaintyRetainsKeyWithoutAutomaticReplay(t *testing.T) {
 	}))
 	defer server.Close()
 	commandEnv(t, server.URL)
-	args := []string{"run", "submit", "project_test", "--task", "fix fixture", "--base", "base", "--config", "demo", "--max-rounds", "3"}
+	args := []string{"run", "submit", "project_test", "--task", "fix fixture", "--base", "base", "--config", "demo", "--max-rounds", "3", "--max-no-progress-batches", "2"}
 	_, diagnostics, err := execute(args...)
 	if err == nil || requests.Load() != 1 {
 		t.Fatalf("ambiguous mutation was retried: count=%d err=%v", requests.Load(), err)

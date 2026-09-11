@@ -11,7 +11,7 @@ import (
 	"github.com/JDinSeattle/forge-runtime/internal/domain"
 )
 
-const SnapshotSchemaVersion = 1
+const SnapshotSchemaVersion = 2
 
 type EffectStatus string
 
@@ -50,13 +50,15 @@ type ApprovalBinding struct {
 }
 
 type Limits struct {
-	MaxModelRounds uint64       `json:"max_model_rounds"`
-	MaxToolCalls   uint64       `json:"max_tool_calls"`
-	MaxCost        domain.Money `json:"max_cost_microusd"`
-	Deadline       time.Time    `json:"deadline"`
+	MaxNoProgressBatches uint64       `json:"max_no_progress_batches,omitempty"`
+	MaxModelRounds       uint64       `json:"max_model_rounds"`
+	MaxToolCalls         uint64       `json:"max_tool_calls"`
+	MaxCost              domain.Money `json:"max_cost_microusd"`
+	Deadline             time.Time    `json:"deadline"`
 }
 
 type State struct {
+	Progress               *ProgressState            `json:"progress,omitempty"`
 	SchemaVersion          uint32                    `json:"schema_version"`
 	RunID                  domain.ID                 `json:"run_id"`
 	TenantID               domain.ID                 `json:"tenant_id"`
@@ -116,6 +118,8 @@ const (
 // The reducer validates structure; the transaction/driver authenticates sources
 // and proves persistence of referenced evidence before committing an event.
 type Event struct {
+	Progress          *ProgressFrame        `json:"progress,omitempty"`
+	ProgressRef       string                `json:"progress_ref,omitempty"`
 	Kind              EventKind             `json:"kind"`
 	ExpectedVersion   uint64                `json:"expected_version"`
 	Owner             string                `json:"owner"`

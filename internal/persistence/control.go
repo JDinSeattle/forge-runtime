@@ -226,6 +226,9 @@ func (s *Store) AddMessage(ctx context.Context, identity Identity, id domain.ID,
 	if r.State.Status.Terminal() {
 		return Message{}, false, domain.ErrTerminal
 	}
+	if r.State.Status == domain.StatusCancelRequested && r.State.FailureReason == "repeated_no_progress" {
+		return Message{}, false, domain.ErrTransition
+	}
 	var count, bytes int64
 	if err = tx.QueryRow(ctx, `SELECT count(*),coalesce(sum(octet_length(body)),0) FROM run_messages WHERE tenant_id=$1 AND run_id=$2`, identity.TenantID, id).Scan(&count, &bytes); err != nil {
 		return Message{}, false, err

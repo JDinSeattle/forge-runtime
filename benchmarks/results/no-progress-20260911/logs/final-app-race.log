@@ -1,0 +1,141 @@
+=== RUN   TestPrepareCapacityRequeuesAtomically
+    capacity_integration_test.go:125: capacity_requeue snapshot={"kind":"capacity_rejected","expected_version":2,"owner":"capacity-worker","epoch":1,"at":"2026-09-11T16:03:26.65061-07:00","not_before":"2026-09-11T16:03:27.65061-07:00"} allocation_state=released runner=runner workspace=run_K2N5FFXJHVTTSRX36S6HZI6OTM
+    capacity_integration_test.go:172: capacity_requeue snapshot={"kind":"capacity_rejected","expected_version":4,"owner":"retry-worker","epoch":2,"at":"2026-09-11T16:03:27.673877-07:00","not_before":"2026-09-11T16:03:28.673877-07:00"} allocation_state=released runner=runner workspace=run_K2N5FFXJHVTTSRX36S6HZI6OTM
+    capacity_integration_test.go:213: capacity_result run=run_K2N5FFXJHVTTSRX36S6HZI6OTM terminal=completed epochs=1,2,3 rejections=2 model_calls=3 final_active=0 final_reserved_slots=0 events=46
+--- PASS: TestPrepareCapacityRequeuesAtomically (4.17s)
+=== RUN   TestPrepareCapacityDoesNotDiscardDurableIntent
+--- PASS: TestPrepareCapacityDoesNotDiscardDurableIntent (0.61s)
+=== RUN   TestPrepareNonCapacityErrorsPreserveHandling
+=== RUN   TestPrepareNonCapacityErrorsPreserveHandling/invalid_argument
+time=2026-09-11T16:03:31.451-07:00 level=WARN msg="step failed" run_id=run_SI42MAAJO4VQQMGIQYKYLRIM2I stage=initialize error=invalid_argument
+=== RUN   TestPrepareNonCapacityErrorsPreserveHandling/reconciliation_required
+--- PASS: TestPrepareNonCapacityErrorsPreserveHandling (1.05s)
+    --- PASS: TestPrepareNonCapacityErrorsPreserveHandling/invalid_argument (0.58s)
+    --- PASS: TestPrepareNonCapacityErrorsPreserveHandling/reconciliation_required (0.48s)
+=== RUN   TestPrepareCapacityAfterAdoptionCannotRequeue
+--- PASS: TestPrepareCapacityAfterAdoptionCannotRequeue (0.51s)
+=== RUN   TestExternalModelAndRunnerWaitsHoldNoSQLTransaction
+=== RUN   TestExternalModelAndRunnerWaitsHoldNoSQLTransaction/model
+=== RUN   TestExternalModelAndRunnerWaitsHoldNoSQLTransaction/runner
+--- PASS: TestExternalModelAndRunnerWaitsHoldNoSQLTransaction (12.17s)
+    --- PASS: TestExternalModelAndRunnerWaitsHoldNoSQLTransaction/model (6.16s)
+    --- PASS: TestExternalModelAndRunnerWaitsHoldNoSQLTransaction/runner (6.01s)
+=== RUN   TestDurableRepairLoop
+--- PASS: TestDurableRepairLoop (1.87s)
+=== RUN   TestCompletedModelReusedAfterWorkerCrash
+--- PASS: TestCompletedModelReusedAfterWorkerCrash (2.14s)
+=== RUN   TestUnifiedPatchActuallyAppliesWithGit
+--- PASS: TestUnifiedPatchActuallyAppliesWithGit (0.01s)
+=== RUN   TestAttemptPricingSurvivesCrashAndConfigChange
+=== RUN   TestAttemptPricingSurvivesCrashAndConfigChange/after_model_pricing_before_reservation
+=== RUN   TestAttemptPricingSurvivesCrashAndConfigChange/after_model_result_before_transition
+=== RUN   TestAttemptPricingSurvivesCrashAndConfigChange/after_model_settlement_before_transition
+--- PASS: TestAttemptPricingSurvivesCrashAndConfigChange (2.59s)
+    --- PASS: TestAttemptPricingSurvivesCrashAndConfigChange/after_model_pricing_before_reservation (0.87s)
+    --- PASS: TestAttemptPricingSurvivesCrashAndConfigChange/after_model_result_before_transition (0.96s)
+    --- PASS: TestAttemptPricingSurvivesCrashAndConfigChange/after_model_settlement_before_transition (0.77s)
+=== RUN   TestModelRetryDecisionSurvivesRecovery
+--- PASS: TestModelRetryDecisionSurvivesRecovery (0.70s)
+=== RUN   TestPermanentModelFailureDoesNotRetryOrTripCircuit
+--- PASS: TestPermanentModelFailureDoesNotRetryOrTripCircuit (0.76s)
+=== RUN   TestModelRetryOverallBudgetCannotResetOnRecovery
+--- PASS: TestModelRetryOverallBudgetCannotResetOnRecovery (0.73s)
+=== RUN   TestModelAdmissionKeepsConservativeReducerBudget
+--- PASS: TestModelAdmissionKeepsConservativeReducerBudget (0.70s)
+=== RUN   TestProviderSpecificPricing
+=== RUN   TestProviderSpecificPricing/openai_cached_input_is_inclusive
+=== RUN   TestProviderSpecificPricing/anthropic_cache_input_is_additive
+=== RUN   TestProviderSpecificPricing/measured_zero
+=== RUN   TestProviderSpecificPricing/cache_cannot_exceed_inclusive_input
+=== RUN   TestProviderSpecificPricing/input_output_overflow
+=== RUN   TestProviderSpecificPricing/additive_cache_overflow
+=== RUN   TestProviderSpecificPricing/negative_measured_cache
+--- PASS: TestProviderSpecificPricing (0.00s)
+    --- PASS: TestProviderSpecificPricing/openai_cached_input_is_inclusive (0.00s)
+    --- PASS: TestProviderSpecificPricing/anthropic_cache_input_is_additive (0.00s)
+    --- PASS: TestProviderSpecificPricing/measured_zero (0.00s)
+    --- PASS: TestProviderSpecificPricing/cache_cannot_exceed_inclusive_input (0.00s)
+    --- PASS: TestProviderSpecificPricing/input_output_overflow (0.00s)
+    --- PASS: TestProviderSpecificPricing/additive_cache_overflow (0.00s)
+    --- PASS: TestProviderSpecificPricing/negative_measured_cache (0.00s)
+=== RUN   TestPricingReserveBoundsAndRounding
+--- PASS: TestPricingReserveBoundsAndRounding (0.00s)
+=== RUN   TestModelFailureCircuitClassification
+=== RUN   TestModelFailureCircuitClassification/user_cancellation
+=== RUN   TestModelFailureCircuitClassification/request_deadline
+=== RUN   TestModelFailureCircuitClassification/database_sink
+=== RUN   TestModelFailureCircuitClassification/consumer_wrapper
+=== RUN   TestModelFailureCircuitClassification/validation
+=== RUN   TestModelFailureCircuitClassification/protocol
+=== RUN   TestModelFailureCircuitClassification/authentication
+=== RUN   TestModelFailureCircuitClassification/cancelled_transport
+=== RUN   TestModelFailureCircuitClassification/overloaded
+=== RUN   TestModelFailureCircuitClassification/rate_limit
+--- PASS: TestModelFailureCircuitClassification (0.00s)
+    --- PASS: TestModelFailureCircuitClassification/user_cancellation (0.00s)
+    --- PASS: TestModelFailureCircuitClassification/request_deadline (0.00s)
+    --- PASS: TestModelFailureCircuitClassification/database_sink (0.00s)
+    --- PASS: TestModelFailureCircuitClassification/consumer_wrapper (0.00s)
+    --- PASS: TestModelFailureCircuitClassification/validation (0.00s)
+    --- PASS: TestModelFailureCircuitClassification/protocol (0.00s)
+    --- PASS: TestModelFailureCircuitClassification/authentication (0.00s)
+    --- PASS: TestModelFailureCircuitClassification/cancelled_transport (0.00s)
+    --- PASS: TestModelFailureCircuitClassification/overloaded (0.00s)
+    --- PASS: TestModelFailureCircuitClassification/rate_limit (0.00s)
+=== RUN   TestProgressDurableClosedBatches
+=== RUN   TestProgressDurableClosedBatches/read
+=== RUN   TestProgressDurableClosedBatches/finish
+=== RUN   TestProgressDurableClosedBatches/failed_batch
+--- PASS: TestProgressDurableClosedBatches (11.76s)
+    --- PASS: TestProgressDurableClosedBatches/read (6.91s)
+    --- PASS: TestProgressDurableClosedBatches/finish (2.76s)
+    --- PASS: TestProgressDurableClosedBatches/failed_batch (2.09s)
+=== RUN   TestProgressMessageRaceRebuildsBeforeStopping
+--- PASS: TestProgressMessageRaceRebuildsBeforeStopping (3.25s)
+=== RUN   TestProgressCrashBeforeAndAfterCommit
+=== RUN   TestProgressCrashBeforeAndAfterCommit/after_progress_report_before_transition
+=== RUN   TestProgressCrashBeforeAndAfterCommit/after_progress_transition
+--- PASS: TestProgressCrashBeforeAndAfterCommit (9.56s)
+    --- PASS: TestProgressCrashBeforeAndAfterCommit/after_progress_report_before_transition (4.84s)
+    --- PASS: TestProgressCrashBeforeAndAfterCommit/after_progress_transition (4.72s)
+=== RUN   TestProgressStopUnknownKeepsSentinelCapacity
+--- PASS: TestProgressStopUnknownKeepsSentinelCapacity (7.18s)
+=== RUN   TestProgressLegacySnapshotsAndDefaultIdempotency
+--- PASS: TestProgressLegacySnapshotsAndDefaultIdempotency (2.02s)
+=== RUN   TestProgressRejectsUnboundEvidence
+--- PASS: TestProgressRejectsUnboundEvidence (2.09s)
+=== RUN   TestProgressNormalizesActualReceiptFacts
+--- PASS: TestProgressNormalizesActualReceiptFacts (0.00s)
+=== RUN   TestTextBatchPostgresTimerAndSize
+=== RUN   TestTextBatchPostgresTimerAndSize/timer
+=== RUN   TestTextBatchPostgresTimerAndSize/size_and_encoding
+--- PASS: TestTextBatchPostgresTimerAndSize (0.60s)
+    --- PASS: TestTextBatchPostgresTimerAndSize/timer (0.32s)
+    --- PASS: TestTextBatchPostgresTimerAndSize/size_and_encoding (0.28s)
+=== RUN   TestTextBatchPostgresControlBypassesPausedText
+--- PASS: TestTextBatchPostgresControlBypassesPausedText (0.25s)
+=== RUN   TestTextBatchDriverPreservesCompleteModelArtifact
+--- PASS: TestTextBatchDriverPreservesCompleteModelArtifact (1.85s)
+=== RUN   TestTextBatchConfigDefaultsAndBounds
+--- PASS: TestTextBatchConfigDefaultsAndBounds (0.00s)
+=== RUN   TestTextBatchExactUnicodeAndEscaping
+=== RUN   TestTextBatchExactUnicodeAndEscaping/html_expansion
+=== RUN   TestTextBatchExactUnicodeAndEscaping/all_escaping
+=== RUN   TestTextBatchExactUnicodeAndEscaping/original_chinese_boundary
+=== RUN   TestTextBatchExactUnicodeAndEscaping/emoji_boundary
+--- PASS: TestTextBatchExactUnicodeAndEscaping (0.63s)
+    --- PASS: TestTextBatchExactUnicodeAndEscaping/html_expansion (0.12s)
+    --- PASS: TestTextBatchExactUnicodeAndEscaping/all_escaping (0.34s)
+    --- PASS: TestTextBatchExactUnicodeAndEscaping/original_chinese_boundary (0.08s)
+    --- PASS: TestTextBatchExactUnicodeAndEscaping/emoji_boundary (0.09s)
+=== RUN   TestTextBatchCloseAndConsumerFailureNeverReplay
+=== RUN   TestTextBatchCloseAndConsumerFailureNeverReplay/size
+=== RUN   TestTextBatchCloseAndConsumerFailureNeverReplay/close
+=== RUN   TestTextBatchCloseAndConsumerFailureNeverReplay/timer
+--- PASS: TestTextBatchCloseAndConsumerFailureNeverReplay (0.01s)
+    --- PASS: TestTextBatchCloseAndConsumerFailureNeverReplay/size (0.00s)
+    --- PASS: TestTextBatchCloseAndConsumerFailureNeverReplay/close (0.00s)
+    --- PASS: TestTextBatchCloseAndConsumerFailureNeverReplay/timer (0.01s)
+=== RUN   TestTextBatchRejectsInvalidUTF8WithoutReplacement
+--- PASS: TestTextBatchRejectsInvalidUTF8WithoutReplacement (0.00s)
+PASS

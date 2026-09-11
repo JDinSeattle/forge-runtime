@@ -1,0 +1,2592 @@
+{
+  "artifact_bytes": {
+    "artifact_135c3432627a6fa707f53ca7dfc62c6aad1489b9d34d0f7937f9985569bbbd0f": "{\"request\":{\"tenant_id\":\"tenant\",\"run_id\":\"run_W7CBI4HOFSMDQIXDN6PS4JVEKF\",\"workspace_id\":\"run_W7CBI4HOFSMDQIXDN6PS4JVEKF\",\"epoch\":1,\"grant\":\"\",\"operation_id\":\"run_W7CBI4HOFSMDQIXDN6PS4JVEKF_step_1_op_0\",\"expected_revision\":1,\"kind\":\"read_file\",\"args\":{\"path\":\"clamp.py\"},\"args_hash\":\"31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6\",\"policy_version\":\"workspace-v1\",\"deadline\":\"2026-09-11T15:59:00.15007-07:00\"},\"status\":\"succeeded\",\"job_id\":\"forge-146d579f72debaa38e72e8284de72802f90da617\",\"before_hash\":\"ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c\",\"after_hash\":\"ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c\",\"after_revision\":1,\"result\":{\"content\":\"def clamp(value, low, high):\\n    return min(low, max(value, high))\\n\",\"path\":\"clamp.py\",\"sha256\":\"5ce9939a494a0ebeb2ed030c5f45258d0e22be107290c2b887b632418ef73363\",\"start_line\":1},\"receipt\":{\"tenant_id\":\"\",\"run_id\":\"\",\"kind\":\"\",\"object_key\":\"\",\"sha256\":\"\",\"size\":0},\"cancel_requested\":false}",
+    "artifact_33acaeb3757c030bbe02edd5292140f2c5def56563bf8b40b57372983a6c06ff": "{\"request\":{\"tenant_id\":\"tenant\",\"run_id\":\"run_W7CBI4HOFSMDQIXDN6PS4JVEKF\",\"workspace_id\":\"run_W7CBI4HOFSMDQIXDN6PS4JVEKF\",\"epoch\":1,\"grant\":\"\",\"operation_id\":\"run_W7CBI4HOFSMDQIXDN6PS4JVEKF_3_final_diff\",\"expected_revision\":2,\"kind\":\"get_diff\",\"args\":{},\"args_hash\":\"44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a\",\"policy_version\":\"trusted-profile-v1\",\"deadline\":\"2026-09-11T15:59:00.15007-07:00\"},\"status\":\"succeeded\",\"job_id\":\"forge-2a5e00b9c2e97cd1bd19816fc9757889ddc7d802\",\"before_hash\":\"57bef4eba01d1587d82d2427eb3c7dbdde80f08c198cf14b97257cd64a5be4d5\",\"after_hash\":\"57bef4eba01d1587d82d2427eb3c7dbdde80f08c198cf14b97257cd64a5be4d5\",\"after_revision\":2,\"result\":{\"base_hash\":\"ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c\",\"files\":[{\"path\":\"clamp.py\",\"before_sha256\":\"5ce9939a494a0ebeb2ed030c5f45258d0e22be107290c2b887b632418ef73363\",\"after_sha256\":\"1738403352bac024c8a423907c9d960dbd80ee9e3173ad0245f027b656aa0c65\",\"before\":\"def clamp(value, low, high):\\n    return min(low, max(value, high))\\n\",\"after\":\"def clamp(value, low, high):\\n    return max(low, min(value, high))\\n\",\"before_executable\":false,\"after_executable\":false}],\"workspace_hash\":\"57bef4eba01d1587d82d2427eb3c7dbdde80f08c198cf14b97257cd64a5be4d5\"},\"receipt\":{\"tenant_id\":\"\",\"run_id\":\"\",\"kind\":\"\",\"object_key\":\"\",\"sha256\":\"\",\"size\":0},\"cancel_requested\":false}",
+    "artifact_62d7593e442c2b7c7df6642e20ff952ce8f4eeed12c7195f0f25ba8bf87104a2": "{\"request\":{\"tenant_id\":\"tenant\",\"run_id\":\"run_W7CBI4HOFSMDQIXDN6PS4JVEKF\",\"workspace_id\":\"run_W7CBI4HOFSMDQIXDN6PS4JVEKF\",\"epoch\":1,\"grant\":\"\",\"operation_id\":\"run_W7CBI4HOFSMDQIXDN6PS4JVEKF_0_initial_target\",\"expected_revision\":1,\"kind\":\"verify\",\"args\":{\"target\":true},\"args_hash\":\"c56810ebca495ac55b599570ff113f60c83411e488cefe803421335131ab0944\",\"policy_version\":\"trusted-profile-v1\",\"deadline\":\"2026-09-11T15:59:00.15007-07:00\"},\"status\":\"failed\",\"job_id\":\"forge-040af50184cba32cd8ab21a5de5ba8db7d7747d2\",\"before_hash\":\"ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c\",\"after_hash\":\"ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c\",\"after_revision\":1,\"result\":{\"id\":\"forge-040af50184cba32cd8ab21a5de5ba8db7d7747d2\",\"running\":false,\"exit_code\":1,\"started\":true,\"output\":\"cHJvdG9jb2wgZml4dHVyZSBvbmx5OyBubyBQeXRob24gZXhlY3V0ZWQ=\",\"truncated\":false},\"receipt\":{\"tenant_id\":\"\",\"run_id\":\"\",\"kind\":\"\",\"object_key\":\"\",\"sha256\":\"\",\"size\":0},\"cancel_requested\":false}",
+    "artifact_8418700ef6a9892fb3100905f21d9d6b41859f8c219b777cb5a2db6debfc285e": "{\"request\":{\"tenant_id\":\"tenant\",\"run_id\":\"run_W7CBI4HOFSMDQIXDN6PS4JVEKF\",\"workspace_id\":\"run_W7CBI4HOFSMDQIXDN6PS4JVEKF\",\"epoch\":1,\"grant\":\"\",\"operation_id\":\"run_W7CBI4HOFSMDQIXDN6PS4JVEKF_step_2_op_0\",\"expected_revision\":1,\"kind\":\"apply_patch\",\"args\":{\"files\":[{\"content\":\"def clamp(value, low, high):\\n    return max(low, min(value, high))\\n\",\"expected_sha256\":\"5ce9939a494a0ebeb2ed030c5f45258d0e22be107290c2b887b632418ef73363\",\"path\":\"clamp.py\"}]},\"args_hash\":\"d45dba1bb6ab330033dc820a9d33516f284237bcd9226bd8b22b94ab7fa23ff2\",\"policy_version\":\"workspace-v1\",\"deadline\":\"2026-09-11T15:59:00.15007-07:00\"},\"status\":\"succeeded\",\"job_id\":\"forge-e22dd47b79e07a60fa7b8c1e2a6bb080af1bed75\",\"before_hash\":\"ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c\",\"expected_after_hash\":\"57bef4eba01d1587d82d2427eb3c7dbdde80f08c198cf14b97257cd64a5be4d5\",\"after_hash\":\"57bef4eba01d1587d82d2427eb3c7dbdde80f08c198cf14b97257cd64a5be4d5\",\"after_revision\":2,\"result\":{\"changed_files\":1},\"receipt\":{\"tenant_id\":\"\",\"run_id\":\"\",\"kind\":\"\",\"object_key\":\"\",\"sha256\":\"\",\"size\":0},\"cancel_requested\":false}",
+    "artifact_9051f6c45a235ab4ba3e236c79f2b24b6688d3c4083d104cae1cc47a2dbf3662": "{\"evidence\":{\"trusted\":true,\"report_ref\":\"\",\"workspace_revision\":2,\"baseline_target_failed\":true,\"target_passed\":true,\"regression_passed\":true},\"receipts\":[\"artifact_62d7593e442c2b7c7df6642e20ff952ce8f4eeed12c7195f0f25ba8bf87104a2\",\"artifact_b7e01528bc58b984204b1b62a634fa0b51c4733c3a95f4c0c320ec452f27adc9\",\"artifact_d1ca493802c1bacd31a498187f80b9dc7d0c7f3c3356bfbd19572ceb84ae62ae\"],\"source_hash\":\"ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c\"}",
+    "artifact_b7e01528bc58b984204b1b62a634fa0b51c4733c3a95f4c0c320ec452f27adc9": "{\"request\":{\"tenant_id\":\"tenant\",\"run_id\":\"run_W7CBI4HOFSMDQIXDN6PS4JVEKF\",\"workspace_id\":\"run_W7CBI4HOFSMDQIXDN6PS4JVEKF\",\"epoch\":1,\"grant\":\"\",\"operation_id\":\"run_W7CBI4HOFSMDQIXDN6PS4JVEKF_3_final_target\",\"expected_revision\":2,\"kind\":\"verify\",\"args\":{\"target\":true},\"args_hash\":\"c56810ebca495ac55b599570ff113f60c83411e488cefe803421335131ab0944\",\"policy_version\":\"trusted-profile-v1\",\"deadline\":\"2026-09-11T15:59:00.15007-07:00\"},\"status\":\"succeeded\",\"job_id\":\"forge-c69b5326bb1987c78f7a217b9212839db23e30eb\",\"before_hash\":\"57bef4eba01d1587d82d2427eb3c7dbdde80f08c198cf14b97257cd64a5be4d5\",\"after_hash\":\"57bef4eba01d1587d82d2427eb3c7dbdde80f08c198cf14b97257cd64a5be4d5\",\"after_revision\":2,\"result\":{\"id\":\"forge-c69b5326bb1987c78f7a217b9212839db23e30eb\",\"running\":false,\"exit_code\":0,\"started\":true,\"output\":\"cHJvdG9jb2wgZml4dHVyZSBvbmx5OyBubyBQeXRob24gZXhlY3V0ZWQ=\",\"truncated\":false},\"receipt\":{\"tenant_id\":\"\",\"run_id\":\"\",\"kind\":\"\",\"object_key\":\"\",\"sha256\":\"\",\"size\":0},\"cancel_requested\":false}",
+    "artifact_d1ca493802c1bacd31a498187f80b9dc7d0c7f3c3356bfbd19572ceb84ae62ae": "{\"request\":{\"tenant_id\":\"tenant\",\"run_id\":\"run_W7CBI4HOFSMDQIXDN6PS4JVEKF\",\"workspace_id\":\"run_W7CBI4HOFSMDQIXDN6PS4JVEKF\",\"epoch\":1,\"grant\":\"\",\"operation_id\":\"run_W7CBI4HOFSMDQIXDN6PS4JVEKF_3_regression\",\"expected_revision\":2,\"kind\":\"verify\",\"args\":{},\"args_hash\":\"44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a\",\"policy_version\":\"trusted-profile-v1\",\"deadline\":\"2026-09-11T15:59:00.15007-07:00\"},\"status\":\"succeeded\",\"job_id\":\"forge-b2a76af5311fa078690bb9a6421c68cbbf167f12\",\"before_hash\":\"57bef4eba01d1587d82d2427eb3c7dbdde80f08c198cf14b97257cd64a5be4d5\",\"after_hash\":\"57bef4eba01d1587d82d2427eb3c7dbdde80f08c198cf14b97257cd64a5be4d5\",\"after_revision\":2,\"result\":{\"id\":\"forge-b2a76af5311fa078690bb9a6421c68cbbf167f12\",\"running\":false,\"exit_code\":0,\"started\":true,\"output\":\"cHJvdG9jb2wgZml4dHVyZSBvbmx5OyBubyBQeXRob24gZXhlY3V0ZWQ=\",\"truncated\":false},\"receipt\":{\"tenant_id\":\"\",\"run_id\":\"\",\"kind\":\"\",\"object_key\":\"\",\"sha256\":\"\",\"size\":0},\"cancel_requested\":false}"
+  },
+  "effects": [
+    {
+      "args": {
+        "target": true
+      },
+      "kind": "verify",
+      "epoch": 1,
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "status": "failed",
+      "ordinal": -1,
+      "step_seq": 0,
+      "args_hash": "c56810ebca495ac55b599570ff113f60c83411e488cefe803421335131ab0944",
+      "tenant_id": "tenant",
+      "receipt_ref": "artifact_62d7593e442c2b7c7df6642e20ff952ce8f4eeed12c7195f0f25ba8bf87104a2",
+      "operation_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF_0_initial_target",
+      "canonical_args": "\\x7b22746172676574223a747275657d",
+      "policy_version": "trusted-profile-v1",
+      "expected_revision": 1
+    },
+    {
+      "args": {},
+      "kind": "get_diff",
+      "epoch": 1,
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "status": "succeeded",
+      "ordinal": -4,
+      "step_seq": 3,
+      "args_hash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "tenant_id": "tenant",
+      "receipt_ref": "artifact_33acaeb3757c030bbe02edd5292140f2c5def56563bf8b40b57372983a6c06ff",
+      "operation_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF_3_final_diff",
+      "canonical_args": "\\x7b7d",
+      "policy_version": "trusted-profile-v1",
+      "expected_revision": 2
+    },
+    {
+      "args": {
+        "target": true
+      },
+      "kind": "verify",
+      "epoch": 1,
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "status": "succeeded",
+      "ordinal": -2,
+      "step_seq": 3,
+      "args_hash": "c56810ebca495ac55b599570ff113f60c83411e488cefe803421335131ab0944",
+      "tenant_id": "tenant",
+      "receipt_ref": "artifact_b7e01528bc58b984204b1b62a634fa0b51c4733c3a95f4c0c320ec452f27adc9",
+      "operation_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF_3_final_target",
+      "canonical_args": "\\x7b22746172676574223a747275657d",
+      "policy_version": "trusted-profile-v1",
+      "expected_revision": 2
+    },
+    {
+      "args": {},
+      "kind": "verify",
+      "epoch": 1,
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "status": "succeeded",
+      "ordinal": -3,
+      "step_seq": 3,
+      "args_hash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "tenant_id": "tenant",
+      "receipt_ref": "artifact_d1ca493802c1bacd31a498187f80b9dc7d0c7f3c3356bfbd19572ceb84ae62ae",
+      "operation_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF_3_regression",
+      "canonical_args": "\\x7b7d",
+      "policy_version": "trusted-profile-v1",
+      "expected_revision": 2
+    },
+    {
+      "args": {
+        "path": "clamp.py"
+      },
+      "kind": "read_file",
+      "epoch": 1,
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "status": "succeeded",
+      "ordinal": 0,
+      "step_seq": 1,
+      "args_hash": "31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6",
+      "tenant_id": "tenant",
+      "receipt_ref": "artifact_135c3432627a6fa707f53ca7dfc62c6aad1489b9d34d0f7937f9985569bbbd0f",
+      "operation_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF_step_1_op_0",
+      "canonical_args": "\\x7b2270617468223a22636c616d702e7079227d",
+      "policy_version": "workspace-v1",
+      "expected_revision": 1
+    },
+    {
+      "args": {
+        "files": [
+          {
+            "path": "clamp.py",
+            "content": "def clamp(value, low, high):\n    return max(low, min(value, high))\n",
+            "expected_sha256": "5ce9939a494a0ebeb2ed030c5f45258d0e22be107290c2b887b632418ef73363"
+          }
+        ]
+      },
+      "kind": "apply_patch",
+      "epoch": 1,
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "status": "succeeded",
+      "ordinal": 0,
+      "step_seq": 2,
+      "args_hash": "d45dba1bb6ab330033dc820a9d33516f284237bcd9226bd8b22b94ab7fa23ff2",
+      "tenant_id": "tenant",
+      "receipt_ref": "artifact_8418700ef6a9892fb3100905f21d9d6b41859f8c219b777cb5a2db6debfc285e",
+      "operation_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF_step_2_op_0",
+      "canonical_args": "\\x7b2266696c6573223a5b7b22636f6e74656e74223a2264656620636c616d702876616c75652c206c6f772c2068696768293a5c6e2020202072657475726e206d6178286c6f772c206d696e2876616c75652c206869676829295c6e222c2265787065637465645f736861323536223a2235636539393339613439346130656265623265643033306335663435323538643065323262653130373239306332623838376236333234313865663733333633222c2270617468223a22636c616d702e7079227d5d7d",
+      "policy_version": "workspace-v1",
+      "expected_revision": 1
+    }
+  ],
+  "extra": {
+    "legacy_initial_snapshot": {
+      "schema_version": 1,
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "tenant_id": "tenant",
+      "version": 1,
+      "status": "queued",
+      "stage": "initialize",
+      "lease": {
+        "owner": "",
+        "epoch": 0,
+        "until": "0001-01-01T00:00:00Z"
+      },
+      "step_seq": 0,
+      "workspace_revision": 0,
+      "verification_status": "unverified",
+      "verification_revision": 0,
+      "model_rounds": 0,
+      "tool_calls": 0,
+      "cost_microusd": 0,
+      "limits": {
+        "max_model_rounds": 8,
+        "max_tool_calls": 20,
+        "max_cost_microusd": 1000000,
+        "deadline": "2026-09-11T15:59:00.15007-07:00"
+      }
+    },
+    "model_calls": 3,
+    "original_key_reused": true
+  },
+  "model_attempts": [
+    {
+      "usage": {
+        "final": true,
+        "input": {
+          "known": true,
+          "value": 100
+        },
+        "output": {
+          "known": true,
+          "value": 50
+        },
+        "cache_read": {
+          "known": false,
+          "value": 0
+        },
+        "cache_write": {
+          "known": false,
+          "value": 0
+        }
+      },
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "status": "completed",
+      "attempt": 1,
+      "pricing": {
+        "model": "fake",
+        "provider": "fake",
+        "input_price": 0,
+        "output_price": 0,
+        "exact_pricing": true,
+        "price_version": "fixture-zero-v1",
+        "context_tokens": 8192,
+        "schema_version": 1,
+        "credential_group": "fake",
+        "max_output_tokens": 1024,
+        "request_timeout_ns": 5000000000
+      },
+      "raw_ref": "artifact_19d7ec257264c07189671d42992645a518792dc99cc47151d6bc3795ad099546",
+      "deadline": "2026-09-11T22:58:05.470501+00:00",
+      "model_id": "fake",
+      "provider": "fake",
+      "step_seq": 1,
+      "tenant_id": "tenant",
+      "attempt_id": "attempt_72PJ4ISWNNG4EGSJ5PO2EUTJTD",
+      "error_code": null,
+      "request_id": "",
+      "started_at": "2026-09-11T22:58:00.472238+00:00",
+      "request_ref": "artifact_0104cfd8467c2338e8afc55a93da30d144837e988f465278be9b88004600c565",
+      "price_version": "fixture-zero-v1",
+      "failure_policy": null
+    },
+    {
+      "usage": {
+        "final": true,
+        "input": {
+          "known": true,
+          "value": 100
+        },
+        "output": {
+          "known": true,
+          "value": 50
+        },
+        "cache_read": {
+          "known": false,
+          "value": 0
+        },
+        "cache_write": {
+          "known": false,
+          "value": 0
+        }
+      },
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "status": "completed",
+      "attempt": 1,
+      "pricing": {
+        "model": "fake",
+        "provider": "fake",
+        "input_price": 0,
+        "output_price": 0,
+        "exact_pricing": true,
+        "price_version": "fixture-zero-v1",
+        "context_tokens": 8192,
+        "schema_version": 1,
+        "credential_group": "fake",
+        "max_output_tokens": 1024,
+        "request_timeout_ns": 5000000000
+      },
+      "raw_ref": "artifact_94d3b8f6e189d07b994bf6243b45ebf07836ff0944296f1fd6a62f4fc2f232a7",
+      "deadline": "2026-09-11T22:58:05.852626+00:00",
+      "model_id": "fake",
+      "provider": "fake",
+      "step_seq": 2,
+      "tenant_id": "tenant",
+      "attempt_id": "attempt_GMOOV6GCXOK44QLOYHUEEFFB72",
+      "error_code": null,
+      "request_id": "",
+      "started_at": "2026-09-11T22:58:00.853189+00:00",
+      "request_ref": "artifact_f6f68455b416f37571ac6f3f8ce81fe236fe4d4f69ad97ad2d61fb45473a7cec",
+      "price_version": "fixture-zero-v1",
+      "failure_policy": null
+    },
+    {
+      "usage": {
+        "final": true,
+        "input": {
+          "known": true,
+          "value": 100
+        },
+        "output": {
+          "known": true,
+          "value": 20
+        },
+        "cache_read": {
+          "known": false,
+          "value": 0
+        },
+        "cache_write": {
+          "known": false,
+          "value": 0
+        }
+      },
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "status": "completed",
+      "attempt": 1,
+      "pricing": {
+        "model": "fake",
+        "provider": "fake",
+        "input_price": 0,
+        "output_price": 0,
+        "exact_pricing": true,
+        "price_version": "fixture-zero-v1",
+        "context_tokens": 8192,
+        "schema_version": 1,
+        "credential_group": "fake",
+        "max_output_tokens": 1024,
+        "request_timeout_ns": 5000000000
+      },
+      "raw_ref": "artifact_d53b5a158857bdab0207f10a861692ef47dc6ad8687b5ba6f0a411e644132767",
+      "deadline": "2026-09-11T22:58:06.142397+00:00",
+      "model_id": "fake",
+      "provider": "fake",
+      "step_seq": 3,
+      "tenant_id": "tenant",
+      "attempt_id": "attempt_CVVAOJUD6YNR7QZQB4ZBFVJFOH",
+      "error_code": null,
+      "request_id": "",
+      "started_at": "2026-09-11T22:58:01.142752+00:00",
+      "request_ref": "artifact_4e3b099e9c7604e88bfad46d8d76d5ae7d33461ea852670aefd91f71d25eabd5",
+      "price_version": "fixture-zero-v1",
+      "failure_policy": null
+    }
+  ],
+  "passed": true,
+  "quota_reservations": [
+    {
+      "id": "attempt_72PJ4ISWNNG4EGSJ5PO2EUTJTD",
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "status": "settled",
+      "tokens": 9216,
+      "outcome": "success",
+      "microusd": 0,
+      "tenant_id": "tenant",
+      "settled_at": "2026-09-11T22:58:00.552874+00:00",
+      "request_hash": "c204b17db6949e64773d80c66031712b5748e33ae8be20fc65f86dcfaa0ba424",
+      "actual_tokens": 150,
+      "dispatched_at": "2026-09-11T22:58:00.509217+00:00",
+      "actual_microusd": 0,
+      "settlement_kind": "actual_usage",
+      "credential_group": "fake",
+      "request_deadline": "2026-09-11T22:58:05.470501+00:00",
+      "window_generation": 1,
+      "request_slot_released": true
+    },
+    {
+      "id": "attempt_CVVAOJUD6YNR7QZQB4ZBFVJFOH",
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "status": "settled",
+      "tokens": 9216,
+      "outcome": "success",
+      "microusd": 0,
+      "tenant_id": "tenant",
+      "settled_at": "2026-09-11T22:58:01.188707+00:00",
+      "request_hash": "214c88bbc3cd99b23a361bf9bb07b419ca4395c17964e08eb45b6e39fae88b61",
+      "actual_tokens": 120,
+      "dispatched_at": "2026-09-11T22:58:01.150343+00:00",
+      "actual_microusd": 0,
+      "settlement_kind": "actual_usage",
+      "credential_group": "fake",
+      "request_deadline": "2026-09-11T22:58:06.142397+00:00",
+      "window_generation": 1,
+      "request_slot_released": true
+    },
+    {
+      "id": "attempt_GMOOV6GCXOK44QLOYHUEEFFB72",
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "status": "settled",
+      "tokens": 9216,
+      "outcome": "success",
+      "microusd": 0,
+      "tenant_id": "tenant",
+      "settled_at": "2026-09-11T22:58:00.910302+00:00",
+      "request_hash": "0f944b99443e466503ab4dd6c0ccc31f142b9d21efe0e7f66f1a04a8208a50e8",
+      "actual_tokens": 150,
+      "dispatched_at": "2026-09-11T22:58:00.862357+00:00",
+      "actual_microusd": 0,
+      "settlement_kind": "actual_usage",
+      "credential_group": "fake",
+      "request_deadline": "2026-09-11T22:58:05.852626+00:00",
+      "window_generation": 1,
+      "request_slot_released": true
+    }
+  ],
+  "run": {
+    "tenant_id": "tenant",
+    "id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+    "project_id": "project_KC6EFVGKS3AXBIQPPBLEIXDHKC",
+    "principal_id": "developer",
+    "task": "Fix clamp boundary behavior.",
+    "base_commit": "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c",
+    "runner_id": "runner",
+    "commands": [
+      {
+        "kind": "publish_terminal"
+      }
+    ],
+    "state": {
+      "schema_version": 1,
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "tenant_id": "tenant",
+      "version": 17,
+      "status": "completed",
+      "stage": "stopped",
+      "lease": {
+        "owner": "legacy-worker",
+        "epoch": 1,
+        "until": "2026-09-11T15:58:04.206679-07:00"
+      },
+      "step_seq": 3,
+      "workspace_revision": 2,
+      "output_ref": "artifact_8c56865840f95a670a8f56d408a82354fcb77fe67125908f1244c4c6e0abbf7f",
+      "verification_status": "verified",
+      "verification_report_ref": "artifact_9051f6c45a235ab4ba3e236c79f2b24b6688d3c4083d104cae1cc47a2dbf3662",
+      "verification_revision": 2,
+      "model_rounds": 3,
+      "tool_calls": 2,
+      "cost_microusd": 0,
+      "limits": {
+        "max_model_rounds": 8,
+        "max_tool_calls": 20,
+        "max_cost_microusd": 1000000,
+        "deadline": "2026-09-11T15:59:00.15007-07:00"
+      }
+    },
+    "config": {
+      "provider": "fake",
+      "model": "fake",
+      "max_model_rounds": 8,
+      "max_tool_calls": 20,
+      "max_cost_microusd": 1000000,
+      "max_runtime_seconds": 60
+    },
+    "created_at": "2026-09-11T15:58:00.154412-07:00",
+    "covered_seq": 39
+  },
+  "run_events": [
+    {
+      "seq": 1,
+      "type": "run.created",
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "payload": {
+        "lease": {
+          "epoch": 0,
+          "owner": "",
+          "until": "0001-01-01T00:00:00Z"
+        },
+        "stage": "initialize",
+        "limits": {
+          "deadline": "2026-09-11T15:59:00.15007-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+        "status": "queued",
+        "version": 1,
+        "step_seq": 0,
+        "tenant_id": "tenant",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 0,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:58:00.159094+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 2,
+      "type": "run.claimed",
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "payload": {
+        "stage": "initialize",
+        "state": "running",
+        "reason": "",
+        "version": 2,
+        "step_seq": 0,
+        "output_ref": "",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "workspace_revision": 0,
+        "verification_status": "unverified",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:58:00.189121+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 3,
+      "type": "artifact.ready",
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "payload": {
+        "id": "artifact_62d7593e442c2b7c7df6642e20ff952ce8f4eeed12c7195f0f25ba8bf87104a2",
+        "kind": "operation_receipt",
+        "state": "ready",
+        "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+        "sha256": "e8d9b7bd34359a5f3eddfbaf31d691871ef68d863026c994c005eefd1cf284ce",
+        "byte_size": 996,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_W7CBI4HOFSMDQIXDN6PS4JVEKF/e8d9b7bd34359a5f3eddfbaf31d691871ef68d863026c994c005eefd1cf284ce"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:58:00.387183+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 4,
+      "type": "artifact.ready",
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "payload": {
+        "id": "artifact_b4e657ac552eccbb6cc68e08da878b09224ac2fd559adca533787e74b9dec902",
+        "kind": "baseline",
+        "state": "ready",
+        "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+        "sha256": "ec40ea4a71490822c58685aa387a7e24423be85809b6c29e242a29d049b06712",
+        "byte_size": 206,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_W7CBI4HOFSMDQIXDN6PS4JVEKF/ec40ea4a71490822c58685aa387a7e24423be85809b6c29e242a29d049b06712"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:58:00.411915+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 5,
+      "type": "workspace.prepared",
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "payload": {
+        "stage": "build_context",
+        "state": "running",
+        "reason": "",
+        "version": 3,
+        "step_seq": 0,
+        "output_ref": "artifact_b4e657ac552eccbb6cc68e08da878b09224ac2fd559adca533787e74b9dec902",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:58:00.422241+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 6,
+      "type": "artifact.ready",
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "payload": {
+        "id": "artifact_0104cfd8467c2338e8afc55a93da30d144837e988f465278be9b88004600c565",
+        "kind": "context",
+        "state": "ready",
+        "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+        "sha256": "5d3564efb7e6c2a1261f91dbdc33c7a9a12b7bda8f4690f225d6fdd683921a63",
+        "byte_size": 2575,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_W7CBI4HOFSMDQIXDN6PS4JVEKF/5d3564efb7e6c2a1261f91dbdc33c7a9a12b7bda8f4690f225d6fdd683921a63"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:58:00.448086+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 7,
+      "type": "step.started",
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "payload": {
+        "stage": "model_step",
+        "state": "running",
+        "reason": "",
+        "version": 4,
+        "step_seq": 1,
+        "output_ref": "artifact_0104cfd8467c2338e8afc55a93da30d144837e988f465278be9b88004600c565",
+        "tool_calls": 0,
+        "model_rounds": 1,
+        "cost_microusd": 0,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:58:00.462549+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 8,
+      "type": "model.started",
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "payload": {
+        "step_seq": 1,
+        "attempt_id": "attempt_72PJ4ISWNNG4EGSJ5PO2EUTJTD",
+        "price_version": "fixture-zero-v1"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:58:00.473993+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 9,
+      "type": "artifact.ready",
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "payload": {
+        "id": "artifact_19d7ec257264c07189671d42992645a518792dc99cc47151d6bc3795ad099546",
+        "kind": "model_response",
+        "state": "ready",
+        "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+        "sha256": "c720f5d9359ff791dadd23f4f9ed8797ebb59387588b564e91c97bef4d8def27",
+        "byte_size": 398,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_W7CBI4HOFSMDQIXDN6PS4JVEKF/c720f5d9359ff791dadd23f4f9ed8797ebb59387588b564e91c97bef4d8def27"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:58:00.532719+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 10,
+      "type": "model.completed",
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "payload": {
+        "stage": "validate_tool_calls",
+        "state": "running",
+        "reason": "",
+        "version": 5,
+        "step_seq": 1,
+        "output_ref": "artifact_19d7ec257264c07189671d42992645a518792dc99cc47151d6bc3795ad099546",
+        "tool_calls": 0,
+        "model_rounds": 1,
+        "cost_microusd": 0,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:58:00.568503+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 11,
+      "type": "tool.planned",
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "payload": {
+        "stage": "execute_effects",
+        "state": "running",
+        "reason": "",
+        "version": 6,
+        "step_seq": 1,
+        "args_hash": "31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6",
+        "output_ref": "artifact_19d7ec257264c07189671d42992645a518792dc99cc47151d6bc3795ad099546",
+        "tool_calls": 1,
+        "model_rounds": 1,
+        "operation_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF_step_1_op_0",
+        "cost_microusd": 0,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:58:00.580924+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 12,
+      "type": "artifact.ready",
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "payload": {
+        "id": "artifact_135c3432627a6fa707f53ca7dfc62c6aad1489b9d34d0f7937f9985569bbbd0f",
+        "kind": "operation_receipt",
+        "state": "ready",
+        "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+        "sha256": "20516395a129efdf10283f5aa54ad38658d414f16c017c2219972c22bebb9ffe",
+        "byte_size": 1001,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_W7CBI4HOFSMDQIXDN6PS4JVEKF/20516395a129efdf10283f5aa54ad38658d414f16c017c2219972c22bebb9ffe"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:58:00.722007+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 13,
+      "type": "tool.finished",
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "payload": {
+        "stage": "ingest_results",
+        "state": "running",
+        "reason": "",
+        "version": 7,
+        "step_seq": 1,
+        "output_ref": "artifact_135c3432627a6fa707f53ca7dfc62c6aad1489b9d34d0f7937f9985569bbbd0f",
+        "tool_calls": 1,
+        "receipt_ref": "artifact_135c3432627a6fa707f53ca7dfc62c6aad1489b9d34d0f7937f9985569bbbd0f",
+        "model_rounds": 1,
+        "cost_microusd": 0,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:58:00.738297+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 14,
+      "type": "artifact.ready",
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "payload": {
+        "id": "artifact_9d16e14800f276fc88f5cf6718530d832401e8ee8596ca4dbb433969f06b1ab0",
+        "kind": "tool_batch",
+        "state": "ready",
+        "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+        "sha256": "5f40ec8447a50fe1051265e73b9c57831cf834623c93b892cdc866f75aaa6664",
+        "byte_size": 23,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_W7CBI4HOFSMDQIXDN6PS4JVEKF/5f40ec8447a50fe1051265e73b9c57831cf834623c93b892cdc866f75aaa6664"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:58:00.776205+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 15,
+      "type": "run.results_ingested",
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "payload": {
+        "stage": "build_context",
+        "state": "running",
+        "reason": "",
+        "version": 8,
+        "step_seq": 1,
+        "output_ref": "artifact_9d16e14800f276fc88f5cf6718530d832401e8ee8596ca4dbb433969f06b1ab0",
+        "tool_calls": 1,
+        "model_rounds": 1,
+        "cost_microusd": 0,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:58:00.791286+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 16,
+      "type": "artifact.ready",
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "payload": {
+        "id": "artifact_f6f68455b416f37571ac6f3f8ce81fe236fe4d4f69ad97ad2d61fb45473a7cec",
+        "kind": "context",
+        "state": "ready",
+        "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+        "sha256": "4a43b6d388e76d81e3440c39c184e35a9681d44c3775a0a2fc9689ad6d920016",
+        "byte_size": 2932,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_W7CBI4HOFSMDQIXDN6PS4JVEKF/4a43b6d388e76d81e3440c39c184e35a9681d44c3775a0a2fc9689ad6d920016"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:58:00.844248+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 17,
+      "type": "step.started",
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "payload": {
+        "stage": "model_step",
+        "state": "running",
+        "reason": "",
+        "version": 9,
+        "step_seq": 2,
+        "output_ref": "artifact_f6f68455b416f37571ac6f3f8ce81fe236fe4d4f69ad97ad2d61fb45473a7cec",
+        "tool_calls": 1,
+        "model_rounds": 2,
+        "cost_microusd": 0,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:58:00.848061+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 18,
+      "type": "model.started",
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "payload": {
+        "step_seq": 2,
+        "attempt_id": "attempt_GMOOV6GCXOK44QLOYHUEEFFB72",
+        "price_version": "fixture-zero-v1"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:58:00.853734+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 19,
+      "type": "artifact.ready",
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "payload": {
+        "id": "artifact_94d3b8f6e189d07b994bf6243b45ebf07836ff0944296f1fd6a62f4fc2f232a7",
+        "kind": "model_response",
+        "state": "ready",
+        "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+        "sha256": "fcfa9164f42afb02810fabc914d3fb51b2e7c10237b8b929128ae726f01c7c60",
+        "byte_size": 580,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_W7CBI4HOFSMDQIXDN6PS4JVEKF/fcfa9164f42afb02810fabc914d3fb51b2e7c10237b8b929128ae726f01c7c60"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:58:00.893682+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 20,
+      "type": "model.completed",
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "payload": {
+        "stage": "validate_tool_calls",
+        "state": "running",
+        "reason": "",
+        "version": 10,
+        "step_seq": 2,
+        "output_ref": "artifact_94d3b8f6e189d07b994bf6243b45ebf07836ff0944296f1fd6a62f4fc2f232a7",
+        "tool_calls": 1,
+        "model_rounds": 2,
+        "cost_microusd": 0,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:58:00.932926+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 21,
+      "type": "tool.planned",
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "payload": {
+        "stage": "execute_effects",
+        "state": "running",
+        "reason": "",
+        "version": 11,
+        "step_seq": 2,
+        "args_hash": "d45dba1bb6ab330033dc820a9d33516f284237bcd9226bd8b22b94ab7fa23ff2",
+        "output_ref": "artifact_94d3b8f6e189d07b994bf6243b45ebf07836ff0944296f1fd6a62f4fc2f232a7",
+        "tool_calls": 2,
+        "model_rounds": 2,
+        "operation_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF_step_2_op_0",
+        "cost_microusd": 0,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:58:00.949989+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 22,
+      "type": "artifact.ready",
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "payload": {
+        "id": "artifact_8418700ef6a9892fb3100905f21d9d6b41859f8c219b777cb5a2db6debfc285e",
+        "kind": "operation_receipt",
+        "state": "ready",
+        "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+        "sha256": "a4410092f62dc955eee738cbe2c2a58f88eb3d90b4188a7ec1222f4738001746",
+        "byte_size": 1098,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_W7CBI4HOFSMDQIXDN6PS4JVEKF/a4410092f62dc955eee738cbe2c2a58f88eb3d90b4188a7ec1222f4738001746"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:58:01.079267+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 23,
+      "type": "tool.finished",
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "payload": {
+        "stage": "ingest_results",
+        "state": "running",
+        "reason": "",
+        "version": 12,
+        "step_seq": 2,
+        "output_ref": "artifact_8418700ef6a9892fb3100905f21d9d6b41859f8c219b777cb5a2db6debfc285e",
+        "tool_calls": 2,
+        "receipt_ref": "artifact_8418700ef6a9892fb3100905f21d9d6b41859f8c219b777cb5a2db6debfc285e",
+        "model_rounds": 2,
+        "cost_microusd": 0,
+        "workspace_revision": 2,
+        "verification_status": "unverified",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:58:01.085014+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 24,
+      "type": "artifact.ready",
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "payload": {
+        "id": "artifact_1481d4ff09569331ce99befbdc12de2bef248994b1c96c4e9a0dd976b9bfb8cf",
+        "kind": "tool_batch",
+        "state": "ready",
+        "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+        "sha256": "14cce7a6847d0716ff25f4aa560cf5de39b9c8b73df803102b123912716e9ba6",
+        "byte_size": 23,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_W7CBI4HOFSMDQIXDN6PS4JVEKF/14cce7a6847d0716ff25f4aa560cf5de39b9c8b73df803102b123912716e9ba6"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:58:01.103335+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 25,
+      "type": "run.results_ingested",
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "payload": {
+        "stage": "build_context",
+        "state": "running",
+        "reason": "",
+        "version": 13,
+        "step_seq": 2,
+        "output_ref": "artifact_1481d4ff09569331ce99befbdc12de2bef248994b1c96c4e9a0dd976b9bfb8cf",
+        "tool_calls": 2,
+        "model_rounds": 2,
+        "cost_microusd": 0,
+        "workspace_revision": 2,
+        "verification_status": "unverified",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:58:01.108314+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 26,
+      "type": "artifact.ready",
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "payload": {
+        "id": "artifact_4e3b099e9c7604e88bfad46d8d76d5ae7d33461ea852670aefd91f71d25eabd5",
+        "kind": "context",
+        "state": "ready",
+        "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+        "sha256": "a365c7eb55d073753dac756e6a962b661a4380393f85cc55d7ad3614c1b1a567",
+        "byte_size": 3285,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_W7CBI4HOFSMDQIXDN6PS4JVEKF/a365c7eb55d073753dac756e6a962b661a4380393f85cc55d7ad3614c1b1a567"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:58:01.13296+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 27,
+      "type": "step.started",
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "payload": {
+        "stage": "model_step",
+        "state": "running",
+        "reason": "",
+        "version": 14,
+        "step_seq": 3,
+        "output_ref": "artifact_4e3b099e9c7604e88bfad46d8d76d5ae7d33461ea852670aefd91f71d25eabd5",
+        "tool_calls": 2,
+        "model_rounds": 3,
+        "cost_microusd": 0,
+        "workspace_revision": 2,
+        "verification_status": "unverified",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:58:01.138189+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 28,
+      "type": "model.started",
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "payload": {
+        "step_seq": 3,
+        "attempt_id": "attempt_CVVAOJUD6YNR7QZQB4ZBFVJFOH",
+        "price_version": "fixture-zero-v1"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:58:01.143074+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 29,
+      "type": "text.delta",
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "payload": {
+        "delta": "The repair is ready for independent verification.",
+        "attempt_id": "attempt_CVVAOJUD6YNR7QZQB4ZBFVJFOH",
+        "provisional": true
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:58:01.156634+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 30,
+      "type": "artifact.ready",
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "payload": {
+        "id": "artifact_d53b5a158857bdab0207f10a861692ef47dc6ad8687b5ba6f0a411e644132767",
+        "kind": "model_response",
+        "state": "ready",
+        "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+        "sha256": "6149249d36f8875c89f9d45817de690d0b5dc0091329e371487ed6bd6492e0ae",
+        "byte_size": 361,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_W7CBI4HOFSMDQIXDN6PS4JVEKF/6149249d36f8875c89f9d45817de690d0b5dc0091329e371487ed6bd6492e0ae"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:58:01.178626+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 31,
+      "type": "model.completed",
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "payload": {
+        "stage": "verify",
+        "state": "running",
+        "reason": "",
+        "version": 15,
+        "step_seq": 3,
+        "output_ref": "artifact_d53b5a158857bdab0207f10a861692ef47dc6ad8687b5ba6f0a411e644132767",
+        "tool_calls": 2,
+        "model_rounds": 3,
+        "cost_microusd": 0,
+        "workspace_revision": 2,
+        "verification_status": "unverified",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:58:01.203857+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 32,
+      "type": "artifact.ready",
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "payload": {
+        "id": "artifact_b7e01528bc58b984204b1b62a634fa0b51c4733c3a95f4c0c320ec452f27adc9",
+        "kind": "operation_receipt",
+        "state": "ready",
+        "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+        "sha256": "a665648c155f5d2ec752e9a604cd4b29e14ec1db10e745d54d96b4d969b5c9f3",
+        "byte_size": 997,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_W7CBI4HOFSMDQIXDN6PS4JVEKF/a665648c155f5d2ec752e9a604cd4b29e14ec1db10e745d54d96b4d969b5c9f3"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:58:01.329354+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 33,
+      "type": "artifact.ready",
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "payload": {
+        "id": "artifact_d1ca493802c1bacd31a498187f80b9dc7d0c7f3c3356bfbd19572ceb84ae62ae",
+        "kind": "operation_receipt",
+        "state": "ready",
+        "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+        "sha256": "b096376602e3b9cc6b3c69ad920405686bafe27b1f6a689b7f29d1a59efc508f",
+        "byte_size": 982,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_W7CBI4HOFSMDQIXDN6PS4JVEKF/b096376602e3b9cc6b3c69ad920405686bafe27b1f6a689b7f29d1a59efc508f"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:58:01.459941+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 34,
+      "type": "artifact.ready",
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "payload": {
+        "id": "artifact_9051f6c45a235ab4ba3e236c79f2b24b6688d3c4083d104cae1cc47a2dbf3662",
+        "kind": "verification_report",
+        "state": "ready",
+        "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+        "sha256": "af956010e20c0f34b518e1a0ed35b6a89e45abcaff33bfa329e8045d948056b6",
+        "byte_size": 466,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_W7CBI4HOFSMDQIXDN6PS4JVEKF/af956010e20c0f34b518e1a0ed35b6a89e45abcaff33bfa329e8045d948056b6"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:58:01.479428+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 35,
+      "type": "validation.finished",
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "payload": {
+        "stage": "finalize",
+        "state": "running",
+        "reason": "",
+        "version": 16,
+        "step_seq": 3,
+        "output_ref": "artifact_d53b5a158857bdab0207f10a861692ef47dc6ad8687b5ba6f0a411e644132767",
+        "tool_calls": 2,
+        "model_rounds": 3,
+        "cost_microusd": 0,
+        "workspace_revision": 2,
+        "verification_status": "verified",
+        "verification_report_ref": "artifact_9051f6c45a235ab4ba3e236c79f2b24b6688d3c4083d104cae1cc47a2dbf3662"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:58:01.48519+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 36,
+      "type": "artifact.ready",
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "payload": {
+        "id": "artifact_33acaeb3757c030bbe02edd5292140f2c5def56563bf8b40b57372983a6c06ff",
+        "kind": "operation_receipt",
+        "state": "ready",
+        "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+        "sha256": "af711fcf117affdb6d822f631618bed91c2a2e29e2bedf1f85a6b94ce330e829",
+        "byte_size": 1369,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_W7CBI4HOFSMDQIXDN6PS4JVEKF/af711fcf117affdb6d822f631618bed91c2a2e29e2bedf1f85a6b94ce330e829"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:58:01.619811+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 37,
+      "type": "artifact.ready",
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "payload": {
+        "id": "artifact_b44180de7e86182c2645fce32387c77eee49fb29d4d6b75343f4c440eff3c3ec",
+        "kind": "patch_manifest",
+        "state": "ready",
+        "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+        "sha256": "5430dc8a469185b9e585cd6649445527db8f490110c7883a28ea1ea6ea003f70",
+        "byte_size": 571,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_W7CBI4HOFSMDQIXDN6PS4JVEKF/5430dc8a469185b9e585cd6649445527db8f490110c7883a28ea1ea6ea003f70"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:58:01.649242+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 38,
+      "type": "artifact.ready",
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "payload": {
+        "id": "artifact_8c56865840f95a670a8f56d408a82354fcb77fe67125908f1244c4c6e0abbf7f",
+        "kind": "patch",
+        "state": "ready",
+        "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+        "sha256": "4eb8f79a1e9087aafde22e57edb1854bccea879e8b2efe290d831f51abfc1ef5",
+        "byte_size": 225,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_W7CBI4HOFSMDQIXDN6PS4JVEKF/4eb8f79a1e9087aafde22e57edb1854bccea879e8b2efe290d831f51abfc1ef5"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:58:01.697276+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 39,
+      "type": "run.finished",
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "payload": {
+        "stage": "stopped",
+        "state": "completed",
+        "reason": "",
+        "version": 17,
+        "step_seq": 3,
+        "output_ref": "artifact_8c56865840f95a670a8f56d408a82354fcb77fe67125908f1244c4c6e0abbf7f",
+        "tool_calls": 2,
+        "model_rounds": 3,
+        "cost_microusd": 0,
+        "workspace_revision": 2,
+        "verification_status": "verified",
+        "verification_report_ref": "artifact_9051f6c45a235ab4ba3e236c79f2b24b6688d3c4083d104cae1cc47a2dbf3662"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:58:01.715488+00:00",
+      "schema_version": 1
+    }
+  ],
+  "run_messages": [],
+  "run_snapshots": [
+    {
+      "body": {
+        "lease": {
+          "epoch": 0,
+          "owner": "",
+          "until": "0001-01-01T00:00:00Z"
+        },
+        "stage": "initialize",
+        "limits": {
+          "deadline": "2026-09-11T15:59:00.15007-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+        "status": "queued",
+        "version": 1,
+        "step_seq": 0,
+        "tenant_id": "tenant",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 0,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "version": 1,
+      "step_seq": 0,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T22:58:00.15655+00:00",
+      "input_event": null,
+      "input_state": null,
+      "schema_version": 1
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "legacy-worker",
+          "until": "2026-09-11T15:58:03.171009-07:00"
+        },
+        "stage": "initialize",
+        "limits": {
+          "deadline": "2026-09-11T15:59:00.15007-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+        "status": "running",
+        "version": 2,
+        "step_seq": 0,
+        "tenant_id": "tenant",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 0,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "version": 2,
+      "step_seq": 0,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T22:58:00.188065+00:00",
+      "input_event": {
+        "at": "2026-09-11T15:58:00.171009-07:00",
+        "kind": "claimed",
+        "epoch": 1,
+        "lease": {
+          "epoch": 1,
+          "owner": "legacy-worker",
+          "until": "2026-09-11T15:58:03.171009-07:00"
+        },
+        "owner": "legacy-worker",
+        "expected_version": 1
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 0,
+          "owner": "",
+          "until": "0001-01-01T00:00:00Z"
+        },
+        "stage": "initialize",
+        "limits": {
+          "deadline": "2026-09-11T15:59:00.15007-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+        "status": "queued",
+        "version": 1,
+        "step_seq": 0,
+        "tenant_id": "tenant",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 0,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 1
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "legacy-worker",
+          "until": "2026-09-11T15:58:03.171009-07:00"
+        },
+        "stage": "build_context",
+        "limits": {
+          "deadline": "2026-09-11T15:59:00.15007-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+        "status": "running",
+        "version": 3,
+        "step_seq": 0,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_b4e657ac552eccbb6cc68e08da878b09224ac2fd559adca533787e74b9dec902",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "version": 3,
+      "step_seq": 0,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T22:58:00.421232+00:00",
+      "input_event": {
+        "at": "2026-09-11T15:58:00.418825-07:00",
+        "kind": "workspace_ready",
+        "epoch": 1,
+        "owner": "legacy-worker",
+        "output_ref": "artifact_b4e657ac552eccbb6cc68e08da878b09224ac2fd559adca533787e74b9dec902",
+        "expected_version": 2,
+        "workspace_revision": 1
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "legacy-worker",
+          "until": "2026-09-11T15:58:03.171009-07:00"
+        },
+        "stage": "initialize",
+        "limits": {
+          "deadline": "2026-09-11T15:59:00.15007-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+        "status": "running",
+        "version": 2,
+        "step_seq": 0,
+        "tenant_id": "tenant",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 0,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 1
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "legacy-worker",
+          "until": "2026-09-11T15:58:03.171009-07:00"
+        },
+        "stage": "model_step",
+        "limits": {
+          "deadline": "2026-09-11T15:59:00.15007-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+        "status": "running",
+        "version": 4,
+        "step_seq": 1,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_0104cfd8467c2338e8afc55a93da30d144837e988f465278be9b88004600c565",
+        "tool_calls": 0,
+        "model_rounds": 1,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "version": 4,
+      "step_seq": 1,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T22:58:00.459697+00:00",
+      "input_event": {
+        "at": "2026-09-11T15:58:00.454617-07:00",
+        "kind": "context_built",
+        "epoch": 1,
+        "owner": "legacy-worker",
+        "output_ref": "artifact_0104cfd8467c2338e8afc55a93da30d144837e988f465278be9b88004600c565",
+        "expected_version": 3
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "legacy-worker",
+          "until": "2026-09-11T15:58:03.171009-07:00"
+        },
+        "stage": "build_context",
+        "limits": {
+          "deadline": "2026-09-11T15:59:00.15007-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+        "status": "running",
+        "version": 3,
+        "step_seq": 0,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_b4e657ac552eccbb6cc68e08da878b09224ac2fd559adca533787e74b9dec902",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 1
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "legacy-worker",
+          "until": "2026-09-11T15:58:03.171009-07:00"
+        },
+        "stage": "validate_tool_calls",
+        "limits": {
+          "deadline": "2026-09-11T15:59:00.15007-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+        "status": "running",
+        "version": 5,
+        "step_seq": 1,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_19d7ec257264c07189671d42992645a518792dc99cc47151d6bc3795ad099546",
+        "tool_calls": 0,
+        "model_rounds": 1,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "version": 5,
+      "step_seq": 1,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T22:58:00.567112+00:00",
+      "input_event": {
+        "at": "2026-09-11T15:58:00.564632-07:00",
+        "kind": "model_completed",
+        "epoch": 1,
+        "owner": "legacy-worker",
+        "complete": true,
+        "output_ref": "artifact_19d7ec257264c07189671d42992645a518792dc99cc47151d6bc3795ad099546",
+        "expected_version": 4
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "legacy-worker",
+          "until": "2026-09-11T15:58:03.171009-07:00"
+        },
+        "stage": "model_step",
+        "limits": {
+          "deadline": "2026-09-11T15:59:00.15007-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+        "status": "running",
+        "version": 4,
+        "step_seq": 1,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_0104cfd8467c2338e8afc55a93da30d144837e988f465278be9b88004600c565",
+        "tool_calls": 0,
+        "model_rounds": 1,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 1
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "legacy-worker",
+          "until": "2026-09-11T15:58:03.171009-07:00"
+        },
+        "stage": "execute_effects",
+        "limits": {
+          "deadline": "2026-09-11T15:59:00.15007-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+        "status": "running",
+        "version": 6,
+        "step_seq": 1,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_19d7ec257264c07189671d42992645a518792dc99cc47151d6bc3795ad099546",
+        "tool_calls": 1,
+        "model_rounds": 1,
+        "cost_microusd": 0,
+        "pending_effect": {
+          "args": {
+            "path": "clamp.py"
+          },
+          "kind": "read_file",
+          "status": "in_flight",
+          "args_hash": "31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6",
+          "operation_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF_step_1_op_0",
+          "dispatch_epoch": 1,
+          "policy_version": "workspace-v1",
+          "expected_revision": 1,
+          "requires_approval": false
+        },
+        "schema_version": 1,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "version": 6,
+      "step_seq": 1,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T22:58:00.578581+00:00",
+      "input_event": {
+        "at": "2026-09-11T15:58:00.574546-07:00",
+        "kind": "tools_validated",
+        "epoch": 1,
+        "owner": "legacy-worker",
+        "effects": [
+          {
+            "args": {
+              "path": "clamp.py"
+            },
+            "kind": "read_file",
+            "status": "planned",
+            "args_hash": "31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6",
+            "operation_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF_step_1_op_0",
+            "dispatch_epoch": 0,
+            "policy_version": "workspace-v1",
+            "expected_revision": 1,
+            "requires_approval": false
+          }
+        ],
+        "complete": true,
+        "output_ref": "artifact_19d7ec257264c07189671d42992645a518792dc99cc47151d6bc3795ad099546",
+        "expected_version": 5
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "legacy-worker",
+          "until": "2026-09-11T15:58:03.171009-07:00"
+        },
+        "stage": "validate_tool_calls",
+        "limits": {
+          "deadline": "2026-09-11T15:59:00.15007-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+        "status": "running",
+        "version": 5,
+        "step_seq": 1,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_19d7ec257264c07189671d42992645a518792dc99cc47151d6bc3795ad099546",
+        "tool_calls": 0,
+        "model_rounds": 1,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 1
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "legacy-worker",
+          "until": "2026-09-11T15:58:03.171009-07:00"
+        },
+        "stage": "ingest_results",
+        "limits": {
+          "deadline": "2026-09-11T15:59:00.15007-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+        "status": "running",
+        "version": 7,
+        "step_seq": 1,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_135c3432627a6fa707f53ca7dfc62c6aad1489b9d34d0f7937f9985569bbbd0f",
+        "tool_calls": 1,
+        "model_rounds": 1,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "version": 7,
+      "step_seq": 1,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T22:58:00.736701+00:00",
+      "input_event": {
+        "at": "2026-09-11T15:58:00.732612-07:00",
+        "kind": "effect_completed",
+        "epoch": 1,
+        "owner": "legacy-worker",
+        "receipt": {
+          "ref": "artifact_135c3432627a6fa707f53ca7dfc62c6aad1489b9d34d0f7937f9985569bbbd0f",
+          "epoch": 1,
+          "status": "succeeded",
+          "settled": true,
+          "args_hash": "31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6",
+          "effect_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF_step_1_op_0",
+          "after_revision": 1,
+          "before_revision": 1
+        },
+        "expected_version": 6
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "legacy-worker",
+          "until": "2026-09-11T15:58:03.171009-07:00"
+        },
+        "stage": "execute_effects",
+        "limits": {
+          "deadline": "2026-09-11T15:59:00.15007-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+        "status": "running",
+        "version": 6,
+        "step_seq": 1,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_19d7ec257264c07189671d42992645a518792dc99cc47151d6bc3795ad099546",
+        "tool_calls": 1,
+        "model_rounds": 1,
+        "cost_microusd": 0,
+        "pending_effect": {
+          "args": {
+            "path": "clamp.py"
+          },
+          "kind": "read_file",
+          "status": "in_flight",
+          "args_hash": "31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6",
+          "operation_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF_step_1_op_0",
+          "dispatch_epoch": 1,
+          "policy_version": "workspace-v1",
+          "expected_revision": 1,
+          "requires_approval": false
+        },
+        "schema_version": 1,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 1
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "legacy-worker",
+          "until": "2026-09-11T15:58:03.171009-07:00"
+        },
+        "stage": "build_context",
+        "limits": {
+          "deadline": "2026-09-11T15:59:00.15007-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+        "status": "running",
+        "version": 8,
+        "step_seq": 1,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_9d16e14800f276fc88f5cf6718530d832401e8ee8596ca4dbb433969f06b1ab0",
+        "tool_calls": 1,
+        "model_rounds": 1,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "version": 8,
+      "step_seq": 1,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T22:58:00.78959+00:00",
+      "input_event": {
+        "at": "2026-09-11T15:58:00.784776-07:00",
+        "kind": "results_ingested",
+        "epoch": 1,
+        "owner": "legacy-worker",
+        "output_ref": "artifact_9d16e14800f276fc88f5cf6718530d832401e8ee8596ca4dbb433969f06b1ab0",
+        "expected_version": 7
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "legacy-worker",
+          "until": "2026-09-11T15:58:03.171009-07:00"
+        },
+        "stage": "ingest_results",
+        "limits": {
+          "deadline": "2026-09-11T15:59:00.15007-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+        "status": "running",
+        "version": 7,
+        "step_seq": 1,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_135c3432627a6fa707f53ca7dfc62c6aad1489b9d34d0f7937f9985569bbbd0f",
+        "tool_calls": 1,
+        "model_rounds": 1,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 1
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "legacy-worker",
+          "until": "2026-09-11T15:58:03.171009-07:00"
+        },
+        "stage": "model_step",
+        "limits": {
+          "deadline": "2026-09-11T15:59:00.15007-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+        "status": "running",
+        "version": 9,
+        "step_seq": 2,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_f6f68455b416f37571ac6f3f8ce81fe236fe4d4f69ad97ad2d61fb45473a7cec",
+        "tool_calls": 1,
+        "model_rounds": 2,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "version": 9,
+      "step_seq": 2,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T22:58:00.847641+00:00",
+      "input_event": {
+        "at": "2026-09-11T15:58:00.847038-07:00",
+        "kind": "context_built",
+        "epoch": 1,
+        "owner": "legacy-worker",
+        "output_ref": "artifact_f6f68455b416f37571ac6f3f8ce81fe236fe4d4f69ad97ad2d61fb45473a7cec",
+        "expected_version": 8
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "legacy-worker",
+          "until": "2026-09-11T15:58:03.171009-07:00"
+        },
+        "stage": "build_context",
+        "limits": {
+          "deadline": "2026-09-11T15:59:00.15007-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+        "status": "running",
+        "version": 8,
+        "step_seq": 1,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_9d16e14800f276fc88f5cf6718530d832401e8ee8596ca4dbb433969f06b1ab0",
+        "tool_calls": 1,
+        "model_rounds": 1,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 1
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "legacy-worker",
+          "until": "2026-09-11T15:58:03.171009-07:00"
+        },
+        "stage": "validate_tool_calls",
+        "limits": {
+          "deadline": "2026-09-11T15:59:00.15007-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+        "status": "running",
+        "version": 10,
+        "step_seq": 2,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_94d3b8f6e189d07b994bf6243b45ebf07836ff0944296f1fd6a62f4fc2f232a7",
+        "tool_calls": 1,
+        "model_rounds": 2,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "version": 10,
+      "step_seq": 2,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T22:58:00.929242+00:00",
+      "input_event": {
+        "at": "2026-09-11T15:58:00.924642-07:00",
+        "kind": "model_completed",
+        "epoch": 1,
+        "owner": "legacy-worker",
+        "complete": true,
+        "output_ref": "artifact_94d3b8f6e189d07b994bf6243b45ebf07836ff0944296f1fd6a62f4fc2f232a7",
+        "expected_version": 9
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "legacy-worker",
+          "until": "2026-09-11T15:58:03.171009-07:00"
+        },
+        "stage": "model_step",
+        "limits": {
+          "deadline": "2026-09-11T15:59:00.15007-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+        "status": "running",
+        "version": 9,
+        "step_seq": 2,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_f6f68455b416f37571ac6f3f8ce81fe236fe4d4f69ad97ad2d61fb45473a7cec",
+        "tool_calls": 1,
+        "model_rounds": 2,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 1
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "legacy-worker",
+          "until": "2026-09-11T15:58:03.171009-07:00"
+        },
+        "stage": "execute_effects",
+        "limits": {
+          "deadline": "2026-09-11T15:59:00.15007-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+        "status": "running",
+        "version": 11,
+        "step_seq": 2,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_94d3b8f6e189d07b994bf6243b45ebf07836ff0944296f1fd6a62f4fc2f232a7",
+        "tool_calls": 2,
+        "model_rounds": 2,
+        "cost_microusd": 0,
+        "pending_effect": {
+          "args": {
+            "files": [
+              {
+                "path": "clamp.py",
+                "content": "def clamp(value, low, high):\n    return max(low, min(value, high))\n",
+                "expected_sha256": "5ce9939a494a0ebeb2ed030c5f45258d0e22be107290c2b887b632418ef73363"
+              }
+            ]
+          },
+          "kind": "apply_patch",
+          "status": "in_flight",
+          "args_hash": "d45dba1bb6ab330033dc820a9d33516f284237bcd9226bd8b22b94ab7fa23ff2",
+          "operation_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF_step_2_op_0",
+          "dispatch_epoch": 1,
+          "policy_version": "workspace-v1",
+          "expected_revision": 1,
+          "requires_approval": false
+        },
+        "schema_version": 1,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "version": 11,
+      "step_seq": 2,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T22:58:00.946665+00:00",
+      "input_event": {
+        "at": "2026-09-11T15:58:00.942356-07:00",
+        "kind": "tools_validated",
+        "epoch": 1,
+        "owner": "legacy-worker",
+        "effects": [
+          {
+            "args": {
+              "files": [
+                {
+                  "path": "clamp.py",
+                  "content": "def clamp(value, low, high):\n    return max(low, min(value, high))\n",
+                  "expected_sha256": "5ce9939a494a0ebeb2ed030c5f45258d0e22be107290c2b887b632418ef73363"
+                }
+              ]
+            },
+            "kind": "apply_patch",
+            "status": "planned",
+            "args_hash": "d45dba1bb6ab330033dc820a9d33516f284237bcd9226bd8b22b94ab7fa23ff2",
+            "operation_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF_step_2_op_0",
+            "dispatch_epoch": 0,
+            "policy_version": "workspace-v1",
+            "expected_revision": 1,
+            "requires_approval": false
+          }
+        ],
+        "complete": true,
+        "output_ref": "artifact_94d3b8f6e189d07b994bf6243b45ebf07836ff0944296f1fd6a62f4fc2f232a7",
+        "expected_version": 10
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "legacy-worker",
+          "until": "2026-09-11T15:58:03.171009-07:00"
+        },
+        "stage": "validate_tool_calls",
+        "limits": {
+          "deadline": "2026-09-11T15:59:00.15007-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+        "status": "running",
+        "version": 10,
+        "step_seq": 2,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_94d3b8f6e189d07b994bf6243b45ebf07836ff0944296f1fd6a62f4fc2f232a7",
+        "tool_calls": 1,
+        "model_rounds": 2,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 1
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "legacy-worker",
+          "until": "2026-09-11T15:58:03.171009-07:00"
+        },
+        "stage": "ingest_results",
+        "limits": {
+          "deadline": "2026-09-11T15:59:00.15007-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+        "status": "running",
+        "version": 12,
+        "step_seq": 2,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_8418700ef6a9892fb3100905f21d9d6b41859f8c219b777cb5a2db6debfc285e",
+        "tool_calls": 2,
+        "model_rounds": 2,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 2,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "version": 12,
+      "step_seq": 2,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T22:58:01.084035+00:00",
+      "input_event": {
+        "at": "2026-09-11T15:58:01.082565-07:00",
+        "kind": "effect_completed",
+        "epoch": 1,
+        "owner": "legacy-worker",
+        "receipt": {
+          "ref": "artifact_8418700ef6a9892fb3100905f21d9d6b41859f8c219b777cb5a2db6debfc285e",
+          "epoch": 1,
+          "status": "succeeded",
+          "settled": true,
+          "args_hash": "d45dba1bb6ab330033dc820a9d33516f284237bcd9226bd8b22b94ab7fa23ff2",
+          "effect_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF_step_2_op_0",
+          "after_revision": 2,
+          "before_revision": 1
+        },
+        "expected_version": 11
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "legacy-worker",
+          "until": "2026-09-11T15:58:03.171009-07:00"
+        },
+        "stage": "execute_effects",
+        "limits": {
+          "deadline": "2026-09-11T15:59:00.15007-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+        "status": "running",
+        "version": 11,
+        "step_seq": 2,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_94d3b8f6e189d07b994bf6243b45ebf07836ff0944296f1fd6a62f4fc2f232a7",
+        "tool_calls": 2,
+        "model_rounds": 2,
+        "cost_microusd": 0,
+        "pending_effect": {
+          "args": {
+            "files": [
+              {
+                "path": "clamp.py",
+                "content": "def clamp(value, low, high):\n    return max(low, min(value, high))\n",
+                "expected_sha256": "5ce9939a494a0ebeb2ed030c5f45258d0e22be107290c2b887b632418ef73363"
+              }
+            ]
+          },
+          "kind": "apply_patch",
+          "status": "in_flight",
+          "args_hash": "d45dba1bb6ab330033dc820a9d33516f284237bcd9226bd8b22b94ab7fa23ff2",
+          "operation_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF_step_2_op_0",
+          "dispatch_epoch": 1,
+          "policy_version": "workspace-v1",
+          "expected_revision": 1,
+          "requires_approval": false
+        },
+        "schema_version": 1,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 1
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "legacy-worker",
+          "until": "2026-09-11T15:58:03.171009-07:00"
+        },
+        "stage": "build_context",
+        "limits": {
+          "deadline": "2026-09-11T15:59:00.15007-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+        "status": "running",
+        "version": 13,
+        "step_seq": 2,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_1481d4ff09569331ce99befbdc12de2bef248994b1c96c4e9a0dd976b9bfb8cf",
+        "tool_calls": 2,
+        "model_rounds": 2,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 2,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "version": 13,
+      "step_seq": 2,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T22:58:01.107442+00:00",
+      "input_event": {
+        "at": "2026-09-11T15:58:01.106493-07:00",
+        "kind": "results_ingested",
+        "epoch": 1,
+        "owner": "legacy-worker",
+        "output_ref": "artifact_1481d4ff09569331ce99befbdc12de2bef248994b1c96c4e9a0dd976b9bfb8cf",
+        "expected_version": 12
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "legacy-worker",
+          "until": "2026-09-11T15:58:03.171009-07:00"
+        },
+        "stage": "ingest_results",
+        "limits": {
+          "deadline": "2026-09-11T15:59:00.15007-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+        "status": "running",
+        "version": 12,
+        "step_seq": 2,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_8418700ef6a9892fb3100905f21d9d6b41859f8c219b777cb5a2db6debfc285e",
+        "tool_calls": 2,
+        "model_rounds": 2,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 2,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 1
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "legacy-worker",
+          "until": "2026-09-11T15:58:03.171009-07:00"
+        },
+        "stage": "model_step",
+        "limits": {
+          "deadline": "2026-09-11T15:59:00.15007-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+        "status": "running",
+        "version": 14,
+        "step_seq": 3,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_4e3b099e9c7604e88bfad46d8d76d5ae7d33461ea852670aefd91f71d25eabd5",
+        "tool_calls": 2,
+        "model_rounds": 3,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 2,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "version": 14,
+      "step_seq": 3,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T22:58:01.137433+00:00",
+      "input_event": {
+        "at": "2026-09-11T15:58:01.136329-07:00",
+        "kind": "context_built",
+        "epoch": 1,
+        "owner": "legacy-worker",
+        "output_ref": "artifact_4e3b099e9c7604e88bfad46d8d76d5ae7d33461ea852670aefd91f71d25eabd5",
+        "expected_version": 13
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "legacy-worker",
+          "until": "2026-09-11T15:58:03.171009-07:00"
+        },
+        "stage": "build_context",
+        "limits": {
+          "deadline": "2026-09-11T15:59:00.15007-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+        "status": "running",
+        "version": 13,
+        "step_seq": 2,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_1481d4ff09569331ce99befbdc12de2bef248994b1c96c4e9a0dd976b9bfb8cf",
+        "tool_calls": 2,
+        "model_rounds": 2,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 2,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 1
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "legacy-worker",
+          "until": "2026-09-11T15:58:03.171009-07:00"
+        },
+        "stage": "verify",
+        "limits": {
+          "deadline": "2026-09-11T15:59:00.15007-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+        "status": "running",
+        "version": 15,
+        "step_seq": 3,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_d53b5a158857bdab0207f10a861692ef47dc6ad8687b5ba6f0a411e644132767",
+        "tool_calls": 2,
+        "model_rounds": 3,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 2,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "version": 15,
+      "step_seq": 3,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T22:58:01.203115+00:00",
+      "input_event": {
+        "at": "2026-09-11T15:58:01.202097-07:00",
+        "kind": "model_completed",
+        "epoch": 1,
+        "owner": "legacy-worker",
+        "finish": true,
+        "complete": true,
+        "output_ref": "artifact_d53b5a158857bdab0207f10a861692ef47dc6ad8687b5ba6f0a411e644132767",
+        "expected_version": 14
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "legacy-worker",
+          "until": "2026-09-11T15:58:03.171009-07:00"
+        },
+        "stage": "model_step",
+        "limits": {
+          "deadline": "2026-09-11T15:59:00.15007-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+        "status": "running",
+        "version": 14,
+        "step_seq": 3,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_4e3b099e9c7604e88bfad46d8d76d5ae7d33461ea852670aefd91f71d25eabd5",
+        "tool_calls": 2,
+        "model_rounds": 3,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 2,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 1
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "legacy-worker",
+          "until": "2026-09-11T15:58:04.206679-07:00"
+        },
+        "stage": "finalize",
+        "limits": {
+          "deadline": "2026-09-11T15:59:00.15007-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+        "status": "running",
+        "version": 16,
+        "step_seq": 3,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_d53b5a158857bdab0207f10a861692ef47dc6ad8687b5ba6f0a411e644132767",
+        "tool_calls": 2,
+        "model_rounds": 3,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 2,
+        "verification_status": "verified",
+        "verification_revision": 2,
+        "verification_report_ref": "artifact_9051f6c45a235ab4ba3e236c79f2b24b6688d3c4083d104cae1cc47a2dbf3662"
+      },
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "version": 16,
+      "step_seq": 3,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T22:58:01.48418+00:00",
+      "input_event": {
+        "at": "2026-09-11T15:58:01.482984-07:00",
+        "kind": "verification_completed",
+        "epoch": 1,
+        "owner": "legacy-worker",
+        "verification": {
+          "trusted": true,
+          "report_ref": "artifact_9051f6c45a235ab4ba3e236c79f2b24b6688d3c4083d104cae1cc47a2dbf3662",
+          "target_passed": true,
+          "regression_passed": true,
+          "workspace_revision": 2,
+          "baseline_target_failed": true
+        },
+        "expected_version": 15
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "legacy-worker",
+          "until": "2026-09-11T15:58:04.206679-07:00"
+        },
+        "stage": "verify",
+        "limits": {
+          "deadline": "2026-09-11T15:59:00.15007-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+        "status": "running",
+        "version": 15,
+        "step_seq": 3,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_d53b5a158857bdab0207f10a861692ef47dc6ad8687b5ba6f0a411e644132767",
+        "tool_calls": 2,
+        "model_rounds": 3,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 2,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 1
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "legacy-worker",
+          "until": "2026-09-11T15:58:04.206679-07:00"
+        },
+        "stage": "stopped",
+        "limits": {
+          "deadline": "2026-09-11T15:59:00.15007-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+        "status": "completed",
+        "version": 17,
+        "step_seq": 3,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_8c56865840f95a670a8f56d408a82354fcb77fe67125908f1244c4c6e0abbf7f",
+        "tool_calls": 2,
+        "model_rounds": 3,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 2,
+        "verification_status": "verified",
+        "verification_revision": 2,
+        "verification_report_ref": "artifact_9051f6c45a235ab4ba3e236c79f2b24b6688d3c4083d104cae1cc47a2dbf3662"
+      },
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "version": 17,
+      "step_seq": 3,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T22:58:01.713186+00:00",
+      "input_event": {
+        "at": "2026-09-11T15:58:01.706101-07:00",
+        "kind": "finalized",
+        "epoch": 1,
+        "owner": "legacy-worker",
+        "output_ref": "artifact_8c56865840f95a670a8f56d408a82354fcb77fe67125908f1244c4c6e0abbf7f",
+        "expected_version": 16
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "legacy-worker",
+          "until": "2026-09-11T15:58:04.206679-07:00"
+        },
+        "stage": "finalize",
+        "limits": {
+          "deadline": "2026-09-11T15:59:00.15007-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000
+        },
+        "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+        "status": "running",
+        "version": 16,
+        "step_seq": 3,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_d53b5a158857bdab0207f10a861692ef47dc6ad8687b5ba6f0a411e644132767",
+        "tool_calls": 2,
+        "model_rounds": 3,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 2,
+        "verification_status": "verified",
+        "verification_revision": 2,
+        "verification_report_ref": "artifact_9051f6c45a235ab4ba3e236c79f2b24b6688d3c4083d104cae1cc47a2dbf3662"
+      },
+      "schema_version": 1
+    }
+  ],
+  "runner_allocations": [
+    {
+      "slots": 1,
+      "state": "released",
+      "run_id": "run_W7CBI4HOFSMDQIXDN6PS4JVEKF",
+      "runner_id": "runner",
+      "tenant_id": "tenant",
+      "lease_epoch": 1,
+      "memory_bytes": 0
+    }
+  ],
+  "scope": "real private PostgreSQL + production Driver + SQLite runner with TestBackend; no Docker or paid provider",
+  "test_binary_sha256": "24f481d93e106f8cf36094a0f99bf3e5aacfd84c0aaa53817bbe0eceb030c797"
+}

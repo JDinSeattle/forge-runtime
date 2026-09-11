@@ -1,0 +1,31 @@
+{
+  "bad": "run_P7V7QCDTQIKUYETS6QS3SUG2BZ",
+  "claimed": {
+    "run_BMORO3LYRXPSIA4MUHCVZTU5YZ": true,
+    "run_T3R3DGEEYZUXXKZ3ZGYYNKIWET": true
+  },
+  "concurrent_reopened_claims": 8,
+  "healthy_other_tenant": "run_BMORO3LYRXPSIA4MUHCVZTU5YZ",
+  "healthy_same_tenant": "run_T3R3DGEEYZUXXKZ3ZGYYNKIWET",
+  "http_body": "{\"code\":\"snapshot_migration_required\",\"message\":\"snapshot_migration_required: stored schema 3; binary supports 2; execution is paused: use forge-admin snapshot-inspect and docs/snapshot-compatibility-evidence.md\",\"request_id\":\"request_A2MYJWREDMJLDI23O55C5XGRVH\",\"retryable\":false}\n",
+  "http_status": 409,
+  "inspection": {
+    "tenant_id": "review_tenant",
+    "run_id": "run_P7V7QCDTQIKUYETS6QS3SUG2BZ",
+    "version": 1,
+    "stored_status": "queued",
+    "runner_id": "",
+    "lease_until": null,
+    "supported_schema": 2,
+    "header_supported": false,
+    "snapshot_sha256": "1a87d640c6e88cd164462172d12b33a74f8efc445073a1610afc05350d8badf6",
+    "snapshot_text": "{\"lease\": {\"epoch\": 0, \"owner\": \"\", \"until\": \"0001-01-01T00:00:00Z\"}, \"stage\": \"initialize\", \"limits\": {\"deadline\": \"2026-09-11T16:09:15.719373-07:00\", \"max_tool_calls\": 3, \"max_model_rounds\": 2, \"max_cost_microusd\": 1000000, \"max_no_progress_batches\": 3}, \"run_id\": \"run_P7V7QCDTQIKUYETS6QS3SUG2BZ\", \"status\": \"queued\", \"version\": 1, \"step_seq\": 0, \"tenant_id\": \"review_tenant\", \"tool_calls\": 0, \"future_only\": {\"html\": \"\u003c\u003e\u0026\", \"exact\": 9007199254740993}, \"model_rounds\": 0, \"cost_microusd\": 0, \"schema_version\": 3, \"workspace_revision\": 0, \"verification_status\": \"unverified\", \"verification_revision\": 0}",
+    "hold": {
+      "at": "2026-09-11T16:07:15.79393-07:00",
+      "reason": "unsupported_schema",
+      "observed_schema": "3",
+      "observed_sha256": "1a87d640c6e88cd164462172d12b33a74f8efc445073a1610afc05350d8badf6"
+    }
+  },
+  "passed": true
+}

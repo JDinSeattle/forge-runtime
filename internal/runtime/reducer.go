@@ -87,8 +87,15 @@ func Transition(state State, event Event) (State, []Command, error) {
 			err = fmt.Errorf("%w: context is not durably referenced", domain.ErrInvalid)
 			break
 		}
+		if err = observeProgress(&next, event); err != nil {
+			break
+		}
 		if budgetReached(next, event, true, false) {
 			commands = stop(&next, domain.StatusBudgetExhausted, "model budget reached")
+			break
+		}
+		if next.Progress != nil && next.Limits.MaxNoProgressBatches > 0 && next.Progress.RepeatedBatches >= next.Limits.MaxNoProgressBatches {
+			commands = stop(&next, domain.StatusBudgetExhausted, "repeated_no_progress")
 			break
 		}
 		next.OutputRef = event.OutputRef
@@ -480,8 +487,11 @@ func budgetReached(state State, event Event, model, tool bool) bool {
 }
 
 func validateState(state State) error {
-	if state.SchemaVersion != SnapshotSchemaVersion || state.Version == 0 || !state.Status.Valid() || !state.Stage.Valid() || state.Cost < 0 || state.Limits.MaxCost < 0 {
+	if (state.SchemaVersion != 1 && state.SchemaVersion != SnapshotSchemaVersion) || state.Version == 0 || !state.Status.Valid() || !state.Stage.Valid() || state.Cost < 0 || state.Limits.MaxCost < 0 {
 		return fmt.Errorf("%w: unsupported or malformed snapshot", domain.ErrInvalid)
+	}
+	if err := validateProgressState(state); err != nil {
+		return err
 	}
 	if err := state.RunID.Validate(); err != nil {
 		return err
@@ -644,6 +654,12 @@ func cloneEffects(effects []Effect) []Effect {
 	return result
 }
 func cloneState(state State) State {
+	if state.Progress != nil {
+		p := *state.Progress
+		p.RecentEvidence = append([]string{}, p.RecentEvidence...)
+		p.RecentTrees = append([]string{}, p.RecentTrees...)
+		state.Progress = &p
+	}
 	state.PendingEffect = cloneEffect(state.PendingEffect)
 	state.RemainingEffects = cloneEffects(state.RemainingEffects)
 	state.Approval = cloneApproval(state.Approval)

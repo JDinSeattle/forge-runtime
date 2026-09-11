@@ -165,7 +165,7 @@ func oneID(cmd *cobra.Command, args []string) error {
 func submitCommand(s *settings) *cobra.Command {
 	var task, taskFile, base, config, key, parent string
 	var priority int
-	var rounds, calls uint64
+	var rounds, calls, noProgress uint64
 	var cost, seconds int64
 	cmd := &cobra.Command{Use: "submit PROJECT_ID", Short: "Submit a run with a persisted idempotency receipt", Args: oneID, RunE: func(cmd *cobra.Command, args []string) error {
 		text, err := readText(task, taskFile, 64000)
@@ -187,6 +187,12 @@ func submitCommand(s *settings) *cobra.Command {
 				return errors.New("--parent-run must identify a terminal run")
 			}
 			body.ParentRunId = &parent
+		}
+		if cmd.Flags().Changed("max-no-progress-batches") {
+			if noProgress < 1 || noProgress > 20 {
+				return errors.New("--max-no-progress-batches must be 1..20")
+			}
+			body.Budget.MaxNoProgressBatches = &noProgress
 		}
 		if cmd.Flags().Changed("max-rounds") {
 			if rounds < 1 || rounds > 1000 {
@@ -253,6 +259,7 @@ func submitCommand(s *settings) *cobra.Command {
 	cmd.Flags().StringVar(&key, "idempotency-key", "", "Stable key; use a new explicit key for an intentionally new identical run")
 	cmd.Flags().StringVar(&parent, "parent-run", "", "Retry a terminal run from its original project, task and base; creates a new run")
 	cmd.Flags().IntVar(&priority, "priority", 0, "Reserved priority metadata (-2..2); tenant FIFO scheduling is unchanged")
+	cmd.Flags().Uint64Var(&noProgress, "max-no-progress-batches", 0, "Reduce the repeated closed-batch limit")
 	cmd.Flags().Uint64Var(&rounds, "max-rounds", 0, "Reduce model-round budget")
 	cmd.Flags().Uint64Var(&calls, "max-tools", 0, "Reduce tool-call budget")
 	cmd.Flags().Int64Var(&cost, "max-cost-microusd", 0, "Reduce cost budget (integer micro-US dollars)")

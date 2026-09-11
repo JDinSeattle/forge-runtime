@@ -1,0 +1,4257 @@
+{
+  "artifact_bytes": {
+    "artifact_0119e094157e0a1c42534cf07d5d14599ffe9a6519e458b067cd8952e099f89d": "{\"context_ref\":\"artifact_7eae22a731adcd5f69a68d79ed320d7560521478b47c8282eb517098e360615f\",\"policy_version\":1,\"step_seq\":4,\"message_seq\":1,\"attempt_id\":\"attempt_P6QORPU5IWPPOSAMPMA4DM6WVB\",\"observations\":[{\"effect_id\":\"run_ZDIJFIPP43YNYDMCHWEZHGVJJY_step_4_op_0\",\"receipt_ref\":\"artifact_82fce9946926ca67ce4dc13bcc7ff12e5dc44c264800a080a557b4f0e15629b4\",\"fingerprint\":\"544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687\",\"before_hash\":\"ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c\",\"after_hash\":\"ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c\"}]}",
+    "artifact_315421abd0dcf5bbb8a9dc828a7f5679389b1e7c4dafa03dcd4ce753494c07d4": "{\"request\":{\"tenant_id\":\"tenant\",\"run_id\":\"run_ZDIJFIPP43YNYDMCHWEZHGVJJY\",\"workspace_id\":\"run_ZDIJFIPP43YNYDMCHWEZHGVJJY\",\"epoch\":1,\"grant\":\"\",\"operation_id\":\"run_ZDIJFIPP43YNYDMCHWEZHGVJJY_step_1_op_0\",\"expected_revision\":1,\"kind\":\"read_file\",\"args\":{\"path\":\"clamp.py\"},\"args_hash\":\"31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6\",\"policy_version\":\"workspace-v1\",\"deadline\":\"2026-09-11T15:52:28.33798-07:00\"},\"status\":\"succeeded\",\"job_id\":\"forge-68d8db8bdbd2ae81ae70220d4af020f88570a916\",\"before_hash\":\"ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c\",\"after_hash\":\"ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c\",\"after_revision\":1,\"result\":{\"content\":\"def clamp(value, low, high):\\n    return min(low, max(value, high))\\n\",\"path\":\"clamp.py\",\"sha256\":\"5ce9939a494a0ebeb2ed030c5f45258d0e22be107290c2b887b632418ef73363\",\"start_line\":1},\"receipt\":{\"tenant_id\":\"\",\"run_id\":\"\",\"kind\":\"\",\"object_key\":\"\",\"sha256\":\"\",\"size\":0},\"cancel_requested\":false}",
+    "artifact_33b2d5b0f613db07573205b2a35e5ca5694f45e170ee357fb447158fdef87ae3": "{\"context_ref\":\"artifact_91f9cd2d467acf0dbcab978973bae7a297bdbed05af96ad4bf7e988c0522dacf\",\"policy_version\":1,\"step_seq\":1,\"message_seq\":0,\"attempt_id\":\"attempt_QBHTHYKV5ET4Z3FISC33LWLJPT\",\"observations\":[{\"effect_id\":\"run_ZDIJFIPP43YNYDMCHWEZHGVJJY_step_1_op_0\",\"receipt_ref\":\"artifact_315421abd0dcf5bbb8a9dc828a7f5679389b1e7c4dafa03dcd4ce753494c07d4\",\"fingerprint\":\"544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687\",\"before_hash\":\"ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c\",\"after_hash\":\"ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c\"}]}",
+    "artifact_5759590e525b360fac31a6da379ea4933b5d68c29d560f8483c0e2edee459b22": "{\"request\":{\"tenant_id\":\"tenant\",\"run_id\":\"run_ZDIJFIPP43YNYDMCHWEZHGVJJY\",\"workspace_id\":\"run_ZDIJFIPP43YNYDMCHWEZHGVJJY\",\"epoch\":1,\"grant\":\"\",\"operation_id\":\"run_ZDIJFIPP43YNYDMCHWEZHGVJJY_step_3_op_0\",\"expected_revision\":1,\"kind\":\"read_file\",\"args\":{\"path\":\"clamp.py\"},\"args_hash\":\"31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6\",\"policy_version\":\"workspace-v1\",\"deadline\":\"2026-09-11T15:52:28.33798-07:00\"},\"status\":\"succeeded\",\"job_id\":\"forge-5ec2684960b7c91d87ecb90ab5e1953d5559a433\",\"before_hash\":\"ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c\",\"after_hash\":\"ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c\",\"after_revision\":1,\"result\":{\"content\":\"def clamp(value, low, high):\\n    return min(low, max(value, high))\\n\",\"path\":\"clamp.py\",\"sha256\":\"5ce9939a494a0ebeb2ed030c5f45258d0e22be107290c2b887b632418ef73363\",\"start_line\":1},\"receipt\":{\"tenant_id\":\"\",\"run_id\":\"\",\"kind\":\"\",\"object_key\":\"\",\"sha256\":\"\",\"size\":0},\"cancel_requested\":false}",
+    "artifact_7c615c1b0901c646598a213f8284fc8679500bcf74ac6b0ffb079d12f59269c1": "{\"request\":{\"tenant_id\":\"tenant\",\"run_id\":\"run_ZDIJFIPP43YNYDMCHWEZHGVJJY\",\"workspace_id\":\"run_ZDIJFIPP43YNYDMCHWEZHGVJJY\",\"epoch\":1,\"grant\":\"\",\"operation_id\":\"run_ZDIJFIPP43YNYDMCHWEZHGVJJY_step_2_op_0\",\"expected_revision\":1,\"kind\":\"read_file\",\"args\":{\"path\":\"clamp.py\"},\"args_hash\":\"31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6\",\"policy_version\":\"workspace-v1\",\"deadline\":\"2026-09-11T15:52:28.33798-07:00\"},\"status\":\"succeeded\",\"job_id\":\"forge-f878c0db408009254861ed998d8b0bf720653862\",\"before_hash\":\"ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c\",\"after_hash\":\"ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c\",\"after_revision\":1,\"result\":{\"content\":\"def clamp(value, low, high):\\n    return min(low, max(value, high))\\n\",\"path\":\"clamp.py\",\"sha256\":\"5ce9939a494a0ebeb2ed030c5f45258d0e22be107290c2b887b632418ef73363\",\"start_line\":1},\"receipt\":{\"tenant_id\":\"\",\"run_id\":\"\",\"kind\":\"\",\"object_key\":\"\",\"sha256\":\"\",\"size\":0},\"cancel_requested\":false}",
+    "artifact_82fce9946926ca67ce4dc13bcc7ff12e5dc44c264800a080a557b4f0e15629b4": "{\"request\":{\"tenant_id\":\"tenant\",\"run_id\":\"run_ZDIJFIPP43YNYDMCHWEZHGVJJY\",\"workspace_id\":\"run_ZDIJFIPP43YNYDMCHWEZHGVJJY\",\"epoch\":1,\"grant\":\"\",\"operation_id\":\"run_ZDIJFIPP43YNYDMCHWEZHGVJJY_step_4_op_0\",\"expected_revision\":1,\"kind\":\"read_file\",\"args\":{\"path\":\"clamp.py\"},\"args_hash\":\"31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6\",\"policy_version\":\"workspace-v1\",\"deadline\":\"2026-09-11T15:52:28.33798-07:00\"},\"status\":\"succeeded\",\"job_id\":\"forge-10846023a76083d80ef2b807cd711af3061923cf\",\"before_hash\":\"ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c\",\"after_hash\":\"ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c\",\"after_revision\":1,\"result\":{\"content\":\"def clamp(value, low, high):\\n    return min(low, max(value, high))\\n\",\"path\":\"clamp.py\",\"sha256\":\"5ce9939a494a0ebeb2ed030c5f45258d0e22be107290c2b887b632418ef73363\",\"start_line\":1},\"receipt\":{\"tenant_id\":\"\",\"run_id\":\"\",\"kind\":\"\",\"object_key\":\"\",\"sha256\":\"\",\"size\":0},\"cancel_requested\":false}",
+    "artifact_837b95b768d39a2e0e68b91eb32f30a432428b09e636daa6ae5f8293d5f1cf34": "{\"request\":{\"tenant_id\":\"tenant\",\"run_id\":\"run_ZDIJFIPP43YNYDMCHWEZHGVJJY\",\"workspace_id\":\"run_ZDIJFIPP43YNYDMCHWEZHGVJJY\",\"epoch\":1,\"grant\":\"\",\"operation_id\":\"run_ZDIJFIPP43YNYDMCHWEZHGVJJY_0_initial_target\",\"expected_revision\":1,\"kind\":\"verify\",\"args\":{\"target\":true},\"args_hash\":\"c56810ebca495ac55b599570ff113f60c83411e488cefe803421335131ab0944\",\"policy_version\":\"trusted-profile-v1\",\"deadline\":\"2026-09-11T15:52:28.33798-07:00\"},\"status\":\"failed\",\"job_id\":\"forge-aa3a50287449d4a33fb39e1f82161d694337a798\",\"before_hash\":\"ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c\",\"after_hash\":\"ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c\",\"after_revision\":1,\"result\":{\"id\":\"forge-aa3a50287449d4a33fb39e1f82161d694337a798\",\"running\":false,\"exit_code\":1,\"started\":true,\"output\":\"cHJvdG9jb2wgZml4dHVyZSBvbmx5OyBubyBQeXRob24gZXhlY3V0ZWQ=\",\"truncated\":false},\"receipt\":{\"tenant_id\":\"\",\"run_id\":\"\",\"kind\":\"\",\"object_key\":\"\",\"sha256\":\"\",\"size\":0},\"cancel_requested\":false}",
+    "artifact_af58c6e9d968fc91bcf1258f0f079131775eaa8e5cd64959f45960c6364515fb": "{\"context_ref\":\"artifact_5c0bda954f1a762231de9187abce9d9b270a5e6d4c5e20b0da81a8340a17040b\",\"policy_version\":1,\"step_seq\":3,\"message_seq\":0,\"attempt_id\":\"attempt_L4PFQF53DS6EG7UUKVU5UIYLO7\",\"observations\":[{\"effect_id\":\"run_ZDIJFIPP43YNYDMCHWEZHGVJJY_step_3_op_0\",\"receipt_ref\":\"artifact_5759590e525b360fac31a6da379ea4933b5d68c29d560f8483c0e2edee459b22\",\"fingerprint\":\"544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687\",\"before_hash\":\"ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c\",\"after_hash\":\"ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c\"}]}",
+    "artifact_e08a9426b3c27f1b70a64dfc529fff6fc70df8492eabfc63c7db62cb06892951": "{\"context_ref\":\"artifact_aec9515d8d51693bbf3b4f784ab5cb3db7c922b1b798f63c286804b81e7ba87a\",\"policy_version\":1,\"step_seq\":4,\"message_seq\":0,\"attempt_id\":\"attempt_P6QORPU5IWPPOSAMPMA4DM6WVB\",\"observations\":[{\"effect_id\":\"run_ZDIJFIPP43YNYDMCHWEZHGVJJY_step_4_op_0\",\"receipt_ref\":\"artifact_82fce9946926ca67ce4dc13bcc7ff12e5dc44c264800a080a557b4f0e15629b4\",\"fingerprint\":\"544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687\",\"before_hash\":\"ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c\",\"after_hash\":\"ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c\"}]}",
+    "artifact_f109079acb5c2ed6c5466360b6e95cff0d718817c7f52094a4d6c562fcd13019": "{\"context_ref\":\"artifact_14cc31c9c618f2c1fda55bbb9f6da10017d098f8c1c6c3c2cee5f808cdf0aa48\",\"policy_version\":1,\"step_seq\":2,\"message_seq\":0,\"attempt_id\":\"attempt_5DNNVZN2FCDJ7UBPOUDA3B6RZ6\",\"observations\":[{\"effect_id\":\"run_ZDIJFIPP43YNYDMCHWEZHGVJJY_step_2_op_0\",\"receipt_ref\":\"artifact_7c615c1b0901c646598a213f8284fc8679500bcf74ac6b0ffb079d12f59269c1\",\"fingerprint\":\"544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687\",\"before_hash\":\"ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c\",\"after_hash\":\"ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c\"}]}",
+    "artifact_fc42cae3443cdc13f138a5fa720dacb7f14c745458976f777e9145ca6eecbd48": "{\"context_ref\":\"artifact_c76991d48cdc590e4b2776931b47cec5533d7d9badfe961eece765e3f0a0715b\",\"policy_version\":1,\"step_seq\":0,\"message_seq\":0,\"observations\":[]}"
+  },
+  "effects": [
+    {
+      "args": {
+        "target": true
+      },
+      "kind": "verify",
+      "epoch": 1,
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "status": "failed",
+      "ordinal": -1,
+      "step_seq": 0,
+      "args_hash": "c56810ebca495ac55b599570ff113f60c83411e488cefe803421335131ab0944",
+      "tenant_id": "tenant",
+      "receipt_ref": "artifact_837b95b768d39a2e0e68b91eb32f30a432428b09e636daa6ae5f8293d5f1cf34",
+      "operation_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY_0_initial_target",
+      "canonical_args": "\\x7b22746172676574223a747275657d",
+      "policy_version": "trusted-profile-v1",
+      "expected_revision": 1
+    },
+    {
+      "args": {
+        "path": "clamp.py"
+      },
+      "kind": "read_file",
+      "epoch": 1,
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "status": "succeeded",
+      "ordinal": 0,
+      "step_seq": 1,
+      "args_hash": "31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6",
+      "tenant_id": "tenant",
+      "receipt_ref": "artifact_315421abd0dcf5bbb8a9dc828a7f5679389b1e7c4dafa03dcd4ce753494c07d4",
+      "operation_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY_step_1_op_0",
+      "canonical_args": "\\x7b2270617468223a22636c616d702e7079227d",
+      "policy_version": "workspace-v1",
+      "expected_revision": 1
+    },
+    {
+      "args": {
+        "path": "clamp.py"
+      },
+      "kind": "read_file",
+      "epoch": 1,
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "status": "succeeded",
+      "ordinal": 0,
+      "step_seq": 2,
+      "args_hash": "31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6",
+      "tenant_id": "tenant",
+      "receipt_ref": "artifact_7c615c1b0901c646598a213f8284fc8679500bcf74ac6b0ffb079d12f59269c1",
+      "operation_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY_step_2_op_0",
+      "canonical_args": "\\x7b2270617468223a22636c616d702e7079227d",
+      "policy_version": "workspace-v1",
+      "expected_revision": 1
+    },
+    {
+      "args": {
+        "path": "clamp.py"
+      },
+      "kind": "read_file",
+      "epoch": 1,
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "status": "succeeded",
+      "ordinal": 0,
+      "step_seq": 3,
+      "args_hash": "31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6",
+      "tenant_id": "tenant",
+      "receipt_ref": "artifact_5759590e525b360fac31a6da379ea4933b5d68c29d560f8483c0e2edee459b22",
+      "operation_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY_step_3_op_0",
+      "canonical_args": "\\x7b2270617468223a22636c616d702e7079227d",
+      "policy_version": "workspace-v1",
+      "expected_revision": 1
+    },
+    {
+      "args": {
+        "path": "clamp.py"
+      },
+      "kind": "read_file",
+      "epoch": 1,
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "status": "succeeded",
+      "ordinal": 0,
+      "step_seq": 4,
+      "args_hash": "31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6",
+      "tenant_id": "tenant",
+      "receipt_ref": "artifact_82fce9946926ca67ce4dc13bcc7ff12e5dc44c264800a080a557b4f0e15629b4",
+      "operation_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY_step_4_op_0",
+      "canonical_args": "\\x7b2270617468223a22636c616d702e7079227d",
+      "policy_version": "workspace-v1",
+      "expected_revision": 1
+    }
+  ],
+  "extra": {},
+  "model_attempts": [
+    {
+      "usage": {
+        "final": true,
+        "input": {
+          "known": false,
+          "value": 0
+        },
+        "output": {
+          "known": false,
+          "value": 0
+        },
+        "cache_read": {
+          "known": false,
+          "value": 0
+        },
+        "cache_write": {
+          "known": false,
+          "value": 0
+        }
+      },
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "status": "completed",
+      "attempt": 1,
+      "pricing": {
+        "model": "fake",
+        "provider": "fake",
+        "input_price": 0,
+        "output_price": 0,
+        "exact_pricing": true,
+        "price_version": "fixture-zero-v1",
+        "context_tokens": 8192,
+        "schema_version": 1,
+        "credential_group": "fake",
+        "max_output_tokens": 1024,
+        "request_timeout_ns": 5000000000
+      },
+      "raw_ref": "artifact_d5e82663b04d78a5a6b888f442a7c778a6a4e01cc88303e0c42bebd43ca221f8",
+      "deadline": "2026-09-11T22:51:33.618268+00:00",
+      "model_id": "fake",
+      "provider": "fake",
+      "step_seq": 1,
+      "tenant_id": "tenant",
+      "attempt_id": "attempt_QBHTHYKV5ET4Z3FISC33LWLJPT",
+      "error_code": null,
+      "request_id": "",
+      "started_at": "2026-09-11T22:51:28.619001+00:00",
+      "request_ref": "artifact_c76991d48cdc590e4b2776931b47cec5533d7d9badfe961eece765e3f0a0715b",
+      "price_version": "fixture-zero-v1",
+      "failure_policy": null
+    },
+    {
+      "usage": {
+        "final": true,
+        "input": {
+          "known": false,
+          "value": 0
+        },
+        "output": {
+          "known": false,
+          "value": 0
+        },
+        "cache_read": {
+          "known": false,
+          "value": 0
+        },
+        "cache_write": {
+          "known": false,
+          "value": 0
+        }
+      },
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "status": "completed",
+      "attempt": 1,
+      "pricing": {
+        "model": "fake",
+        "provider": "fake",
+        "input_price": 0,
+        "output_price": 0,
+        "exact_pricing": true,
+        "price_version": "fixture-zero-v1",
+        "context_tokens": 8192,
+        "schema_version": 1,
+        "credential_group": "fake",
+        "max_output_tokens": 1024,
+        "request_timeout_ns": 5000000000
+      },
+      "raw_ref": "artifact_83c3f708d550bca5f1dac690ea808a90881c6a47424554679311c652797b43be",
+      "deadline": "2026-09-11T22:51:33.931991+00:00",
+      "model_id": "fake",
+      "provider": "fake",
+      "step_seq": 2,
+      "tenant_id": "tenant",
+      "attempt_id": "attempt_5DNNVZN2FCDJ7UBPOUDA3B6RZ6",
+      "error_code": null,
+      "request_id": "",
+      "started_at": "2026-09-11T22:51:28.932547+00:00",
+      "request_ref": "artifact_91f9cd2d467acf0dbcab978973bae7a297bdbed05af96ad4bf7e988c0522dacf",
+      "price_version": "fixture-zero-v1",
+      "failure_policy": null
+    },
+    {
+      "usage": {
+        "final": true,
+        "input": {
+          "known": false,
+          "value": 0
+        },
+        "output": {
+          "known": false,
+          "value": 0
+        },
+        "cache_read": {
+          "known": false,
+          "value": 0
+        },
+        "cache_write": {
+          "known": false,
+          "value": 0
+        }
+      },
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "status": "completed",
+      "attempt": 1,
+      "pricing": {
+        "model": "fake",
+        "provider": "fake",
+        "input_price": 0,
+        "output_price": 0,
+        "exact_pricing": true,
+        "price_version": "fixture-zero-v1",
+        "context_tokens": 8192,
+        "schema_version": 1,
+        "credential_group": "fake",
+        "max_output_tokens": 1024,
+        "request_timeout_ns": 5000000000
+      },
+      "raw_ref": "artifact_bcc9d95b5d790c1f2505d6c1e28fba9385cbc417aac39dc619b2d393e97fe809",
+      "deadline": "2026-09-11T22:51:34.234622+00:00",
+      "model_id": "fake",
+      "provider": "fake",
+      "step_seq": 3,
+      "tenant_id": "tenant",
+      "attempt_id": "attempt_L4PFQF53DS6EG7UUKVU5UIYLO7",
+      "error_code": null,
+      "request_id": "",
+      "started_at": "2026-09-11T22:51:29.235017+00:00",
+      "request_ref": "artifact_14cc31c9c618f2c1fda55bbb9f6da10017d098f8c1c6c3c2cee5f808cdf0aa48",
+      "price_version": "fixture-zero-v1",
+      "failure_policy": null
+    },
+    {
+      "usage": {
+        "final": true,
+        "input": {
+          "known": false,
+          "value": 0
+        },
+        "output": {
+          "known": false,
+          "value": 0
+        },
+        "cache_read": {
+          "known": false,
+          "value": 0
+        },
+        "cache_write": {
+          "known": false,
+          "value": 0
+        }
+      },
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "status": "completed",
+      "attempt": 1,
+      "pricing": {
+        "model": "fake",
+        "provider": "fake",
+        "input_price": 0,
+        "output_price": 0,
+        "exact_pricing": true,
+        "price_version": "fixture-zero-v1",
+        "context_tokens": 8192,
+        "schema_version": 1,
+        "credential_group": "fake",
+        "max_output_tokens": 1024,
+        "request_timeout_ns": 5000000000
+      },
+      "raw_ref": "artifact_53685903b3840cddc761eee767f089eef97817a32f1eeb2871cfdd17e11a9ab2",
+      "deadline": "2026-09-11T22:51:34.534649+00:00",
+      "model_id": "fake",
+      "provider": "fake",
+      "step_seq": 4,
+      "tenant_id": "tenant",
+      "attempt_id": "attempt_P6QORPU5IWPPOSAMPMA4DM6WVB",
+      "error_code": null,
+      "request_id": "",
+      "started_at": "2026-09-11T22:51:29.534874+00:00",
+      "request_ref": "artifact_5c0bda954f1a762231de9187abce9d9b270a5e6d4c5e20b0da81a8340a17040b",
+      "price_version": "fixture-zero-v1",
+      "failure_policy": null
+    },
+    {
+      "usage": null,
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "status": "prepared",
+      "attempt": 1,
+      "pricing": {
+        "model": "fake",
+        "provider": "fake",
+        "input_price": 0,
+        "output_price": 0,
+        "exact_pricing": true,
+        "price_version": "fixture-zero-v1",
+        "context_tokens": 8192,
+        "schema_version": 1,
+        "credential_group": "fake",
+        "max_output_tokens": 1024,
+        "request_timeout_ns": 5000000000
+      },
+      "raw_ref": null,
+      "deadline": "2026-09-11T22:51:34.967315+00:00",
+      "model_id": "fake",
+      "provider": "fake",
+      "step_seq": 5,
+      "tenant_id": "tenant",
+      "attempt_id": "attempt_IBJU75D2FNH3YNNNNF75M5THTV",
+      "error_code": null,
+      "request_id": null,
+      "started_at": "2026-09-11T22:51:29.967824+00:00",
+      "request_ref": "artifact_7eae22a731adcd5f69a68d79ed320d7560521478b47c8282eb517098e360615f",
+      "price_version": "fixture-zero-v1",
+      "failure_policy": null
+    }
+  ],
+  "passed": false,
+  "quota_reservations": [
+    {
+      "id": "attempt_5DNNVZN2FCDJ7UBPOUDA3B6RZ6",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "status": "unknown",
+      "tokens": 9216,
+      "outcome": "success",
+      "microusd": 0,
+      "tenant_id": "tenant",
+      "settled_at": null,
+      "request_hash": "2c24fdead6e412945d03258a8ea3940e587d664b01c47ed8c608c525180b0561",
+      "actual_tokens": null,
+      "dispatched_at": "2026-09-11T22:51:28.940892+00:00",
+      "actual_microusd": null,
+      "settlement_kind": null,
+      "credential_group": "fake",
+      "request_deadline": "2026-09-11T22:51:33.931991+00:00",
+      "window_generation": 1,
+      "request_slot_released": false
+    },
+    {
+      "id": "attempt_L4PFQF53DS6EG7UUKVU5UIYLO7",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "status": "unknown",
+      "tokens": 9216,
+      "outcome": "success",
+      "microusd": 0,
+      "tenant_id": "tenant",
+      "settled_at": null,
+      "request_hash": "e101cc3bb9f4e286512576481845fe9703099bf5056d3532c4cecc6509e6c401",
+      "actual_tokens": null,
+      "dispatched_at": "2026-09-11T22:51:29.243509+00:00",
+      "actual_microusd": null,
+      "settlement_kind": null,
+      "credential_group": "fake",
+      "request_deadline": "2026-09-11T22:51:34.234622+00:00",
+      "window_generation": 1,
+      "request_slot_released": false
+    },
+    {
+      "id": "attempt_P6QORPU5IWPPOSAMPMA4DM6WVB",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "status": "unknown",
+      "tokens": 9216,
+      "outcome": "success",
+      "microusd": 0,
+      "tenant_id": "tenant",
+      "settled_at": null,
+      "request_hash": "00ae6368eada5455640dae532ad9fabc38d4faae9620fa435dbf3914b539e2c6",
+      "actual_tokens": null,
+      "dispatched_at": "2026-09-11T22:51:29.543179+00:00",
+      "actual_microusd": null,
+      "settlement_kind": null,
+      "credential_group": "fake",
+      "request_deadline": "2026-09-11T22:51:34.534649+00:00",
+      "window_generation": 1,
+      "request_slot_released": false
+    },
+    {
+      "id": "attempt_QBHTHYKV5ET4Z3FISC33LWLJPT",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "status": "unknown",
+      "tokens": 9216,
+      "outcome": "success",
+      "microusd": 0,
+      "tenant_id": "tenant",
+      "settled_at": null,
+      "request_hash": "5b196801fde267ac43e7f8552b5ef92019500cd7e4d486d540b2699684501dce",
+      "actual_tokens": null,
+      "dispatched_at": "2026-09-11T22:51:28.629635+00:00",
+      "actual_microusd": null,
+      "settlement_kind": null,
+      "credential_group": "fake",
+      "request_deadline": "2026-09-11T22:51:33.618268+00:00",
+      "window_generation": 1,
+      "request_slot_released": false
+    }
+  ],
+  "run": {
+    "tenant_id": "tenant",
+    "id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+    "project_id": "project_NJCTFBAJ5F6FPCQ7YO4FSEESUQ",
+    "principal_id": "developer",
+    "task": "Fix clamp boundary behavior.",
+    "base_commit": "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c",
+    "runner_id": "runner",
+    "commands": [
+      {
+        "kind": "call_model"
+      }
+    ],
+    "state": {
+      "progress": {
+        "last_checked_step": 4,
+        "message_seq": 1,
+        "repeated_batches": 0,
+        "classification": "message",
+        "recent_evidence": [
+          "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+        ],
+        "recent_trees": [
+          "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+        ]
+      },
+      "schema_version": 2,
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "tenant_id": "tenant",
+      "version": 24,
+      "status": "running",
+      "stage": "model_step",
+      "lease": {
+        "owner": "message-worker",
+        "epoch": 1,
+        "until": "2026-09-11T15:51:29.974935-07:00"
+      },
+      "step_seq": 5,
+      "workspace_revision": 1,
+      "output_ref": "artifact_7eae22a731adcd5f69a68d79ed320d7560521478b47c8282eb517098e360615f",
+      "verification_status": "unverified",
+      "verification_revision": 0,
+      "model_rounds": 5,
+      "tool_calls": 4,
+      "cost_microusd": 0,
+      "limits": {
+        "max_no_progress_batches": 3,
+        "max_model_rounds": 8,
+        "max_tool_calls": 20,
+        "max_cost_microusd": 1000000,
+        "deadline": "2026-09-11T15:52:28.33798-07:00"
+      }
+    },
+    "config": {
+      "max_no_progress_batches": 3,
+      "provider": "fake",
+      "model": "fake",
+      "max_model_rounds": 8,
+      "max_tool_calls": 20,
+      "max_cost_microusd": 1000000,
+      "max_runtime_seconds": 60
+    },
+    "created_at": "2026-09-11T15:51:28.339142-07:00",
+    "covered_seq": 57
+  },
+  "run_events": [
+    {
+      "seq": 1,
+      "type": "run.created",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "lease": {
+          "epoch": 0,
+          "owner": "",
+          "until": "0001-01-01T00:00:00Z"
+        },
+        "stage": "initialize",
+        "limits": {
+          "deadline": "2026-09-11T15:52:28.33798-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "status": "queued",
+        "version": 1,
+        "step_seq": 0,
+        "tenant_id": "tenant",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 0,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:28.341052+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 2,
+      "type": "run.claimed",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "stage": "initialize",
+        "state": "running",
+        "reason": "",
+        "version": 2,
+        "step_seq": 0,
+        "output_ref": "",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "workspace_revision": 0,
+        "verification_status": "unverified",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:28.350417+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 3,
+      "type": "artifact.ready",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "id": "artifact_837b95b768d39a2e0e68b91eb32f30a432428b09e636daa6ae5f8293d5f1cf34",
+        "kind": "operation_receipt",
+        "state": "ready",
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "sha256": "1f44965d3e3e572edffccb2bfb2eab8177279dcc8ef3af6ba012e692610aab17",
+        "byte_size": 996,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_ZDIJFIPP43YNYDMCHWEZHGVJJY/1f44965d3e3e572edffccb2bfb2eab8177279dcc8ef3af6ba012e692610aab17"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:28.506483+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 4,
+      "type": "artifact.ready",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "id": "artifact_b8c070e7cd36b60df81753bd10b2b4089e97cf7b8a81817df54d5572dab20aa8",
+        "kind": "baseline",
+        "state": "ready",
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "sha256": "0ad59f423772faac29c1eacb5fb0f0a78a1532de3364ca353b51927e3892aa3e",
+        "byte_size": 206,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_ZDIJFIPP43YNYDMCHWEZHGVJJY/0ad59f423772faac29c1eacb5fb0f0a78a1532de3364ca353b51927e3892aa3e"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:28.538775+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 5,
+      "type": "workspace.prepared",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "stage": "build_context",
+        "state": "running",
+        "reason": "",
+        "version": 3,
+        "step_seq": 0,
+        "output_ref": "artifact_b8c070e7cd36b60df81753bd10b2b4089e97cf7b8a81817df54d5572dab20aa8",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:28.544754+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 6,
+      "type": "artifact.ready",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "id": "artifact_c76991d48cdc590e4b2776931b47cec5533d7d9badfe961eece765e3f0a0715b",
+        "kind": "context",
+        "state": "ready",
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "sha256": "5d3564efb7e6c2a1261f91dbdc33c7a9a12b7bda8f4690f225d6fdd683921a63",
+        "byte_size": 2575,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_ZDIJFIPP43YNYDMCHWEZHGVJJY/5d3564efb7e6c2a1261f91dbdc33c7a9a12b7bda8f4690f225d6fdd683921a63"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:28.579025+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 7,
+      "type": "artifact.ready",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "id": "artifact_fc42cae3443cdc13f138a5fa720dacb7f14c745458976f777e9145ca6eecbd48",
+        "kind": "progress_report",
+        "state": "ready",
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "sha256": "5b03fd24448a2e52aefa360ba68060f7010e9267efef3305032f52c1eba02004",
+        "byte_size": 157,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_ZDIJFIPP43YNYDMCHWEZHGVJJY/5b03fd24448a2e52aefa360ba68060f7010e9267efef3305032f52c1eba02004"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:28.606896+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 8,
+      "type": "step.started",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "stage": "model_step",
+        "state": "running",
+        "reason": "",
+        "version": 4,
+        "step_seq": 1,
+        "output_ref": "artifact_c76991d48cdc590e4b2776931b47cec5533d7d9badfe961eece765e3f0a0715b",
+        "tool_calls": 0,
+        "model_rounds": 1,
+        "cost_microusd": 0,
+        "repeated_batches": 0,
+        "workspace_revision": 1,
+        "progress_report_ref": "artifact_fc42cae3443cdc13f138a5fa720dacb7f14c745458976f777e9145ca6eecbd48",
+        "verification_status": "unverified",
+        "progress_classification": "initial",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:28.613814+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 9,
+      "type": "model.started",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "step_seq": 1,
+        "attempt_id": "attempt_QBHTHYKV5ET4Z3FISC33LWLJPT",
+        "price_version": "fixture-zero-v1"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:28.619637+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 10,
+      "type": "artifact.ready",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "id": "artifact_d5e82663b04d78a5a6b888f442a7c778a6a4e01cc88303e0c42bebd43ca221f8",
+        "kind": "model_response",
+        "state": "ready",
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "sha256": "ca3326cebc42867a9b3284d324175d77c3b530c4358d3959fb03fb6037532be0",
+        "byte_size": 399,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_ZDIJFIPP43YNYDMCHWEZHGVJJY/ca3326cebc42867a9b3284d324175d77c3b530c4358d3959fb03fb6037532be0"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:28.660164+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 11,
+      "type": "model.completed",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "stage": "validate_tool_calls",
+        "state": "running",
+        "reason": "",
+        "version": 5,
+        "step_seq": 1,
+        "output_ref": "artifact_d5e82663b04d78a5a6b888f442a7c778a6a4e01cc88303e0c42bebd43ca221f8",
+        "tool_calls": 0,
+        "model_rounds": 1,
+        "cost_microusd": 0,
+        "repeated_batches": 0,
+        "workspace_revision": 1,
+        "progress_report_ref": "",
+        "verification_status": "unverified",
+        "progress_classification": "initial",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:28.68749+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 12,
+      "type": "tool.planned",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "stage": "execute_effects",
+        "state": "running",
+        "reason": "",
+        "version": 6,
+        "step_seq": 1,
+        "args_hash": "31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6",
+        "output_ref": "artifact_d5e82663b04d78a5a6b888f442a7c778a6a4e01cc88303e0c42bebd43ca221f8",
+        "tool_calls": 1,
+        "model_rounds": 1,
+        "operation_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY_step_1_op_0",
+        "cost_microusd": 0,
+        "repeated_batches": 0,
+        "workspace_revision": 1,
+        "progress_report_ref": "",
+        "verification_status": "unverified",
+        "progress_classification": "initial",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:28.695728+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 13,
+      "type": "artifact.ready",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "id": "artifact_315421abd0dcf5bbb8a9dc828a7f5679389b1e7c4dafa03dcd4ce753494c07d4",
+        "kind": "operation_receipt",
+        "state": "ready",
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "sha256": "aee008bc0225974a9be389b60c214515a33953015881713368baccdde0ba0cf5",
+        "byte_size": 1001,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_ZDIJFIPP43YNYDMCHWEZHGVJJY/aee008bc0225974a9be389b60c214515a33953015881713368baccdde0ba0cf5"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:28.814776+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 14,
+      "type": "tool.finished",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "stage": "ingest_results",
+        "state": "running",
+        "reason": "",
+        "version": 7,
+        "step_seq": 1,
+        "output_ref": "artifact_315421abd0dcf5bbb8a9dc828a7f5679389b1e7c4dafa03dcd4ce753494c07d4",
+        "tool_calls": 1,
+        "receipt_ref": "artifact_315421abd0dcf5bbb8a9dc828a7f5679389b1e7c4dafa03dcd4ce753494c07d4",
+        "model_rounds": 1,
+        "cost_microusd": 0,
+        "repeated_batches": 0,
+        "workspace_revision": 1,
+        "progress_report_ref": "",
+        "verification_status": "unverified",
+        "progress_classification": "initial",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:28.820106+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 15,
+      "type": "artifact.ready",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "id": "artifact_8d9cbb131fdb9b7420dc84276567e505c9acd4b848d5091a532d0127fcfcc6d6",
+        "kind": "tool_batch",
+        "state": "ready",
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "sha256": "5f40ec8447a50fe1051265e73b9c57831cf834623c93b892cdc866f75aaa6664",
+        "byte_size": 23,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_ZDIJFIPP43YNYDMCHWEZHGVJJY/5f40ec8447a50fe1051265e73b9c57831cf834623c93b892cdc866f75aaa6664"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:28.849264+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 16,
+      "type": "run.results_ingested",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "stage": "build_context",
+        "state": "running",
+        "reason": "",
+        "version": 8,
+        "step_seq": 1,
+        "output_ref": "artifact_8d9cbb131fdb9b7420dc84276567e505c9acd4b848d5091a532d0127fcfcc6d6",
+        "tool_calls": 1,
+        "model_rounds": 1,
+        "cost_microusd": 0,
+        "repeated_batches": 0,
+        "workspace_revision": 1,
+        "progress_report_ref": "",
+        "verification_status": "unverified",
+        "progress_classification": "initial",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:28.854362+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 17,
+      "type": "artifact.ready",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "id": "artifact_91f9cd2d467acf0dbcab978973bae7a297bdbed05af96ad4bf7e988c0522dacf",
+        "kind": "context",
+        "state": "ready",
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "sha256": "c514c2f07b9e4459a34d0ac963a4998f617c1469888046a5026202b10ff04789",
+        "byte_size": 2936,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_ZDIJFIPP43YNYDMCHWEZHGVJJY/c514c2f07b9e4459a34d0ac963a4998f617c1469888046a5026202b10ff04789"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:28.889534+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 18,
+      "type": "artifact.ready",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "id": "artifact_33b2d5b0f613db07573205b2a35e5ca5694f45e170ee357fb447158fdef87ae3",
+        "kind": "progress_report",
+        "state": "ready",
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "sha256": "cf6835a227f6f554eb4c2e177ec909343acfeebb09e1ae28b171eb866d2e55cb",
+        "byte_size": 597,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_ZDIJFIPP43YNYDMCHWEZHGVJJY/cf6835a227f6f554eb4c2e177ec909343acfeebb09e1ae28b171eb866d2e55cb"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:28.919537+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 19,
+      "type": "step.started",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "stage": "model_step",
+        "state": "running",
+        "reason": "",
+        "version": 9,
+        "step_seq": 2,
+        "output_ref": "artifact_91f9cd2d467acf0dbcab978973bae7a297bdbed05af96ad4bf7e988c0522dacf",
+        "tool_calls": 1,
+        "model_rounds": 2,
+        "cost_microusd": 0,
+        "repeated_batches": 0,
+        "workspace_revision": 1,
+        "progress_report_ref": "artifact_33b2d5b0f613db07573205b2a35e5ca5694f45e170ee357fb447158fdef87ae3",
+        "verification_status": "unverified",
+        "progress_classification": "new_evidence",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:28.927433+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 20,
+      "type": "model.started",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "step_seq": 2,
+        "attempt_id": "attempt_5DNNVZN2FCDJ7UBPOUDA3B6RZ6",
+        "price_version": "fixture-zero-v1"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:28.933088+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 21,
+      "type": "artifact.ready",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "id": "artifact_83c3f708d550bca5f1dac690ea808a90881c6a47424554679311c652797b43be",
+        "kind": "model_response",
+        "state": "ready",
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "sha256": "f03c25f4e9fba9babc14b979505f90ccb67f0ac43bb96ce38e65a4e4bd09d3d8",
+        "byte_size": 399,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_ZDIJFIPP43YNYDMCHWEZHGVJJY/f03c25f4e9fba9babc14b979505f90ccb67f0ac43bb96ce38e65a4e4bd09d3d8"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:28.969845+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 22,
+      "type": "model.completed",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "stage": "validate_tool_calls",
+        "state": "running",
+        "reason": "",
+        "version": 10,
+        "step_seq": 2,
+        "output_ref": "artifact_83c3f708d550bca5f1dac690ea808a90881c6a47424554679311c652797b43be",
+        "tool_calls": 1,
+        "model_rounds": 2,
+        "cost_microusd": 0,
+        "repeated_batches": 0,
+        "workspace_revision": 1,
+        "progress_report_ref": "",
+        "verification_status": "unverified",
+        "progress_classification": "new_evidence",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:28.9906+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 23,
+      "type": "tool.planned",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "stage": "execute_effects",
+        "state": "running",
+        "reason": "",
+        "version": 11,
+        "step_seq": 2,
+        "args_hash": "31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6",
+        "output_ref": "artifact_83c3f708d550bca5f1dac690ea808a90881c6a47424554679311c652797b43be",
+        "tool_calls": 2,
+        "model_rounds": 2,
+        "operation_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY_step_2_op_0",
+        "cost_microusd": 0,
+        "repeated_batches": 0,
+        "workspace_revision": 1,
+        "progress_report_ref": "",
+        "verification_status": "unverified",
+        "progress_classification": "new_evidence",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:28.997324+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 24,
+      "type": "artifact.ready",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "id": "artifact_7c615c1b0901c646598a213f8284fc8679500bcf74ac6b0ffb079d12f59269c1",
+        "kind": "operation_receipt",
+        "state": "ready",
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "sha256": "92cbb27fe86754b27336b2a6b6f3984f4fe86fae77e6b1f731eb78561e9a2110",
+        "byte_size": 1001,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_ZDIJFIPP43YNYDMCHWEZHGVJJY/92cbb27fe86754b27336b2a6b6f3984f4fe86fae77e6b1f731eb78561e9a2110"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:29.115959+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 25,
+      "type": "tool.finished",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "stage": "ingest_results",
+        "state": "running",
+        "reason": "",
+        "version": 12,
+        "step_seq": 2,
+        "output_ref": "artifact_7c615c1b0901c646598a213f8284fc8679500bcf74ac6b0ffb079d12f59269c1",
+        "tool_calls": 2,
+        "receipt_ref": "artifact_7c615c1b0901c646598a213f8284fc8679500bcf74ac6b0ffb079d12f59269c1",
+        "model_rounds": 2,
+        "cost_microusd": 0,
+        "repeated_batches": 0,
+        "workspace_revision": 1,
+        "progress_report_ref": "",
+        "verification_status": "unverified",
+        "progress_classification": "new_evidence",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:29.119662+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 26,
+      "type": "artifact.ready",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "id": "artifact_222dc992565b462aedc1944c0184a088da84609e51f0279f876ff77edecbd54c",
+        "kind": "tool_batch",
+        "state": "ready",
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "sha256": "172ec084de4380b3de0d742d06fa2f7776eb71a67ca39ff74ebe459e1d88fdbf",
+        "byte_size": 23,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_ZDIJFIPP43YNYDMCHWEZHGVJJY/172ec084de4380b3de0d742d06fa2f7776eb71a67ca39ff74ebe459e1d88fdbf"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:29.15363+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 27,
+      "type": "run.results_ingested",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "stage": "build_context",
+        "state": "running",
+        "reason": "",
+        "version": 13,
+        "step_seq": 2,
+        "output_ref": "artifact_222dc992565b462aedc1944c0184a088da84609e51f0279f876ff77edecbd54c",
+        "tool_calls": 2,
+        "model_rounds": 2,
+        "cost_microusd": 0,
+        "repeated_batches": 0,
+        "workspace_revision": 1,
+        "progress_report_ref": "",
+        "verification_status": "unverified",
+        "progress_classification": "new_evidence",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:29.158717+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 28,
+      "type": "artifact.ready",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "id": "artifact_14cc31c9c618f2c1fda55bbb9f6da10017d098f8c1c6c3c2cee5f808cdf0aa48",
+        "kind": "context",
+        "state": "ready",
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "sha256": "7f66857fcc76e3393c407892534cec9cdd6b1267b5a886790dd9c59314a5bcab",
+        "byte_size": 3297,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_ZDIJFIPP43YNYDMCHWEZHGVJJY/7f66857fcc76e3393c407892534cec9cdd6b1267b5a886790dd9c59314a5bcab"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:29.197939+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 29,
+      "type": "artifact.ready",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "id": "artifact_f109079acb5c2ed6c5466360b6e95cff0d718817c7f52094a4d6c562fcd13019",
+        "kind": "progress_report",
+        "state": "ready",
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "sha256": "2b8a74f1fb6434f0d7c174edcacf1c97317f81df3867dfe2bbe056b243981d41",
+        "byte_size": 597,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_ZDIJFIPP43YNYDMCHWEZHGVJJY/2b8a74f1fb6434f0d7c174edcacf1c97317f81df3867dfe2bbe056b243981d41"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:29.226281+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 30,
+      "type": "step.started",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "stage": "model_step",
+        "state": "running",
+        "reason": "",
+        "version": 14,
+        "step_seq": 3,
+        "output_ref": "artifact_14cc31c9c618f2c1fda55bbb9f6da10017d098f8c1c6c3c2cee5f808cdf0aa48",
+        "tool_calls": 2,
+        "model_rounds": 3,
+        "cost_microusd": 0,
+        "repeated_batches": 1,
+        "workspace_revision": 1,
+        "progress_report_ref": "artifact_f109079acb5c2ed6c5466360b6e95cff0d718817c7f52094a4d6c562fcd13019",
+        "verification_status": "unverified",
+        "progress_classification": "repeated",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:29.23125+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 31,
+      "type": "model.started",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "step_seq": 3,
+        "attempt_id": "attempt_L4PFQF53DS6EG7UUKVU5UIYLO7",
+        "price_version": "fixture-zero-v1"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:29.235599+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 32,
+      "type": "artifact.ready",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "id": "artifact_bcc9d95b5d790c1f2505d6c1e28fba9385cbc417aac39dc619b2d393e97fe809",
+        "kind": "model_response",
+        "state": "ready",
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "sha256": "395bdf5b6e2a02672fceeff7e741d3ad0748c2ce894a69c3b0c3f6d4ef2dfeea",
+        "byte_size": 399,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_ZDIJFIPP43YNYDMCHWEZHGVJJY/395bdf5b6e2a02672fceeff7e741d3ad0748c2ce894a69c3b0c3f6d4ef2dfeea"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:29.271703+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 33,
+      "type": "model.completed",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "stage": "validate_tool_calls",
+        "state": "running",
+        "reason": "",
+        "version": 15,
+        "step_seq": 3,
+        "output_ref": "artifact_bcc9d95b5d790c1f2505d6c1e28fba9385cbc417aac39dc619b2d393e97fe809",
+        "tool_calls": 2,
+        "model_rounds": 3,
+        "cost_microusd": 0,
+        "repeated_batches": 1,
+        "workspace_revision": 1,
+        "progress_report_ref": "",
+        "verification_status": "unverified",
+        "progress_classification": "repeated",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:29.290251+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 34,
+      "type": "tool.planned",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "stage": "execute_effects",
+        "state": "running",
+        "reason": "",
+        "version": 16,
+        "step_seq": 3,
+        "args_hash": "31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6",
+        "output_ref": "artifact_bcc9d95b5d790c1f2505d6c1e28fba9385cbc417aac39dc619b2d393e97fe809",
+        "tool_calls": 3,
+        "model_rounds": 3,
+        "operation_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY_step_3_op_0",
+        "cost_microusd": 0,
+        "repeated_batches": 1,
+        "workspace_revision": 1,
+        "progress_report_ref": "",
+        "verification_status": "unverified",
+        "progress_classification": "repeated",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:29.298152+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 35,
+      "type": "artifact.ready",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "id": "artifact_5759590e525b360fac31a6da379ea4933b5d68c29d560f8483c0e2edee459b22",
+        "kind": "operation_receipt",
+        "state": "ready",
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "sha256": "363663204717a60e3b19ea7e34afae747b66aaf268f5918d578bbf609c7d27fe",
+        "byte_size": 1001,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_ZDIJFIPP43YNYDMCHWEZHGVJJY/363663204717a60e3b19ea7e34afae747b66aaf268f5918d578bbf609c7d27fe"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:29.425692+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 36,
+      "type": "tool.finished",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "stage": "ingest_results",
+        "state": "running",
+        "reason": "",
+        "version": 17,
+        "step_seq": 3,
+        "output_ref": "artifact_5759590e525b360fac31a6da379ea4933b5d68c29d560f8483c0e2edee459b22",
+        "tool_calls": 3,
+        "receipt_ref": "artifact_5759590e525b360fac31a6da379ea4933b5d68c29d560f8483c0e2edee459b22",
+        "model_rounds": 3,
+        "cost_microusd": 0,
+        "repeated_batches": 1,
+        "workspace_revision": 1,
+        "progress_report_ref": "",
+        "verification_status": "unverified",
+        "progress_classification": "repeated",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:29.432421+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 37,
+      "type": "artifact.ready",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "id": "artifact_025acd83c40638cdcfdc3f603ea58acdd8f3caad3a0eff6d05530bc37e6cc74e",
+        "kind": "tool_batch",
+        "state": "ready",
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "sha256": "d9847af821b0539cb1f1daea6695da623bbd7ab3a367068275d9f4aa851c9a9b",
+        "byte_size": 23,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_ZDIJFIPP43YNYDMCHWEZHGVJJY/d9847af821b0539cb1f1daea6695da623bbd7ab3a367068275d9f4aa851c9a9b"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:29.46087+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 38,
+      "type": "run.results_ingested",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "stage": "build_context",
+        "state": "running",
+        "reason": "",
+        "version": 18,
+        "step_seq": 3,
+        "output_ref": "artifact_025acd83c40638cdcfdc3f603ea58acdd8f3caad3a0eff6d05530bc37e6cc74e",
+        "tool_calls": 3,
+        "model_rounds": 3,
+        "cost_microusd": 0,
+        "repeated_batches": 1,
+        "workspace_revision": 1,
+        "progress_report_ref": "",
+        "verification_status": "unverified",
+        "progress_classification": "repeated",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:29.464367+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 39,
+      "type": "artifact.ready",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "id": "artifact_5c0bda954f1a762231de9187abce9d9b270a5e6d4c5e20b0da81a8340a17040b",
+        "kind": "context",
+        "state": "ready",
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "sha256": "a3dc63e9bf6662a073d3a33a9c4fd9896a238a8c979c7b00222701c12720be7a",
+        "byte_size": 3658,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_ZDIJFIPP43YNYDMCHWEZHGVJJY/a3dc63e9bf6662a073d3a33a9c4fd9896a238a8c979c7b00222701c12720be7a"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:29.497925+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 40,
+      "type": "artifact.ready",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "id": "artifact_af58c6e9d968fc91bcf1258f0f079131775eaa8e5cd64959f45960c6364515fb",
+        "kind": "progress_report",
+        "state": "ready",
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "sha256": "081ef7858217630025d9748515c705c50740e0fc28ba3419af547fac07339c77",
+        "byte_size": 597,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_ZDIJFIPP43YNYDMCHWEZHGVJJY/081ef7858217630025d9748515c705c50740e0fc28ba3419af547fac07339c77"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:29.526811+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 41,
+      "type": "step.started",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "stage": "model_step",
+        "state": "running",
+        "reason": "",
+        "version": 19,
+        "step_seq": 4,
+        "output_ref": "artifact_5c0bda954f1a762231de9187abce9d9b270a5e6d4c5e20b0da81a8340a17040b",
+        "tool_calls": 3,
+        "model_rounds": 4,
+        "cost_microusd": 0,
+        "repeated_batches": 2,
+        "workspace_revision": 1,
+        "progress_report_ref": "artifact_af58c6e9d968fc91bcf1258f0f079131775eaa8e5cd64959f45960c6364515fb",
+        "verification_status": "unverified",
+        "progress_classification": "repeated",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:29.531511+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 42,
+      "type": "model.started",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "step_seq": 4,
+        "attempt_id": "attempt_P6QORPU5IWPPOSAMPMA4DM6WVB",
+        "price_version": "fixture-zero-v1"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:29.535125+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 43,
+      "type": "artifact.ready",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "id": "artifact_53685903b3840cddc761eee767f089eef97817a32f1eeb2871cfdd17e11a9ab2",
+        "kind": "model_response",
+        "state": "ready",
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "sha256": "d0f7c550cf4109f9fce4c62515cc38da7d149179c9a573b55bd38d599b89d0ef",
+        "byte_size": 399,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_ZDIJFIPP43YNYDMCHWEZHGVJJY/d0f7c550cf4109f9fce4c62515cc38da7d149179c9a573b55bd38d599b89d0ef"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:29.575696+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 44,
+      "type": "model.completed",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "stage": "validate_tool_calls",
+        "state": "running",
+        "reason": "",
+        "version": 20,
+        "step_seq": 4,
+        "output_ref": "artifact_53685903b3840cddc761eee767f089eef97817a32f1eeb2871cfdd17e11a9ab2",
+        "tool_calls": 3,
+        "model_rounds": 4,
+        "cost_microusd": 0,
+        "repeated_batches": 2,
+        "workspace_revision": 1,
+        "progress_report_ref": "",
+        "verification_status": "unverified",
+        "progress_classification": "repeated",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:29.600187+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 45,
+      "type": "tool.planned",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "stage": "execute_effects",
+        "state": "running",
+        "reason": "",
+        "version": 21,
+        "step_seq": 4,
+        "args_hash": "31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6",
+        "output_ref": "artifact_53685903b3840cddc761eee767f089eef97817a32f1eeb2871cfdd17e11a9ab2",
+        "tool_calls": 4,
+        "model_rounds": 4,
+        "operation_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY_step_4_op_0",
+        "cost_microusd": 0,
+        "repeated_batches": 2,
+        "workspace_revision": 1,
+        "progress_report_ref": "",
+        "verification_status": "unverified",
+        "progress_classification": "repeated",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:29.60922+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 46,
+      "type": "artifact.ready",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "id": "artifact_82fce9946926ca67ce4dc13bcc7ff12e5dc44c264800a080a557b4f0e15629b4",
+        "kind": "operation_receipt",
+        "state": "ready",
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "sha256": "0f3297a7a63895140e8b73ba3a23f6230200216acf9fa47b82d031156a481409",
+        "byte_size": 1001,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_ZDIJFIPP43YNYDMCHWEZHGVJJY/0f3297a7a63895140e8b73ba3a23f6230200216acf9fa47b82d031156a481409"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:29.734624+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 47,
+      "type": "tool.finished",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "stage": "ingest_results",
+        "state": "running",
+        "reason": "",
+        "version": 22,
+        "step_seq": 4,
+        "output_ref": "artifact_82fce9946926ca67ce4dc13bcc7ff12e5dc44c264800a080a557b4f0e15629b4",
+        "tool_calls": 4,
+        "receipt_ref": "artifact_82fce9946926ca67ce4dc13bcc7ff12e5dc44c264800a080a557b4f0e15629b4",
+        "model_rounds": 4,
+        "cost_microusd": 0,
+        "repeated_batches": 2,
+        "workspace_revision": 1,
+        "progress_report_ref": "",
+        "verification_status": "unverified",
+        "progress_classification": "repeated",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:29.740402+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 48,
+      "type": "artifact.ready",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "id": "artifact_26eb19cc5904126a8e5fca2756d73634af1bd17aa230e7aa33e473f110904ea6",
+        "kind": "tool_batch",
+        "state": "ready",
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "sha256": "4a729cd0b292d7539763e0509b154a96faf0043f4ea12e1ad5eafc6439e28367",
+        "byte_size": 23,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_ZDIJFIPP43YNYDMCHWEZHGVJJY/4a729cd0b292d7539763e0509b154a96faf0043f4ea12e1ad5eafc6439e28367"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:29.7693+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 49,
+      "type": "run.results_ingested",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "stage": "build_context",
+        "state": "running",
+        "reason": "",
+        "version": 23,
+        "step_seq": 4,
+        "output_ref": "artifact_26eb19cc5904126a8e5fca2756d73634af1bd17aa230e7aa33e473f110904ea6",
+        "tool_calls": 4,
+        "model_rounds": 4,
+        "cost_microusd": 0,
+        "repeated_batches": 2,
+        "workspace_revision": 1,
+        "progress_report_ref": "",
+        "verification_status": "unverified",
+        "progress_classification": "repeated",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:29.773999+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 50,
+      "type": "artifact.ready",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "id": "artifact_aec9515d8d51693bbf3b4f784ab5cb3db7c922b1b798f63c286804b81e7ba87a",
+        "kind": "context",
+        "state": "ready",
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "sha256": "cbc3487d523e51fb08f314a02dc14d7e57f6be20764c49a7e51443211922fdfa",
+        "byte_size": 4019,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_ZDIJFIPP43YNYDMCHWEZHGVJJY/cbc3487d523e51fb08f314a02dc14d7e57f6be20764c49a7e51443211922fdfa"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:29.835992+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 51,
+      "type": "artifact.ready",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "id": "artifact_e08a9426b3c27f1b70a64dfc529fff6fc70df8492eabfc63c7db62cb06892951",
+        "kind": "progress_report",
+        "state": "ready",
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "sha256": "c12820dcb2089df09b3ecd7173021a7478d0db4073ca8e3791600cca2f54edc3",
+        "byte_size": 597,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_ZDIJFIPP43YNYDMCHWEZHGVJJY/c12820dcb2089df09b3ecd7173021a7478d0db4073ca8e3791600cca2f54edc3"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:29.874628+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 52,
+      "type": "run.message_added",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "seq": 1,
+        "text": "Recheck the same input after this explicit instruction."
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:29.881529+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 53,
+      "type": "artifact.ready",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "id": "artifact_7eae22a731adcd5f69a68d79ed320d7560521478b47c8282eb517098e360615f",
+        "kind": "context",
+        "state": "ready",
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "sha256": "c55f1d9b2b00f55b94cd6c2fc5d39861d7b96de538360ca3f06056cb960957e3",
+        "byte_size": 4100,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_ZDIJFIPP43YNYDMCHWEZHGVJJY/c55f1d9b2b00f55b94cd6c2fc5d39861d7b96de538360ca3f06056cb960957e3"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:29.923153+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 54,
+      "type": "artifact.ready",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "id": "artifact_0119e094157e0a1c42534cf07d5d14599ffe9a6519e458b067cd8952e099f89d",
+        "kind": "progress_report",
+        "state": "ready",
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "sha256": "8a04a64ed3a437da4b5a2d064961d3cda1ad81d28b50b71cf990efc7dab49bb1",
+        "byte_size": 597,
+        "tenant_id": "tenant",
+        "created_at": "0001-01-01T00:00:00Z",
+        "object_key": "tenant/run_ZDIJFIPP43YNYDMCHWEZHGVJJY/8a04a64ed3a437da4b5a2d064961d3cda1ad81d28b50b71cf990efc7dab49bb1"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:29.954798+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 55,
+      "type": "step.started",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "stage": "model_step",
+        "state": "running",
+        "reason": "",
+        "version": 24,
+        "step_seq": 5,
+        "output_ref": "artifact_7eae22a731adcd5f69a68d79ed320d7560521478b47c8282eb517098e360615f",
+        "tool_calls": 4,
+        "model_rounds": 5,
+        "cost_microusd": 0,
+        "repeated_batches": 0,
+        "workspace_revision": 1,
+        "progress_report_ref": "artifact_0119e094157e0a1c42534cf07d5d14599ffe9a6519e458b067cd8952e099f89d",
+        "verification_status": "unverified",
+        "progress_classification": "message",
+        "verification_report_ref": ""
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:29.962691+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 56,
+      "type": "model.started",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "step_seq": 5,
+        "attempt_id": "attempt_IBJU75D2FNH3YNNNNF75M5THTV",
+        "price_version": "fixture-zero-v1"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:29.968363+00:00",
+      "schema_version": 1
+    },
+    {
+      "seq": 57,
+      "type": "quota.delayed",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "payload": {
+        "not_before": "2026-09-11T15:51:30.970797-07:00"
+      },
+      "step_seq": null,
+      "tenant_id": "tenant",
+      "attempt_id": null,
+      "created_at": "2026-09-11T22:51:29.976728+00:00",
+      "schema_version": 1
+    }
+  ],
+  "run_messages": [
+    {
+      "seq": 1,
+      "body": "Recheck the same input after this explicit instruction.",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T22:51:29.880364+00:00",
+      "applied_step": 4,
+      "principal_id": "developer"
+    }
+  ],
+  "run_snapshots": [
+    {
+      "body": {
+        "lease": {
+          "epoch": 0,
+          "owner": "",
+          "until": "0001-01-01T00:00:00Z"
+        },
+        "stage": "initialize",
+        "limits": {
+          "deadline": "2026-09-11T15:52:28.33798-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "status": "queued",
+        "version": 1,
+        "step_seq": 0,
+        "tenant_id": "tenant",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 0,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "version": 1,
+      "step_seq": 0,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T22:51:28.339752+00:00",
+      "input_event": null,
+      "input_state": null,
+      "schema_version": 2
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "message-worker",
+          "until": "2026-09-11T15:51:31.344433-07:00"
+        },
+        "stage": "initialize",
+        "limits": {
+          "deadline": "2026-09-11T15:52:28.33798-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "status": "running",
+        "version": 2,
+        "step_seq": 0,
+        "tenant_id": "tenant",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 0,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "version": 2,
+      "step_seq": 0,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T22:51:28.349799+00:00",
+      "input_event": {
+        "at": "2026-09-11T15:51:28.344433-07:00",
+        "kind": "claimed",
+        "epoch": 1,
+        "lease": {
+          "epoch": 1,
+          "owner": "message-worker",
+          "until": "2026-09-11T15:51:31.344433-07:00"
+        },
+        "owner": "message-worker",
+        "expected_version": 1
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 0,
+          "owner": "",
+          "until": "0001-01-01T00:00:00Z"
+        },
+        "stage": "initialize",
+        "limits": {
+          "deadline": "2026-09-11T15:52:28.33798-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "status": "queued",
+        "version": 1,
+        "step_seq": 0,
+        "tenant_id": "tenant",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 0,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 2
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "message-worker",
+          "until": "2026-09-11T15:51:31.344433-07:00"
+        },
+        "stage": "build_context",
+        "limits": {
+          "deadline": "2026-09-11T15:52:28.33798-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "status": "running",
+        "version": 3,
+        "step_seq": 0,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_b8c070e7cd36b60df81753bd10b2b4089e97cf7b8a81817df54d5572dab20aa8",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "version": 3,
+      "step_seq": 0,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T22:51:28.543802+00:00",
+      "input_event": {
+        "at": "2026-09-11T15:51:28.542304-07:00",
+        "kind": "workspace_ready",
+        "epoch": 1,
+        "owner": "message-worker",
+        "output_ref": "artifact_b8c070e7cd36b60df81753bd10b2b4089e97cf7b8a81817df54d5572dab20aa8",
+        "expected_version": 2,
+        "workspace_revision": 1
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "message-worker",
+          "until": "2026-09-11T15:51:31.344433-07:00"
+        },
+        "stage": "initialize",
+        "limits": {
+          "deadline": "2026-09-11T15:52:28.33798-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "status": "running",
+        "version": 2,
+        "step_seq": 0,
+        "tenant_id": "tenant",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 0,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 2
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "message-worker",
+          "until": "2026-09-11T15:51:31.344433-07:00"
+        },
+        "stage": "model_step",
+        "limits": {
+          "deadline": "2026-09-11T15:52:28.33798-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "status": "running",
+        "version": 4,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [],
+          "classification": "initial",
+          "recent_evidence": [],
+          "repeated_batches": 0,
+          "last_checked_step": 0
+        },
+        "step_seq": 1,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_c76991d48cdc590e4b2776931b47cec5533d7d9badfe961eece765e3f0a0715b",
+        "tool_calls": 0,
+        "model_rounds": 1,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "version": 4,
+      "step_seq": 1,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T22:51:28.61305+00:00",
+      "input_event": {
+        "at": "2026-09-11T15:51:28.61064-07:00",
+        "kind": "context_built",
+        "epoch": 1,
+        "owner": "message-worker",
+        "progress": {
+          "step_seq": 0,
+          "context_ref": "artifact_c76991d48cdc590e4b2776931b47cec5533d7d9badfe961eece765e3f0a0715b",
+          "message_seq": 0,
+          "observations": [],
+          "policy_version": 1
+        },
+        "output_ref": "artifact_c76991d48cdc590e4b2776931b47cec5533d7d9badfe961eece765e3f0a0715b",
+        "progress_ref": "artifact_fc42cae3443cdc13f138a5fa720dacb7f14c745458976f777e9145ca6eecbd48",
+        "expected_version": 3
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "message-worker",
+          "until": "2026-09-11T15:51:31.344433-07:00"
+        },
+        "stage": "build_context",
+        "limits": {
+          "deadline": "2026-09-11T15:52:28.33798-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "status": "running",
+        "version": 3,
+        "step_seq": 0,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_b8c070e7cd36b60df81753bd10b2b4089e97cf7b8a81817df54d5572dab20aa8",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 2
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "message-worker",
+          "until": "2026-09-11T15:51:31.344433-07:00"
+        },
+        "stage": "validate_tool_calls",
+        "limits": {
+          "deadline": "2026-09-11T15:52:28.33798-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "status": "running",
+        "version": 5,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": null,
+          "classification": "initial",
+          "recent_evidence": null,
+          "repeated_batches": 0,
+          "last_checked_step": 0
+        },
+        "step_seq": 1,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_d5e82663b04d78a5a6b888f442a7c778a6a4e01cc88303e0c42bebd43ca221f8",
+        "tool_calls": 0,
+        "model_rounds": 1,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "version": 5,
+      "step_seq": 1,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T22:51:28.686402+00:00",
+      "input_event": {
+        "at": "2026-09-11T15:51:28.685156-07:00",
+        "kind": "model_completed",
+        "epoch": 1,
+        "owner": "message-worker",
+        "complete": true,
+        "output_ref": "artifact_d5e82663b04d78a5a6b888f442a7c778a6a4e01cc88303e0c42bebd43ca221f8",
+        "expected_version": 4
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "message-worker",
+          "until": "2026-09-11T15:51:31.344433-07:00"
+        },
+        "stage": "model_step",
+        "limits": {
+          "deadline": "2026-09-11T15:52:28.33798-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "status": "running",
+        "version": 4,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [],
+          "classification": "initial",
+          "recent_evidence": [],
+          "repeated_batches": 0,
+          "last_checked_step": 0
+        },
+        "step_seq": 1,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_c76991d48cdc590e4b2776931b47cec5533d7d9badfe961eece765e3f0a0715b",
+        "tool_calls": 0,
+        "model_rounds": 1,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 2
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "message-worker",
+          "until": "2026-09-11T15:51:31.344433-07:00"
+        },
+        "stage": "execute_effects",
+        "limits": {
+          "deadline": "2026-09-11T15:52:28.33798-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "status": "running",
+        "version": 6,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": null,
+          "classification": "initial",
+          "recent_evidence": null,
+          "repeated_batches": 0,
+          "last_checked_step": 0
+        },
+        "step_seq": 1,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_d5e82663b04d78a5a6b888f442a7c778a6a4e01cc88303e0c42bebd43ca221f8",
+        "tool_calls": 1,
+        "model_rounds": 1,
+        "cost_microusd": 0,
+        "pending_effect": {
+          "args": {
+            "path": "clamp.py"
+          },
+          "kind": "read_file",
+          "status": "in_flight",
+          "args_hash": "31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6",
+          "operation_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY_step_1_op_0",
+          "dispatch_epoch": 1,
+          "policy_version": "workspace-v1",
+          "expected_revision": 1,
+          "requires_approval": false
+        },
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "version": 6,
+      "step_seq": 1,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T22:51:28.695+00:00",
+      "input_event": {
+        "at": "2026-09-11T15:51:28.692917-07:00",
+        "kind": "tools_validated",
+        "epoch": 1,
+        "owner": "message-worker",
+        "effects": [
+          {
+            "args": {
+              "path": "clamp.py"
+            },
+            "kind": "read_file",
+            "status": "planned",
+            "args_hash": "31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6",
+            "operation_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY_step_1_op_0",
+            "dispatch_epoch": 0,
+            "policy_version": "workspace-v1",
+            "expected_revision": 1,
+            "requires_approval": false
+          }
+        ],
+        "complete": true,
+        "output_ref": "artifact_d5e82663b04d78a5a6b888f442a7c778a6a4e01cc88303e0c42bebd43ca221f8",
+        "expected_version": 5
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "message-worker",
+          "until": "2026-09-11T15:51:31.344433-07:00"
+        },
+        "stage": "validate_tool_calls",
+        "limits": {
+          "deadline": "2026-09-11T15:52:28.33798-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "status": "running",
+        "version": 5,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": null,
+          "classification": "initial",
+          "recent_evidence": null,
+          "repeated_batches": 0,
+          "last_checked_step": 0
+        },
+        "step_seq": 1,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_d5e82663b04d78a5a6b888f442a7c778a6a4e01cc88303e0c42bebd43ca221f8",
+        "tool_calls": 0,
+        "model_rounds": 1,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 2
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "message-worker",
+          "until": "2026-09-11T15:51:31.344433-07:00"
+        },
+        "stage": "ingest_results",
+        "limits": {
+          "deadline": "2026-09-11T15:52:28.33798-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "status": "running",
+        "version": 7,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": null,
+          "classification": "initial",
+          "recent_evidence": null,
+          "repeated_batches": 0,
+          "last_checked_step": 0
+        },
+        "step_seq": 1,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_315421abd0dcf5bbb8a9dc828a7f5679389b1e7c4dafa03dcd4ce753494c07d4",
+        "tool_calls": 1,
+        "model_rounds": 1,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "version": 7,
+      "step_seq": 1,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T22:51:28.819295+00:00",
+      "input_event": {
+        "at": "2026-09-11T15:51:28.817885-07:00",
+        "kind": "effect_completed",
+        "epoch": 1,
+        "owner": "message-worker",
+        "receipt": {
+          "ref": "artifact_315421abd0dcf5bbb8a9dc828a7f5679389b1e7c4dafa03dcd4ce753494c07d4",
+          "epoch": 1,
+          "status": "succeeded",
+          "settled": true,
+          "args_hash": "31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6",
+          "effect_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY_step_1_op_0",
+          "after_revision": 1,
+          "before_revision": 1
+        },
+        "expected_version": 6
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "message-worker",
+          "until": "2026-09-11T15:51:31.344433-07:00"
+        },
+        "stage": "execute_effects",
+        "limits": {
+          "deadline": "2026-09-11T15:52:28.33798-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "status": "running",
+        "version": 6,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": null,
+          "classification": "initial",
+          "recent_evidence": null,
+          "repeated_batches": 0,
+          "last_checked_step": 0
+        },
+        "step_seq": 1,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_d5e82663b04d78a5a6b888f442a7c778a6a4e01cc88303e0c42bebd43ca221f8",
+        "tool_calls": 1,
+        "model_rounds": 1,
+        "cost_microusd": 0,
+        "pending_effect": {
+          "args": {
+            "path": "clamp.py"
+          },
+          "kind": "read_file",
+          "status": "in_flight",
+          "args_hash": "31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6",
+          "operation_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY_step_1_op_0",
+          "dispatch_epoch": 1,
+          "policy_version": "workspace-v1",
+          "expected_revision": 1,
+          "requires_approval": false
+        },
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 2
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "message-worker",
+          "until": "2026-09-11T15:51:31.344433-07:00"
+        },
+        "stage": "build_context",
+        "limits": {
+          "deadline": "2026-09-11T15:52:28.33798-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "status": "running",
+        "version": 8,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": null,
+          "classification": "initial",
+          "recent_evidence": null,
+          "repeated_batches": 0,
+          "last_checked_step": 0
+        },
+        "step_seq": 1,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_8d9cbb131fdb9b7420dc84276567e505c9acd4b848d5091a532d0127fcfcc6d6",
+        "tool_calls": 1,
+        "model_rounds": 1,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "version": 8,
+      "step_seq": 1,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T22:51:28.853525+00:00",
+      "input_event": {
+        "at": "2026-09-11T15:51:28.852312-07:00",
+        "kind": "results_ingested",
+        "epoch": 1,
+        "owner": "message-worker",
+        "output_ref": "artifact_8d9cbb131fdb9b7420dc84276567e505c9acd4b848d5091a532d0127fcfcc6d6",
+        "expected_version": 7
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "message-worker",
+          "until": "2026-09-11T15:51:31.344433-07:00"
+        },
+        "stage": "ingest_results",
+        "limits": {
+          "deadline": "2026-09-11T15:52:28.33798-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "status": "running",
+        "version": 7,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": null,
+          "classification": "initial",
+          "recent_evidence": null,
+          "repeated_batches": 0,
+          "last_checked_step": 0
+        },
+        "step_seq": 1,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_315421abd0dcf5bbb8a9dc828a7f5679389b1e7c4dafa03dcd4ce753494c07d4",
+        "tool_calls": 1,
+        "model_rounds": 1,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 2
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "message-worker",
+          "until": "2026-09-11T15:51:31.344433-07:00"
+        },
+        "stage": "model_step",
+        "limits": {
+          "deadline": "2026-09-11T15:52:28.33798-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "status": "running",
+        "version": 9,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "new_evidence",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 0,
+          "last_checked_step": 1
+        },
+        "step_seq": 2,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_91f9cd2d467acf0dbcab978973bae7a297bdbed05af96ad4bf7e988c0522dacf",
+        "tool_calls": 1,
+        "model_rounds": 2,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "version": 9,
+      "step_seq": 2,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T22:51:28.926585+00:00",
+      "input_event": {
+        "at": "2026-09-11T15:51:28.923297-07:00",
+        "kind": "context_built",
+        "epoch": 1,
+        "owner": "message-worker",
+        "progress": {
+          "step_seq": 1,
+          "attempt_id": "attempt_QBHTHYKV5ET4Z3FISC33LWLJPT",
+          "context_ref": "artifact_91f9cd2d467acf0dbcab978973bae7a297bdbed05af96ad4bf7e988c0522dacf",
+          "message_seq": 0,
+          "observations": [
+            {
+              "effect_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY_step_1_op_0",
+              "after_hash": "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c",
+              "before_hash": "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c",
+              "fingerprint": "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687",
+              "receipt_ref": "artifact_315421abd0dcf5bbb8a9dc828a7f5679389b1e7c4dafa03dcd4ce753494c07d4"
+            }
+          ],
+          "policy_version": 1
+        },
+        "output_ref": "artifact_91f9cd2d467acf0dbcab978973bae7a297bdbed05af96ad4bf7e988c0522dacf",
+        "progress_ref": "artifact_33b2d5b0f613db07573205b2a35e5ca5694f45e170ee357fb447158fdef87ae3",
+        "expected_version": 8
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "message-worker",
+          "until": "2026-09-11T15:51:31.344433-07:00"
+        },
+        "stage": "build_context",
+        "limits": {
+          "deadline": "2026-09-11T15:52:28.33798-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "status": "running",
+        "version": 8,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": null,
+          "classification": "initial",
+          "recent_evidence": null,
+          "repeated_batches": 0,
+          "last_checked_step": 0
+        },
+        "step_seq": 1,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_8d9cbb131fdb9b7420dc84276567e505c9acd4b848d5091a532d0127fcfcc6d6",
+        "tool_calls": 1,
+        "model_rounds": 1,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 2
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "message-worker",
+          "until": "2026-09-11T15:51:31.344433-07:00"
+        },
+        "stage": "validate_tool_calls",
+        "limits": {
+          "deadline": "2026-09-11T15:52:28.33798-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "status": "running",
+        "version": 10,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "new_evidence",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 0,
+          "last_checked_step": 1
+        },
+        "step_seq": 2,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_83c3f708d550bca5f1dac690ea808a90881c6a47424554679311c652797b43be",
+        "tool_calls": 1,
+        "model_rounds": 2,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "version": 10,
+      "step_seq": 2,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T22:51:28.989743+00:00",
+      "input_event": {
+        "at": "2026-09-11T15:51:28.989258-07:00",
+        "kind": "model_completed",
+        "epoch": 1,
+        "owner": "message-worker",
+        "complete": true,
+        "output_ref": "artifact_83c3f708d550bca5f1dac690ea808a90881c6a47424554679311c652797b43be",
+        "expected_version": 9
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "message-worker",
+          "until": "2026-09-11T15:51:31.344433-07:00"
+        },
+        "stage": "model_step",
+        "limits": {
+          "deadline": "2026-09-11T15:52:28.33798-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "status": "running",
+        "version": 9,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "new_evidence",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 0,
+          "last_checked_step": 1
+        },
+        "step_seq": 2,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_91f9cd2d467acf0dbcab978973bae7a297bdbed05af96ad4bf7e988c0522dacf",
+        "tool_calls": 1,
+        "model_rounds": 2,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 2
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "message-worker",
+          "until": "2026-09-11T15:51:31.344433-07:00"
+        },
+        "stage": "execute_effects",
+        "limits": {
+          "deadline": "2026-09-11T15:52:28.33798-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "status": "running",
+        "version": 11,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "new_evidence",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 0,
+          "last_checked_step": 1
+        },
+        "step_seq": 2,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_83c3f708d550bca5f1dac690ea808a90881c6a47424554679311c652797b43be",
+        "tool_calls": 2,
+        "model_rounds": 2,
+        "cost_microusd": 0,
+        "pending_effect": {
+          "args": {
+            "path": "clamp.py"
+          },
+          "kind": "read_file",
+          "status": "in_flight",
+          "args_hash": "31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6",
+          "operation_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY_step_2_op_0",
+          "dispatch_epoch": 1,
+          "policy_version": "workspace-v1",
+          "expected_revision": 1,
+          "requires_approval": false
+        },
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "version": 11,
+      "step_seq": 2,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T22:51:28.996827+00:00",
+      "input_event": {
+        "at": "2026-09-11T15:51:28.995739-07:00",
+        "kind": "tools_validated",
+        "epoch": 1,
+        "owner": "message-worker",
+        "effects": [
+          {
+            "args": {
+              "path": "clamp.py"
+            },
+            "kind": "read_file",
+            "status": "planned",
+            "args_hash": "31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6",
+            "operation_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY_step_2_op_0",
+            "dispatch_epoch": 0,
+            "policy_version": "workspace-v1",
+            "expected_revision": 1,
+            "requires_approval": false
+          }
+        ],
+        "complete": true,
+        "output_ref": "artifact_83c3f708d550bca5f1dac690ea808a90881c6a47424554679311c652797b43be",
+        "expected_version": 10
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "message-worker",
+          "until": "2026-09-11T15:51:31.344433-07:00"
+        },
+        "stage": "validate_tool_calls",
+        "limits": {
+          "deadline": "2026-09-11T15:52:28.33798-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "status": "running",
+        "version": 10,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "new_evidence",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 0,
+          "last_checked_step": 1
+        },
+        "step_seq": 2,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_83c3f708d550bca5f1dac690ea808a90881c6a47424554679311c652797b43be",
+        "tool_calls": 1,
+        "model_rounds": 2,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 2
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "message-worker",
+          "until": "2026-09-11T15:51:31.344433-07:00"
+        },
+        "stage": "ingest_results",
+        "limits": {
+          "deadline": "2026-09-11T15:52:28.33798-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "status": "running",
+        "version": 12,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "new_evidence",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 0,
+          "last_checked_step": 1
+        },
+        "step_seq": 2,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_7c615c1b0901c646598a213f8284fc8679500bcf74ac6b0ffb079d12f59269c1",
+        "tool_calls": 2,
+        "model_rounds": 2,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "version": 12,
+      "step_seq": 2,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T22:51:29.119213+00:00",
+      "input_event": {
+        "at": "2026-09-11T15:51:29.118552-07:00",
+        "kind": "effect_completed",
+        "epoch": 1,
+        "owner": "message-worker",
+        "receipt": {
+          "ref": "artifact_7c615c1b0901c646598a213f8284fc8679500bcf74ac6b0ffb079d12f59269c1",
+          "epoch": 1,
+          "status": "succeeded",
+          "settled": true,
+          "args_hash": "31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6",
+          "effect_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY_step_2_op_0",
+          "after_revision": 1,
+          "before_revision": 1
+        },
+        "expected_version": 11
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "message-worker",
+          "until": "2026-09-11T15:51:31.344433-07:00"
+        },
+        "stage": "execute_effects",
+        "limits": {
+          "deadline": "2026-09-11T15:52:28.33798-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "status": "running",
+        "version": 11,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "new_evidence",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 0,
+          "last_checked_step": 1
+        },
+        "step_seq": 2,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_83c3f708d550bca5f1dac690ea808a90881c6a47424554679311c652797b43be",
+        "tool_calls": 2,
+        "model_rounds": 2,
+        "cost_microusd": 0,
+        "pending_effect": {
+          "args": {
+            "path": "clamp.py"
+          },
+          "kind": "read_file",
+          "status": "in_flight",
+          "args_hash": "31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6",
+          "operation_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY_step_2_op_0",
+          "dispatch_epoch": 1,
+          "policy_version": "workspace-v1",
+          "expected_revision": 1,
+          "requires_approval": false
+        },
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 2
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "message-worker",
+          "until": "2026-09-11T15:51:31.344433-07:00"
+        },
+        "stage": "build_context",
+        "limits": {
+          "deadline": "2026-09-11T15:52:28.33798-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "status": "running",
+        "version": 13,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "new_evidence",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 0,
+          "last_checked_step": 1
+        },
+        "step_seq": 2,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_222dc992565b462aedc1944c0184a088da84609e51f0279f876ff77edecbd54c",
+        "tool_calls": 2,
+        "model_rounds": 2,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "version": 13,
+      "step_seq": 2,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T22:51:29.157747+00:00",
+      "input_event": {
+        "at": "2026-09-11T15:51:29.156706-07:00",
+        "kind": "results_ingested",
+        "epoch": 1,
+        "owner": "message-worker",
+        "output_ref": "artifact_222dc992565b462aedc1944c0184a088da84609e51f0279f876ff77edecbd54c",
+        "expected_version": 12
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "message-worker",
+          "until": "2026-09-11T15:51:31.344433-07:00"
+        },
+        "stage": "ingest_results",
+        "limits": {
+          "deadline": "2026-09-11T15:52:28.33798-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "status": "running",
+        "version": 12,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "new_evidence",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 0,
+          "last_checked_step": 1
+        },
+        "step_seq": 2,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_7c615c1b0901c646598a213f8284fc8679500bcf74ac6b0ffb079d12f59269c1",
+        "tool_calls": 2,
+        "model_rounds": 2,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 2
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "message-worker",
+          "until": "2026-09-11T15:51:31.344433-07:00"
+        },
+        "stage": "model_step",
+        "limits": {
+          "deadline": "2026-09-11T15:52:28.33798-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "status": "running",
+        "version": 14,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "repeated",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 1,
+          "last_checked_step": 2
+        },
+        "step_seq": 3,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_14cc31c9c618f2c1fda55bbb9f6da10017d098f8c1c6c3c2cee5f808cdf0aa48",
+        "tool_calls": 2,
+        "model_rounds": 3,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "version": 14,
+      "step_seq": 3,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T22:51:29.230682+00:00",
+      "input_event": {
+        "at": "2026-09-11T15:51:29.229248-07:00",
+        "kind": "context_built",
+        "epoch": 1,
+        "owner": "message-worker",
+        "progress": {
+          "step_seq": 2,
+          "attempt_id": "attempt_5DNNVZN2FCDJ7UBPOUDA3B6RZ6",
+          "context_ref": "artifact_14cc31c9c618f2c1fda55bbb9f6da10017d098f8c1c6c3c2cee5f808cdf0aa48",
+          "message_seq": 0,
+          "observations": [
+            {
+              "effect_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY_step_2_op_0",
+              "after_hash": "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c",
+              "before_hash": "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c",
+              "fingerprint": "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687",
+              "receipt_ref": "artifact_7c615c1b0901c646598a213f8284fc8679500bcf74ac6b0ffb079d12f59269c1"
+            }
+          ],
+          "policy_version": 1
+        },
+        "output_ref": "artifact_14cc31c9c618f2c1fda55bbb9f6da10017d098f8c1c6c3c2cee5f808cdf0aa48",
+        "progress_ref": "artifact_f109079acb5c2ed6c5466360b6e95cff0d718817c7f52094a4d6c562fcd13019",
+        "expected_version": 13
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "message-worker",
+          "until": "2026-09-11T15:51:31.344433-07:00"
+        },
+        "stage": "build_context",
+        "limits": {
+          "deadline": "2026-09-11T15:52:28.33798-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "status": "running",
+        "version": 13,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "new_evidence",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 0,
+          "last_checked_step": 1
+        },
+        "step_seq": 2,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_222dc992565b462aedc1944c0184a088da84609e51f0279f876ff77edecbd54c",
+        "tool_calls": 2,
+        "model_rounds": 2,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 2
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "message-worker",
+          "until": "2026-09-11T15:51:31.344433-07:00"
+        },
+        "stage": "validate_tool_calls",
+        "limits": {
+          "deadline": "2026-09-11T15:52:28.33798-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "status": "running",
+        "version": 15,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "repeated",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 1,
+          "last_checked_step": 2
+        },
+        "step_seq": 3,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_bcc9d95b5d790c1f2505d6c1e28fba9385cbc417aac39dc619b2d393e97fe809",
+        "tool_calls": 2,
+        "model_rounds": 3,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "version": 15,
+      "step_seq": 3,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T22:51:29.289359+00:00",
+      "input_event": {
+        "at": "2026-09-11T15:51:29.288399-07:00",
+        "kind": "model_completed",
+        "epoch": 1,
+        "owner": "message-worker",
+        "complete": true,
+        "output_ref": "artifact_bcc9d95b5d790c1f2505d6c1e28fba9385cbc417aac39dc619b2d393e97fe809",
+        "expected_version": 14
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "message-worker",
+          "until": "2026-09-11T15:51:31.344433-07:00"
+        },
+        "stage": "model_step",
+        "limits": {
+          "deadline": "2026-09-11T15:52:28.33798-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "status": "running",
+        "version": 14,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "repeated",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 1,
+          "last_checked_step": 2
+        },
+        "step_seq": 3,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_14cc31c9c618f2c1fda55bbb9f6da10017d098f8c1c6c3c2cee5f808cdf0aa48",
+        "tool_calls": 2,
+        "model_rounds": 3,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 2
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "message-worker",
+          "until": "2026-09-11T15:51:31.344433-07:00"
+        },
+        "stage": "execute_effects",
+        "limits": {
+          "deadline": "2026-09-11T15:52:28.33798-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "status": "running",
+        "version": 16,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "repeated",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 1,
+          "last_checked_step": 2
+        },
+        "step_seq": 3,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_bcc9d95b5d790c1f2505d6c1e28fba9385cbc417aac39dc619b2d393e97fe809",
+        "tool_calls": 3,
+        "model_rounds": 3,
+        "cost_microusd": 0,
+        "pending_effect": {
+          "args": {
+            "path": "clamp.py"
+          },
+          "kind": "read_file",
+          "status": "in_flight",
+          "args_hash": "31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6",
+          "operation_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY_step_3_op_0",
+          "dispatch_epoch": 1,
+          "policy_version": "workspace-v1",
+          "expected_revision": 1,
+          "requires_approval": false
+        },
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "version": 16,
+      "step_seq": 3,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T22:51:29.297124+00:00",
+      "input_event": {
+        "at": "2026-09-11T15:51:29.295417-07:00",
+        "kind": "tools_validated",
+        "epoch": 1,
+        "owner": "message-worker",
+        "effects": [
+          {
+            "args": {
+              "path": "clamp.py"
+            },
+            "kind": "read_file",
+            "status": "planned",
+            "args_hash": "31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6",
+            "operation_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY_step_3_op_0",
+            "dispatch_epoch": 0,
+            "policy_version": "workspace-v1",
+            "expected_revision": 1,
+            "requires_approval": false
+          }
+        ],
+        "complete": true,
+        "output_ref": "artifact_bcc9d95b5d790c1f2505d6c1e28fba9385cbc417aac39dc619b2d393e97fe809",
+        "expected_version": 15
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "message-worker",
+          "until": "2026-09-11T15:51:31.344433-07:00"
+        },
+        "stage": "validate_tool_calls",
+        "limits": {
+          "deadline": "2026-09-11T15:52:28.33798-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "status": "running",
+        "version": 15,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "repeated",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 1,
+          "last_checked_step": 2
+        },
+        "step_seq": 3,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_bcc9d95b5d790c1f2505d6c1e28fba9385cbc417aac39dc619b2d393e97fe809",
+        "tool_calls": 2,
+        "model_rounds": 3,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 2
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "message-worker",
+          "until": "2026-09-11T15:51:32.353601-07:00"
+        },
+        "stage": "ingest_results",
+        "limits": {
+          "deadline": "2026-09-11T15:52:28.33798-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "status": "running",
+        "version": 17,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "repeated",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 1,
+          "last_checked_step": 2
+        },
+        "step_seq": 3,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_5759590e525b360fac31a6da379ea4933b5d68c29d560f8483c0e2edee459b22",
+        "tool_calls": 3,
+        "model_rounds": 3,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "version": 17,
+      "step_seq": 3,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T22:51:29.431903+00:00",
+      "input_event": {
+        "at": "2026-09-11T15:51:29.43111-07:00",
+        "kind": "effect_completed",
+        "epoch": 1,
+        "owner": "message-worker",
+        "receipt": {
+          "ref": "artifact_5759590e525b360fac31a6da379ea4933b5d68c29d560f8483c0e2edee459b22",
+          "epoch": 1,
+          "status": "succeeded",
+          "settled": true,
+          "args_hash": "31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6",
+          "effect_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY_step_3_op_0",
+          "after_revision": 1,
+          "before_revision": 1
+        },
+        "expected_version": 16
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "message-worker",
+          "until": "2026-09-11T15:51:32.353601-07:00"
+        },
+        "stage": "execute_effects",
+        "limits": {
+          "deadline": "2026-09-11T15:52:28.33798-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "status": "running",
+        "version": 16,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "repeated",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 1,
+          "last_checked_step": 2
+        },
+        "step_seq": 3,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_bcc9d95b5d790c1f2505d6c1e28fba9385cbc417aac39dc619b2d393e97fe809",
+        "tool_calls": 3,
+        "model_rounds": 3,
+        "cost_microusd": 0,
+        "pending_effect": {
+          "args": {
+            "path": "clamp.py"
+          },
+          "kind": "read_file",
+          "status": "in_flight",
+          "args_hash": "31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6",
+          "operation_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY_step_3_op_0",
+          "dispatch_epoch": 1,
+          "policy_version": "workspace-v1",
+          "expected_revision": 1,
+          "requires_approval": false
+        },
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 2
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "message-worker",
+          "until": "2026-09-11T15:51:32.353601-07:00"
+        },
+        "stage": "build_context",
+        "limits": {
+          "deadline": "2026-09-11T15:52:28.33798-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "status": "running",
+        "version": 18,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "repeated",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 1,
+          "last_checked_step": 2
+        },
+        "step_seq": 3,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_025acd83c40638cdcfdc3f603ea58acdd8f3caad3a0eff6d05530bc37e6cc74e",
+        "tool_calls": 3,
+        "model_rounds": 3,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "version": 18,
+      "step_seq": 3,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T22:51:29.46389+00:00",
+      "input_event": {
+        "at": "2026-09-11T15:51:29.463334-07:00",
+        "kind": "results_ingested",
+        "epoch": 1,
+        "owner": "message-worker",
+        "output_ref": "artifact_025acd83c40638cdcfdc3f603ea58acdd8f3caad3a0eff6d05530bc37e6cc74e",
+        "expected_version": 17
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "message-worker",
+          "until": "2026-09-11T15:51:32.353601-07:00"
+        },
+        "stage": "ingest_results",
+        "limits": {
+          "deadline": "2026-09-11T15:52:28.33798-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "status": "running",
+        "version": 17,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "repeated",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 1,
+          "last_checked_step": 2
+        },
+        "step_seq": 3,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_5759590e525b360fac31a6da379ea4933b5d68c29d560f8483c0e2edee459b22",
+        "tool_calls": 3,
+        "model_rounds": 3,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 2
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "message-worker",
+          "until": "2026-09-11T15:51:32.353601-07:00"
+        },
+        "stage": "model_step",
+        "limits": {
+          "deadline": "2026-09-11T15:52:28.33798-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "status": "running",
+        "version": 19,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "repeated",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 2,
+          "last_checked_step": 3
+        },
+        "step_seq": 4,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_5c0bda954f1a762231de9187abce9d9b270a5e6d4c5e20b0da81a8340a17040b",
+        "tool_calls": 3,
+        "model_rounds": 4,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "version": 19,
+      "step_seq": 4,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T22:51:29.53104+00:00",
+      "input_event": {
+        "at": "2026-09-11T15:51:29.529769-07:00",
+        "kind": "context_built",
+        "epoch": 1,
+        "owner": "message-worker",
+        "progress": {
+          "step_seq": 3,
+          "attempt_id": "attempt_L4PFQF53DS6EG7UUKVU5UIYLO7",
+          "context_ref": "artifact_5c0bda954f1a762231de9187abce9d9b270a5e6d4c5e20b0da81a8340a17040b",
+          "message_seq": 0,
+          "observations": [
+            {
+              "effect_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY_step_3_op_0",
+              "after_hash": "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c",
+              "before_hash": "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c",
+              "fingerprint": "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687",
+              "receipt_ref": "artifact_5759590e525b360fac31a6da379ea4933b5d68c29d560f8483c0e2edee459b22"
+            }
+          ],
+          "policy_version": 1
+        },
+        "output_ref": "artifact_5c0bda954f1a762231de9187abce9d9b270a5e6d4c5e20b0da81a8340a17040b",
+        "progress_ref": "artifact_af58c6e9d968fc91bcf1258f0f079131775eaa8e5cd64959f45960c6364515fb",
+        "expected_version": 18
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "message-worker",
+          "until": "2026-09-11T15:51:32.353601-07:00"
+        },
+        "stage": "build_context",
+        "limits": {
+          "deadline": "2026-09-11T15:52:28.33798-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "status": "running",
+        "version": 18,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "repeated",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 1,
+          "last_checked_step": 2
+        },
+        "step_seq": 3,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_025acd83c40638cdcfdc3f603ea58acdd8f3caad3a0eff6d05530bc37e6cc74e",
+        "tool_calls": 3,
+        "model_rounds": 3,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 2
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "message-worker",
+          "until": "2026-09-11T15:51:32.353601-07:00"
+        },
+        "stage": "validate_tool_calls",
+        "limits": {
+          "deadline": "2026-09-11T15:52:28.33798-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "status": "running",
+        "version": 20,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "repeated",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 2,
+          "last_checked_step": 3
+        },
+        "step_seq": 4,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_53685903b3840cddc761eee767f089eef97817a32f1eeb2871cfdd17e11a9ab2",
+        "tool_calls": 3,
+        "model_rounds": 4,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "version": 20,
+      "step_seq": 4,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T22:51:29.598687+00:00",
+      "input_event": {
+        "at": "2026-09-11T15:51:29.597128-07:00",
+        "kind": "model_completed",
+        "epoch": 1,
+        "owner": "message-worker",
+        "complete": true,
+        "output_ref": "artifact_53685903b3840cddc761eee767f089eef97817a32f1eeb2871cfdd17e11a9ab2",
+        "expected_version": 19
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "message-worker",
+          "until": "2026-09-11T15:51:32.353601-07:00"
+        },
+        "stage": "model_step",
+        "limits": {
+          "deadline": "2026-09-11T15:52:28.33798-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "status": "running",
+        "version": 19,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "repeated",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 2,
+          "last_checked_step": 3
+        },
+        "step_seq": 4,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_5c0bda954f1a762231de9187abce9d9b270a5e6d4c5e20b0da81a8340a17040b",
+        "tool_calls": 3,
+        "model_rounds": 4,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 2
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "message-worker",
+          "until": "2026-09-11T15:51:32.353601-07:00"
+        },
+        "stage": "execute_effects",
+        "limits": {
+          "deadline": "2026-09-11T15:52:28.33798-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "status": "running",
+        "version": 21,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "repeated",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 2,
+          "last_checked_step": 3
+        },
+        "step_seq": 4,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_53685903b3840cddc761eee767f089eef97817a32f1eeb2871cfdd17e11a9ab2",
+        "tool_calls": 4,
+        "model_rounds": 4,
+        "cost_microusd": 0,
+        "pending_effect": {
+          "args": {
+            "path": "clamp.py"
+          },
+          "kind": "read_file",
+          "status": "in_flight",
+          "args_hash": "31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6",
+          "operation_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY_step_4_op_0",
+          "dispatch_epoch": 1,
+          "policy_version": "workspace-v1",
+          "expected_revision": 1,
+          "requires_approval": false
+        },
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "version": 21,
+      "step_seq": 4,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T22:51:29.608133+00:00",
+      "input_event": {
+        "at": "2026-09-11T15:51:29.6063-07:00",
+        "kind": "tools_validated",
+        "epoch": 1,
+        "owner": "message-worker",
+        "effects": [
+          {
+            "args": {
+              "path": "clamp.py"
+            },
+            "kind": "read_file",
+            "status": "planned",
+            "args_hash": "31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6",
+            "operation_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY_step_4_op_0",
+            "dispatch_epoch": 0,
+            "policy_version": "workspace-v1",
+            "expected_revision": 1,
+            "requires_approval": false
+          }
+        ],
+        "complete": true,
+        "output_ref": "artifact_53685903b3840cddc761eee767f089eef97817a32f1eeb2871cfdd17e11a9ab2",
+        "expected_version": 20
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "message-worker",
+          "until": "2026-09-11T15:51:32.353601-07:00"
+        },
+        "stage": "validate_tool_calls",
+        "limits": {
+          "deadline": "2026-09-11T15:52:28.33798-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "status": "running",
+        "version": 20,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "repeated",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 2,
+          "last_checked_step": 3
+        },
+        "step_seq": 4,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_53685903b3840cddc761eee767f089eef97817a32f1eeb2871cfdd17e11a9ab2",
+        "tool_calls": 3,
+        "model_rounds": 4,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 2
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "message-worker",
+          "until": "2026-09-11T15:51:32.353601-07:00"
+        },
+        "stage": "ingest_results",
+        "limits": {
+          "deadline": "2026-09-11T15:52:28.33798-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "status": "running",
+        "version": 22,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "repeated",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 2,
+          "last_checked_step": 3
+        },
+        "step_seq": 4,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_82fce9946926ca67ce4dc13bcc7ff12e5dc44c264800a080a557b4f0e15629b4",
+        "tool_calls": 4,
+        "model_rounds": 4,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "version": 22,
+      "step_seq": 4,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T22:51:29.739406+00:00",
+      "input_event": {
+        "at": "2026-09-11T15:51:29.737982-07:00",
+        "kind": "effect_completed",
+        "epoch": 1,
+        "owner": "message-worker",
+        "receipt": {
+          "ref": "artifact_82fce9946926ca67ce4dc13bcc7ff12e5dc44c264800a080a557b4f0e15629b4",
+          "epoch": 1,
+          "status": "succeeded",
+          "settled": true,
+          "args_hash": "31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6",
+          "effect_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY_step_4_op_0",
+          "after_revision": 1,
+          "before_revision": 1
+        },
+        "expected_version": 21
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "message-worker",
+          "until": "2026-09-11T15:51:32.353601-07:00"
+        },
+        "stage": "execute_effects",
+        "limits": {
+          "deadline": "2026-09-11T15:52:28.33798-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "status": "running",
+        "version": 21,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "repeated",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 2,
+          "last_checked_step": 3
+        },
+        "step_seq": 4,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_53685903b3840cddc761eee767f089eef97817a32f1eeb2871cfdd17e11a9ab2",
+        "tool_calls": 4,
+        "model_rounds": 4,
+        "cost_microusd": 0,
+        "pending_effect": {
+          "args": {
+            "path": "clamp.py"
+          },
+          "kind": "read_file",
+          "status": "in_flight",
+          "args_hash": "31288f23ff49e26621bd8d7bc4971be315bae1fd04b713e8b538ea02aef408c6",
+          "operation_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY_step_4_op_0",
+          "dispatch_epoch": 1,
+          "policy_version": "workspace-v1",
+          "expected_revision": 1,
+          "requires_approval": false
+        },
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 2
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "message-worker",
+          "until": "2026-09-11T15:51:32.353601-07:00"
+        },
+        "stage": "build_context",
+        "limits": {
+          "deadline": "2026-09-11T15:52:28.33798-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "status": "running",
+        "version": 23,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "repeated",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 2,
+          "last_checked_step": 3
+        },
+        "step_seq": 4,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_26eb19cc5904126a8e5fca2756d73634af1bd17aa230e7aa33e473f110904ea6",
+        "tool_calls": 4,
+        "model_rounds": 4,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "version": 23,
+      "step_seq": 4,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T22:51:29.773152+00:00",
+      "input_event": {
+        "at": "2026-09-11T15:51:29.772478-07:00",
+        "kind": "results_ingested",
+        "epoch": 1,
+        "owner": "message-worker",
+        "output_ref": "artifact_26eb19cc5904126a8e5fca2756d73634af1bd17aa230e7aa33e473f110904ea6",
+        "expected_version": 22
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "message-worker",
+          "until": "2026-09-11T15:51:32.353601-07:00"
+        },
+        "stage": "ingest_results",
+        "limits": {
+          "deadline": "2026-09-11T15:52:28.33798-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "status": "running",
+        "version": 22,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "repeated",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 2,
+          "last_checked_step": 3
+        },
+        "step_seq": 4,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_82fce9946926ca67ce4dc13bcc7ff12e5dc44c264800a080a557b4f0e15629b4",
+        "tool_calls": 4,
+        "model_rounds": 4,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 2
+    },
+    {
+      "body": {
+        "lease": {
+          "epoch": 1,
+          "owner": "message-worker",
+          "until": "2026-09-11T15:51:32.353601-07:00"
+        },
+        "stage": "model_step",
+        "limits": {
+          "deadline": "2026-09-11T15:52:28.33798-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "status": "running",
+        "version": 24,
+        "progress": {
+          "message_seq": 1,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "message",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 0,
+          "last_checked_step": 4
+        },
+        "step_seq": 5,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_7eae22a731adcd5f69a68d79ed320d7560521478b47c8282eb517098e360615f",
+        "tool_calls": 4,
+        "model_rounds": 5,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "version": 24,
+      "step_seq": 5,
+      "tenant_id": "tenant",
+      "created_at": "2026-09-11T22:51:29.962203+00:00",
+      "input_event": {
+        "at": "2026-09-11T15:51:29.960586-07:00",
+        "kind": "context_built",
+        "epoch": 1,
+        "owner": "message-worker",
+        "progress": {
+          "step_seq": 4,
+          "attempt_id": "attempt_P6QORPU5IWPPOSAMPMA4DM6WVB",
+          "context_ref": "artifact_7eae22a731adcd5f69a68d79ed320d7560521478b47c8282eb517098e360615f",
+          "message_seq": 1,
+          "observations": [
+            {
+              "effect_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY_step_4_op_0",
+              "after_hash": "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c",
+              "before_hash": "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c",
+              "fingerprint": "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687",
+              "receipt_ref": "artifact_82fce9946926ca67ce4dc13bcc7ff12e5dc44c264800a080a557b4f0e15629b4"
+            }
+          ],
+          "policy_version": 1
+        },
+        "output_ref": "artifact_7eae22a731adcd5f69a68d79ed320d7560521478b47c8282eb517098e360615f",
+        "progress_ref": "artifact_0119e094157e0a1c42534cf07d5d14599ffe9a6519e458b067cd8952e099f89d",
+        "expected_version": 23
+      },
+      "input_state": {
+        "lease": {
+          "epoch": 1,
+          "owner": "message-worker",
+          "until": "2026-09-11T15:51:32.353601-07:00"
+        },
+        "stage": "build_context",
+        "limits": {
+          "deadline": "2026-09-11T15:52:28.33798-07:00",
+          "max_tool_calls": 20,
+          "max_model_rounds": 8,
+          "max_cost_microusd": 1000000,
+          "max_no_progress_batches": 3
+        },
+        "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+        "status": "running",
+        "version": 23,
+        "progress": {
+          "message_seq": 0,
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ],
+          "classification": "repeated",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "repeated_batches": 2,
+          "last_checked_step": 3
+        },
+        "step_seq": 4,
+        "tenant_id": "tenant",
+        "output_ref": "artifact_26eb19cc5904126a8e5fca2756d73634af1bd17aa230e7aa33e473f110904ea6",
+        "tool_calls": 4,
+        "model_rounds": 4,
+        "cost_microusd": 0,
+        "schema_version": 2,
+        "workspace_revision": 1,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "schema_version": 2
+    }
+  ],
+  "runner_allocations": [
+    {
+      "slots": 1,
+      "state": "released",
+      "run_id": "run_ZDIJFIPP43YNYDMCHWEZHGVJJY",
+      "runner_id": "runner",
+      "tenant_id": "tenant",
+      "lease_epoch": 1,
+      "memory_bytes": 0
+    }
+  ],
+  "scope": "real private PostgreSQL + production Driver + SQLite runner with TestBackend; no Docker or paid provider",
+  "test_binary_sha256": "bee55430c8bb4a5855824f51502d27b554da37ac2c0fcd8d2a6a16839edc63f9"
+}

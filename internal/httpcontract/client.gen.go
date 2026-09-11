@@ -62,6 +62,33 @@ func (e EffectStatus) Valid() bool {
 	}
 }
 
+// Defines values for ProgressStateClassification.
+const (
+	ProgressStateClassificationIndeterminate ProgressStateClassification = "indeterminate"
+	ProgressStateClassificationInitial       ProgressStateClassification = "initial"
+	ProgressStateClassificationMessage       ProgressStateClassification = "message"
+	ProgressStateClassificationNewEvidence   ProgressStateClassification = "new_evidence"
+	ProgressStateClassificationRepeated      ProgressStateClassification = "repeated"
+)
+
+// Valid indicates whether the value is a known member of the ProgressStateClassification enum.
+func (e ProgressStateClassification) Valid() bool {
+	switch e {
+	case ProgressStateClassificationIndeterminate:
+		return true
+	case ProgressStateClassificationInitial:
+		return true
+	case ProgressStateClassificationMessage:
+		return true
+	case ProgressStateClassificationNewEvidence:
+		return true
+	case ProgressStateClassificationRepeated:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for RunStatus.
 const (
 	RunStatusBudgetExhausted     RunStatus = "budget_exhausted"
@@ -225,10 +252,11 @@ type ArtifactState string
 
 // Budget Optional overrides may only reduce the named server configuration limits.
 type Budget struct {
-	MaxCostMicrousd   *int64  `json:"max_cost_microusd,omitempty"`
-	MaxModelRounds    *uint64 `json:"max_model_rounds,omitempty"`
-	MaxRuntimeSeconds *int64  `json:"max_runtime_seconds,omitempty"`
-	MaxToolCalls      *uint64 `json:"max_tool_calls,omitempty"`
+	MaxCostMicrousd      *int64  `json:"max_cost_microusd,omitempty"`
+	MaxModelRounds       *uint64 `json:"max_model_rounds,omitempty"`
+	MaxNoProgressBatches *uint64 `json:"max_no_progress_batches,omitempty"`
+	MaxRuntimeSeconds    *int64  `json:"max_runtime_seconds,omitempty"`
+	MaxToolCalls         *uint64 `json:"max_tool_calls,omitempty"`
 }
 
 // Config defines model for Config.
@@ -240,12 +268,13 @@ type Config struct {
 	} `json:"fallback,omitempty"`
 
 	// MaxCostMicrousd Integer micro-US dollars; 1 USD equals 1000000.
-	MaxCostMicrousd   Money   `json:"max_cost_microusd"`
-	MaxModelRounds    Counter `json:"max_model_rounds"`
-	MaxRuntimeSeconds int64   `json:"max_runtime_seconds"`
-	MaxToolCalls      Counter `json:"max_tool_calls"`
-	Model             string  `json:"model"`
-	Provider          string  `json:"provider"`
+	MaxCostMicrousd      Money   `json:"max_cost_microusd"`
+	MaxModelRounds       Counter `json:"max_model_rounds"`
+	MaxNoProgressBatches *uint64 `json:"max_no_progress_batches,omitempty"`
+	MaxRuntimeSeconds    int64   `json:"max_runtime_seconds"`
+	MaxToolCalls         Counter `json:"max_tool_calls"`
+	Model                string  `json:"model"`
+	Provider             string  `json:"provider"`
 }
 
 // Counter defines model for Counter.
@@ -305,9 +334,10 @@ type Limits struct {
 	Deadline time.Time `json:"deadline"`
 
 	// MaxCostMicrousd Integer micro-US dollars; 1 USD equals 1000000.
-	MaxCostMicrousd Money   `json:"max_cost_microusd"`
-	MaxModelRounds  Counter `json:"max_model_rounds"`
-	MaxToolCalls    Counter `json:"max_tool_calls"`
+	MaxCostMicrousd      Money   `json:"max_cost_microusd"`
+	MaxModelRounds       Counter `json:"max_model_rounds"`
+	MaxNoProgressBatches *uint64 `json:"max_no_progress_batches,omitempty"`
+	MaxToolCalls         Counter `json:"max_tool_calls"`
 }
 
 // Message defines model for Message.
@@ -328,6 +358,19 @@ type Money = int64
 
 // Priority Bounded reserved metadata. This release continues tenant rotation and FIFO within each tenant; priority does not change dispatch order.
 type Priority = int
+
+// ProgressState defines model for ProgressState.
+type ProgressState struct {
+	Classification  ProgressStateClassification `json:"classification"`
+	LastCheckedStep Counter                     `json:"last_checked_step"`
+	MessageSeq      Counter                     `json:"message_seq"`
+	RecentEvidence  []string                    `json:"recent_evidence"`
+	RecentTrees     []string                    `json:"recent_trees"`
+	RepeatedBatches Counter                     `json:"repeated_batches"`
+}
+
+// ProgressStateClassification defines model for ProgressState.Classification.
+type ProgressStateClassification string
 
 // Project defines model for Project.
 type Project struct {
@@ -381,6 +424,7 @@ type State struct {
 	ModelRounds            Counter                 `json:"model_rounds"`
 	OutputRef              *string                 `json:"output_ref,omitempty"`
 	PendingEffect          *Effect                 `json:"pending_effect,omitempty"`
+	Progress               *ProgressState          `json:"progress,omitempty"`
 	ReconciliationRevision *Counter                `json:"reconciliation_revision,omitempty"`
 	RemainingEffects       *[]Effect               `json:"remaining_effects,omitempty"`
 	ResumeStage            *Stage                  `json:"resume_stage,omitempty"`
