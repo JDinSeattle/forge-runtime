@@ -1,0 +1,13 @@
+=== RUN   TestNativeStreamInterruptedLedgerEvidence
+=== RUN   TestNativeStreamInterruptedLedgerEvidence/openai
+    model_stream_fault_test.go:511: passed=true native=openai attempt_incomplete=true effects=0 retained_microusd=10240 retained_tokens=9216 lease_expiry_no_refund=true request_slot_expirations=1/0
+    model_stream_fault_test.go:309: evidence=/tmp/forge-text-batch-a9208e7-20260911/benchmarks/results/local/model-stream-interrupted-openai-20260911T220028.295905204Z
+=== RUN   TestNativeStreamInterruptedLedgerEvidence/anthropic
+    model_stream_fault_test.go:511: passed=true native=anthropic attempt_incomplete=true effects=0 retained_microusd=10240 retained_tokens=9216 lease_expiry_no_refund=true request_slot_expirations=1/0
+    model_stream_fault_test.go:309: evidence=/tmp/forge-text-batch-a9208e7-20260911/benchmarks/results/local/model-stream-interrupted-anthropic-20260911T220036.732025723Z
+--- PASS: TestNativeStreamInterruptedLedgerEvidence (16.86s)
+    --- PASS: TestNativeStreamInterruptedLedgerEvidence/openai (8.44s)
+    --- PASS: TestNativeStreamInterruptedLedgerEvidence/anthropic (8.42s)
+=== RUN   TestInterruptedLedgerOracleRejectsReleasedExpense
+--- PASS: TestInterruptedLedgerOracleRejectsReleasedExpense (0.00s)
+PASS

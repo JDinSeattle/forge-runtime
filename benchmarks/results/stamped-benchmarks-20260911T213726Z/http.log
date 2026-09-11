@@ -1,0 +1,12 @@
+=== RUN   TestHTTPMetadataEvidence
+gc 1 @0.006s 4%: 0.071+0.72+0.013 ms clock, 0.14+0.082/0.41/0.21+0.027 ms cpu, 4->4->2 MB, 4 MB goal, 0 MB stacks, 0 MB globals, 2 P
+gc 2 @0.024s 2%: 0.031+0.46+0.002 ms clock, 0.062+0.76/0.091/0+0.005 ms cpu, 7->7->6 MB, 7 MB goal, 0 MB stacks, 0 MB globals, 2 P
+gc 3 @0.025s 3%: 0.015+0.68+0.009 ms clock, 0.031+0.073/0.39/0.34+0.019 ms cpu, 14->14->14 MB, 14 MB goal, 0 MB stacks, 0 MB globals, 2 P
+gc 4 @4.997s 0%: 0.072+1.0+0.007 ms clock, 0.14+0.055/0.45/1.1+0.014 ms cpu, 28->28->18 MB, 29 MB goal, 0 MB stacks, 0 MB globals, 2 P
+gc 5 @18.459s 0%: 0.032+1.4+0.005 ms clock, 0.065+0.14/0.58/1.5+0.010 ms cpu, 37->37->2 MB, 38 MB goal, 0 MB stacks, 0 MB globals, 2 P
+gc 6 @19.978s 0%: 0.052+2.0+0.034 ms clock, 0.10+0.14/1.1/1.7+0.068 ms cpu, 5->5->2 MB, 6 MB goal, 0 MB stacks, 0 MB globals, 2 P
+    http_test.go:177: raw=results/local/http-20260911T213759Z.json requests=1000 offered=50/s p95=4.755ms p99=8.582ms errors=0
+--- PASS: TestHTTPMetadataEvidence (20.27s)
+PASS
+gc 7 @20.272s 0%: 0.17+1.4+0.012 ms clock, 0.35+0.52/0.32/0+0.025 ms cpu, 5->6->2 MB, 6 MB goal, 0 MB stacks, 0 MB globals, 2 P
+gc 8 @20.274s 0%: 0.009+0.26+0.001 ms clock, 0.019+0/0.093/0.39+0.003 ms cpu, 3->3->1 MB, 5 MB goal, 0 MB stacks, 0 MB globals, 2 P (forced)

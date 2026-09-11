@@ -51,7 +51,9 @@ those checks.
 | [E32](approval-authority-evidence.md) | Approval checks current membership inside its decision transaction | Real TCP/PG lock ordering, downgrade/removal regressions and narrow-function privileges under race | Private migration10/control fixtures; original services not claimed upgraded |
 | [E33](k6-metadata-evidence.md) | Actual 1,000-request k6 metadata workload with fixed 90:10 mix | Raw JSONL, exact status/count checks, independently recomputed percentiles; first failure retained | Real authenticated handler/PG without telemetry; no task execution or complete build/config/profile attestation |
 | [E34](integration-checks-20260911.md) | Integrated admission, capacity, approval and dependency changes | Frozen 260-input working tree; build, 368 ordinary/race passing entries each, vet, generation and five Python suites | 27 opt-in skips per Go run; separate from current CI and full runtime/operational acceptance |
+| [E35](text-batching-evidence.md) | Configurable lossless model text batching | Actual private PG timer/size/paused-text controls, complete Driver artifact, and both local native interrupted-stream cases | FakeProvider/TestBackend or native-protocol loopback; original slicing and launcher failures retained; no paid model or HTTP lock-load claim |
 | [E38](sse-reset-retirement-evidence.md) | SSE reset removes the old hub before a client can rejoin it | Original failed CI, two controlled reproductions, 200 repeats and isolated PG/HTTP race checks | In-memory Source for reset interleavings; separate from sustained load and current feature work |
+| [E39](stamped-benchmark-evidence.md) | Fixed-commit scheduler, HTTP and 1,000 simulated terminal repeats | Clean a9208e7 checkout, one retained binary, 262 source hashes, every sample and six profiles independently audited | New finite shared-host measurements; does not retroactively identify old report values or prove real model/runner performance |
 
 ## E01 — Schemas and generated code
 
@@ -1188,4 +1190,41 @@ reproduce both reset variants on the old source and pass 200 repeats plus real
 private-PG/HTTP package race checks in an isolated a9208e7 checkout with only
 the three SSE files changed. Independent review finds no P1/P2. Original CI,
 controlled failures and the unrelated temporary-disk build failures stay
-preserved. Later feature work is excluded from this acceptance.
+preserved. Exact correction commit 7b7504711538aa8fb9a9ad3b3124d0043e545bb2
+also passes [GitHub Actions 34651379712](../benchmarks/results/github-actions-7b75047/run.json).
+Later feature work is excluded from this acceptance.
+
+## E39 — Fixed-commit benchmark identity, 2026-09-11
+
+[Three bounded repeats](stamped-benchmark-evidence.md) pass from a clean local
+a9208e7 checkout with one retained executable and 262 input hashes unchanged.
+An independent audit verifies exact Git blobs, binary SHA, raw sample counts,
+nearest-rank quantiles and six profiles. HTTP records 900 reads and 100
+admissions with zero errors (p95 4.754945 ms, p99 8.582281 ms); the scheduler
+claims 1,000 unique runs, and the distinct simulated controller completes 1,000
+tasks with unique effects and zero final reserved/active counters.
+
+These reports fill the identified E05/E08/E09 build-identity gaps through new
+observations. They do not reclassify historical values or synthetic execution
+and fees. The first cross-filesystem clone failure is preserved; the successful
+clone uses copied objects. Shared-host contention, cache reuse, HTTP settings
+provenance and lack of a full historical PG dump remain explicit.
+
+## E35 — Lossless configurable text delivery, 2026-09-11
+
+[Text batching acceptance](text-batching-evidence.md) retains the original Chinese
+byte-boundary corruption and oversized escaped-JSON reproductions. The correction
+preserves complete UTF-8 runes, bounds raw pending text and actual encoded events,
+validates deployment configuration, and never retries an uncertain append.
+Private PostgreSQL checks prove timer and size delivery, exact decoded text,
+independent ordered Store message/cancel controls and the production Driver's
+separate complete model artifact. Independent source review finds no P1/P2.
+
+The first isolated execution passes application/configuration checks but the
+native F03 cases stop at the Go build-ID observer because its minimal environment
+lacks Go cache settings. That failure remains retained. A whitelisted Go-path
+launcher correction uses the identical frozen Go/SQL inputs and four executables;
+[actual-02](../benchmarks/results/text-batching-20260911/actual-02-isolated/execution.json)
+passes all three groups. Both OpenAI and Anthropic protocol fixtures reach actual
+TCP interruption through their SDK and Driver, preserve unknown fees/tokens and
+withhold incomplete tools. No paid endpoint or real task container is involved.

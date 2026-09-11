@@ -1,0 +1,369 @@
+{
+  "audited_at_utc": "2026-09-11T21:54:40.966633+00:00",
+  "auditor": "independent child observability_sqlc",
+  "checks": {
+    "binary_elf_build_id": "59540e5ccc4f7ebb2c16c0c51049c07830ea907b",
+    "build_identity": {
+      "binary_bytes": 85795023,
+      "binary_path": "/tmp/forge-benchmark-clone-20260911T213726Z/bin/stamped-benchmarks.test",
+      "binary_sha256": "1a63a717cbef52ca2b5608adba9f425323070d845fa760abbe891c2cb06a8a8a",
+      "clone_status_porcelain": "",
+      "code_input_filter": "tracked *.go,*.mod,*.sum,*.sql,*.yaml,*.yml,*.proto,*.js,*.py,*.sh plus Makefile excluding docs and prior result directories",
+      "code_inputs_verified_against_commit_and_current_clone": 262,
+      "commit": "a9208e79879d29373eb3964e098eff286aa6de82",
+      "http_harness_and_server_in_inventory": true,
+      "independent_rebuild_performed": false,
+      "source_before_after_sha256": "37cd8a36f67f240df07f0907da6952e26dff56eb32f6ac7f0678744e993c595f"
+    },
+    "database_and_hardware": {
+      "database_bracketing_samples": {
+        "fsync": "on",
+        "pool_max_connections": 16,
+        "pool_min_connections": 1,
+        "shared_buffers": "128MB",
+        "synchronous_commit": "on",
+        "version": "PostgreSQL 17.11 on x86_64-pc-linux-musl, compiled by gcc (Alpine 15.2.0) 15.2.0, 64-bit"
+      },
+      "http_context": "same launcher-selected database environment; actual nonowner RLS pool maximum 16. HTTP raw omits separate DB settings query; scheduler before and terminal after agree. This is bracketed context, not an independently captured HTTP settings snapshot.",
+      "machine": {
+        "architecture": "amd64",
+        "cpu_model": "13th Gen Intel(R) Core(TM) i9-13900K",
+        "go_version": "go1.26.8",
+        "gomaxprocs": 2,
+        "host_memory": "129209084 kB",
+        "logical_cpus": 32,
+        "os": "linux"
+      }
+    },
+    "first_failed_clone_preserved": {
+      "before_build_or_database": true,
+      "failure_sha256": "a5425330827e7b018c1ff212654110ccfdf47debab926d87abb08b976a7dceef",
+      "reason": "cross-device hardlink failure"
+    },
+    "first_failed_manifest_entries_verified": 3,
+    "first_failed_manifest_sha256": "3e2e250a4cf3e048553d7baf1ac27e09649aeeb9152bb06af61f379e136bc9f4",
+    "gc_environment": {
+      "GODEBUG": "gctrace=1",
+      "GOGC": 100,
+      "GOMAXPROCS": 2,
+      "provenance": "explicit launcher assignments; raw machine reports and GC lines corroborate 2 processors; historical env not reread"
+    },
+    "http_execution": {
+      "all_gc_trace_processor_counts": 2,
+      "argv_exact_test": "TestHTTPMetadataEvidence",
+      "exit_code": 0,
+      "gc_trace_lines": 8,
+      "launcher_elapsed_seconds": 20.279783290985506
+    },
+    "http_raw_counts": {
+      "GET_200": 900,
+      "POST_202": 100,
+      "failures": 0,
+      "max_inflight": 16,
+      "measured_requests": 1000,
+      "pacing": "50/s ticker for 1000 requests; 20.001475877s observed total, no per-request start timestamp retained",
+      "pool_max": 16,
+      "reported_persisted_runs_including_seed": 101,
+      "timing": "client.Do through complete response-body discard; unlike k6 duration includes connection acquisition/establishment if incurred",
+      "warmup_GET_not_in_distribution": 100
+    },
+    "limited_secret_pattern_scan": {
+      "files": 23,
+      "matches": {
+        "bearer_value": [],
+        "credentialed_database_url": [],
+        "forge_token": []
+      },
+      "patterns": [
+        "forge_token",
+        "bearer_value",
+        "credentialed_database_url"
+      ],
+      "universal_secret_absence_claim": false
+    },
+    "original_manifest_entries_verified": 29,
+    "original_manifest_sha256": "11c2ce2e3a417dca3e3616e95f738da056df04319f2ce0206a0a965955805a6e",
+    "original_raw_files_unmodified_at_audit_end": true,
+    "profiles": [
+      {
+        "ELF_build_id": "59540e5ccc4f7ebb2c16c0c51049c07830ea907b",
+        "file": "http-cpu.pprof",
+        "independent_symbolization_succeeded": true,
+        "selected_type": "cpu",
+        "sha256": "4bc7fe8e178d6d47849fd8db346098a066ed99e3702ee5441c55c8da6b7250f1",
+        "top_header": [
+          "File: stamped-benchmarks.test",
+          "Build ID: 59540e5ccc4f7ebb2c16c0c51049c07830ea907b",
+          "Type: cpu",
+          "Time: 2026-09-11 14:37:39 PDT",
+          "Duration: 20.27s, Total samples = 950ms ( 4.69%)",
+          "Showing nodes accounting for 480ms, 50.53% of 950ms total",
+          "Showing top 8 nodes out of 328"
+        ],
+        "top_output_sha256": "5eba1842502e6ac3966dca46b9e9d1bdc80626c5d1bc47d0a1547d75020c8fc9"
+      },
+      {
+        "ELF_build_id": "59540e5ccc4f7ebb2c16c0c51049c07830ea907b",
+        "file": "http-heap.pprof",
+        "independent_symbolization_succeeded": true,
+        "selected_type": "inuse_space",
+        "sha256": "6038a1ab5fd6aee8f9fee72b5e883b0ac67d2b7460dc35111e6db0c4d18fa40f",
+        "top_header": [
+          "File: stamped-benchmarks.test",
+          "Build ID: 59540e5ccc4f7ebb2c16c0c51049c07830ea907b",
+          "Type: inuse_space",
+          "Time: 2026-09-11 14:37:59 PDT",
+          "Showing nodes accounting for 2563.78kB, 100% of 2563.78kB total",
+          "Showing top 8 nodes out of 31",
+          "      flat  flat%   sum%        cum   cum%"
+        ],
+        "top_output_sha256": "718f5e5e47168ab2b0c47d59c90d16825721fb064927b76c68cb7485f826104b"
+      },
+      {
+        "ELF_build_id": "59540e5ccc4f7ebb2c16c0c51049c07830ea907b",
+        "file": "scheduler-cpu.pprof",
+        "independent_symbolization_succeeded": true,
+        "selected_type": "cpu",
+        "sha256": "844c04cdcb5aba683b07ca5fe837bf710cd696453efb89f9ba418b46e134456b",
+        "top_header": [
+          "File: stamped-benchmarks.test",
+          "Build ID: 59540e5ccc4f7ebb2c16c0c51049c07830ea907b",
+          "Type: cpu",
+          "Time: 2026-09-11 14:37:30 PDT",
+          "Duration: 8.19s, Total samples = 1990ms (24.30%)",
+          "Showing nodes accounting for 960ms, 48.24% of 1990ms total",
+          "Showing top 8 nodes out of 351"
+        ],
+        "top_output_sha256": "435b08e994324cfd04dc6be971154393d8cb40c33a5702a6f6f2d96fbc762605"
+      },
+      {
+        "ELF_build_id": "59540e5ccc4f7ebb2c16c0c51049c07830ea907b",
+        "file": "scheduler-heap.pprof",
+        "independent_symbolization_succeeded": true,
+        "selected_type": "inuse_space",
+        "sha256": "05c4975c76e4d5fb3861d1445864257c6e82214bdb25694cdeeb69aa0510c17e",
+        "top_header": [
+          "File: stamped-benchmarks.test",
+          "Build ID: 59540e5ccc4f7ebb2c16c0c51049c07830ea907b",
+          "Type: inuse_space",
+          "Time: 2026-09-11 14:37:38 PDT",
+          "Showing nodes accounting for 1024.15kB, 100% of 1024.15kB total",
+          "      flat  flat%   sum%        cum   cum%",
+          "  512.10kB 50.00% 50.00%   512.10kB 50.00%  github.com/prometheus/client_model/go.init"
+        ],
+        "top_output_sha256": "afed15aaf2c3154f5c0627a58abd389fe6129e01aed781cc0a071ae9e5fafcc6"
+      },
+      {
+        "ELF_build_id": "59540e5ccc4f7ebb2c16c0c51049c07830ea907b",
+        "file": "terminal-cpu.pprof",
+        "independent_symbolization_succeeded": true,
+        "selected_type": "cpu",
+        "sha256": "cef3dfc6ad2b6a8d5b8f44c671814600ca9e6ec0665b79e54f4eea375033be7d",
+        "top_header": [
+          "File: stamped-benchmarks.test",
+          "Build ID: 59540e5ccc4f7ebb2c16c0c51049c07830ea907b",
+          "Type: cpu",
+          "Time: 2026-09-11 14:37:59 PDT",
+          "Duration: 82.16s, Total samples = 24.12s (29.36%)",
+          "Showing nodes accounting for 11.47s, 47.55% of 24.12s total",
+          "Dropped 766 nodes (cum <= 0.12s)"
+        ],
+        "top_output_sha256": "23c889a17e7ccf3d18756b2dae1524b0bda9317cdbad2cafddcff00f757bac63"
+      },
+      {
+        "ELF_build_id": "59540e5ccc4f7ebb2c16c0c51049c07830ea907b",
+        "file": "terminal-heap.pprof",
+        "independent_symbolization_succeeded": true,
+        "selected_type": "inuse_space",
+        "sha256": "748108b05b4a91d6949966fa161951bbc263820b413872e4c70c177b7213f493",
+        "top_header": [
+          "File: stamped-benchmarks.test",
+          "Build ID: 59540e5ccc4f7ebb2c16c0c51049c07830ea907b",
+          "Type: inuse_space",
+          "Time: 2026-09-11 14:39:21 PDT",
+          "Showing nodes accounting for 1024.42kB, 100% of 1024.42kB total",
+          "Showing top 8 nodes out of 19",
+          "      flat  flat%   sum%        cum   cum%"
+        ],
+        "top_output_sha256": "a58ecb6d3a66334d36611a31da849b9c3c40ef509b06e3e370357a30a8f05c4f"
+      }
+    ],
+    "scheduler_execution": {
+      "all_gc_trace_processor_counts": 2,
+      "argv_exact_test": "TestSchedulerCompetitionEvidence",
+      "exit_code": 0,
+      "gc_trace_lines": 34,
+      "launcher_elapsed_seconds": 8.20523417496588
+    },
+    "scheduler_raw_identity_counts": {
+      "replay_indices": "0,10,...,990",
+      "replays": 100,
+      "reported_durable_invariants": {
+        "capacity_or_runner_lock_polls": 805,
+        "claims_by_worker": [
+          516,
+          484
+        ],
+        "durable_claim_events": 1000,
+        "durable_events": 2000,
+        "effect_rows": 0,
+        "empty_skip_locked_polls": 1349,
+        "event_gaps": 0,
+        "model_attempt_rows": 0,
+        "passed": true,
+        "reserved_allocations": 1000,
+        "runner_reserved_slots": 1000,
+        "running_at_first_epoch": 1000,
+        "snapshots": 2000,
+        "tenant_active_total": 1000,
+        "unique_claimed_runs": 1000,
+        "unique_submitted_runs": 1000
+      },
+      "scope": "stops running at first claim and retains 1000 allocations until private-schema cleanup; not terminal/effect evidence",
+      "unique_claim_indices": 1000,
+      "unique_original_submits": 1000,
+      "worker_claims": {
+        "0": 516,
+        "1": 484
+      }
+    },
+    "terminal_execution": {
+      "all_gc_trace_processor_counts": 2,
+      "argv_exact_test": "TestTerminalSimulationEvidence",
+      "exit_code": 0,
+      "gc_trace_lines": 628,
+      "launcher_elapsed_seconds": 82.18508213100722
+    },
+    "terminal_raw_identity_counts": {
+      "all_duplicate_confirmations_rejected": true,
+      "all_final_records_completed_version12_seq21": true,
+      "all_receipt_bindings_match_run_and_fixed_args_hash": true,
+      "all_repeated_terminal_controls_unchanged": true,
+      "reported_ledger_invariants": {
+        "allocations": 1000,
+        "capacity_or_runner_lock_polls": 258,
+        "completed_model_attempts": 2000,
+        "completed_runs": 1000,
+        "confirmed_effects": 1000,
+        "duplicate_confirmations_rejected": 1000,
+        "duplicate_settlement_calls": 2000,
+        "empty_polls": 10,
+        "event_gaps": 0,
+        "event_rows": 21000,
+        "missing_ready_effect_receipts": 0,
+        "passed": true,
+        "provider_active_requests": 0,
+        "provider_committed_microusd": 6000,
+        "provider_committed_tokens": 96000,
+        "provider_reserved_microusd": 0,
+        "provider_reserved_tokens": 0,
+        "released_allocations": 1000,
+        "run_finished_events": 1000,
+        "runner_reserved_slots": 0,
+        "runs": 1000,
+        "runs_by_worker": [
+          500,
+          500
+        ],
+        "simulated_executions": 1000,
+        "simulated_provider_calls": 2000,
+        "simulated_provider_events": 6000,
+        "simulated_start_requests": 2000,
+        "snapshot_rows": 12000,
+        "tenant_active_total": 0,
+        "unique_simulated_effects": 1000,
+        "unsettled_reservations": 0
+      },
+      "tenants": 10,
+      "unique_bound_simulated_effect_ids": 1000,
+      "unique_runs": 1000,
+      "worker_runs": {
+        "0": 500,
+        "1": 500
+      }
+    }
+  },
+  "evidence": "E39",
+  "findings": [],
+  "limitations": [
+    "The source-to-binary chain is supported by a retained launcher/build log, a clean clone whose 262 recorded inputs independently match the exact git commit, an unchanged retained executable, and matching ELF profile build IDs. This read-only audit did not independently rebuild the executable; go version -m of this test binary does not itself embed the git revision.",
+    "The code-input inventory is a declared extension-filtered tracked-file set, not a whole-filesystem or compiler/toolchain/container-image attestation. Selected benchmark workload code and embedded migration SQL are included; cryptographic reproducible-build equivalence is not claimed.",
+    "Raw samples independently support sample identities, latencies and arithmetic. PostgreSQL counts and event-gap checks are recorded by the source-bound passing tests; the private schemas and temporary artifact bytes were cleaned up and no full historical database/object dump is retained here.",
+    "The three workloads share a development host and PostgreSQL instance with possible concurrent work. Results are finite observations; CPU profiling and GC tracing add overhead, and they are not directly comparable to older GOMAXPROCS32 unprofiled samples.",
+    "The scheduler benchmark deliberately stops at claim with 1000 allocations retained until fixture cleanup. Its throughput is not terminal throughput.",
+    "Terminal progression is a finite controller invoking real Store/quota/artifact APIs, actual FakeProvider assembly and an in-memory deduplicating executor. It is not application.Driver, native paid-provider, real runner/container, code-repair, crash-recovery or billing-quality evidence. 6000 microUSD and 96000 tokens are synthetic ledger fixtures.",
+    "HTTP is 900 reads and 100 admissions through real loopback TCP and nonowner RLS, plus 100 untimed warmup reads. It has no SSE event-size workload and no model/effect execution. It is not k6; quantiles are nearest rank and timing includes client.Do/body drain.",
+    "HTTP raw records aggregate pacing and durations but not per-request start times or a separate DB-settings snapshot. Same database environment and matching scheduler/terminal snapshots establish bounded surrounding context; universal stability of all PostgreSQL settings is not proven.",
+    "Six raw CPU/heap profiles have independently resolved symbols and the same ELF build ID. Existing heap.top files select alloc_space; this audit additionally selected inuse_space. Profiles include test setup/cleanup and finite GC samples, not a sustained heap-plateau or no-leak proof.",
+    "E05/E08/E09 originals retain their historical identity omissions. These new stamped repetitions supplement those workload classes and must not assign their commit, executable hash, processor count, GC settings or latency values to the older runs.",
+    "The 85,795,023-byte executable currently remains in the retained /tmp clone, not this versioned result directory; its local availability and digest were independently checked. A future artifact archive should preserve that distinction."
+  ],
+  "measurements": {
+    "http_client_do_through_body_drain": {
+      "latency": {
+        "count": 1000,
+        "max_ms": 13.114187,
+        "min_ms": 0.417528,
+        "p50_ms": 1.054927,
+        "p95_ms": 4.754945,
+        "p99_ms": 8.582281
+      },
+      "operations_per_second": 49.996310579756525,
+      "phase_wall_seconds": 20.001475877,
+      "quantile_method": "nearest rank: sorted[ceil(q*n)-1]",
+      "raw_samples_sha256": "1e1c8ff6ef99b175179ab077817c98d0bbe057114530b9d843dd1e1547f2c3f5"
+    },
+    "scheduler_submit_including_replays": {
+      "latency": {
+        "count": 1100,
+        "max_ms": 41.876886,
+        "min_ms": 0.38342299999999996,
+        "p50_ms": 4.0746530000000005,
+        "p95_ms": 6.169705,
+        "p99_ms": 9.602027000000001
+      },
+      "operations_per_second": 1755.5380682684706,
+      "phase_wall_seconds": 0.62658852,
+      "quantile_method": "nearest rank: sorted[ceil(q*n)-1]",
+      "raw_samples_sha256": "05233865e451171a5a4062fe4a956aadbd31a0a5519e049d0162a8f90c74ed48"
+    },
+    "scheduler_successful_claims": {
+      "latency": {
+        "count": 1000,
+        "max_ms": 17.002799,
+        "min_ms": 3.086323,
+        "p50_ms": 6.452579,
+        "p95_ms": 10.756541,
+        "p99_ms": 13.585839
+      },
+      "operations_per_second": 137.06530004455567,
+      "phase_wall_seconds": 7.295792587,
+      "quantile_method": "nearest rank: sorted[ceil(q*n)-1]",
+      "raw_samples_sha256": "9ddbd69a277f5c54daef8bc38d09a12295d68f5127af2f32ad77d44f8415bd06"
+    },
+    "terminal_simulated_claim_to_accepted_terminal": {
+      "latency": {
+        "count": 1000,
+        "max_ms": 244.427217,
+        "min_ms": 121.444611,
+        "p50_ms": 159.03662,
+        "p95_ms": 195.922862,
+        "p99_ms": 216.38229
+      },
+      "operations_per_second": 12.32167134179634,
+      "phase_wall_seconds": 81.157821229,
+      "quantile_method": "nearest rank: sorted[ceil(q*n)-1]",
+      "raw_samples_sha256": "37b85e6970edc39a322bff0de5345dd58dff6a35ee57a5c0036564355f8bb729"
+    }
+  },
+  "method": "Read original source, logs, manifests, binary and all raw samples; recompute independently without reading recompute.json as an oracle. No workload, PostgreSQL or model was executed.",
+  "passed": true,
+  "s17_6_scope_assessment": {
+    "new_latency_SLO_or_capacity_claim": false,
+    "old_runs_retroactively_attested": false,
+    "paid_quality_or_P06_closed": false,
+    "scope": "Scheduler/admission, HTTP metadata, and 1000-terminal simulation now each have new fixed workload samples linked to the same retained executable, exact clean commit and 262 unchanged source inputs, including HTTP harness/server, with machine/pool/GC/profile records. E39 can close the specifically identified missing-identity notes while preserving the limitations listed here.",
+    "specific_old_identity_gaps_closed_by_new_bounded_repeats": true
+  },
+  "schema": 1
+}

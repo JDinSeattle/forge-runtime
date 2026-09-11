@@ -1,0 +1,103 @@
+{
+  "captured_at": "2026-09-11T21:50:51.490787279Z",
+  "consumer_cancelled": true,
+  "controls_returned_at": "2026-09-11T21:50:51.485544388Z",
+  "controls_started_at": "2026-09-11T21:50:51.467967367Z",
+  "events_while_text_paused": [
+    {
+      "run_id": "run_TJZC6KTNWDN53KCPEV5YW3GPHV",
+      "seq": 1,
+      "type": "run.created",
+      "schema_version": 1,
+      "payload": {
+        "lease": {
+          "epoch": 0,
+          "owner": "",
+          "until": "0001-01-01T00:00:00Z"
+        },
+        "stage": "initialize",
+        "limits": {
+          "deadline": "2026-09-11T21:51:21.425233Z",
+          "max_tool_calls": 3,
+          "max_model_rounds": 3,
+          "max_cost_microusd": 0
+        },
+        "run_id": "run_TJZC6KTNWDN53KCPEV5YW3GPHV",
+        "status": "queued",
+        "version": 1,
+        "step_seq": 0,
+        "tenant_id": "tenant",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 0,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "created_at": "2026-09-11T21:50:51.436511Z"
+    },
+    {
+      "run_id": "run_TJZC6KTNWDN53KCPEV5YW3GPHV",
+      "seq": 2,
+      "type": "run.claimed",
+      "schema_version": 1,
+      "payload": {
+        "stage": "initialize",
+        "state": "running",
+        "reason": "",
+        "version": 2,
+        "step_seq": 0,
+        "output_ref": "",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "workspace_revision": 0,
+        "verification_status": "unverified",
+        "verification_report_ref": ""
+      },
+      "created_at": "2026-09-11T21:50:51.46523Z"
+    },
+    {
+      "run_id": "run_TJZC6KTNWDN53KCPEV5YW3GPHV",
+      "seq": 3,
+      "type": "run.message_added",
+      "schema_version": 1,
+      "payload": {
+        "seq": 1,
+        "text": "User instruction independent of text batching"
+      },
+      "created_at": "2026-09-11T21:50:51.473057Z"
+    },
+    {
+      "run_id": "run_TJZC6KTNWDN53KCPEV5YW3GPHV",
+      "seq": 4,
+      "type": "run.cancel_requested",
+      "schema_version": 1,
+      "payload": {
+        "stage": "initialize",
+        "state": "cancel_requested",
+        "reason": "cancellation requested",
+        "version": 3,
+        "step_seq": 0,
+        "output_ref": "",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "workspace_revision": 0,
+        "verification_status": "unverified",
+        "verification_report_ref": ""
+      },
+      "created_at": "2026-09-11T21:50:51.481591Z"
+    }
+  ],
+  "failed": false,
+  "message": {
+    "seq": 1,
+    "text": "User instruction independent of text batching"
+  },
+  "pending_text_fenced": true,
+  "run_id": "run_TJZC6KTNWDN53KCPEV5YW3GPHV",
+  "scope": "real Store message/cancel transactions with text sink mutex deliberately held; no HTTP/provider/runner/container",
+  "test": "TestTextBatchPostgresControlBypassesPausedText"
+}

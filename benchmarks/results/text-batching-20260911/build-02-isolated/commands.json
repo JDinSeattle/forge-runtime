@@ -1,0 +1,48 @@
+[
+  {
+    "argv": [
+      "go",
+      "test",
+      "-race",
+      "-c",
+      "-o",
+      "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/text-batch-build-tmp/forge-text-batch-binaries-8uaxnkl1/application.test",
+      "./internal/application"
+    ],
+    "exit_code": 0
+  },
+  {
+    "argv": [
+      "go",
+      "test",
+      "-race",
+      "-c",
+      "-o",
+      "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/text-batch-build-tmp/forge-text-batch-binaries-8uaxnkl1/configuration.test",
+      "./internal/configuration"
+    ],
+    "exit_code": 0
+  },
+  {
+    "argv": [
+      "go",
+      "test",
+      "-race",
+      "-c",
+      "-o",
+      "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/text-batch-build-tmp/forge-text-batch-binaries-8uaxnkl1/benchmarks.test",
+      "./benchmarks"
+    ],
+    "exit_code": 0
+  },
+  {
+    "argv": [
+      "go",
+      "build",
+      "-o",
+      "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/text-batch-build-tmp/forge-text-batch-binaries-8uaxnkl1/forge-worker",
+      "./cmd/forge-worker"
+    ],
+    "exit_code": 0
+  }
+]

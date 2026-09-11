@@ -1,0 +1,48 @@
+[
+  {
+    "argv": [
+      "go",
+      "test",
+      "-race",
+      "-c",
+      "-o",
+      "/tmp/forge-text-batch-binaries-no22nybc/application.test",
+      "./internal/application"
+    ],
+    "exit_code": 0
+  },
+  {
+    "argv": [
+      "go",
+      "test",
+      "-race",
+      "-c",
+      "-o",
+      "/tmp/forge-text-batch-binaries-no22nybc/configuration.test",
+      "./internal/configuration"
+    ],
+    "exit_code": 0
+  },
+  {
+    "argv": [
+      "go",
+      "test",
+      "-race",
+      "-c",
+      "-o",
+      "/tmp/forge-text-batch-binaries-no22nybc/benchmarks.test",
+      "./benchmarks"
+    ],
+    "exit_code": 0
+  },
+  {
+    "argv": [
+      "go",
+      "build",
+      "-o",
+      "/tmp/forge-text-batch-binaries-no22nybc/forge-worker",
+      "./cmd/forge-worker"
+    ],
+    "exit_code": 0
+  }
+]

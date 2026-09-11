@@ -1,0 +1,24 @@
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+	"strings"
+	"unicode/utf8"
+)
+
+func main() {
+	text := strings.Repeat("a", (16<<10)-1) + "你"
+	var delivered string
+	for left := text; len(left) > 0; {
+		size := min(16<<10, len(left))
+		body, _ := json.Marshal(map[string]string{"delta": left[:size]})
+		var event map[string]string
+		_ = json.Unmarshal(body, &event)
+		delivered += event["delta"]
+		left = left[size:]
+	}
+	encoded, _ := json.Marshal(map[string]any{"attempt_id": "attempt_fixture", "provisional": true, "delta": strings.Repeat("<", 16<<10)})
+	fmt.Printf("valid_input_utf8=%t input_bytes=%d delivered_bytes=%d equal=%t replacement_runes=%d\n", utf8.ValidString(text), len(text), len(delivered), text == delivered, strings.Count(delivered, "\ufffd"))
+	fmt.Printf("raw_delta_bytes=%d encoded_event_bytes=%d exceeds_32KiB=%t\n", 16<<10, len(encoded), len(encoded) > 32<<10)
+}

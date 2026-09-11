@@ -1,0 +1,312 @@
+package persistence
+
+import (
+	"context"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"time"
+
+	"github.com/JDinSeattle/forge-runtime/internal/dependency"
+	"github.com/JDinSeattle/forge-runtime/internal/domain"
+	flow "github.com/JDinSeattle/forge-runtime/internal/runtime"
+	"github.com/jackc/pgx/v5"
+)
+
+type ModelAttempt struct {
+	TenantID                                                             domain.ID
+	RunID                                                                domain.ID
+	StepSeq                                                              uint64
+	Number                                                               int
+	ID                                                                   domain.ID
+	Provider, Model, Status, RawRef, RequestRef, PriceVersion, ErrorCode string
+	StartedAt                                                            time.Time
+	Deadline                                                             time.Time
+}
+
+func scanAttempt(row pgx.Row) (ModelAttempt, error) {
+	var a ModelAttempt
+	err := row.Scan(&a.TenantID, &a.RunID, &a.StepSeq, &a.Number, &a.ID, &a.Provider, &a.Model, &a.Status, &a.RawRef, &a.RequestRef, &a.PriceVersion, &a.StartedAt, &a.Deadline, &a.ErrorCode)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return a, domain.ErrNotFound
+	}
+	return a, err
+}
+
+const attemptColumns = `tenant_id,run_id,step_seq,attempt,attempt_id,provider,model_id,status,coalesce(raw_ref,''),coalesce(request_ref,''),price_version,started_at,deadline,coalesce(error_code,'')`
+
+func (s *Store) LatestAttempt(ctx context.Context, tenant, id domain.ID, step uint64) (ModelAttempt, error) {
+	ctx, cancel := dependency.Database(ctx)
+	defer cancel()
+	return scanAttempt(s.Pool.QueryRow(ctx, `SELECT `+attemptColumns+` FROM model_attempts WHERE tenant_id=$1 AND run_id=$2 AND step_seq=$3 ORDER BY attempt DESC LIMIT 1`, tenant, id, step))
+}
+func (s *Store) BeginAttempt(ctx context.Context, r Run, requestRef, priceVersion string, timeout time.Duration) (ModelAttempt, error) {
+	ctx, cancel := dependency.Database(ctx)
+	defer cancel()
+	tx, err := s.Tx(ctx, r.TenantID, pgx.TxOptions{})
+	if err != nil {
+		return ModelAttempt{}, err
+	}
+	defer tx.Rollback(ctx)
+	current, err := getRun(ctx, tx, r.TenantID, r.ID, true)
+	if err != nil {
+		return ModelAttempt{}, err
+	}
+	var now time.Time
+	if err = tx.QueryRow(ctx, `SELECT clock_timestamp()`).Scan(&now); err != nil {
+		return ModelAttempt{}, err
+	}
+	if current.State.Version != r.State.Version || current.State.Lease.Owner != r.State.Lease.Owner || current.State.Lease.Epoch != r.State.Lease.Epoch || !current.State.Lease.ValidAt(now) || current.State.Stage != domain.StageModel {
+		return ModelAttempt{}, domain.ErrFenced
+	}
+	latest, err := scanAttempt(tx.QueryRow(ctx, `SELECT `+attemptColumns+` FROM model_attempts WHERE tenant_id=$1 AND run_id=$2 AND step_seq=$3 ORDER BY attempt DESC LIMIT 1`, r.TenantID, r.ID, r.State.StepSeq))
+	if err == nil && latest.Status != "failed" {
+		return latest, tx.Commit(ctx)
+	}
+	if err != nil && !errors.Is(err, domain.ErrNotFound) {
+		return ModelAttempt{}, err
+	}
+	number := latest.Number + 1
+	if number > 3 {
+		return ModelAttempt{}, domain.ErrCapacity
+	}
+	if err = validateEvidence(ctx, tx, r.TenantID, r.ID, flow.Event{OutputRef: requestRef}); err != nil {
+		return ModelAttempt{}, err
+	}
+	deadline := now.Add(timeout)
+	if deadline.After(r.State.Limits.Deadline) {
+		deadline = r.State.Limits.Deadline
+	}
+	a, err := scanAttempt(tx.QueryRow(ctx, `INSERT INTO model_attempts(tenant_id,run_id,step_seq,attempt,attempt_id,provider,model_id,status,request_ref,price_version,deadline) VALUES($1,$2,$3,$4,$5,$6,$7,'prepared',$8,$9,$10) RETURNING `+attemptColumns, r.TenantID, r.ID, r.State.StepSeq, number, NewID("attempt"), r.Config.Provider, r.Config.Model, requestRef, priceVersion, deadline))
+	if err != nil {
+		return a, err
+	}
+	payload, _ := json.Marshal(map[string]any{"attempt_id": a.ID, "step_seq": a.StepSeq})
+	if _, err = appendEvent(ctx, tx, r.TenantID, r.ID, "model.started", payload); err != nil {
+		return a, err
+	}
+	return a, tx.Commit(ctx)
+}
+
+// CompleteAttempt commits the complete native response before reducer progress.
+// It can record late billing/result evidence, but it cannot reopen a run. The
+// attempt identity is immutable and only service workers can call this method.
+func (s *Store) CompleteAttempt(ctx context.Context, a ModelAttempt, rawRef, requestID string, usage json.RawMessage) error {
+	ctx, cancel := dependency.Database(ctx)
+	defer cancel()
+	tx, err := s.Tx(ctx, a.TenantID, pgx.TxOptions{})
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback(ctx)
+	if _, err = getRun(ctx, tx, a.TenantID, a.RunID, true); err != nil {
+		return err
+	}
+	if err = validateEvidence(ctx, tx, a.TenantID, a.RunID, flow.Event{OutputRef: rawRef}); err != nil {
+		return err
+	}
+	tag, err := tx.Exec(ctx, `UPDATE model_attempts SET status='completed',raw_ref=$4,request_id=$5,usage=$6 WHERE tenant_id=$1 AND run_id=$2 AND attempt_id=$3 AND status='prepared'`, a.TenantID, a.RunID, a.ID, rawRef, requestID, usage)
+	if err != nil {
+		return err
+	}
+	if tag.RowsAffected() == 0 {
+		var stored string
+		if err = tx.QueryRow(ctx, `SELECT coalesce(raw_ref,'') FROM model_attempts WHERE tenant_id=$1 AND run_id=$2 AND attempt_id=$3`, a.TenantID, a.RunID, a.ID).Scan(&stored); err != nil {
+			return err
+		}
+		if stored != rawRef {
+			return domain.ErrConflict
+		}
+	}
+	return tx.Commit(ctx)
+}
+func (s *Store) FailAttempt(ctx context.Context, a ModelAttempt, code string) error {
+	ctx, cancel := dependency.Database(ctx)
+	defer cancel()
+	tx, err := s.Tx(ctx, a.TenantID, pgx.TxOptions{})
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback(ctx)
+	if _, err = getRun(ctx, tx, a.TenantID, a.RunID, true); err != nil {
+		return err
+	}
+	tag, err := tx.Exec(ctx, `UPDATE model_attempts SET status='failed',error_code=$4 WHERE tenant_id=$1 AND run_id=$2 AND attempt_id=$3 AND status='prepared'`, a.TenantID, a.RunID, a.ID, code)
+	if err != nil {
+		return err
+	}
+	if tag.RowsAffected() > 0 {
+		body, _ := json.Marshal(map[string]any{"attempt_id": a.ID, "error_code": code, "provisional": true})
+		if _, err = appendEvent(ctx, tx, a.TenantID, a.RunID, "model.attempt_failed", body); err != nil {
+			return err
+		}
+	}
+	return tx.Commit(ctx)
+}
+func (s *Store) ModelHistory(ctx context.Context, tenant, id domain.ID) ([]ModelAttempt, error) {
+	ctx, cancel := dependency.Database(ctx)
+	defer cancel()
+	rows, err := s.Pool.Query(ctx, `SELECT `+attemptColumns+` FROM model_attempts WHERE tenant_id=$1 AND run_id=$2 AND status='completed' ORDER BY step_seq,attempt`, tenant, id)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	result := []ModelAttempt{}
+	for rows.Next() {
+		a, err := scanAttempt(rows)
+		if err != nil {
+			return nil, err
+		}
+		result = append(result, a)
+	}
+	return result, rows.Err()
+}
+func (s *Store) AppendWorkerEvent(ctx context.Context, r Run, kind string, payload json.RawMessage) error {
+	ctx, cancel := dependency.Database(ctx)
+	defer cancel()
+	if len(payload) > 32<<10 {
+		return domain.ErrCapacity
+	}
+	tx, err := s.Tx(ctx, r.TenantID, pgx.TxOptions{})
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback(ctx)
+	var valid bool
+	err = tx.QueryRow(ctx, `SELECT lease_owner=$3 AND lease_epoch=$4 AND lease_until>clock_timestamp() AND state IN ('running','needs_reconciliation') FROM runs WHERE tenant_id=$1 AND id=$2 FOR UPDATE`, r.TenantID, r.ID, r.State.Lease.Owner, r.State.Lease.Epoch).Scan(&valid)
+	if err != nil {
+		return err
+	}
+	if !valid {
+		return domain.ErrFenced
+	}
+	if _, err = appendEvent(ctx, tx, r.TenantID, r.ID, kind, payload); err != nil {
+		return err
+	}
+	return tx.Commit(ctx)
+}
+
+// Defer releases a worker lease without asserting that unknown execution or
+// billing has stopped. Runner capacity is released only in process-free stages.
+func (s *Store) Defer(ctx context.Context, r Run, notBefore time.Time, kind string) error {
+	ctx, cancel := dependency.Database(ctx)
+	defer cancel()
+	tx, err := s.Tx(ctx, r.TenantID, pgx.TxOptions{})
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback(ctx)
+	if err = lockTenant(ctx, tx, r.TenantID); err != nil {
+		return err
+	}
+	tag, err := tx.Exec(ctx, `UPDATE runs SET lease_until=clock_timestamp(),not_before=$5 WHERE tenant_id=$1 AND id=$2 AND lease_owner=$3 AND lease_epoch=$4 AND lease_until>clock_timestamp() AND version=$6`, r.TenantID, r.ID, r.State.Lease.Owner, r.State.Lease.Epoch, notBefore, r.State.Version)
+	if err != nil {
+		return err
+	}
+	if tag.RowsAffected() != 1 {
+		return domain.ErrFenced
+	}
+	if r.State.PendingEffect == nil && (r.State.Stage == domain.StageModel || r.State.Stage == domain.StageBuildContext) {
+		if err = releaseAllocation(ctx, tx, r.TenantID, r.ID); err != nil {
+			return err
+		}
+	}
+	body, _ := json.Marshal(map[string]any{"not_before": notBefore})
+	if _, err = appendEvent(ctx, tx, r.TenantID, r.ID, kind, body); err != nil {
+		return err
+	}
+	return tx.Commit(ctx)
+}
+
+type StoredEffect struct {
+	Effect  flow.Effect
+	StepSeq uint64
+	Ordinal int
+}
+
+func (s *Store) Effects(ctx context.Context, tenant, id domain.ID, step uint64) ([]StoredEffect, error) {
+	ctx, cancel := dependency.Database(ctx)
+	defer cancel()
+	rows, err := s.Pool.Query(ctx, `SELECT operation_id,kind,canonical_args,args_hash,expected_revision,epoch,policy_version,status,coalesce(receipt_ref,''),step_seq,ordinal FROM effects WHERE tenant_id=$1 AND run_id=$2 AND step_seq=$3 ORDER BY ordinal`, tenant, id, step)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	result := []StoredEffect{}
+	for rows.Next() {
+		var e StoredEffect
+		if err = rows.Scan(&e.Effect.ID, &e.Effect.Kind, &e.Effect.Args, &e.Effect.ArgsHash, &e.Effect.ExpectedRevision, &e.Effect.DispatchEpoch, &e.Effect.PolicyVersion, &e.Effect.Status, &e.Effect.ReceiptRef, &e.StepSeq, &e.Ordinal); err != nil {
+			return nil, err
+		}
+		result = append(result, e)
+	}
+	return result, rows.Err()
+}
+func (s *Store) PlanSystemEffect(ctx context.Context, r Run, e flow.Effect, ordinal int) (flow.Effect, error) {
+	ctx, cancel := dependency.Database(ctx)
+	defer cancel()
+	if err := domain.ValidateCanonicalJSON(e.Args); err != nil {
+		return e, err
+	}
+	if ordinal >= 0 {
+		return e, domain.ErrInvalid
+	}
+	tx, err := s.Tx(ctx, r.TenantID, pgx.TxOptions{})
+	if err != nil {
+		return e, err
+	}
+	defer tx.Rollback(ctx)
+	current, err := getRun(ctx, tx, r.TenantID, r.ID, true)
+	if err != nil {
+		return e, err
+	}
+	var now time.Time
+	if err = tx.QueryRow(ctx, `SELECT clock_timestamp()`).Scan(&now); err != nil {
+		return e, err
+	}
+	if current.State.Version != r.State.Version || current.State.Lease.Owner != r.State.Lease.Owner || current.State.Lease.Epoch != r.State.Lease.Epoch || !current.State.Lease.ValidAt(now) {
+		return e, domain.ErrFenced
+	}
+	_, err = tx.Exec(ctx, `INSERT INTO effects(tenant_id,run_id,step_seq,ordinal,operation_id,kind,args,canonical_args,args_hash,expected_revision,epoch,policy_version,status) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,'in_flight') ON CONFLICT(tenant_id,operation_id) DO NOTHING`, r.TenantID, r.ID, r.State.StepSeq, ordinal, e.ID, e.Kind, e.Args, []byte(e.Args), e.ArgsHash, e.ExpectedRevision, e.DispatchEpoch, e.PolicyVersion)
+	if err != nil {
+		return e, err
+	}
+	var old flow.Effect
+	var oldRun domain.ID
+	var step uint64
+	err = tx.QueryRow(ctx, `SELECT run_id,step_seq,operation_id,kind,canonical_args,args_hash,expected_revision,epoch,policy_version,status,coalesce(receipt_ref,'') FROM effects WHERE tenant_id=$1 AND operation_id=$2`, r.TenantID, e.ID).Scan(&oldRun, &step, &old.ID, &old.Kind, &old.Args, &old.ArgsHash, &old.ExpectedRevision, &old.DispatchEpoch, &old.PolicyVersion, &old.Status, &old.ReceiptRef)
+	if err != nil {
+		return e, err
+	}
+	if oldRun != r.ID || step != r.State.StepSeq || old.ArgsHash != e.ArgsHash || old.Kind != e.Kind || old.PolicyVersion != e.PolicyVersion {
+		return e, domain.ErrConflict
+	}
+	return old, tx.Commit(ctx)
+}
+func (s *Store) SettleSystemEffect(ctx context.Context, r Run, receipt flow.EffectReceipt) error {
+	ctx, cancel := dependency.Database(ctx)
+	defer cancel()
+	tx, err := s.Tx(ctx, r.TenantID, pgx.TxOptions{})
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback(ctx)
+	if err = validateEvidence(ctx, tx, r.TenantID, r.ID, flow.Event{Receipt: &receipt}); err != nil {
+		return err
+	}
+	tag, err := tx.Exec(ctx, `UPDATE effects SET status=$4,receipt_ref=$5 WHERE tenant_id=$1 AND run_id=$2 AND operation_id=$3 AND args_hash=$6 AND epoch=$7 AND ordinal<0`, r.TenantID, r.ID, receipt.EffectID, receipt.Status, receipt.Ref, receipt.ArgsHash, receipt.Epoch)
+	if err != nil {
+		return err
+	}
+	if tag.RowsAffected() != 1 {
+		return fmt.Errorf("%w: system effect receipt", domain.ErrConflict)
+	}
+	return tx.Commit(ctx)
+}
+func (s *Store) RunCost(ctx context.Context, tenant, id domain.ID) (domain.Money, error) {
+	ctx, cancel := dependency.Database(ctx)
+	defer cancel()
+	var cost domain.Money
+	err := s.Pool.QueryRow(ctx, `SELECT coalesce(sum(coalesce(actual_microusd,microusd)),0) FROM quota_reservations WHERE tenant_id=$1 AND run_id=$2`, tenant, id).Scan(&cost)
+	return cost, err
+}

@@ -1,0 +1,45 @@
+import datetime, hashlib, json, os, pathlib, shlex, shutil, subprocess, sys, time
+repo=pathlib.Path('/home/postedism/Desktop/mini claude code/forge-runtime')
+revision='a9208e79879d29373eb3964e098eff286aa6de82'
+stamp=datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%SZ')
+out=repo/'benchmarks/results'/('stamped-benchmarks-'+stamp); out.mkdir(mode=0o700)
+clone=pathlib.Path('/tmp')/('forge-benchmark-clone-'+stamp)
+def dump(name,obj): (out/name).write_text(json.dumps(obj,indent=2,sort_keys=True)+'\n')
+def run(argv,cwd,log,env=None):
+ with (out/log).open('xb') as f:return subprocess.run(argv,cwd=cwd,env=env,stdout=f,stderr=subprocess.STDOUT).returncode
+env={k:v for k,v in os.environ.items() if not k.startswith('FORGE_')}
+for line in (repo/'var/local/review-database.env').read_text().splitlines():
+ k,sep,v=line.partition('=')
+ if sep and k=='FORGE_REVIEW_DATABASE_URL':env['FORGE_TEST_DATABASE_URL']=shlex.split(v)[0]
+assert env.get('FORGE_TEST_DATABASE_URL')
+env.update(GOCACHE='/tmp/forge-runtime-gocache',GOPROXY='off',GOMAXPROCS='2',GOGC='100')
+assert run(['git','clone','--local','--no-hardlinks','--no-checkout',str(repo),str(clone)],repo,'clone.log')==0
+assert run(['git','checkout','--detach',revision],clone,'checkout.log')==0
+assert subprocess.check_output(['git','status','--porcelain'],cwd=clone)==b''
+files=subprocess.check_output(['git','ls-files','-z'],cwd=clone).decode().split('\0')
+inputs=[p for p in files if p and not p.startswith(('benchmarks/results/','docs/')) and (pathlib.Path(p).suffix in ('.go','.mod','.sum','.sql','.yaml','.yml','.proto','.js','.py','.sh') or p=='Makefile')]
+def hashes():return {p:hashlib.sha256((clone/p).read_bytes()).hexdigest() for p in inputs}
+before=hashes();dump('source-before.json',before)
+binary=clone/'bin/stamped-benchmarks.test';binary.parent.mkdir(exist_ok=True)
+argv=['go','test','-c','-o',str(binary),'./benchmarks']
+assert run(argv,clone,'build.log',env)==0
+binary_hash=hashlib.sha256(binary.read_bytes()).hexdigest()
+assert run(['go','version','-m',str(binary)],clone,'binary-build-info.log',env)==0
+assert hashes()==before
+dump('identity.json',{'repository':'https://github.com/JDinSeattle/forge-runtime','commit':revision,'clone':str(clone),'clean_before_build':True,'source_files':len(before),'binary_path':str(binary),'binary_sha256':binary_hash,'build_argv':argv,'source_stable_through_build':True,'scope':'three fixed control/simulated workloads, actual loopback PostgreSQL; no real runner or model','GOMAXPROCS':2,'GOGC':100,'random_seed':'not used; workload shape deterministic, opaque identities randomly generated','concurrency_caveat':'shared development host and PostgreSQL; other task checks may execute concurrently, no dedicated-host performance claim'})
+shutil.copyfile(__file__,out/'launcher.py.txt')
+print(json.dumps({'output':str(out),'clone':str(clone),'source_files':len(before),'binary_sha256':binary_hash}),flush=True)
+results=[]
+for label,test,flag in [('scheduler','TestSchedulerCompetitionEvidence','FORGE_RUN_BENCHMARK'),('http','TestHTTPMetadataEvidence','FORGE_RUN_HTTP_BENCHMARK'),('terminal','TestTerminalSimulationEvidence','FORGE_RUN_TERMINAL_BENCHMARK')]:
+ current=dict(env);current[flag]='1';current['GODEBUG']='gctrace=1'
+ argv=[str(binary),'-test.v','-test.run=^'+test+'$','-test.timeout=12m','-test.cpuprofile='+str(out/(label+'-cpu.pprof')),'-test.memprofile='+str(out/(label+'-heap.pprof'))]
+ start=time.monotonic(); code=run(argv,clone/'benchmarks',label+'.log',current)
+ result={'class':label,'test':test,'argv':argv,'exit_code':code,'elapsed_seconds':time.monotonic()-start,'binary_sha256':hashlib.sha256(binary.read_bytes()).hexdigest()};results.append(result);dump('executions.json',results);print(json.dumps(result),flush=True)
+raw=clone/'benchmarks/results/local'
+if raw.exists():shutil.copytree(raw,out/'raw')
+after=hashes();dump('source-after.json',after)
+status=subprocess.check_output(['git','status','--porcelain','--untracked-files=no'],cwd=clone,text=True)
+dump('completion.json',{'all_passed':all(r['exit_code']==0 for r in results),'tracked_worktree_unchanged':status=='','source_unchanged':before==after,'binary_unchanged':hashlib.sha256(binary.read_bytes()).hexdigest()==binary_hash,'raw_files':len(list(raw.rglob('*'))) if raw.exists() else 0})
+dump('manifest.json',{str(p.relative_to(out)):hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(out.rglob('*')) if p.is_file() and p.name!='manifest.json'})
+print(json.dumps({'completed':True,'output':str(out)}),flush=True)
+sys.exit(0 if all(r['exit_code']==0 for r in results) and status=='' and before==after else 1)

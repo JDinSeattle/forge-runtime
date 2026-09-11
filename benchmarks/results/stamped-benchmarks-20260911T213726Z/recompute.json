@@ -1,0 +1,52 @@
+{
+  "passed": true,
+  "nearest_rank_percentiles": {
+    "http-20260911T213759Z.json": {
+      "samples": {
+        "count": 1000,
+        "min_ms": 0.417528,
+        "p50_ms": 1.054927,
+        "p95_ms": 4.754945,
+        "p99_ms": 8.582281,
+        "max_ms": 13.114187
+      }
+    },
+    "scheduler-20260911T213730.861721840Z.json": {
+      "submit": {
+        "count": 1100,
+        "min_ms": 0.38342299999999996,
+        "p50_ms": 4.0746530000000005,
+        "p95_ms": 6.169705,
+        "p99_ms": 9.602027000000001,
+        "max_ms": 41.876886
+      },
+      "claim": {
+        "count": 1000,
+        "min_ms": 3.086323,
+        "p50_ms": 6.452579,
+        "p95_ms": 10.756541,
+        "p99_ms": 13.585839,
+        "max_ms": 17.002799
+      }
+    },
+    "terminal-simulation-20260911T213759.470860792Z.json": {
+      "execution_phase": {
+        "count": 1000,
+        "min_ms": 121.444611,
+        "p50_ms": 159.03662,
+        "p95_ms": 195.922862,
+        "p99_ms": 216.38229,
+        "max_ms": 244.427217
+      }
+    }
+  },
+  "profiles_symbolized": [
+    "http-cpu.pprof",
+    "http-heap.pprof",
+    "scheduler-cpu.pprof",
+    "scheduler-heap.pprof",
+    "terminal-cpu.pprof",
+    "terminal-heap.pprof"
+  ],
+  "limits": "raw report checks by integration owner, not independent historical full-PG export; finite shared-host measurements; synthetic terminal effects and money"
+}

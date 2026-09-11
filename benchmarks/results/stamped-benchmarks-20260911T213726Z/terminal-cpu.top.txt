@@ -1,0 +1,17 @@
+File: stamped-benchmarks.test
+Build ID: 59540e5ccc4f7ebb2c16c0c51049c07830ea907b
+Type: cpu
+Time: 2026-09-11 14:37:59 PDT
+Duration: 82.16s, Total samples = 24.12s (29.36%)
+Showing nodes accounting for 11.47s, 47.55% of 24.12s total
+Dropped 766 nodes (cum <= 0.12s)
+Showing top 8 nodes out of 256
+      flat  flat%   sum%        cum   cum%
+     8.48s 35.16% 35.16%      8.48s 35.16%  internal/runtime/syscall/linux.Syscall6
+     0.90s  3.73% 38.89%      0.90s  3.73%  runtime.futex
+     0.49s  2.03% 40.92%      1.03s  4.27%  runtime.scanObject
+     0.41s  1.70% 42.62%      0.41s  1.70%  runtime.nextFreeFast
+     0.41s  1.70% 44.32%      0.55s  2.28%  runtime.tryDeferToSpanScan
+     0.32s  1.33% 45.65%      0.32s  1.33%  runtime.memclrNoHeapPointers
+     0.24s     1% 46.64%      0.24s     1%  runtime.(*mspan).writeHeapBitsSmall
+     0.22s  0.91% 47.55%      0.22s  0.91%  runtime.memmove

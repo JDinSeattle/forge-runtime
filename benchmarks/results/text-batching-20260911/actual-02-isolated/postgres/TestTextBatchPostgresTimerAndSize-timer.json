@@ -1,0 +1,154 @@
+{
+  "captured_at": "2026-09-11T22:00:23.494928457Z",
+  "config": {
+    "interval_ns": 40000000,
+    "max_bytes": 16384
+  },
+  "decoded_bytes": 21,
+  "emit_returned_at": "2026-09-11T22:00:23.437098303Z",
+  "emit_started_at": "2026-09-11T22:00:23.437095254Z",
+  "events_after_close": [
+    {
+      "run_id": "run_AOPXAJIP4YLENIT3NNJGP6WVXI",
+      "seq": 1,
+      "type": "run.created",
+      "schema_version": 1,
+      "payload": {
+        "lease": {
+          "epoch": 0,
+          "owner": "",
+          "until": "0001-01-01T00:00:00Z"
+        },
+        "stage": "initialize",
+        "limits": {
+          "deadline": "2026-09-11T22:00:53.407766Z",
+          "max_tool_calls": 3,
+          "max_model_rounds": 3,
+          "max_cost_microusd": 0
+        },
+        "run_id": "run_AOPXAJIP4YLENIT3NNJGP6WVXI",
+        "status": "queued",
+        "version": 1,
+        "step_seq": 0,
+        "tenant_id": "tenant",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 0,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "created_at": "2026-09-11T22:00:23.417966Z"
+    },
+    {
+      "run_id": "run_AOPXAJIP4YLENIT3NNJGP6WVXI",
+      "seq": 2,
+      "type": "run.claimed",
+      "schema_version": 1,
+      "payload": {
+        "stage": "initialize",
+        "state": "running",
+        "reason": "",
+        "version": 2,
+        "step_seq": 0,
+        "output_ref": "",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "workspace_revision": 0,
+        "verification_status": "unverified",
+        "verification_report_ref": ""
+      },
+      "created_at": "2026-09-11T22:00:23.431786Z"
+    },
+    {
+      "run_id": "run_AOPXAJIP4YLENIT3NNJGP6WVXI",
+      "seq": 3,
+      "type": "text.delta",
+      "schema_version": 1,
+      "payload": {
+        "delta": "timer-only 中文🙂",
+        "attempt_id": "batch_attempt",
+        "provisional": true
+      },
+      "created_at": "2026-09-11T22:00:23.479044Z"
+    }
+  ],
+  "events_before_close": [
+    {
+      "run_id": "run_AOPXAJIP4YLENIT3NNJGP6WVXI",
+      "seq": 1,
+      "type": "run.created",
+      "schema_version": 1,
+      "payload": {
+        "lease": {
+          "epoch": 0,
+          "owner": "",
+          "until": "0001-01-01T00:00:00Z"
+        },
+        "stage": "initialize",
+        "limits": {
+          "deadline": "2026-09-11T22:00:53.407766Z",
+          "max_tool_calls": 3,
+          "max_model_rounds": 3,
+          "max_cost_microusd": 0
+        },
+        "run_id": "run_AOPXAJIP4YLENIT3NNJGP6WVXI",
+        "status": "queued",
+        "version": 1,
+        "step_seq": 0,
+        "tenant_id": "tenant",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "schema_version": 1,
+        "workspace_revision": 0,
+        "verification_status": "unverified",
+        "verification_revision": 0
+      },
+      "created_at": "2026-09-11T22:00:23.417966Z"
+    },
+    {
+      "run_id": "run_AOPXAJIP4YLENIT3NNJGP6WVXI",
+      "seq": 2,
+      "type": "run.claimed",
+      "schema_version": 1,
+      "payload": {
+        "stage": "initialize",
+        "state": "running",
+        "reason": "",
+        "version": 2,
+        "step_seq": 0,
+        "output_ref": "",
+        "tool_calls": 0,
+        "model_rounds": 0,
+        "cost_microusd": 0,
+        "workspace_revision": 0,
+        "verification_status": "unverified",
+        "verification_report_ref": ""
+      },
+      "created_at": "2026-09-11T22:00:23.431786Z"
+    },
+    {
+      "run_id": "run_AOPXAJIP4YLENIT3NNJGP6WVXI",
+      "seq": 3,
+      "type": "text.delta",
+      "schema_version": 1,
+      "payload": {
+        "delta": "timer-only 中文🙂",
+        "attempt_id": "batch_attempt",
+        "provisional": true
+      },
+      "created_at": "2026-09-11T22:00:23.479044Z"
+    }
+  ],
+  "exact_reconstruction": true,
+  "failed": false,
+  "first_observed_at": "2026-09-11T22:00:23.493508078Z",
+  "input": "timer-only 中文🙂",
+  "run_id": "run_AOPXAJIP4YLENIT3NNJGP6WVXI",
+  "scope": "real private PG and production stream sink; synthetic attempt identity, no provider/runner/container",
+  "test": "TestTextBatchPostgresTimerAndSize/timer",
+  "text_event_count": 1
+}

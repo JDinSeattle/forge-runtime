@@ -57,5 +57,12 @@ fixed sources pass the repeat; no test assertion or race setting is relaxed.
 An independent implementation review finds no P1/P2 issue in lock ordering,
 reset visibility, repeated retirement or late cleanup of an older generation.
 
-Current services are not redeployed by this fix. The original failed CI and the
-subsequent fixed-commit CI must retain their separate commit identities.
+The exact correction commit `7b7504711538aa8fb9a9ad3b3124d0043e545bb2`
+passes [GitHub Actions 34651379712](https://github.com/JDinSeattle/forge-runtime/actions/runs/34651379712):
+build, ordinary/race tests, vet, generation and five Python suites. The
+[run record](../benchmarks/results/github-actions-7b75047/run.json),
+[original execution log](../benchmarks/results/github-actions-7b75047/execution.log)
+and hash manifest retain that identity separately from the failed a9208e7 run.
+Current services are not redeployed by this fix. Concurrent text batching,
+snapshot compatibility and later execution evidence are not included in this
+successful CI revision.

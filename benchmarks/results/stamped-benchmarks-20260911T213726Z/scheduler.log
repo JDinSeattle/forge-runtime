@@ -1,0 +1,40 @@
+=== RUN   TestSchedulerCompetitionEvidence
+gc 1 @0.006s 3%: 0.080+0.71+0.015 ms clock, 0.16+0.057/0.29/0.37+0.030 ms cpu, 4->5->2 MB, 4 MB goal, 0 MB stacks, 0 MB globals, 2 P
+gc 2 @0.026s 2%: 0.036+0.54+0.003 ms clock, 0.072+0.80/0.095/0+0.006 ms cpu, 7->11->10 MB, 11 MB goal, 0 MB stacks, 0 MB globals, 2 P
+gc 3 @0.214s 0%: 0.024+1.7+0.004 ms clock, 0.049+0.051/0.97/1.1+0.009 ms cpu, 20->20->19 MB, 21 MB goal, 0 MB stacks, 0 MB globals, 2 P
+gc 4 @0.518s 0%: 0.024+1.0+0.003 ms clock, 0.048+0.11/0.53/0.61+0.006 ms cpu, 36->37->3 MB, 38 MB goal, 0 MB stacks, 0 MB globals, 2 P
+gc 5 @0.553s 0%: 0.022+0.96+0.021 ms clock, 0.045+0.020/0.46/0.91+0.043 ms cpu, 5->5->3 MB, 7 MB goal, 0 MB stacks, 0 MB globals, 2 P
+gc 6 @0.599s 0%: 0.023+2.1+0.005 ms clock, 0.046+0.038/1.1/0.45+0.010 ms cpu, 5->5->3 MB, 6 MB goal, 0 MB stacks, 0 MB globals, 2 P
+gc 7 @0.648s 0%: 0.026+1.0+0.002 ms clock, 0.052+0.027/0.55/0.71+0.005 ms cpu, 5->6->3 MB, 7 MB goal, 0 MB stacks, 0 MB globals, 2 P
+gc 8 @0.694s 0%: 0.016+0.99+0.002 ms clock, 0.033+0.045/0.58/0.45+0.005 ms cpu, 6->6->3 MB, 7 MB goal, 0 MB stacks, 0 MB globals, 2 P
+gc 9 @0.758s 0%: 0.053+2.2+0.021 ms clock, 0.10+0.086/1.3/1.2+0.043 ms cpu, 6->7->3 MB, 7 MB goal, 0 MB stacks, 0 MB globals, 2 P
+gc 10 @0.826s 0%: 0.033+1.4+0.010 ms clock, 0.067+0.059/0.81/1.2+0.021 ms cpu, 6->6->3 MB, 7 MB goal, 0 MB stacks, 0 MB globals, 2 P
+gc 11 @1.179s 0%: 0.045+1.1+0.003 ms clock, 0.090+0.039/0.62/1.2+0.007 ms cpu, 6->6->3 MB, 7 MB goal, 0 MB stacks, 0 MB globals, 2 P
+gc 12 @1.509s 0%: 0.025+0.64+0.002 ms clock, 0.051+0.023/0.17/0.97+0.005 ms cpu, 6->6->3 MB, 7 MB goal, 0 MB stacks, 0 MB globals, 2 P
+gc 13 @1.807s 0%: 0.025+0.71+0.002 ms clock, 0.051+0.027/0.40/0.76+0.005 ms cpu, 6->6->3 MB, 7 MB goal, 0 MB stacks, 0 MB globals, 2 P
+gc 14 @2.115s 0%: 0.017+0.44+0.001 ms clock, 0.034+0.021/0.13/0.65+0.003 ms cpu, 6->6->3 MB, 7 MB goal, 0 MB stacks, 0 MB globals, 2 P
+gc 15 @2.419s 0%: 0.027+0.54+0.001 ms clock, 0.054+0.020/0.31/0.49+0.003 ms cpu, 7->7->3 MB, 7 MB goal, 0 MB stacks, 0 MB globals, 2 P
+gc 16 @2.713s 0%: 0.024+0.68+0.002 ms clock, 0.049+0.061/0.19/0.94+0.005 ms cpu, 7->7->3 MB, 7 MB goal, 0 MB stacks, 0 MB globals, 2 P
+gc 17 @3.001s 0%: 0.017+0.91+0.002 ms clock, 0.034+0.025/0.56/0.76+0.005 ms cpu, 7->7->3 MB, 7 MB goal, 0 MB stacks, 0 MB globals, 2 P
+gc 18 @3.320s 0%: 0.016+0.61+0.002 ms clock, 0.032+0.023/0.25/0.71+0.005 ms cpu, 7->7->3 MB, 7 MB goal, 0 MB stacks, 0 MB globals, 2 P
+gc 19 @3.622s 0%: 0.021+0.97+0.005 ms clock, 0.043+0.030/0.51/1.0+0.011 ms cpu, 7->7->3 MB, 7 MB goal, 0 MB stacks, 0 MB globals, 2 P
+gc 20 @3.961s 0%: 0.022+0.90+0.003 ms clock, 0.044+0.032/0.55/0.91+0.007 ms cpu, 7->7->3 MB, 7 MB goal, 0 MB stacks, 0 MB globals, 2 P
+gc 21 @4.299s 0%: 0.026+0.84+0.002 ms clock, 0.053+0.044/0.44/0.95+0.005 ms cpu, 7->7->3 MB, 7 MB goal, 0 MB stacks, 0 MB globals, 2 P
+gc 22 @4.597s 0%: 0.024+0.58+0.002 ms clock, 0.048+0.021/0.27/0.69+0.005 ms cpu, 7->7->3 MB, 7 MB goal, 0 MB stacks, 0 MB globals, 2 P
+gc 23 @4.901s 0%: 0.033+1.1+0.003 ms clock, 0.066+0.034/0.47/1.3+0.007 ms cpu, 7->7->3 MB, 7 MB goal, 0 MB stacks, 0 MB globals, 2 P
+gc 24 @5.168s 0%: 0.040+1.7+0.006 ms clock, 0.081+0.068/0.89/1.5+0.013 ms cpu, 7->7->3 MB, 7 MB goal, 0 MB stacks, 0 MB globals, 2 P
+gc 25 @5.528s 0%: 0.015+0.50+0.018 ms clock, 0.030+0.033/0.21/0.56+0.037 ms cpu, 7->7->3 MB, 7 MB goal, 0 MB stacks, 0 MB globals, 2 P
+gc 26 @5.848s 0%: 0.031+1.1+0.010 ms clock, 0.063+0.042/0.53/1.2+0.020 ms cpu, 7->7->3 MB, 7 MB goal, 0 MB stacks, 0 MB globals, 2 P
+gc 27 @6.134s 0%: 0.033+1.2+0.015 ms clock, 0.067+0.036/0.65/1.3+0.030 ms cpu, 7->7->3 MB, 7 MB goal, 0 MB stacks, 0 MB globals, 2 P
+gc 28 @6.465s 0%: 0.024+1.2+0.004 ms clock, 0.049+0.085/0.69/1.3+0.008 ms cpu, 7->7->3 MB, 7 MB goal, 0 MB stacks, 0 MB globals, 2 P
+gc 29 @6.829s 0%: 0.041+1.6+0.006 ms clock, 0.083+0.055/0.89/1.6+0.013 ms cpu, 7->7->3 MB, 7 MB goal, 0 MB stacks, 0 MB globals, 2 P
+gc 30 @7.179s 0%: 0.014+0.47+0.001 ms clock, 0.029+0.047/0.24/0.51+0.003 ms cpu, 7->7->3 MB, 7 MB goal, 0 MB stacks, 0 MB globals, 2 P
+gc 31 @7.612s 0%: 0.023+0.63+0.002 ms clock, 0.046+0.023/0.35/0.69+0.004 ms cpu, 7->7->3 MB, 7 MB goal, 0 MB stacks, 0 MB globals, 2 P
+gc 32 @8.071s 0%: 0.035+1.1+0.004 ms clock, 0.070+0.039/0.48/1.3+0.008 ms cpu, 7->7->3 MB, 7 MB goal, 0 MB stacks, 0 MB globals, 2 P
+    scheduler_test.go:255: evidence=/tmp/forge-benchmark-clone-20260911T213726Z/benchmarks/results/local/scheduler-20260911T213730.861721840Z.json
+    scheduler_test.go:256: submit: 1100 requests, 1755.5 req/s, p50=4.075ms p95=6.170ms p99=9.602ms
+    scheduler_test.go:257: claim: 1000 runs, 137.1 claims/s, p50=6.453ms p95=10.757ms p99=13.586ms; workers=[516 484]
+--- PASS: TestSchedulerCompetitionEvidence (8.19s)
+PASS
+gc 33 @8.197s 0%: 0.024+0.56+0.009 ms clock, 0.049+0.27/0.22/0.31+0.019 ms cpu, 7->7->2 MB, 7 MB goal, 0 MB stacks, 0 MB globals, 2 P
+gc 34 @8.199s 0%: 0.012+0.29+0.001 ms clock, 0.024+0/0.12/0.45+0.003 ms cpu, 3->3->1 MB, 5 MB goal, 0 MB stacks, 0 MB globals, 2 P (forced)

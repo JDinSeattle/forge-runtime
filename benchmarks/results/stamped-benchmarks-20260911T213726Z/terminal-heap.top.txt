@@ -1,0 +1,16 @@
+File: stamped-benchmarks.test
+Build ID: 59540e5ccc4f7ebb2c16c0c51049c07830ea907b
+Type: alloc_space
+Time: 2026-09-11 14:39:21 PDT
+Showing nodes accounting for 1554.04MB, 71.81% of 2164.10MB total
+Dropped 253 nodes (cum <= 10.82MB)
+Showing top 8 nodes out of 133
+      flat  flat%   sum%        cum   cum%
+ 1124.93MB 51.98% 51.98%  1124.93MB 51.98%  io.copyBuffer
+  105.02MB  4.85% 56.83%   116.52MB  5.38%  context.(*cancelCtx).propagateCancel
+   81.51MB  3.77% 60.60%   173.52MB  8.02%  context.AfterFunc
+      60MB  2.77% 63.37%   129.01MB  5.96%  context.WithDeadlineCause
+      49MB  2.26% 65.64%   180.02MB  8.32%  github.com/jackc/pgx/v5/pgconn/ctxwatch.(*ContextWatcher).Watch
+      46MB  2.13% 67.76%       46MB  2.13%  context.(*cancelCtx).Done
+   45.54MB  2.10% 69.87%    45.54MB  2.10%  github.com/jackc/pgx/v5/pgtype.encodePlanJSONCodecEitherFormatByteSlice.Encode
+   42.02MB  1.94% 71.81%   192.56MB  8.90%  github.com/JDinSeattle/forge-runtime/internal/persistence.getRun

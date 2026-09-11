@@ -1,0 +1,16 @@
+File: stamped-benchmarks.test
+Build ID: 59540e5ccc4f7ebb2c16c0c51049c07830ea907b
+Type: cpu
+Time: 2026-09-11 14:37:30 PDT
+Duration: 8.19s, Total samples = 1990ms (24.30%)
+Showing nodes accounting for 960ms, 48.24% of 1990ms total
+Showing top 8 nodes out of 351
+      flat  flat%   sum%        cum   cum%
+     720ms 36.18% 36.18%      720ms 36.18%  internal/runtime/syscall/linux.Syscall6
+      70ms  3.52% 39.70%       70ms  3.52%  runtime.futex
+      40ms  2.01% 41.71%       50ms  2.51%  runtime.(*mspan).writeHeapBitsSmall
+      40ms  2.01% 43.72%       40ms  2.01%  runtime.tryDeferToSpanScan
+      30ms  1.51% 45.23%      260ms 13.07%  runtime.findRunnable
+      20ms  1.01% 46.23%       90ms  4.52%  github.com/JDinSeattle/forge-runtime/internal/dependency.(*transaction).operation
+      20ms  1.01% 47.24%       70ms  3.52%  github.com/jackc/pgx/v5.(*ExtendedQueryBuilder).Build
+      20ms  1.01% 48.24%       20ms  1.01%  internal/runtime/maps.ctrlGroup.matchH2

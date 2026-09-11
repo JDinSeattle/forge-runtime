@@ -1,0 +1,413 @@
+package persistence
+
+import (
+	"context"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"time"
+
+	"github.com/JDinSeattle/forge-runtime/internal/dependency"
+	"github.com/JDinSeattle/forge-runtime/internal/domain"
+	flow "github.com/JDinSeattle/forge-runtime/internal/runtime"
+	"github.com/jackc/pgx/v5"
+)
+
+// Claim takes one tenant rotation opportunity and then its oldest runnable run.
+// Tenant rows serialize accounting; SKIP LOCKED lets other workers make progress.
+// Existing uncertain allocations stay reserved until execution is reconciled.
+func (s *Store) Claim(ctx context.Context, owner string, leaseDuration time.Duration) (Run, error) {
+	ctx, cancel := dependency.Database(ctx)
+	defer cancel()
+	return s.claim(ctx, owner, leaseDuration, "")
+}
+
+// ClaimOnRunner ties a worker's fixed authenticated transport to placement.
+// Existing workspaces on another runner are never adopted through this client.
+func (s *Store) ClaimOnRunner(ctx context.Context, owner string, leaseDuration time.Duration, runnerID string) (Run, error) {
+	ctx, cancel := dependency.Database(ctx)
+	defer cancel()
+	if domain.ID(runnerID).Validate() != nil {
+		return Run{}, domain.ErrInvalid
+	}
+	return s.claim(ctx, owner, leaseDuration, runnerID)
+}
+func (s *Store) claim(ctx context.Context, owner string, leaseDuration time.Duration, preferredRunner string) (Run, error) {
+	ctx, cancel := dependency.Database(ctx)
+	defer cancel()
+	if owner == "" || leaseDuration < time.Second || leaseDuration > 5*time.Minute {
+		return Run{}, domain.ErrInvalid
+	}
+	tx, err := dependency.BeginTx(ctx, s.Pool, pgx.TxOptions{})
+	if err != nil {
+		return Run{}, err
+	}
+	defer tx.Rollback(ctx)
+	var now time.Time
+	if err = tx.QueryRow(ctx, `SELECT clock_timestamp()`).Scan(&now); err != nil {
+		return Run{}, err
+	}
+	var tenant domain.ID
+	err = tx.QueryRow(ctx, `SELECT t.tenant_id FROM tenant_runtime t WHERE EXISTS (
+ SELECT 1 FROM runs r LEFT JOIN runner_allocations a ON a.tenant_id=r.tenant_id AND a.run_id=r.id
+ WHERE r.tenant_id=t.tenant_id AND r.not_before<=$1 AND (r.lease_until IS NULL OR r.lease_until<=$1)
+ AND ($2='' OR coalesce(r.runner_id,$2)=$2)
+ AND r.state IN ('queued','running','cancel_requested','needs_reconciliation')
+ AND (t.active_count<t.max_active OR a.state IN ('reserved','active','uncertain')))
+ ORDER BY t.last_dispatched_at,t.tenant_id FOR UPDATE OF t SKIP LOCKED LIMIT 1`, now, preferredRunner).Scan(&tenant)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return Run{}, domain.ErrNotFound
+	}
+	if err != nil {
+		return Run{}, err
+	}
+	var id domain.ID
+	err = tx.QueryRow(ctx, `SELECT r.id FROM runs r LEFT JOIN runner_allocations a ON a.tenant_id=r.tenant_id AND a.run_id=r.id JOIN tenant_runtime t ON t.tenant_id=r.tenant_id
+ WHERE r.tenant_id=$1 AND r.not_before<=$2 AND (r.lease_until IS NULL OR r.lease_until<=$2)
+ AND ($3='' OR coalesce(r.runner_id,$3)=$3)
+ AND r.state IN ('queued','running','cancel_requested','needs_reconciliation')
+ AND (t.active_count<t.max_active OR a.state IN ('reserved','active','uncertain'))
+ ORDER BY r.created_at,r.id FOR UPDATE OF r SKIP LOCKED LIMIT 1`, tenant, now, preferredRunner).Scan(&id)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return Run{}, domain.ErrNotFound
+	}
+	if err != nil {
+		return Run{}, err
+	}
+	r, err := getRun(ctx, tx, tenant, id, false)
+	if err != nil {
+		return r, err
+	}
+	var existing bool
+	if err = tx.QueryRow(ctx, `SELECT EXISTS(SELECT 1 FROM runner_allocations WHERE tenant_id=$1 AND run_id=$2 AND state!='released')`, tenant, id).Scan(&existing); err != nil {
+		return r, err
+	}
+	var runnerID string
+	if existing {
+		err = tx.QueryRow(ctx, `SELECT n.id FROM runners n JOIN runner_allocations a ON a.runner_id=n.id WHERE a.tenant_id=$1 AND a.run_id=$2 AND n.enabled AND ($3='' OR n.id=$3) FOR UPDATE OF n`, tenant, id, preferredRunner).Scan(&runnerID)
+	} else {
+		err = tx.QueryRow(ctx, `SELECT id FROM runners WHERE enabled AND reserved_slots<max_slots AND ($1='' OR id=$1) AND ($2='' OR id=$2) ORDER BY reserved_slots,id FOR UPDATE SKIP LOCKED LIMIT 1`, r.RunnerID, preferredRunner).Scan(&runnerID)
+	}
+	if errors.Is(err, pgx.ErrNoRows) {
+		// Persist a bounded postponement; otherwise a full/offline runner's oldest
+		// tenant can starve runnable tenants by being selected on every poll.
+		if _, err = tx.Exec(ctx, `UPDATE runs SET not_before=$3 WHERE tenant_id=$1 AND id=$2`, tenant, id, now.Add(time.Second)); err != nil {
+			return r, err
+		}
+		if _, err = tx.Exec(ctx, `UPDATE tenant_runtime SET last_dispatched_at=$2 WHERE tenant_id=$1`, tenant, now); err != nil {
+			return r, err
+		}
+		if err = tx.Commit(ctx); err != nil {
+			return r, err
+		}
+		return Run{}, domain.ErrCapacity
+	}
+	if err != nil {
+		return r, err
+	}
+	lease := domain.Lease{Owner: owner, Epoch: r.State.Lease.Epoch + 1, Until: now.Add(leaseDuration)}
+	event := flow.Event{Kind: flow.EventClaimed, ExpectedVersion: r.State.Version, Owner: owner, Epoch: lease.Epoch, At: now, Lease: &lease}
+	next, commands, err := flow.Transition(r.State, event)
+	if err != nil {
+		return r, err
+	}
+	if !existing {
+		if _, err = tx.Exec(ctx, `UPDATE tenant_runtime SET active_count=active_count+1 WHERE tenant_id=$1`, tenant); err != nil {
+			return r, err
+		}
+		if _, err = tx.Exec(ctx, `UPDATE runners SET reserved_slots=reserved_slots+1 WHERE id=$1`, runnerID); err != nil {
+			return r, err
+		}
+	}
+	if _, err = tx.Exec(ctx, `INSERT INTO runner_allocations(tenant_id,run_id,runner_id,lease_epoch,state,slots) VALUES($1,$2,$3,$4,'reserved',1)
+ ON CONFLICT(tenant_id,run_id) DO UPDATE SET lease_epoch=excluded.lease_epoch,state='reserved'`, tenant, id, runnerID, lease.Epoch); err != nil {
+		return r, err
+	}
+	if _, err = tx.Exec(ctx, `UPDATE tenant_runtime SET last_dispatched_at=$2 WHERE tenant_id=$1`, tenant, now); err != nil {
+		return r, err
+	}
+	if _, err = tx.Exec(ctx, `UPDATE runs SET runner_id=$3,workspace_id=id WHERE tenant_id=$1 AND id=$2`, tenant, id, runnerID); err != nil {
+		return r, err
+	}
+	if err = persistTransition(ctx, tx, r.State, next, commands, event, "run.claimed"); err != nil {
+		return r, err
+	}
+	r, err = getRun(ctx, tx, tenant, id, false)
+	if err != nil {
+		return r, err
+	}
+	return r, tx.Commit(ctx)
+}
+
+func (s *Store) Heartbeat(ctx context.Context, tenant, id domain.ID, owner string, epoch uint64, duration time.Duration) (time.Time, error) {
+	ctx, cancel := dependency.Database(ctx)
+	defer cancel()
+	if duration < time.Second || duration > 5*time.Minute {
+		return time.Time{}, domain.ErrInvalid
+	}
+	var until time.Time
+	err := s.Pool.QueryRow(ctx, `UPDATE runs SET lease_until=clock_timestamp()+($5*interval '1 millisecond') WHERE tenant_id=$1 AND id=$2 AND lease_owner=$3 AND lease_epoch=$4 AND lease_until>clock_timestamp() AND state IN ('running','cancel_requested','needs_reconciliation') RETURNING lease_until`, tenant, id, owner, epoch, duration.Milliseconds()).Scan(&until)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return until, domain.ErrFenced
+	}
+	return until, err
+}
+
+// LeaseProof is the only source for runner capability expiry. Signing code
+// subtracts the configured clock-skew allowance from Until; no worker clock can
+// manufacture a grant beyond the authority retained here.
+func (s *Store) LeaseProof(ctx context.Context, tenant, id domain.ID, owner string, epoch uint64) (domain.Lease, time.Time, error) {
+	ctx, cancel := dependency.Database(ctx)
+	defer cancel()
+	var l domain.Lease
+	var now time.Time
+	err := s.Pool.QueryRow(ctx, `SELECT lease_owner,lease_epoch,lease_until,clock_timestamp() FROM runs WHERE tenant_id=$1 AND id=$2 AND lease_owner=$3 AND lease_epoch=$4 AND lease_until>clock_timestamp() AND state IN ('running','cancel_requested','needs_reconciliation')`, tenant, id, owner, epoch).Scan(&l.Owner, &l.Epoch, &l.Until, &now)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return l, now, domain.ErrFenced
+	}
+	return l, now, err
+}
+
+func lockTenant(ctx context.Context, tx pgx.Tx, tenant domain.ID) error {
+	var id string
+	err := tx.QueryRow(ctx, `SELECT tenant_id FROM tenant_runtime WHERE tenant_id=$1 FOR UPDATE`, tenant).Scan(&id)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return domain.ErrNotFound
+	}
+	return err
+}
+
+func releaseAllocation(ctx context.Context, tx pgx.Tx, tenant, id domain.ID) error {
+	var runner string
+	var slots int
+	err := tx.QueryRow(ctx, `UPDATE runner_allocations SET state='released' WHERE tenant_id=$1 AND run_id=$2 AND state!='released' RETURNING runner_id,slots`, tenant, id).Scan(&runner, &slots)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return nil
+	}
+	if err != nil {
+		return err
+	}
+	if _, err = tx.Exec(ctx, `UPDATE runners SET reserved_slots=reserved_slots-$2 WHERE id=$1`, runner, slots); err != nil {
+		return err
+	}
+	_, err = tx.Exec(ctx, `UPDATE tenant_runtime SET active_count=active_count-1 WHERE tenant_id=$1`, tenant)
+	return err
+}
+
+func persistTransition(ctx context.Context, tx pgx.Tx, previous, next flow.State, commands []flow.Command, event flow.Event, kind string) error {
+	if previous.Version == next.Version {
+		return nil
+	}
+	if commands == nil {
+		commands = []flow.Command{}
+	}
+	body, err := json.Marshal(next)
+	if err != nil {
+		return err
+	}
+	pending, err := json.Marshal(commands)
+	if err != nil {
+		return err
+	}
+	var until *time.Time
+	if !next.Lease.Until.IsZero() {
+		until = &next.Lease.Until
+	}
+	query := `UPDATE runs SET snapshot=$3,state=$4,version=$5,lease_owner=$6,lease_epoch=$7,lease_until=$8,pending_commands=$9,updated_at=clock_timestamp() WHERE tenant_id=$1 AND id=$2 AND version=$10`
+	args := []any{next.TenantID, next.RunID, body, next.Status, next.Version, next.Lease.Owner, next.Lease.Epoch, until, pending, previous.Version}
+	if event.Kind != flow.EventClaimed && event.Kind != flow.EventCancelRequested && event.Kind != flow.EventApprovalDecided && event.Kind != flow.EventResumeRequested {
+		query += ` AND lease_owner=$11 AND lease_epoch=$12 AND lease_until>clock_timestamp()`
+		args = append(args, event.Owner, event.Epoch)
+	}
+	tag, err := tx.Exec(ctx, query, args...)
+	if err != nil {
+		return err
+	}
+	if tag.RowsAffected() != 1 {
+		return domain.ErrFenced
+	}
+	if _, err = tx.Exec(ctx, `INSERT INTO steps(tenant_id,run_id,seq,kind,status,input_hash,output_ref) VALUES($1,$2,$3,$4,'committed','',$5) ON CONFLICT(tenant_id,run_id,seq) DO UPDATE SET kind=excluded.kind,output_ref=excluded.output_ref`, next.TenantID, next.RunID, next.StepSeq, next.Stage, next.OutputRef); err != nil {
+		return err
+	}
+	for ordinal, e := range event.Effects {
+		_, err = tx.Exec(ctx, `INSERT INTO effects(tenant_id,run_id,step_seq,ordinal,operation_id,kind,args,canonical_args,args_hash,expected_revision,epoch,policy_version,status) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,'planned')`, next.TenantID, next.RunID, next.StepSeq, ordinal, e.ID, e.Kind, e.Args, []byte(e.Args), e.ArgsHash, e.ExpectedRevision, next.Lease.Epoch, e.PolicyVersion)
+		if err != nil {
+			return err
+		}
+	}
+	if e := next.PendingEffect; e != nil {
+		dispatchEpoch := e.DispatchEpoch
+		if dispatchEpoch == 0 {
+			dispatchEpoch = next.Lease.Epoch
+		}
+		if _, err = tx.Exec(ctx, `UPDATE effects SET status=$4,expected_revision=$5,epoch=$6,receipt_ref=nullif($7,'') WHERE tenant_id=$1 AND run_id=$2 AND operation_id=$3`, next.TenantID, next.RunID, e.ID, e.Status, e.ExpectedRevision, dispatchEpoch, e.ReceiptRef); err != nil {
+			return err
+		}
+	}
+	if e := event.Receipt; e != nil {
+		if _, err = tx.Exec(ctx, `UPDATE effects SET status=$4,receipt_ref=$5 WHERE tenant_id=$1 AND run_id=$2 AND operation_id=$3 AND args_hash=$6`, next.TenantID, next.RunID, e.EffectID, e.Status, e.Ref, e.ArgsHash); err != nil {
+			return err
+		}
+	}
+	if a := next.Approval; a != nil && next.Status == domain.StatusWaitingApproval {
+		aid := string(a.EffectID) + "_approval"
+		if _, err = tx.Exec(ctx, `INSERT INTO approvals(tenant_id,id,run_id,effect_id,args_hash,workspace_revision,policy_version,version) VALUES($1,$2,$3,$4,$5,$6,$7,$8) ON CONFLICT(tenant_id,id) DO NOTHING`, next.TenantID, aid, next.RunID, a.EffectID, a.ArgsHash, a.WorkspaceRevision, a.PolicyVersion, a.Version); err != nil {
+			return err
+		}
+	}
+	if next.Status.Terminal() || next.Status == domain.StatusWaitingApproval {
+		if err = releaseAllocation(ctx, tx, next.TenantID, next.RunID); err != nil {
+			return err
+		}
+	}
+	if err = writeSnapshot(ctx, tx, next); err != nil {
+		return err
+	}
+	prior, err := json.Marshal(previous)
+	if err != nil {
+		return err
+	}
+	input, err := json.Marshal(event)
+	if err != nil {
+		return err
+	}
+	if _, err = tx.Exec(ctx, `UPDATE run_snapshots SET input_state=$4,input_event=$5 WHERE tenant_id=$1 AND run_id=$2 AND version=$3`, next.TenantID, next.RunID, next.Version, prior, input); err != nil {
+		return err
+	}
+	// Event transport carries references and compact progress, never repeated
+	// multi-megabyte raw model/tool arguments. Full snapshots remain queryable.
+	payload, err := json.Marshal(progressEvent(next, event))
+	if err != nil {
+		return err
+	}
+	if _, err = appendEvent(ctx, tx, next.TenantID, next.RunID, kind, payload); err != nil {
+		return err
+	}
+	if next.Status == domain.StatusWaitingApproval && previous.Status != domain.StatusWaitingApproval && next.Approval != nil {
+		approval, _ := json.Marshal(map[string]any{"approval_id": string(next.Approval.EffectID) + "_approval", "binding": next.Approval})
+		if _, err = appendEvent(ctx, tx, next.TenantID, next.RunID, "approval.required", approval); err != nil {
+			return err
+		}
+	}
+	if next.Status.Terminal() && kind != "run.finished" {
+		_, err = appendEvent(ctx, tx, next.TenantID, next.RunID, "run.finished", payload)
+	}
+	return err
+}
+
+func progressEvent(state flow.State, event flow.Event) map[string]any {
+	reason := state.FailureReason
+	if len(reason) > 2048 {
+		reason = reason[:2048] + " [truncated]"
+	}
+	payload := map[string]any{"version": state.Version, "state": state.Status, "stage": state.Stage, "step_seq": state.StepSeq, "workspace_revision": state.WorkspaceRevision, "model_rounds": state.ModelRounds, "tool_calls": state.ToolCalls, "cost_microusd": state.Cost, "verification_status": state.Verification, "output_ref": state.OutputRef, "verification_report_ref": state.VerificationReportRef, "reason": reason}
+	if event.NotBefore != nil {
+		payload["not_before"] = event.NotBefore
+	}
+	if state.PendingEffect != nil {
+		payload["operation_id"] = state.PendingEffect.ID
+		payload["args_hash"] = state.PendingEffect.ArgsHash
+	}
+	if event.Receipt != nil {
+		payload["receipt_ref"] = event.Receipt.Ref
+	}
+	return payload
+}
+
+func eventType(k flow.EventKind) string {
+	switch k {
+	case flow.EventWorkspaceReady:
+		return "workspace.prepared"
+	case flow.EventWorkspaceAdopted:
+		return "workspace.adopted"
+	case flow.EventContextBuilt:
+		return "step.started"
+	case flow.EventModelCompleted:
+		return "model.completed"
+	case flow.EventToolsValidated:
+		return "tool.planned"
+	case flow.EventEffectCompleted, flow.EventReconciled:
+		return "tool.finished"
+	case flow.EventVerificationCompleted:
+		return "validation.finished"
+	case flow.EventFinalized, flow.EventCancellationConfirmed:
+		return "run.finished"
+	default:
+		return "run." + string(k)
+	}
+}
+
+func (s *Store) Advance(ctx context.Context, tenant, id domain.ID, event flow.Event) (Run, error) {
+	ctx, cancel := dependency.Database(ctx)
+	defer cancel()
+	switch event.Kind {
+	case flow.EventClaimed, flow.EventApprovalDecided, flow.EventCancelRequested, flow.EventResumeRequested, flow.EventCapacityRejected:
+		return Run{}, fmt.Errorf("%w: control event requires application transaction", domain.ErrForbidden)
+	}
+	return s.apply(ctx, tenant, id, event)
+}
+
+func (s *Store) apply(ctx context.Context, tenant, id domain.ID, event flow.Event) (Run, error) {
+	ctx, cancel := dependency.Database(ctx)
+	defer cancel()
+	tx, err := s.Tx(ctx, tenant, pgx.TxOptions{})
+	if err != nil {
+		return Run{}, err
+	}
+	defer tx.Rollback(ctx)
+	if err = lockTenant(ctx, tx, tenant); err != nil {
+		return Run{}, err
+	}
+	r, err := getRun(ctx, tx, tenant, id, true)
+	if err != nil {
+		return r, err
+	}
+	if err = tx.QueryRow(ctx, `SELECT clock_timestamp()`).Scan(&event.At); err != nil {
+		return r, err
+	}
+	if err = validateEvidence(ctx, tx, tenant, id, event); err != nil {
+		return r, err
+	}
+	next, commands, err := flow.Transition(r.State, event)
+	if err != nil {
+		return r, err
+	}
+	if err = persistTransition(ctx, tx, r.State, next, commands, event, eventType(event.Kind)); err != nil {
+		return r, err
+	}
+	r, err = getRun(ctx, tx, tenant, id, false)
+	if err != nil {
+		return r, err
+	}
+	if err = tx.Commit(ctx); err != nil {
+		return r, err
+	}
+	s.wake(ctx, id)
+	return r, nil
+}
+
+func validateEvidence(ctx context.Context, tx pgx.Tx, tenant, id domain.ID, event flow.Event) error {
+	refs := []string{event.OutputRef}
+	if event.Receipt != nil {
+		refs = append(refs, event.Receipt.Ref)
+	}
+	if event.Stop != nil {
+		refs = append(refs, event.Stop.Ref)
+	}
+	if event.Verification != nil {
+		refs = append(refs, event.Verification.ReportRef)
+	}
+	for _, ref := range refs {
+		if ref == "" {
+			continue
+		}
+		var found bool
+		if err := tx.QueryRow(ctx, `SELECT EXISTS(SELECT 1 FROM artifacts WHERE tenant_id=$1 AND run_id=$2 AND id=$3 AND state='ready')`, tenant, id, ref).Scan(&found); err != nil {
+			return err
+		}
+		if !found {
+			return fmt.Errorf("%w: evidence artifact is not ready", domain.ErrUntrusted)
+		}
+	}
+	return nil
+}

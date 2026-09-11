@@ -1,0 +1,23 @@
+{
+  "GOGC": 100,
+  "GOMAXPROCS": 2,
+  "binary_path": "/tmp/forge-benchmark-clone-20260911T213726Z/bin/stamped-benchmarks.test",
+  "binary_sha256": "1a63a717cbef52ca2b5608adba9f425323070d845fa760abbe891c2cb06a8a8a",
+  "build_argv": [
+    "go",
+    "test",
+    "-c",
+    "-o",
+    "/tmp/forge-benchmark-clone-20260911T213726Z/bin/stamped-benchmarks.test",
+    "./benchmarks"
+  ],
+  "clean_before_build": true,
+  "clone": "/tmp/forge-benchmark-clone-20260911T213726Z",
+  "commit": "a9208e79879d29373eb3964e098eff286aa6de82",
+  "concurrency_caveat": "shared development host and PostgreSQL; other task checks may execute concurrently, no dedicated-host performance claim",
+  "random_seed": "not used; workload shape deterministic, opaque identities randomly generated",
+  "repository": "https://github.com/JDinSeattle/forge-runtime",
+  "scope": "three fixed control/simulated workloads, actual loopback PostgreSQL; no real runner or model",
+  "source_files": 262,
+  "source_stable_through_build": true
+}

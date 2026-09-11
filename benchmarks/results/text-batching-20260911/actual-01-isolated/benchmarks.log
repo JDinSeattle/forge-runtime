@@ -1,0 +1,13 @@
+=== RUN   TestNativeStreamInterruptedLedgerEvidence
+=== RUN   TestNativeStreamInterruptedLedgerEvidence/openai
+    model_stream_fault_test.go:346: exit status 1
+    model_stream_fault_test.go:309: evidence=/tmp/forge-text-batch-a9208e7-20260911/benchmarks/results/local/model-stream-interrupted-openai-20260911T215055.942465526Z
+=== RUN   TestNativeStreamInterruptedLedgerEvidence/anthropic
+    model_stream_fault_test.go:346: exit status 1
+    model_stream_fault_test.go:309: evidence=/tmp/forge-text-batch-a9208e7-20260911/benchmarks/results/local/model-stream-interrupted-anthropic-20260911T215056.088413633Z
+--- FAIL: TestNativeStreamInterruptedLedgerEvidence (0.25s)
+    --- FAIL: TestNativeStreamInterruptedLedgerEvidence/openai (0.15s)
+    --- FAIL: TestNativeStreamInterruptedLedgerEvidence/anthropic (0.10s)
+=== RUN   TestInterruptedLedgerOracleRejectsReleasedExpense
+--- PASS: TestInterruptedLedgerOracleRejectsReleasedExpense (0.00s)
+FAIL

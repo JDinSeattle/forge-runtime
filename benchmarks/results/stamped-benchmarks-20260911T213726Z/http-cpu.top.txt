@@ -1,0 +1,16 @@
+File: stamped-benchmarks.test
+Build ID: 59540e5ccc4f7ebb2c16c0c51049c07830ea907b
+Type: cpu
+Time: 2026-09-11 14:37:39 PDT
+Duration: 20.27s, Total samples = 950ms ( 4.69%)
+Showing nodes accounting for 480ms, 50.53% of 950ms total
+Showing top 8 nodes out of 328
+      flat  flat%   sum%        cum   cum%
+     290ms 30.53% 30.53%      290ms 30.53%  internal/runtime/syscall/linux.Syscall6
+      90ms  9.47% 40.00%       90ms  9.47%  runtime.futex
+      20ms  2.11% 42.11%       20ms  2.11%  internal/runtime/atomic.(*Uint32).CompareAndSwap
+      20ms  2.11% 44.21%       20ms  2.11%  runtime.(*listHeadManual).pop
+      20ms  2.11% 46.32%       20ms  2.11%  runtime.(*stkframe).getStackMap
+      20ms  2.11% 48.42%       20ms  2.11%  runtime.memclrNoHeapPointers
+      10ms  1.05% 49.47%       10ms  1.05%  crypto/internal/fips140/sha256.blockSHANI
+      10ms  1.05% 50.53%       10ms  1.05%  crypto/internal/sysrand.Read

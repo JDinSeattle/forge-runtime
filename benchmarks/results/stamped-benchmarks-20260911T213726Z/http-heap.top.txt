@@ -1,0 +1,15 @@
+File: stamped-benchmarks.test
+Build ID: 59540e5ccc4f7ebb2c16c0c51049c07830ea907b
+Type: alloc_space
+Time: 2026-09-11 14:37:59 PDT
+Showing nodes accounting for 26.83MB, 53.96% of 49.72MB total
+Showing top 8 nodes out of 202
+      flat  flat%   sum%        cum   cum%
+   16.01MB 32.19% 32.19%    16.01MB 32.19%  github.com/pressly/goose/v3/internal/sqlparser.init.func1
+       2MB  4.02% 36.21%        2MB  4.02%  context.(*cancelCtx).propagateCancel
+       2MB  4.02% 40.23%     3.50MB  7.04%  context.WithDeadlineCause
+    1.50MB  3.02% 43.25%     1.50MB  3.02%  net/http.Header.Clone
+    1.50MB  3.02% 46.27%     1.50MB  3.02%  net/textproto.MIMEHeader.Set
+    1.50MB  3.02% 49.29%     2.50MB  5.03%  context.AfterFunc
+    1.17MB  2.35% 51.63%     1.17MB  2.35%  compress/flate.(*compressor).init
+    1.16MB  2.33% 53.96%     1.16MB  2.33%  runtime/pprof.StartCPUProfile

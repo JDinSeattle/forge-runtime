@@ -1,0 +1,191 @@
+package main
+
+import (
+	"context"
+	"errors"
+	"flag"
+	"fmt"
+	"log/slog"
+	"net"
+	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
+
+	"github.com/JDinSeattle/forge-runtime/internal/application"
+	"github.com/JDinSeattle/forge-runtime/internal/artifact"
+	"github.com/JDinSeattle/forge-runtime/internal/configuration"
+	"github.com/JDinSeattle/forge-runtime/internal/persistence"
+	"github.com/JDinSeattle/forge-runtime/internal/provider"
+	"github.com/JDinSeattle/forge-runtime/internal/quota"
+	"github.com/JDinSeattle/forge-runtime/internal/runnerclient"
+	"github.com/JDinSeattle/forge-runtime/internal/telemetry"
+)
+
+func main() {
+	if err := run(); err != nil {
+		slog.Error("worker stopped", "error", err)
+		os.Exit(1)
+	}
+}
+func run() error {
+	path := flag.String("config", "", "operator configuration JSON")
+	owner := flag.String("id", "", "unique worker process identity override")
+	testCrash := flag.Bool("test-crash-after-model", false, "test only: hard-exit after a fake model result is durably saved")
+	flag.Parse()
+	if *path == "" || flag.NArg() != 0 {
+		return fmt.Errorf("usage: forge-worker -config /absolute/path/platform.json [-id worker-2]")
+	}
+	c, err := configuration.Load(*path)
+	if err != nil {
+		return err
+	}
+	if *owner != "" {
+		c.WorkerID = *owner
+	}
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer stop()
+	startup, cancel := context.WithTimeout(ctx, 30*time.Second)
+	defer cancel()
+	if err = c.CheckSources(startup); err != nil {
+		return err
+	}
+	signer, err := c.Signer()
+	if err != nil {
+		return err
+	}
+	providers, err := c.BuildProviders()
+	if err != nil {
+		return err
+	}
+	if *testCrash {
+		if _, ok := c.Providers["fake"]; !ok || len(c.Providers) != 1 {
+			return errors.New("test crash injection requires an exclusively fake provider deployment")
+		}
+	}
+	url := os.Getenv("FORGE_DATABASE_URL")
+	if url == "" {
+		return errors.New("FORGE_DATABASE_URL required (controlled worker role)")
+	}
+	s, err := persistence.Open(startup, url)
+	if err != nil {
+		return err
+	}
+	defer s.Close()
+	if err = s.CheckWorkerRole(startup); err != nil {
+		return err
+	}
+	a, err := artifact.NewLocalStore(c.ArtifactRoot, 64<<20)
+	if err != nil {
+		return err
+	}
+	defer a.Close()
+	r, err := runnerclient.Dial(startup, c.Runner)
+	if err != nil {
+		return err
+	}
+	defer r.Close()
+	q := quota.New(s.Pool)
+	metrics, err := telemetry.Setup(startup, "forge-worker", os.Getenv("OTEL_EXPORTER_OTLP_TRACES_ENDPOINT"))
+	if err != nil {
+		return err
+	}
+	defer func() {
+		ctx, end := context.WithTimeout(context.Background(), 5*time.Second)
+		defer end()
+		_ = metrics.Shutdown(ctx)
+	}()
+	address := os.Getenv("FORGE_METRICS_LISTEN")
+	if address == "" {
+		address = "127.0.0.1:8098"
+	}
+	host, _, err := net.SplitHostPort(address)
+	if err != nil || net.ParseIP(host) == nil || !net.ParseIP(host).IsLoopback() {
+		return errors.New("metrics listener must be numeric loopback")
+	}
+	listener, err := net.Listen("tcp", address)
+	if err != nil {
+		return err
+	}
+	metricsServer := &http.Server{Handler: metrics.Handler(), ReadHeaderTimeout: 5 * time.Second, WriteTimeout: 10 * time.Second, IdleTimeout: 30 * time.Second}
+	go func() {
+		if err := metricsServer.Serve(listener); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			slog.Warn("metrics listener stopped", "error", err)
+		}
+	}()
+	defer func() {
+		ctx, end := context.WithTimeout(context.Background(), 3*time.Second)
+		defer end()
+		_ = metricsServer.Shutdown(ctx)
+	}()
+	sources := map[string]application.SourceSpec{}
+	for id, source := range c.Sources {
+		sources[id] = application.SourceSpec{Hash: source.Hash, HasTarget: source.HasTarget}
+	}
+	d := &application.Driver{Store: s, Quota: q, Runner: r, RunnerID: c.RunnerID, Signer: signer, Artifacts: a, Providers: providers, Models: c.Models, Sources: sources, TrustedVerification: true, Logger: slog.Default(), Telemetry: metrics}
+	if *testCrash {
+		d.Fault = func(point string) error {
+			if point == "after_model_result_before_transition" {
+				slog.Error("deliberate fake-only process crash after durable model result", "exit_code", 86)
+				os.Exit(86)
+			}
+			return nil
+		}
+	}
+	if len(c.FakeScripts) > 0 {
+		slog.Warn("deterministic fake model fixtures enabled; outputs are not model-quality evidence")
+		d.ProviderFactory = func(run persistence.Run) provider.Provider {
+			if run.Config.Provider != "fake" {
+				return providers[run.Config.Provider]
+			}
+			project, readErr := s.GetProject(ctx, run.TenantID, run.ProjectID)
+			if readErr != nil {
+				return configuration.ScriptedProvider{}
+			}
+			return configuration.ScriptedProvider{Scripts: c.FakeScripts[project.SourceID]}
+		}
+	}
+	maintenanceDone := make(chan struct{})
+	groups := map[string]struct{}{}
+	for _, model := range c.Models {
+		groups[model.CredentialGroup] = struct{}{}
+	}
+	go func() {
+		defer close(maintenanceDone)
+		ticker := time.NewTicker(time.Second)
+		defer ticker.Stop()
+		for {
+			select {
+			case <-ctx.Done():
+				return
+			case <-ticker.C:
+				call, end := context.WithTimeout(ctx, 3*time.Second)
+				var queued, active, reserved int64
+				if err := s.Pool.QueryRow(call, `SELECT count(*) FILTER(WHERE state='queued'),count(*) FILTER(WHERE state IN ('running','cancel_requested','needs_reconciliation')) FROM runs`).Scan(&queued, &active); err == nil {
+					metrics.SetSchedulerSnapshot(queued, active)
+				}
+				if err := s.Pool.QueryRow(call, `SELECT coalesce(sum(reserved_microusd),0)::bigint FROM provider_quotas`).Scan(&reserved); err == nil {
+					metrics.SetReservedBudget(reserved)
+				}
+				end()
+				for group := range groups {
+					call, end := context.WithTimeout(ctx, 3*time.Second)
+					_, expireErr := q.ExpireRequestSlots(call, group)
+					end()
+					if expireErr != nil && ctx.Err() == nil {
+						slog.Warn("quota slot expiry failed", "error", expireErr)
+					}
+				}
+			}
+		}
+	}()
+	slog.Info("worker polling", "worker_id", c.WorkerID, "slots", c.WorkerSlots)
+	err = d.RunWorker(ctx, c.WorkerID, c.WorkerSlots)
+	stop()
+	<-maintenanceDone
+	if errors.Is(err, context.Canceled) {
+		return nil
+	}
+	return err
+}

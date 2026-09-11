@@ -1,0 +1,173 @@
+{
+  "passed": true,
+  "role": "author recheck of retained records, not another OS experiment or independent implementation review",
+  "base_commit": "a9208e79879d29373eb3964e098eff286aa6de82",
+  "source_hashes_checked": 199,
+  "eight_owned_go_sources_and_other_sources_reconstructed_from_base": true,
+  "fixed_binaries_verified": {
+    "configuration.test": "e8ec916e63f7f217d2c977947619fc916526231c71f087f9553b16bcd8cfd7f6",
+    "forge-worker": "4586d877f32ff4ab794430d7e115a3c3124257839dd82acc0ead5afe56bda5ce",
+    "application.test": "ffc9af70676381e704599778bde9aa742fc4a16153e63859ed6838bb1401da1c",
+    "benchmarks.test": "c4bae2db723e1b24da829f83e484e8a1097b25f4ef95e6a643ce68d80f750f57"
+  },
+  "launcher_sha256": "2ed65df87321af400b9ac7c0bd788b246b58a516da2d4a0de36329d0d88ffc79",
+  "runs": {
+    "actual-01-isolated": {
+      "exit_codes": [
+        0,
+        0,
+        1
+      ],
+      "postgres": [
+        {
+          "test": "TestTextBatchDriverPreservesCompleteModelArtifact",
+          "run_id": "run_KG2OSHE7BAZUHQJJG3UFJG4CB2",
+          "event_count": 46,
+          "text_events": 8,
+          "decoded_bytes": 32768,
+          "max_encoded_payload_bytes": 8785,
+          "decoded_model_text_sha256": "88ad729f9ab2965a9d8ed7dcd24c68283cf938128ed910fdf91feceefc53ee4c",
+          "raw_artifact_independently_available": false
+        },
+        {
+          "test": "TestTextBatchPostgresControlBypassesPausedText",
+          "run_id": "run_TJZC6KTNWDN53KCPEV5YW3GPHV",
+          "event_count": 4,
+          "text_events": 0,
+          "decoded_bytes": 0,
+          "max_encoded_payload_bytes": 0,
+          "control_commit_interval_ns": 17577021
+        },
+        {
+          "test": "TestTextBatchPostgresTimerAndSize/size_and_encoding",
+          "run_id": "run_NJTINAPWJ4AAKYCI7LTSJBSSJY",
+          "event_count": 10,
+          "text_events": 8,
+          "decoded_bytes": 65553,
+          "max_encoded_payload_bytes": 32768,
+          "first_observed_after_emit_ns": 88382215,
+          "emit_elapsed_ns": 69620291
+        },
+        {
+          "test": "TestTextBatchPostgresTimerAndSize/timer",
+          "run_id": "run_BXNMFSGKZMU7C4RA43MYNET3KS",
+          "event_count": 3,
+          "text_events": 1,
+          "decoded_bytes": 21,
+          "max_encoded_payload_bytes": 81,
+          "first_observed_after_emit_ns": 64936418,
+          "emit_elapsed_ns": 1907
+        }
+      ]
+    },
+    "actual-02-isolated": {
+      "exit_codes": [
+        0,
+        0,
+        0
+      ],
+      "postgres": [
+        {
+          "test": "TestTextBatchDriverPreservesCompleteModelArtifact",
+          "run_id": "run_JQUHG3BITUNCQNN2VD3ZKNLYWY",
+          "event_count": 46,
+          "text_events": 8,
+          "decoded_bytes": 32768,
+          "max_encoded_payload_bytes": 8785,
+          "decoded_model_text_sha256": "88ad729f9ab2965a9d8ed7dcd24c68283cf938128ed910fdf91feceefc53ee4c",
+          "raw_artifact_independently_available": false
+        },
+        {
+          "test": "TestTextBatchPostgresControlBypassesPausedText",
+          "run_id": "run_5EFA63HMDDA4VEDHH7OCAP6446",
+          "event_count": 4,
+          "text_events": 0,
+          "decoded_bytes": 0,
+          "max_encoded_payload_bytes": 0,
+          "control_commit_interval_ns": 12570067
+        },
+        {
+          "test": "TestTextBatchPostgresTimerAndSize/size_and_encoding",
+          "run_id": "run_WX6S7CFXL57PD5JQPHNZI2IQQE",
+          "event_count": 10,
+          "text_events": 8,
+          "decoded_bytes": 65553,
+          "max_encoded_payload_bytes": 32768,
+          "first_observed_after_emit_ns": 44812332,
+          "emit_elapsed_ns": 35215350
+        },
+        {
+          "test": "TestTextBatchPostgresTimerAndSize/timer",
+          "run_id": "run_AOPXAJIP4YLENIT3NNJGP6WVXI",
+          "event_count": 3,
+          "text_events": 1,
+          "decoded_bytes": 21,
+          "max_encoded_payload_bytes": 81,
+          "first_observed_after_emit_ns": 56412824,
+          "emit_elapsed_ns": 3049
+        }
+      ]
+    }
+  },
+  "f03": [
+    {
+      "passed": true,
+      "native": "anthropic",
+      "run_id": "run_KJK76OEV3JTKAWPD2BHSVT75E7",
+      "snapshots_checked": 5,
+      "durable_event_counts": [
+        10,
+        11,
+        11,
+        11,
+        11
+      ],
+      "native_requests": 1,
+      "failed_incomplete_attempts": 1,
+      "effect_count": 0,
+      "retained_tokens": 9216,
+      "retained_microusd": 10240,
+      "request_slot_expirations": [
+        0,
+        1,
+        0
+      ],
+      "source_hashes_checked": 20,
+      "binary_identity_retained": true,
+      "boundaries": "Actual local native HTTP/Driver/PG; synthetic provider bytes/rates, recording runner; no second model sample or Docker claim"
+    },
+    {
+      "passed": true,
+      "native": "openai",
+      "run_id": "run_BYHJ33DHJN7466IDONY4Q55JZW",
+      "snapshots_checked": 5,
+      "durable_event_counts": [
+        10,
+        11,
+        11,
+        11,
+        11
+      ],
+      "native_requests": 1,
+      "failed_incomplete_attempts": 1,
+      "effect_count": 0,
+      "retained_tokens": 9216,
+      "retained_microusd": 10240,
+      "request_slot_expirations": [
+        0,
+        1,
+        0
+      ],
+      "source_hashes_checked": 20,
+      "binary_identity_retained": true,
+      "boundaries": "Actual local native HTTP/Driver/PG; synthetic provider bytes/rates, recording runner; no second model sample or Docker claim"
+    }
+  ],
+  "limits": [
+    "PG event exports are phase-specific retained Store results, not a full historical schema dump.",
+    "The complete model turn was loaded from actual local storage in the test; only its decoded content is retained, not the original transient object bytes.",
+    "F03 uses actual local native HTTP/Driver/PG with synthetic prices and a recording runner; no paid inference or Docker."
+  ],
+  "f03_auditor_sha256": "6b6dcc616db07a5ea5bc25e6e01afa0b7965f133a98f9b9a8c4e323c8069e745",
+  "f03_auditor_equals_a9208e7": true
+}

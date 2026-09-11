@@ -1,0 +1,16 @@
+File: stamped-benchmarks.test
+Build ID: 59540e5ccc4f7ebb2c16c0c51049c07830ea907b
+Type: alloc_space
+Time: 2026-09-11 14:37:38 PDT
+Showing nodes accounting for 75.02MB, 57.13% of 131.31MB total
+Dropped 46 nodes (cum <= 0.66MB)
+Showing top 8 nodes out of 124
+      flat  flat%   sum%        cum   cum%
+   16.50MB 12.57% 12.57%       17MB 12.95%  context.(*cancelCtx).propagateCancel
+   16.01MB 12.19% 24.76%    16.01MB 12.19%  github.com/pressly/goose/v3/internal/sqlparser.init.func1
+      12MB  9.14% 33.90%       28MB 21.33%  context.AfterFunc
+    6.50MB  4.95% 38.85%     6.50MB  4.95%  time.newTimer
+       6MB  4.57% 43.42%        6MB  4.57%  github.com/jackc/pgx/v5/pgtype.encodePlanJSONCodecEitherFormatByteSlice.Encode
+       6MB  4.57% 47.99%    26.51MB 20.19%  github.com/JDinSeattle/forge-runtime/internal/persistence.getRun
+       6MB  4.57% 52.56%        6MB  4.57%  context.(*cancelCtx).Done
+       6MB  4.57% 57.13%       13MB  9.90%  context.WithDeadlineCause
