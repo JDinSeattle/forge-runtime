@@ -1,0 +1,362 @@
+[
+  {
+    "report": "TestProgressCrashBeforeAndAfterCommit_after_progress_report_before_transition.json",
+    "run_id": "run_6XZEUA4TIRJUQ7QY7S2VM4SPGN",
+    "passed": true,
+    "model_calls": 4,
+    "status": "budget_exhausted",
+    "extra": {
+      "interrupted_state": {
+        "progress": {
+          "last_checked_step": 3,
+          "message_seq": 0,
+          "repeated_batches": 2,
+          "classification": "repeated",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ]
+        },
+        "schema_version": 2,
+        "run_id": "run_6XZEUA4TIRJUQ7QY7S2VM4SPGN",
+        "tenant_id": "tenant",
+        "version": 23,
+        "status": "running",
+        "stage": "build_context",
+        "lease": {
+          "owner": "crash-worker",
+          "epoch": 1,
+          "until": "2026-09-11T16:22:49.925829-07:00"
+        },
+        "step_seq": 4,
+        "workspace_revision": 1,
+        "output_ref": "artifact_c244c68080217d30b4e979c2467dc446535dfcb18a69e9b2665771d8eb17f9ce",
+        "verification_status": "unverified",
+        "verification_revision": 0,
+        "model_rounds": 4,
+        "tool_calls": 4,
+        "cost_microusd": 0,
+        "limits": {
+          "max_no_progress_batches": 3,
+          "max_model_rounds": 8,
+          "max_tool_calls": 20,
+          "max_cost_microusd": 1000000,
+          "deadline": "2026-09-11T16:23:45.889395-07:00"
+        }
+      },
+      "model_calls": 4
+    }
+  },
+  {
+    "report": "TestProgressCrashBeforeAndAfterCommit_after_progress_transition.json",
+    "run_id": "run_Z2V4EYMLNUVA5F6QECFSXDPMWB",
+    "passed": true,
+    "model_calls": 4,
+    "status": "budget_exhausted",
+    "extra": {
+      "interrupted_state": {
+        "progress": {
+          "last_checked_step": 4,
+          "message_seq": 0,
+          "repeated_batches": 3,
+          "classification": "repeated",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ]
+        },
+        "schema_version": 2,
+        "run_id": "run_Z2V4EYMLNUVA5F6QECFSXDPMWB",
+        "tenant_id": "tenant",
+        "version": 24,
+        "status": "cancel_requested",
+        "stage": "build_context",
+        "lease": {
+          "owner": "crash-worker",
+          "epoch": 1,
+          "until": "2026-09-11T16:22:54.657031-07:00"
+        },
+        "step_seq": 4,
+        "workspace_revision": 1,
+        "output_ref": "artifact_575bdee43661301d838789e4bfcbb15e58bdaaccd0fafe0b185628a8f4c56da7",
+        "verification_status": "unverified",
+        "verification_revision": 0,
+        "model_rounds": 4,
+        "tool_calls": 4,
+        "cost_microusd": 0,
+        "limits": {
+          "max_no_progress_batches": 3,
+          "max_model_rounds": 8,
+          "max_tool_calls": 20,
+          "max_cost_microusd": 1000000,
+          "deadline": "2026-09-11T16:23:50.639445-07:00"
+        },
+        "failure_reason": "repeated_no_progress",
+        "stop_target": "budget_exhausted"
+      },
+      "model_calls": 4
+    }
+  },
+  {
+    "report": "TestProgressDurableClosedBatches_failed_batch.json",
+    "run_id": "run_NJTFUPIKRUGUINWPLECHM2DYDU",
+    "passed": true,
+    "model_calls": 4,
+    "status": "budget_exhausted",
+    "extra": {
+      "model_calls": 4,
+      "synthetic_unknown_microusd_after_stop": 36864,
+      "terminal_version": 25,
+      "unknown_reservations_after_stop": 4
+    }
+  },
+  {
+    "report": "TestProgressDurableClosedBatches_finish.json",
+    "run_id": "run_OQIHWKDJVTVNOYX76CXX27DMU3",
+    "passed": true,
+    "model_calls": 4,
+    "status": "budget_exhausted",
+    "extra": {
+      "model_calls": 4,
+      "synthetic_unknown_microusd_after_stop": 36864,
+      "terminal_version": 17,
+      "unknown_reservations_after_stop": 4
+    }
+  },
+  {
+    "report": "TestProgressDurableClosedBatches_read.json",
+    "run_id": "run_DJML6KNKGS6GFTQVDL6YH4RINH",
+    "passed": true,
+    "model_calls": 4,
+    "status": "budget_exhausted",
+    "extra": {
+      "model_calls": 4,
+      "synthetic_unknown_microusd_after_request_deadline": 36864,
+      "synthetic_unknown_microusd_after_stop": 36864,
+      "terminal_version": 25,
+      "unknown_reservations_after_stop": 4
+    }
+  },
+  {
+    "report": "TestProgressLegacySnapshotsAndDefaultIdempotency.json",
+    "run_id": "run_KV6NMLCPXLPAE7EKXHAZM5RJVF",
+    "passed": true,
+    "model_calls": 3,
+    "status": "completed",
+    "extra": {
+      "legacy_initial_snapshot": {
+        "schema_version": 1,
+        "run_id": "run_KV6NMLCPXLPAE7EKXHAZM5RJVF",
+        "tenant_id": "tenant",
+        "version": 1,
+        "status": "queued",
+        "stage": "initialize",
+        "lease": {
+          "owner": "",
+          "epoch": 0,
+          "until": "0001-01-01T00:00:00Z"
+        },
+        "step_seq": 0,
+        "workspace_revision": 0,
+        "verification_status": "unverified",
+        "verification_revision": 0,
+        "model_rounds": 0,
+        "tool_calls": 0,
+        "cost_microusd": 0,
+        "limits": {
+          "max_model_rounds": 8,
+          "max_tool_calls": 20,
+          "max_cost_microusd": 1000000,
+          "deadline": "2026-09-11T16:24:02.964801-07:00"
+        }
+      },
+      "model_calls": 3,
+      "original_key_reused": true
+    }
+  },
+  {
+    "report": "TestProgressMessageRaceRebuildsBeforeStopping.json",
+    "run_id": "run_KF27YZCGTWVTEXEGDLVNV4KSQS",
+    "passed": true,
+    "model_calls": 7,
+    "status": "budget_exhausted",
+    "extra": {
+      "model_calls": 7,
+      "step4_context_builds": 2
+    }
+  },
+  {
+    "report": "TestProgressRejectsUnboundEvidence.json",
+    "run_id": "run_LT5W6QOVCMO67B2XKP2JB37TVE",
+    "passed": true,
+    "model_calls": null,
+    "status": "completed",
+    "extra": {
+      "rejections": [
+        "report_hash:untrusted_evidence",
+        "future_message:untrusted_evidence",
+        "wrong_step:untrusted_evidence",
+        "wrong_context:untrusted_evidence",
+        "foreign_effect:untrusted_evidence",
+        "old_version:conflict: expected run version 7, have 8",
+        "unresolved_ledger:reconciliation_required"
+      ]
+    }
+  },
+  {
+    "report": "TestProgressStopUnknownKeepsSentinelCapacity.json",
+    "run_id": "run_BAGRILMQEAX43WOG3MSWQ4I4T4",
+    "passed": true,
+    "model_calls": 4,
+    "status": "budget_exhausted",
+    "extra": {
+      "active_after_duplicate_stop": 1,
+      "active_after_main_stop": 1,
+      "active_after_sentinel_stop": 0,
+      "active_while_stop_unknown": 2,
+      "capacity_after_duplicate_stop": {
+        "allocations": [
+          {
+            "slots": 1,
+            "state": "released",
+            "run_id": "run_BAGRILMQEAX43WOG3MSWQ4I4T4",
+            "runner_id": "runner",
+            "tenant_id": "tenant",
+            "lease_epoch": 2,
+            "memory_bytes": 0
+          },
+          {
+            "slots": 1,
+            "state": "reserved",
+            "run_id": "run_CH4KGBIUEUVQ7T4UQM7FPSXQY4",
+            "runner_id": "runner",
+            "tenant_id": "tenant",
+            "lease_epoch": 1,
+            "memory_bytes": 0
+          }
+        ],
+        "runner_slots": 1,
+        "tenant_active": 1
+      },
+      "capacity_after_main_stop": {
+        "allocations": [
+          {
+            "slots": 1,
+            "state": "released",
+            "run_id": "run_BAGRILMQEAX43WOG3MSWQ4I4T4",
+            "runner_id": "runner",
+            "tenant_id": "tenant",
+            "lease_epoch": 2,
+            "memory_bytes": 0
+          },
+          {
+            "slots": 1,
+            "state": "reserved",
+            "run_id": "run_CH4KGBIUEUVQ7T4UQM7FPSXQY4",
+            "runner_id": "runner",
+            "tenant_id": "tenant",
+            "lease_epoch": 1,
+            "memory_bytes": 0
+          }
+        ],
+        "runner_slots": 1,
+        "tenant_active": 1
+      },
+      "capacity_after_sentinel_stop": {
+        "allocations": [
+          {
+            "slots": 1,
+            "state": "released",
+            "run_id": "run_BAGRILMQEAX43WOG3MSWQ4I4T4",
+            "runner_id": "runner",
+            "tenant_id": "tenant",
+            "lease_epoch": 2,
+            "memory_bytes": 0
+          },
+          {
+            "slots": 1,
+            "state": "released",
+            "run_id": "run_CH4KGBIUEUVQ7T4UQM7FPSXQY4",
+            "runner_id": "runner",
+            "tenant_id": "tenant",
+            "lease_epoch": 1,
+            "memory_bytes": 0
+          }
+        ],
+        "runner_slots": 0,
+        "tenant_active": 0
+      },
+      "capacity_while_stop_unknown": {
+        "allocations": [
+          {
+            "slots": 1,
+            "state": "reserved",
+            "run_id": "run_BAGRILMQEAX43WOG3MSWQ4I4T4",
+            "runner_id": "runner",
+            "tenant_id": "tenant",
+            "lease_epoch": 1,
+            "memory_bytes": 0
+          },
+          {
+            "slots": 1,
+            "state": "reserved",
+            "run_id": "run_CH4KGBIUEUVQ7T4UQM7FPSXQY4",
+            "runner_id": "runner",
+            "tenant_id": "tenant",
+            "lease_epoch": 1,
+            "memory_bytes": 0
+          }
+        ],
+        "runner_slots": 2,
+        "tenant_active": 2
+      },
+      "model_calls": 4,
+      "unconfirmed_stop_state": {
+        "progress": {
+          "last_checked_step": 4,
+          "message_seq": 0,
+          "repeated_batches": 3,
+          "classification": "repeated",
+          "recent_evidence": [
+            "544db7288f3830203d6b997125a912892a8e37728fa1c3bf0273840060426687"
+          ],
+          "recent_trees": [
+            "ce5e72580cadf1fec6d5c69b6c837d0a639f52bed65456eb84d87634576bbd4c"
+          ]
+        },
+        "schema_version": 2,
+        "run_id": "run_BAGRILMQEAX43WOG3MSWQ4I4T4",
+        "tenant_id": "tenant",
+        "version": 24,
+        "status": "cancel_requested",
+        "stage": "build_context",
+        "lease": {
+          "owner": "stopping-worker",
+          "epoch": 1,
+          "until": "2026-09-11T16:22:57.121625-07:00"
+        },
+        "step_seq": 4,
+        "workspace_revision": 1,
+        "output_ref": "artifact_8c4b99bd1e417aeb244a28b2ce16655c4ea69ca6ef2cae5d7fff54f415b0b4f0",
+        "verification_status": "unverified",
+        "verification_revision": 0,
+        "model_rounds": 4,
+        "tool_calls": 4,
+        "cost_microusd": 0,
+        "limits": {
+          "max_no_progress_batches": 3,
+          "max_model_rounds": 8,
+          "max_tool_calls": 20,
+          "max_cost_microusd": 1000000,
+          "deadline": "2026-09-11T16:23:55.393174-07:00"
+        },
+        "failure_reason": "repeated_no_progress",
+        "stop_target": "budget_exhausted"
+      }
+    }
+  }
+]

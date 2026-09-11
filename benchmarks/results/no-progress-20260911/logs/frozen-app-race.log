@@ -1,0 +1,25 @@
+=== RUN   TestProgressDurableClosedBatches
+=== RUN   TestProgressDurableClosedBatches/read
+=== RUN   TestProgressDurableClosedBatches/finish
+=== RUN   TestProgressDurableClosedBatches/failed_batch
+--- PASS: TestProgressDurableClosedBatches (11.56s)
+    --- PASS: TestProgressDurableClosedBatches/read (6.70s)
+    --- PASS: TestProgressDurableClosedBatches/finish (2.64s)
+    --- PASS: TestProgressDurableClosedBatches/failed_batch (2.22s)
+=== RUN   TestProgressMessageRaceRebuildsBeforeStopping
+--- PASS: TestProgressMessageRaceRebuildsBeforeStopping (3.21s)
+=== RUN   TestProgressCrashBeforeAndAfterCommit
+=== RUN   TestProgressCrashBeforeAndAfterCommit/after_progress_report_before_transition
+=== RUN   TestProgressCrashBeforeAndAfterCommit/after_progress_transition
+--- PASS: TestProgressCrashBeforeAndAfterCommit (9.41s)
+    --- PASS: TestProgressCrashBeforeAndAfterCommit/after_progress_report_before_transition (4.74s)
+    --- PASS: TestProgressCrashBeforeAndAfterCommit/after_progress_transition (4.67s)
+=== RUN   TestProgressStopUnknownKeepsSentinelCapacity
+--- PASS: TestProgressStopUnknownKeepsSentinelCapacity (7.53s)
+=== RUN   TestProgressLegacySnapshotsAndDefaultIdempotency
+--- PASS: TestProgressLegacySnapshotsAndDefaultIdempotency (2.20s)
+=== RUN   TestProgressRejectsUnboundEvidence
+--- PASS: TestProgressRejectsUnboundEvidence (2.50s)
+=== RUN   TestProgressNormalizesActualReceiptFacts
+--- PASS: TestProgressNormalizesActualReceiptFacts (0.00s)
+PASS

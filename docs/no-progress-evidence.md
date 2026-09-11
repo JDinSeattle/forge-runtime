@@ -94,13 +94,47 @@ archives are compressed so `go test ./...` does not discover copied Go packages.
 Test executables remain locally in this worktree's ignored `var/e42-builds/`.
 No credentials or process environment are exported to reports.
 
-Before the final frozen run, complete `internal/application` and `tests/review`
-race suites passed with private PostgreSQL schemas. Runtime/persistence race,
-HTTP/CLI loopback race, all-package compilation, `go vet ./...`, API/SQLC/protobuf
-generation checks and the four offline-audit regressions also passed.
-The final frozen source identity and execution result are recorded below after
-the bounded final execution. The `final/` fixture at this intermediate commit is
-the preserved pre-freeze successful read case, not a claim of a later execution.
+The frozen execution started from clean tracked commit
+`7ee738b5b43a3044c4323e7467bef72d6721c14e` and ran on 2026-09-11 from
+23:22:30.785128 to 23:23:08.233946 UTC. The retained Go 1.26.8 linux/amd64 race
+binary has SHA-256
+`7f03464132bc9e37fa2714238beca8828549ee9502edab732955ec165d7ed5d9`.
+Its seven top-level `TestProgress` tests and five subtests passed in **37.448813 s**
+of subprocess wall time, with nine private-PG JSON reports. All 274 recorded
+code/build/script input hashes matched before and after; tracked status stayed
+clean. See [`final/execution.json`](../benchmarks/results/no-progress-20260911/final/execution.json),
+[`final/before-build.json`](../benchmarks/results/no-progress-20260911/final/before-build.json)
+and the [raw test log](../benchmarks/results/no-progress-20260911/logs/frozen-app-race.log).
+The shared host/cache were used; this is not an independent clean-clone build or
+a latency benchmark. Source tarballs, module declarations and build settings are
+retained, but dependency-cache/compiler supply-chain provenance is not attested.
+
+| Frozen case | Actual observation |
+| --- | --- |
+| repeated read / failed finish / failed tool batch | Each makes four fake model calls, commits counters 0→1→2→3, confirms stop and keeps 36,864 unknown microUSD. Read additionally observes natural request deadlines release only request slots. |
+| message wins the race | Step 4 context is rebuilt twice, watermark advances once, and seven total fake calls reach the later stop. The stale frame neither consumes a round nor increments progress. |
+| return before / after progress commit | Persisted counters are respectively 2 / 3 at interruption. Natural expiry and epoch-2 adoption finish with four total calls each, without double-counting. |
+| unknown stop with sentinel | Actual SQL capacity snapshots show 2→1→1→0, retaining both allocations until main stop is confirmed and preserving the sentinel through duplicate settlement. |
+| legacy snapshot / omitted config retry | Same original key is reused; explicit old v1 snapshot completes in three calls without a progress state or implicit upgrade. |
+| mismatched evidence | Seven forged/stale/unknown-ledger advances are rejected without changing snapshot version/progress; the actual repair still completes. |
+
+The separate [Python audit](../benchmarks/results/no-progress-20260911/logs/frozen-independent-audit.json)
+reconstructed **41 committed guarded context boundaries** from all nine records,
+including zero for the deliberately unguarded v1 run. All four positive/negative
+auditor regressions passed on the final records. `summary.json` is only a
+convenience index; the original report bytes and logs remain the evidence.
+
+Before this final bounded execution, the complete `internal/application` race
+suite passed 30 top-level tests plus 38 subtests. The complete `tests/review` race
+suite passed 38 top-level tests plus 36 subtests, with five explicitly opt-in
+top-level tests skipped. These have their own pre-freeze source/binary identities
+and are not relabeled as executions of the later frozen binary. Runtime/persistence
+race, HTTP/CLI loopback race, all-package compilation, `go vet ./...`,
+API/SQLC/protobuf generation checks and offline-audit regressions also passed.
+See [`suite-counts.json`](../benchmarks/results/no-progress-20260911/suite-counts.json)
+for exact counts and skipped names. `pre-freeze-manifest.json` describes the
+intermediate archive at commit `7ee738b`; the final `manifest.json` hashes the
+completed archive, including the refreshed `final/` records.
 
 Failures retained, rather than relabeled:
 
