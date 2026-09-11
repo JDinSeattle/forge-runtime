@@ -1,0 +1,16 @@
+=== RUN   TestCollectorBackpressureKeepsObservationsBounded
+--- PASS: TestCollectorBackpressureKeepsObservationsBounded (1.08s)
+PASS
+ok  	github.com/JDinSeattle/forge-runtime/internal/telemetry	2.107s
+=== RUN   TestTelemetryPostgresCommitRollbackAndReconciliation
+--- PASS: TestTelemetryPostgresCommitRollbackAndReconciliation (0.27s)
+=== RUN   TestTelemetryImmediateDeferNeverCountsExpiration
+    telemetry_test.go:164: 100 immediate Defer cycles; 87 equal-microsecond SQL timestamps; zero false expirations
+--- PASS: TestTelemetryImmediateDeferNeverCountsExpiration (1.36s)
+PASS
+ok  	github.com/JDinSeattle/forge-runtime/internal/persistence	2.658s
+=== RUN   TestRecoveryPostgresAdditiveUpgrade
+    upgrade_test.go:154: private PostgreSQL schema upgraded 6 -> 12 twice; original run columns, unknown effect, artifact metadata and snapshot bytes unchanged; new priority defaults to zero and holds are NULL
+--- PASS: TestRecoveryPostgresAdditiveUpgrade (0.28s)
+PASS
+ok  	github.com/JDinSeattle/forge-runtime/tests/review	1.311s

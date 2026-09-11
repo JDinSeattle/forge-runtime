@@ -134,11 +134,16 @@ func (d *Driver) Drive(parent context.Context, claimed persistence.Run) error {
 	status := claimed.State.Status
 	if d.Telemetry != nil {
 		var end func(domain.RunStatus)
-		parent, end = d.Telemetry.StartRun(telemetry.ContextFromTraceparent(parent, claimed.Traceparent))
-		defer func() { end(status) }()
-		if claimed.State.Lease.Epoch == 1 {
-			d.Telemetry.ObserveDispatchLatency(time.Since(claimed.CreatedAt))
+		anchor := claimed.LastClaimTraceparent
+		if anchor == "" {
+			anchor = claimed.Traceparent
 		}
+		parent, end = d.Telemetry.StartRun(telemetry.ContextFromTraceparent(parent, anchor))
+		telemetry.SpanIdentity(parent, runIdentity(claimed))
+		if anchor == "" {
+			telemetry.Event(parent, "context_missing")
+		}
+		defer func() { end(status) }()
 	}
 	ctx, cancel := context.WithCancel(parent)
 	defer cancel()
@@ -189,42 +194,62 @@ func (d *Driver) Drive(parent context.Context, claimed persistence.Run) error {
 		if len(r.Commands) == 0 {
 			return d.deferRun(ctx, r, time.Now().Add(5*time.Second), "run.reconciliation_wait")
 		}
-		event, err := d.execute(ctx, r, r.Commands[0])
-		if errors.Is(err, errReload) {
-			continue
-		}
-		if errors.Is(err, errDeferred) || errors.Is(err, domain.ErrFenced) || errors.Is(err, context.Canceled) {
-			return err
-		}
-		if err != nil {
-			if r.State.Status == domain.StatusCancelRequested || r.State.Status == domain.StatusNeedsReconciliation || errors.Is(err, domain.ErrReconciliation) {
-				return d.deferRun(ctx, r, time.Now().Add(5*time.Second), "run.reconciliation_wait")
-			}
-			if d.Logger != nil {
-				d.Logger.Warn("step failed", "run_id", r.ID, "stage", r.State.Stage, "error", err)
-			}
-			event = flow.Event{Kind: flow.EventFailed, Reason: err.Error()}
-		}
-		event.ExpectedVersion = r.State.Version
-		event.Owner = r.State.Lease.Owner
-		event.Epoch = r.State.Lease.Epoch
-		if _, err = d.Store.Advance(ctx, r.TenantID, r.ID, event); errors.Is(err, domain.ErrConflict) || errors.Is(err, domain.ErrTransition) {
-			fresh, readErr := d.Store.GetRun(ctx, r.TenantID, r.ID)
-			if readErr != nil {
-				return readErr
-			}
-			if fresh.State.Version == r.State.Version {
-				return err
-			}
-			continue
-		} else if err != nil {
-			return err
-		}
-		if err = d.fault("after_advance_before_reload"); err != nil {
+		if err = d.step(ctx, r); err != nil {
 			return err
 		}
 	}
 	return ctx.Err()
+}
+
+func runIdentity(r persistence.Run) telemetry.Identity {
+	return telemetry.Identity{Tenant: string(r.TenantID), Run: string(r.ID), Step: r.State.StepSeq, Version: r.State.Version, Epoch: r.State.Lease.Epoch, Revision: r.State.WorkspaceRevision}
+}
+func (d *Driver) step(ctx context.Context, r persistence.Run) error {
+	end := func(telemetry.Outcome) {}
+	if d.Telemetry != nil {
+		ctx, end = d.Telemetry.StartPhase(ctx, "step", runIdentity(r))
+	}
+	outcome := telemetry.Unknown
+	defer func() { end(outcome) }()
+	event, err := d.execute(ctx, r, r.Commands[0])
+	executionFailed := err != nil
+	if errors.Is(err, errReload) {
+		telemetry.Event(ctx, "reload")
+		return nil
+	}
+	if errors.Is(err, errDeferred) || errors.Is(err, domain.ErrFenced) || errors.Is(err, context.Canceled) {
+		return err
+	}
+	if err != nil {
+		if r.State.Status == domain.StatusCancelRequested || r.State.Status == domain.StatusNeedsReconciliation || errors.Is(err, domain.ErrReconciliation) {
+			return d.deferRun(ctx, r, time.Now().Add(5*time.Second), "run.reconciliation_wait")
+		}
+		if d.Logger != nil {
+			d.Logger.Warn("step failed", "run_id", r.ID, "stage", r.State.Stage, "error", err)
+		}
+		event = flow.Event{Kind: flow.EventFailed, Reason: err.Error()}
+	}
+	event.ExpectedVersion = r.State.Version
+	event.Owner = r.State.Lease.Owner
+	event.Epoch = r.State.Lease.Epoch
+	if _, err = d.Store.Advance(ctx, r.TenantID, r.ID, event); errors.Is(err, domain.ErrConflict) || errors.Is(err, domain.ErrTransition) {
+		fresh, readErr := d.Store.GetRun(ctx, r.TenantID, r.ID)
+		if readErr != nil {
+			return readErr
+		}
+		if fresh.State.Version == r.State.Version {
+			return err
+		}
+		return nil
+	} else if err != nil {
+		return err
+	}
+	telemetry.Event(ctx, "committed")
+	outcome = telemetry.Success
+	if executionFailed {
+		outcome = telemetry.Failed
+	}
+	return d.fault("after_advance_before_reload")
 }
 func (d *Driver) deferRun(ctx context.Context, r persistence.Run, until time.Time, kind string) error {
 	if err := d.Store.Defer(ctx, r, until, kind); err != nil {
@@ -256,9 +281,6 @@ func (d *Driver) publish(ctx context.Context, ref artifact.Ref) (string, error) 
 		}
 		return d.Store.PublishArtifact(ctx, persistence.Artifact{TenantID: ref.TenantID, ID: id, RunID: ref.RunID, Kind: ref.Kind, ObjectKey: ref.ObjectKey, SHA256: ref.SHA256, ByteSize: ref.Size})
 	})
-	if err == nil && d.Telemetry != nil {
-		d.Telemetry.ObserveArtifact(ref.Kind, ref.Size)
-	}
 	return string(id), err
 }
 func (d *Driver) put(ctx context.Context, r persistence.Run, kind string, v any) (string, error) {
@@ -423,6 +445,15 @@ func operationID(r persistence.Run, ordinal int) domain.ID {
 	return domain.ID(fmt.Sprintf("%s_step_%d_op_%d", r.ID, r.State.StepSeq, ordinal))
 }
 func (d *Driver) systemOperation(ctx context.Context, r persistence.Run, name string, ordinal int, kind string, args json.RawMessage, revision uint64) (runner.Operation, flow.EffectReceipt, error) {
+	end := func(telemetry.Outcome) {}
+	if d.Telemetry != nil {
+		i := runIdentity(r)
+		i.Phase = name
+		ctx, end = d.Telemetry.StartPhase(ctx, "verification", i)
+	}
+	outcome := telemetry.Unknown
+	defer func() { end(outcome) }()
+
 	digest := sha256.Sum256(args)
 	e := flow.Effect{ID: domain.ID(fmt.Sprintf("%s_%d_%s", r.ID, r.State.StepSeq, name)), Kind: kind, Args: args, ArgsHash: hex.EncodeToString(digest[:]), ExpectedRevision: revision, DispatchEpoch: r.State.Lease.Epoch, PolicyVersion: "trusted-profile-v1"}
 	e, err := d.Store.PlanSystemEffect(ctx, r, e, ordinal)
@@ -437,12 +468,20 @@ func (d *Driver) systemOperation(ctx context.Context, r persistence.Run, name st
 	if err != nil {
 		return op, receipt, err
 	}
-	return op, receipt, d.Store.SettleSystemEffect(ctx, r, receipt)
+	err = d.Store.SettleSystemEffect(ctx, r, receipt)
+	if err == nil {
+		outcome = telemetry.Success
+		telemetry.Event(ctx, "committed")
+	}
+	return op, receipt, err
 }
 func (d *Driver) operation(ctx context.Context, r persistence.Run, e flow.Effect, inspectOnly bool) (result runner.Operation, resultErr error) {
 	if d.Telemetry != nil {
 		var end func(telemetry.Outcome)
 		ctx, end = d.Telemetry.StartEffect(ctx, e.Kind)
+		i := runIdentity(r)
+		i.Operation = string(e.ID)
+		telemetry.SpanIdentity(ctx, i)
 		defer func() {
 			outcome := telemetry.Success
 			if resultErr != nil || result.Status == runner.Unknown {
@@ -460,6 +499,9 @@ func (d *Driver) operation(ctx context.Context, r persistence.Run, e flow.Effect
 		return runner.Operation{}, err
 	}
 	op, err := d.Runner.InspectOperation(ctx, runner.InspectRequest{WorkspaceRequest: request, OperationID: e.ID})
+	if err == nil && op.Status.Terminal() {
+		telemetry.Event(ctx, "receipt_replayed")
+	}
 	if errors.Is(err, domain.ErrNotFound) && !inspectOnly && e.DispatchEpoch == r.State.Lease.Epoch {
 		if err = d.fault("before_start_operation"); err != nil {
 			return op, err
@@ -523,6 +565,9 @@ func (d *Driver) stop(ctx context.Context, r persistence.Run) (flow.Event, error
 	}
 	if e := r.State.PendingEffect; e != nil && (e.Status == flow.EffectInFlight || e.Status == flow.EffectUnknown) {
 		op, err := d.Runner.InspectOperation(ctx, runner.InspectRequest{WorkspaceRequest: request, OperationID: e.ID})
+		if err == nil && op.Status.Terminal() {
+			telemetry.Event(ctx, "receipt_replayed")
+		}
 		if err != nil {
 			return flow.Event{}, err
 		}

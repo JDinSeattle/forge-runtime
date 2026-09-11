@@ -1,0 +1,15 @@
+receivers:
+  otlp:
+    protocols:
+      http:
+        endpoint: 127.0.0.1:44833
+exporters:
+  file:
+    path: "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/feature-worktrees/telemetry/benchmarks/results/telemetry-chain-20260912-second/collector-traces.jsonl"
+    format: json
+    flush_interval: 100ms
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      exporters: [file]

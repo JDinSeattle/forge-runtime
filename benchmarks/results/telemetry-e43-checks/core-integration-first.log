@@ -1,0 +1,11 @@
+=== RUN   TestReviewFailedVerifierDiagnosticsEnableNextRepair
+=== RUN   TestReviewFailedVerifierDiagnosticsEnableNextRepair/native_false
+    application_test.go:215: can't scan into dest[25] (col: not_before): cannot scan -Infinity into *time.Time
+=== RUN   TestReviewFailedVerifierDiagnosticsEnableNextRepair/native_true
+    application_test.go:215: can't scan into dest[25] (col: not_before): cannot scan -Infinity into *time.Time
+--- FAIL: TestReviewFailedVerifierDiagnosticsEnableNextRepair (1.25s)
+    --- FAIL: TestReviewFailedVerifierDiagnosticsEnableNextRepair/native_false (0.66s)
+    --- FAIL: TestReviewFailedVerifierDiagnosticsEnableNextRepair/native_true (0.60s)
+FAIL
+FAIL	github.com/JDinSeattle/forge-runtime/tests/review	1.286s
+FAIL

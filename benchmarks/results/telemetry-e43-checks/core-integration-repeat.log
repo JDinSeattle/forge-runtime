@@ -1,0 +1,15 @@
+=== RUN   TestReviewFailedVerifierDiagnosticsEnableNextRepair
+=== RUN   TestReviewFailedVerifierDiagnosticsEnableNextRepair/native_false
+=== RUN   TestReviewFailedVerifierDiagnosticsEnableNextRepair/native_false/cleanup_after_snapshot_publication
+=== RUN   TestReviewFailedVerifierDiagnosticsEnableNextRepair/native_true
+=== RUN   TestReviewFailedVerifierDiagnosticsEnableNextRepair/native_true/cleanup_after_release_before_commit
+--- PASS: TestReviewFailedVerifierDiagnosticsEnableNextRepair (4.06s)
+    --- PASS: TestReviewFailedVerifierDiagnosticsEnableNextRepair/native_false (1.90s)
+        --- PASS: TestReviewFailedVerifierDiagnosticsEnableNextRepair/native_false/cleanup_after_snapshot_publication (0.18s)
+    --- PASS: TestReviewFailedVerifierDiagnosticsEnableNextRepair/native_true (2.17s)
+        --- PASS: TestReviewFailedVerifierDiagnosticsEnableNextRepair/native_true/cleanup_after_release_before_commit (0.15s)
+=== RUN   TestRecoveryPostgresAdditiveUpgrade
+    upgrade_test.go:154: private PostgreSQL schema upgraded 6 -> 12 twice; original run columns, unknown effect, artifact metadata and snapshot bytes unchanged; new priority defaults to zero and holds are NULL
+--- PASS: TestRecoveryPostgresAdditiveUpgrade (0.30s)
+PASS
+ok  	github.com/JDinSeattle/forge-runtime/tests/review	5.404s

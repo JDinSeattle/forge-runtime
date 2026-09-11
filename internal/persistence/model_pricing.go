@@ -9,6 +9,7 @@ import (
 	"github.com/JDinSeattle/forge-runtime/internal/dependency"
 	"github.com/JDinSeattle/forge-runtime/internal/domain"
 	flow "github.com/JDinSeattle/forge-runtime/internal/runtime"
+	"github.com/JDinSeattle/forge-runtime/internal/telemetry"
 	"github.com/jackc/pgx/v5"
 )
 
@@ -98,7 +99,12 @@ func (s *Store) BeginPricedAttempt(ctx context.Context, r Run, requestRef, price
 	if !now.Before(deadline) {
 		return ModelAttempt{}, nil, domain.ErrCapacity
 	}
-	a, err := scanAttempt(tx.QueryRow(ctx, `INSERT INTO model_attempts(tenant_id,run_id,step_seq,attempt,attempt_id,provider,model_id,status,request_ref,price_version,deadline,pricing) VALUES($1,$2,$3,$4,$5,$6,$7,'prepared',$8,$9,$10,$11) RETURNING `+attemptColumns, r.TenantID, r.ID, r.State.StepSeq, number, NewID("attempt"), route.Provider, route.Model, requestRef, priceVersion, deadline, pricing))
+	attemptID := NewID("attempt")
+	ctx, endAttempt := s.phase(ctx, "model_attempt", telemetry.Identity{Tenant: string(r.TenantID), Run: string(r.ID), Step: r.State.StepSeq, Epoch: r.State.Lease.Epoch, Attempt: string(attemptID)})
+	outcome := telemetry.Failed
+	defer func() { endAttempt(outcome) }()
+	telemetry.Link(ctx, latest.Traceparent, "provider_retry")
+	a, err := scanAttempt(tx.QueryRow(ctx, `INSERT INTO model_attempts(tenant_id,run_id,step_seq,attempt,attempt_id,provider,model_id,status,request_ref,price_version,deadline,pricing,traceparent) VALUES($1,$2,$3,$4,$5,$6,$7,'prepared',$8,$9,$10,$11,NULLIF($12,'')) RETURNING `+attemptColumns, r.TenantID, r.ID, r.State.StepSeq, number, attemptID, route.Provider, route.Model, requestRef, priceVersion, deadline, pricing, telemetry.Traceparent(ctx)))
 	if err != nil {
 		return a, nil, err
 	}
@@ -112,7 +118,12 @@ func (s *Store) BeginPricedAttempt(ctx context.Context, r Run, requestRef, price
 	if _, err = appendEvent(ctx, tx, r.TenantID, r.ID, "model.started", payload); err != nil {
 		return a, nil, err
 	}
-	return a, pricing, tx.Commit(ctx)
+	if err = tx.Commit(ctx); err != nil {
+		return a, nil, err
+	}
+	outcome = telemetry.Success
+	telemetry.Event(ctx, "committed")
+	return a, pricing, nil
 }
 
 func (s *Store) AttemptPricing(ctx context.Context, a ModelAttempt) (json.RawMessage, error) {

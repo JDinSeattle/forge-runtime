@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"math"
 	"math/rand/v2"
 	"time"
 
@@ -22,6 +23,8 @@ func (d *Driver) callModel(ctx context.Context, r persistence.Run) (flow.Event, 
 		return flow.Event{}, err
 	}
 	if a.Status == "completed" {
+		telemetry.Event(ctx, "result_replayed")
+
 		return d.completedModel(ctx, r, a)
 	}
 	if a.Status == "failed" {
@@ -236,9 +239,21 @@ func (d *Driver) callModel(ctx context.Context, r persistence.Run) (flow.Event, 
 	modelEnd := func(telemetry.ModelObservation) {}
 	streamCtx := modelctx
 	if d.Telemetry != nil {
-		streamCtx, modelEnd = d.Telemetry.StartModel(modelctx, a.Provider)
+		streamCtx, modelEnd = d.Telemetry.StartModel(telemetry.ContextFromTraceparent(modelctx, a.Traceparent), a.Provider)
+		i := runIdentity(r)
+		i.Attempt = string(a.ID)
+		telemetry.SpanIdentity(streamCtx, i)
+		telemetry.ModelFields(streamCtx, a.Model, a.Number)
+		if a.Traceparent == "" {
+			telemetry.Event(streamCtx, "context_missing")
+		}
 	}
+	defer func() { modelEnd(telemetry.ModelObservation{Outcome: telemetry.Unknown}) }()
 	turn, streamErr := p.Stream(streamCtx, req, sink.emit)
+	var rateLimited *provider.Error
+	if d.Telemetry != nil && errors.As(streamErr, &rateLimited) && rateLimited.Kind == provider.ErrRateLimited {
+		d.Telemetry.RecordProviderRateLimit(a.Provider)
+	}
 	observation := telemetry.ModelObservation{Outcome: telemetry.Success}
 	if streamErr != nil {
 		observation.Outcome = telemetry.Unknown
@@ -247,6 +262,18 @@ func (d *Driver) callModel(ctx context.Context, r persistence.Run) (flow.Event, 
 		observation.OutputTokens = telemetry.TokenCount{Value: turn.Usage.Output.Value, Known: turn.Usage.Output.Known}
 		observation.CacheReadTokens = telemetry.TokenCount{Value: turn.Usage.CacheRead.Value, Known: turn.Usage.CacheRead.Known}
 		observation.CacheWriteTokens = telemetry.TokenCount{Value: turn.Usage.CacheWrite.Value, Known: turn.Usage.CacheWrite.Known}
+	}
+	if turn.Usage.Final && streamErr == nil {
+		if a.Provider == "openai" || a.Provider == "fake" {
+			observation.SemanticInput = observation.InputTokens
+		}
+		if a.Provider == "anthropic" && observation.InputTokens.Known && observation.CacheReadTokens.Known && observation.CacheWriteTokens.Known {
+			total := observation.InputTokens.Value
+			read, write := observation.CacheReadTokens.Value, observation.CacheWriteTokens.Value
+			if total >= 0 && read >= 0 && write >= 0 && read <= math.MaxInt64-total && write <= math.MaxInt64-total-read {
+				observation.SemanticInput = telemetry.TokenCount{Known: true, Value: total + read + write}
+			}
+		}
 	}
 	modelEnd(observation)
 	// A consumer failure takes precedence over a provider wrapping the cancelled

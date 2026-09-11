@@ -1,0 +1,93 @@
+package main
+
+import (
+	"context"
+	"errors"
+	"flag"
+	"fmt"
+	"log/slog"
+	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
+
+	"github.com/JDinSeattle/forge-runtime/internal/artifact"
+	"github.com/JDinSeattle/forge-runtime/internal/configuration"
+	"github.com/JDinSeattle/forge-runtime/internal/eventstream"
+	"github.com/JDinSeattle/forge-runtime/internal/httpapi"
+	"github.com/JDinSeattle/forge-runtime/internal/persistence"
+	"github.com/JDinSeattle/forge-runtime/internal/telemetry"
+)
+
+func main() {
+	if err := run(); err != nil {
+		slog.Error("API stopped", "error", err)
+		os.Exit(1)
+	}
+}
+func run() error {
+	path := flag.String("config", "", "operator configuration JSON")
+	flag.Parse()
+	if *path == "" || flag.NArg() != 0 {
+		return fmt.Errorf("usage: forge-api -config /absolute/path/platform.json")
+	}
+	c, err := configuration.Load(*path)
+	if err != nil {
+		return err
+	}
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer stop()
+	startup, cancel := context.WithTimeout(ctx, 15*time.Second)
+	defer cancel()
+	url := os.Getenv("FORGE_DATABASE_URL")
+	if url == "" {
+		return errors.New("FORGE_DATABASE_URL required (nonowner API role)")
+	}
+	s, err := persistence.Open(startup, url)
+	if err != nil {
+		return err
+	}
+	defer s.Close()
+	if err = s.CheckAPIRole(startup); err != nil {
+		return err
+	}
+	a, err := artifact.NewLocalStore(c.ArtifactRoot, 64<<20)
+	if err != nil {
+		return err
+	}
+	defer a.Close()
+	metrics, err := telemetry.Setup(startup, "forge-api", os.Getenv("OTEL_EXPORTER_OTLP_TRACES_ENDPOINT"))
+	if err != nil {
+		return err
+	}
+	defer func() {
+		ctx, end := context.WithTimeout(context.Background(), 5*time.Second)
+		defer end()
+		_ = metrics.Shutdown(ctx)
+	}()
+	streams := eventstream.New(context.Background(), s, eventstream.Config{})
+	defer streams.Close()
+	sources := map[string]httpapi.Source{}
+	for id, source := range c.Sources {
+		sources[id] = httpapi.Source{BaseCommit: source.Hash, ProfileID: source.ProfileID}
+	}
+	s.Telemetry = metrics
+	api := &httpapi.Server{Store: s, Artifacts: a, Streams: streams, Configs: c.Configs, Sources: sources, Logger: slog.Default(), Telemetry: metrics}
+	server := &http.Server{Addr: c.Listen, Handler: api.Handler(), ReadHeaderTimeout: 5 * time.Second, ReadTimeout: 15 * time.Second, IdleTimeout: 60 * time.Second, MaxHeaderBytes: 32 << 10}
+	done := make(chan error, 1)
+	go func() { done <- server.ListenAndServe() }()
+	slog.Info("API listening", "address", c.Listen)
+	select {
+	case err = <-done:
+		if errors.Is(err, http.ErrServerClosed) {
+			return nil
+		}
+		return err
+	case <-ctx.Done():
+		streams.Close() // End SSE before waiting for HTTP shutdown.
+		shutdown, finish := context.WithTimeout(context.Background(), 10*time.Second)
+		defer finish()
+		return server.Shutdown(shutdown)
+	}
+}

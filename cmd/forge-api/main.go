@@ -72,6 +72,7 @@ func run() error {
 	for id, source := range c.Sources {
 		sources[id] = httpapi.Source{BaseCommit: source.Hash, ProfileID: source.ProfileID}
 	}
+	s.Telemetry = metrics
 	api := &httpapi.Server{Store: s, Artifacts: a, Streams: streams, Configs: c.Configs, Sources: sources, Logger: slog.Default(), Telemetry: metrics}
 	server := &http.Server{Addr: c.Listen, Handler: api.Handler(), ReadHeaderTimeout: 5 * time.Second, ReadTimeout: 15 * time.Second, IdleTimeout: 60 * time.Second, MaxHeaderBytes: 32 << 10}
 	// Shutdown fences new connections before ending long-lived SSE handlers;

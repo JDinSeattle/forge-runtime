@@ -20,20 +20,21 @@ type ModelAttempt struct {
 	Number                                                               int
 	ID                                                                   domain.ID
 	Provider, Model, Status, RawRef, RequestRef, PriceVersion, ErrorCode string
+	Traceparent                                                          string
 	StartedAt                                                            time.Time
 	Deadline                                                             time.Time
 }
 
 func scanAttempt(row pgx.Row) (ModelAttempt, error) {
 	var a ModelAttempt
-	err := row.Scan(&a.TenantID, &a.RunID, &a.StepSeq, &a.Number, &a.ID, &a.Provider, &a.Model, &a.Status, &a.RawRef, &a.RequestRef, &a.PriceVersion, &a.StartedAt, &a.Deadline, &a.ErrorCode)
+	err := row.Scan(&a.TenantID, &a.RunID, &a.StepSeq, &a.Number, &a.ID, &a.Provider, &a.Model, &a.Status, &a.RawRef, &a.RequestRef, &a.PriceVersion, &a.StartedAt, &a.Deadline, &a.ErrorCode, &a.Traceparent)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return a, domain.ErrNotFound
 	}
 	return a, err
 }
 
-const attemptColumns = `tenant_id,run_id,step_seq,attempt,attempt_id,provider,model_id,status,coalesce(raw_ref,''),coalesce(request_ref,''),price_version,started_at,deadline,coalesce(error_code,'')`
+const attemptColumns = `tenant_id,run_id,step_seq,attempt,attempt_id,provider,model_id,status,coalesce(raw_ref,''),coalesce(request_ref,''),price_version,started_at,deadline,coalesce(error_code,''),coalesce(traceparent,'')`
 
 func (s *Store) LatestAttempt(ctx context.Context, tenant, id domain.ID, step uint64) (ModelAttempt, error) {
 	ctx, cancel := dependency.Database(ctx)
@@ -203,7 +204,7 @@ func (s *Store) Defer(ctx context.Context, r Run, notBefore time.Time, kind stri
 	if err = lockTenant(ctx, tx, r.TenantID); err != nil {
 		return err
 	}
-	tag, err := tx.Exec(ctx, `UPDATE runs SET lease_until=clock_timestamp(),not_before=$5 WHERE tenant_id=$1 AND id=$2 AND lease_owner=$3 AND lease_epoch=$4 AND lease_until>clock_timestamp() AND version=$6 AND `+supportedSnapshotSQL, r.TenantID, r.ID, r.State.Lease.Owner, r.State.Lease.Epoch, notBefore, r.State.Version)
+	tag, err := tx.Exec(ctx, `UPDATE runs SET lease_until=clock_timestamp(),not_before=$5,runnable_at=GREATEST(clock_timestamp(),$5),lease_yielded=true WHERE tenant_id=$1 AND id=$2 AND lease_owner=$3 AND lease_epoch=$4 AND lease_until>clock_timestamp() AND version=$6 AND `+supportedSnapshotSQL, r.TenantID, r.ID, r.State.Lease.Owner, r.State.Lease.Epoch, notBefore, r.State.Version)
 	if err != nil {
 		return err
 	}

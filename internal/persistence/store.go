@@ -21,7 +21,10 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-type Store struct{ Pool *pgxpool.Pool }
+type Store struct {
+	Pool      *pgxpool.Pool
+	Telemetry *telemetry.Telemetry
+}
 
 func Open(ctx context.Context, url string) (*Store, error) {
 	ctx, cancel := dependency.Database(ctx)
@@ -49,7 +52,7 @@ func (s *Store) Tx(ctx context.Context, tenant domain.ID, options pgx.TxOptions)
 	if err := tenant.Validate(); err != nil {
 		return nil, err
 	}
-	tx, err := dependency.BeginTx(ctx, s.Pool, options)
+	tx, err := s.begin(ctx, options)
 	if err != nil {
 		return nil, err
 	}
@@ -96,22 +99,26 @@ type SubmitRequest struct {
 }
 
 type Run struct {
-	TenantID        domain.ID      `json:"tenant_id"`
-	ID              domain.ID      `json:"id"`
-	ProjectID       domain.ID      `json:"project_id"`
-	ParentRunID     domain.ID      `json:"parent_run_id,omitempty"`
-	Priority        int            `json:"priority,omitempty"`
-	PrincipalID     domain.ID      `json:"principal_id"`
-	Task            string         `json:"task"`
-	BaseCommit      string         `json:"base_commit"`
-	RunnerID        string         `json:"runner_id"`
-	Commands        []flow.Command `json:"commands,omitempty"`
-	State           flow.State     `json:"state"`
-	Config          Config         `json:"config"`
-	CreatedAt       time.Time      `json:"created_at"`
-	CoveredSeq      uint64         `json:"covered_seq"`
-	RetainedFromSeq uint64         `json:"-"`
-	Traceparent     string         `json:"-"`
+	TenantID             domain.ID      `json:"tenant_id"`
+	ID                   domain.ID      `json:"id"`
+	ProjectID            domain.ID      `json:"project_id"`
+	ParentRunID          domain.ID      `json:"parent_run_id,omitempty"`
+	Priority             int            `json:"priority,omitempty"`
+	PrincipalID          domain.ID      `json:"principal_id"`
+	Task                 string         `json:"task"`
+	BaseCommit           string         `json:"base_commit"`
+	RunnerID             string         `json:"runner_id"`
+	Commands             []flow.Command `json:"commands,omitempty"`
+	State                flow.State     `json:"state"`
+	Config               Config         `json:"config"`
+	CreatedAt            time.Time      `json:"created_at"`
+	CoveredSeq           uint64         `json:"covered_seq"`
+	RetainedFromSeq      uint64         `json:"-"`
+	Traceparent          string         `json:"-"`
+	LeaseYielded         bool           `json:"-"`
+	LastClaimTraceparent string         `json:"-"`
+	RunnableAt           *time.Time     `json:"-"`
+	NotBefore            *time.Time     `json:"-"`
 }
 
 type Event struct {
@@ -161,6 +168,9 @@ func (s *Store) Submit(ctx context.Context, req SubmitRequest, key string) (Run,
 	}
 	defer tx.Rollback(ctx)
 	var inputSnapshot string
+	ctx, endEnqueue := s.phase(ctx, "enqueue", telemetry.Identity{Tenant: string(req.TenantID), Run: string(id)})
+	enqueueOutcome := telemetry.Failed
+	defer func() { endEnqueue(enqueueOutcome) }()
 	if req.ParentRunID != "" {
 		// A retry is a new run from the same immutable input, with its own
 		// budget, workspace and operation IDs. Never reopen the parent's state.
@@ -176,9 +186,12 @@ func (s *Store) Submit(ctx context.Context, req SubmitRequest, key string) (Run,
 		if err != nil {
 			return Run{}, false, err
 		}
-		if _, err = getRun(ctx, tx, req.TenantID, req.ParentRunID, false); err != nil {
+		parentRun, parentErr := getRun(ctx, tx, req.TenantID, req.ParentRunID, false)
+		if parentErr != nil {
+			err = parentErr
 			return Run{}, false, err
 		}
+		telemetry.Link(ctx, parentRun.Traceparent, "run_retry")
 		if project != req.ProjectID || task != req.Task || base != req.BaseCommit || !status.Terminal() {
 			return Run{}, false, fmt.Errorf("%w: retry requires the same project, task and base of a terminal parent", domain.ErrConflict)
 		}
@@ -208,7 +221,13 @@ func (s *Store) Submit(ctx context.Context, req SubmitRequest, key string) (Run,
 		if err != nil {
 			return Run{}, false, err
 		}
-		return run, true, tx.Commit(ctx)
+		if err = tx.Commit(ctx); err != nil {
+			return run, true, err
+		}
+		telemetry.SpanIdentity(ctx, telemetry.Identity{Tenant: string(run.TenantID), Run: string(run.ID)})
+		telemetry.Event(ctx, "deduplicated")
+		enqueueOutcome = telemetry.Success
+		return run, true, nil
 	}
 	if req.ParentRunID == "" {
 		inputSnapshot, err = snapshotInput(ctx, tx, req)
@@ -220,8 +239,8 @@ func (s *Store) Submit(ctx context.Context, req SubmitRequest, key string) (Run,
 		MaxToolCalls: req.Config.MaxToolCalls, MaxCost: req.Config.MaxCost, Deadline: now.Add(time.Duration(req.Config.MaxRuntimeSeconds) * time.Second)})
 	snapshot, _ := json.Marshal(state)
 	config, _ := json.Marshal(req.Config)
-	_, err = tx.Exec(ctx, `INSERT INTO runs(tenant_id,id,project_id,principal_id,task,base_commit,state,version,snapshot,config_snapshot,traceparent,parent_run_id,input_snapshot,priority)
-	 VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,NULLIF($12,''),$13,$14)`, req.TenantID, id, req.ProjectID, req.PrincipalID, req.Task, req.BaseCommit, state.Status, state.Version, snapshot, config, telemetry.Traceparent(ctx), req.ParentRunID, inputSnapshot, req.Priority)
+	_, err = tx.Exec(ctx, `INSERT INTO runs(tenant_id,id,project_id,principal_id,task,base_commit,state,version,snapshot,config_snapshot,traceparent,parent_run_id,input_snapshot,priority,runnable_at)
+	 VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,NULLIF($12,''),$13,$14,$15)`, req.TenantID, id, req.ProjectID, req.PrincipalID, req.Task, req.BaseCommit, state.Status, state.Version, snapshot, config, telemetry.Traceparent(ctx), req.ParentRunID, inputSnapshot, req.Priority, now)
 	if err != nil {
 		return Run{}, false, err
 	}
@@ -238,6 +257,8 @@ func (s *Store) Submit(ctx context.Context, req SubmitRequest, key string) (Run,
 	if err = tx.Commit(ctx); err != nil {
 		return Run{}, false, err
 	}
+	telemetry.Event(ctx, "committed")
+	enqueueOutcome = telemetry.Success
 	s.wake(ctx, id)
 	return run, false, nil
 }
@@ -247,7 +268,7 @@ type querier interface {
 }
 
 func getRun(ctx context.Context, q querier, tenant, id domain.ID, lock bool) (Run, error) {
-	query := `SELECT tenant_id,id,project_id,principal_id,task,base_commit,coalesce(runner_id,''),snapshot,config_snapshot,created_at,next_event_seq-1,pending_commands,lease_owner,lease_epoch,lease_until,retained_from_seq,coalesce(traceparent,''),coalesce(parent_run_id,''),priority,snapshot_hold_at,snapshot_hold_reason,snapshot_hold_schema,snapshot_hold_sha256 FROM runs WHERE tenant_id=$1 AND id=$2`
+	query := `SELECT tenant_id,id,project_id,principal_id,task,base_commit,coalesce(runner_id,''),snapshot,config_snapshot,created_at,next_event_seq-1,pending_commands,lease_owner,lease_epoch,lease_until,retained_from_seq,coalesce(traceparent,''),coalesce(parent_run_id,''),priority,snapshot_hold_at,snapshot_hold_reason,snapshot_hold_schema,snapshot_hold_sha256,coalesce(last_claim_traceparent,''),runnable_at,CASE WHEN isfinite(not_before) THEN not_before ELSE NULL END,lease_yielded FROM runs WHERE tenant_id=$1 AND id=$2`
 	if lock {
 		query += " FOR UPDATE"
 	}
@@ -257,7 +278,7 @@ func getRun(ctx context.Context, q querier, tenant, id domain.ID, lock bool) (Ru
 	var until *time.Time
 	var holdAt *time.Time
 	var holdReason, holdSchema, holdHash *string
-	err := q.QueryRow(ctx, query, tenant, id).Scan(&r.TenantID, &r.ID, &r.ProjectID, &r.PrincipalID, &r.Task, &r.BaseCommit, &r.RunnerID, &snapshot, &config, &r.CreatedAt, &r.CoveredSeq, &commands, &lease.Owner, &lease.Epoch, &until, &r.RetainedFromSeq, &r.Traceparent, &r.ParentRunID, &r.Priority, &holdAt, &holdReason, &holdSchema, &holdHash)
+	err := q.QueryRow(ctx, query, tenant, id).Scan(&r.TenantID, &r.ID, &r.ProjectID, &r.PrincipalID, &r.Task, &r.BaseCommit, &r.RunnerID, &snapshot, &config, &r.CreatedAt, &r.CoveredSeq, &commands, &lease.Owner, &lease.Epoch, &until, &r.RetainedFromSeq, &r.Traceparent, &r.ParentRunID, &r.Priority, &holdAt, &holdReason, &holdSchema, &holdHash, &r.LastClaimTraceparent, &r.RunnableAt, &r.NotBefore, &r.LeaseYielded)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return r, domain.ErrNotFound
 	}
