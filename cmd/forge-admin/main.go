@@ -4,9 +4,12 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"flag"
 	"fmt"
+	"io"
 	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/JDinSeattle/forge-runtime/db"
@@ -16,6 +19,7 @@ import (
 	"github.com/JDinSeattle/forge-runtime/internal/domain"
 	"github.com/JDinSeattle/forge-runtime/internal/localsetup"
 	"github.com/JDinSeattle/forge-runtime/internal/persistence"
+	"github.com/JDinSeattle/forge-runtime/internal/retention"
 	"github.com/JDinSeattle/forge-runtime/internal/runnerclient"
 )
 
@@ -34,10 +38,13 @@ func run() error {
 	slots := flag.Int("slots", 4, "runner maximum concurrent workspaces")
 	repo := flag.String("repo", ".", "repository containing the checked-in repair fixtures")
 	state := flag.String("state", "./var/local", "new private local setup directory")
-	age := flag.Duration("age", 168*time.Hour, "minimum terminal run age for event trimming")
+	age := flag.Duration("age", 168*time.Hour, "minimum retention age for the selected cleanup command")
 	keep := flag.Int("keep", 128, "retained terminal event tail")
 	config := flag.String("config", "", "platform config for explicit terminal workspace cleanup")
 	runID := flag.String("run", "", "run identity for workspace-gc")
+	runnerConfig := flag.String("runner-config", "", "authoritative local runner configuration for artifact-gc")
+	apply := flag.Bool("apply", false, "delete collected orphan objects; artifact-gc otherwise prints a dry run")
+	limit := flag.Int("limit", 100, "maximum orphan objects/staging files per artifact-gc invocation")
 	flag.Parse()
 	if flag.NArg() != 1 {
 		return fmt.Errorf("usage: forge-admin [flags] migrate|bootstrap|token|register-runner|local-setup")
@@ -60,6 +67,47 @@ func run() error {
 	}
 	defer s.Close()
 	switch flag.Arg(0) {
+	case "artifact-gc":
+		if *config == "" || *runnerConfig == "" {
+			return fmt.Errorf("artifact-gc requires -config and -runner-config; upgrade/restart all publishers to the publication-lock protocol before first use")
+		}
+		c, err := configuration.Load(*config)
+		if err != nil {
+			return err
+		}
+		file, err := os.Open(*runnerConfig)
+		if err != nil {
+			return err
+		}
+		var runner struct {
+			ArtifactRoot string `json:"artifact_root"`
+			JournalPath  string `json:"journal_path"`
+		}
+		decoder := json.NewDecoder(io.LimitReader(file, 1<<20))
+		err = decoder.Decode(&runner)
+		if err == nil {
+			var extra any
+			if decoder.Decode(&extra) != io.EOF {
+				err = fmt.Errorf("runner configuration must be one JSON object")
+			}
+		}
+		file.Close()
+		if err != nil {
+			return err
+		}
+		if !filepath.IsAbs(runner.JournalPath) || filepath.Clean(runner.ArtifactRoot) != filepath.Clean(c.ArtifactRoot) {
+			return fmt.Errorf("runner journal must be absolute and both configurations must share the artifact root")
+		}
+		a, err := artifact.NewLocalStore(c.ArtifactRoot, 64<<20)
+		if err != nil {
+			return err
+		}
+		defer a.Close()
+		result, err := retention.Collect(ctx, a, s, runner.JournalPath, c.RunnerID, artifact.CollectionOptions{MinAge: *age, Limit: *limit, Apply: *apply})
+		if outputErr := json.NewEncoder(os.Stdout).Encode(result); err == nil {
+			err = outputErr
+		}
+		return err
 	case "workspace-gc":
 		if *config == "" || *runID == "" {
 			return fmt.Errorf("workspace-gc requires -config and -run (and optional -tenant/-age)")

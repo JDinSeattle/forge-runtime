@@ -1,0 +1,32 @@
+{
+  "py-utf8-chunks": {
+    "function": "chunk_text",
+    "target": [
+      [["aé🙂b", 4], {"value": ["aé", "🙂", "b"]}],
+      [["汉字abc", 6], {"value": ["汉字", "abc"]}],
+      [["🙂", 3], {"error": "ValueError"}],
+      [["éé", 3], {"value": ["é", "é"]}]
+    ],
+    "regression": [
+      [["abcdefg", 3], {"value": ["abc", "def", "g"]}],
+      [["", 2], {"value": []}],
+      [["abcd", 4], {"value": ["abcd"]}],
+      [["a", 0], {"error": "ValueError"}],
+      [["", -1], {"error": "ValueError"}]
+    ]
+  },
+  "py-latest-records": {
+    "function": "latest_by_id",
+    "target": [
+      [[[{"id":"A","value":1},{"id":"B","value":2},{"id":"A","value":3}]], {"value":[{"id":"B","value":2},{"id":"A","value":3}]}],
+      [[[{"id":"x","value":0},{"id":"y","value":1},{"id":"x","value":2},{"id":"z","value":3},{"id":"y","value":4}]], {"value":[{"id":"x","value":2},{"id":"z","value":3},{"id":"y","value":4}]}],
+      [[[{"id":"🙂","value":"old"},{"id":"é","extra":[1,2]},{"id":"🙂","value":"new","extra":false}]], {"value":[{"id":"é","extra":[1,2]},{"id":"🙂","value":"new","extra":false}]}]
+    ],
+    "regression": [
+      [[[]], {"value":[]}],
+      [[[{"id":"a","value":1},{"id":"b","value":2}]], {"value":[{"id":"a","value":1},{"id":"b","value":2}]}],
+      [[[{"id":"a","value":1},{"id":"a","value":2},{"id":"b","value":3}]], {"value":[{"id":"a","value":2},{"id":"b","value":3}]}],
+      [[[{"id":"","payload":{"nested":true}}]], {"value":[{"id":"","payload":{"nested":true}}]}]
+    ]
+  }
+}

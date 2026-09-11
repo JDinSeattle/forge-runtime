@@ -224,12 +224,14 @@ func (d *Driver) grant(ctx context.Context, r persistence.Run, permissions ...st
 	return runner.WorkspaceRequest{TenantID: r.TenantID, RunID: r.ID, WorkspaceID: r.ID, Epoch: lease.Epoch, Grant: token}, err
 }
 func (d *Driver) publish(ctx context.Context, ref artifact.Ref) (string, error) {
-	if _, err := d.Artifacts.Stat(ctx, ref.TenantID, ref.RunID, ref); err != nil {
-		return "", err
-	}
 	digest := sha256.Sum256([]byte(string(ref.TenantID) + ":" + string(ref.RunID) + ":" + ref.Kind + ":" + ref.SHA256))
 	id := domain.ID("artifact_" + hex.EncodeToString(digest[:]))
-	err := d.Store.PublishArtifact(ctx, persistence.Artifact{TenantID: ref.TenantID, ID: id, RunID: ref.RunID, Kind: ref.Kind, ObjectKey: ref.ObjectKey, SHA256: ref.SHA256, ByteSize: ref.Size})
+	err := artifact.WithPublication(ctx, d.Artifacts, func(ctx context.Context) error {
+		if _, err := d.Artifacts.Stat(ctx, ref.TenantID, ref.RunID, ref); err != nil {
+			return err
+		}
+		return d.Store.PublishArtifact(ctx, persistence.Artifact{TenantID: ref.TenantID, ID: id, RunID: ref.RunID, Kind: ref.Kind, ObjectKey: ref.ObjectKey, SHA256: ref.SHA256, ByteSize: ref.Size})
+	})
 	if err == nil && d.Telemetry != nil {
 		d.Telemetry.ObserveArtifact(ref.Kind, ref.Size)
 	}
@@ -240,11 +242,20 @@ func (d *Driver) put(ctx context.Context, r persistence.Run, kind string, v any)
 	if err != nil {
 		return "", err
 	}
-	ref, err := d.Artifacts.Put(ctx, r.TenantID, r.ID, kind, bytes.NewReader(body))
-	if err != nil {
-		return "", err
-	}
-	return d.publish(ctx, ref)
+	return d.putBytes(ctx, r, kind, body)
+}
+
+func (d *Driver) putBytes(ctx context.Context, r persistence.Run, kind string, body []byte) (string, error) {
+	var id string
+	err := artifact.WithPublication(ctx, d.Artifacts, func(ctx context.Context) error {
+		ref, err := d.Artifacts.Put(ctx, r.TenantID, r.ID, kind, bytes.NewReader(body))
+		if err != nil {
+			return err
+		}
+		id, err = d.publish(ctx, ref)
+		return err
+	})
+	return id, err
 }
 func (d *Driver) load(ctx context.Context, r persistence.Run, id string, target any) error {
 	meta, err := d.Store.GetArtifact(ctx, r.TenantID, domain.ID(id))
@@ -363,11 +374,7 @@ func (d *Driver) execute(ctx context.Context, r persistence.Run, command flow.Co
 		if err != nil {
 			return flow.Event{}, err
 		}
-		object, err := d.Artifacts.Put(ctx, r.TenantID, r.ID, "patch", bytes.NewReader(patch))
-		if err != nil {
-			return flow.Event{}, err
-		}
-		ref, err := d.publish(ctx, object)
+		ref, err := d.putBytes(ctx, r, "patch", patch)
 		return flow.Event{Kind: flow.EventFinalized, OutputRef: ref}, err
 	case flow.CommandStopExecution:
 		return d.stop(ctx, r)

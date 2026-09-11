@@ -12,6 +12,7 @@ import (
 type rpcServer struct {
 	pb.UnimplementedRunnerServiceServer
 	service          runner.Service
+	fault            func(string, runner.OperationRequest) error
 	maxOperationTime time.Duration
 }
 
@@ -55,6 +56,11 @@ func (s *rpcServer) StartOperation(ctx context.Context, v *pb.StartOperationRequ
 	o, err := s.service.StartOperation(ctx, r)
 	if err != nil {
 		return nil, err
+	}
+	if s.fault != nil {
+		if err = s.fault("after_start_acceptance", r); err != nil {
+			return nil, err
+		}
 	}
 	return operation(o)
 }

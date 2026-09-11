@@ -1,0 +1,11 @@
+{
+  "original_result": "FAIL; report.json and all raw samples are unchanged",
+  "failed_predicate": "slow_subscriber_metric == 20; observed 1",
+  "other_conditions": "Independently checked every publication, healthy delivery, replay and frozen schedule/notification/cleanup condition; those passed. See independent-audit.json.",
+  "root_cause": "The pinned chi writer provides Flush() which discards the underlying FlushError. ResponseController chooses that method before Unwrap, so the SSE caller may see nil while the write timeout cancels its request; its default client_closed reason can survive instead of slow_subscriber.",
+  "direct_reproduction": "flush-regression-before.log records timeout swallowed: <nil>; same regression and capability checks pass with the minimal wrapper fix under -race.",
+  "minimal_fix": "Telemetry retains chi accounting and original optional interfaces while supplying FlushError that propagates the underlying ResponseController.Flush error. Plain ResponseWriter does not gain unsupported Flusher.",
+  "pre_fix_telemetry_source_sha256": "a6a612a9ab1ec845351f37fec09f9b41b2a89b1666b124e8b5e8492c74ed5bce",
+  "pre_fix_source_origin": "Tracked HEAD file; this source was unchanged before the post-experiment telemetry fix, and was not among the original report hashes. Preserved separately rather than retroactively adding it to the original manifest.",
+  "required_validation": "Repeat the exact P02 experiment with all original workload and threshold constants unchanged; do not relabel this failed run as passing."
+}

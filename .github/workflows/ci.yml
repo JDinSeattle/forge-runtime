@@ -42,5 +42,7 @@ jobs:
       - run: make check-generated
       - run: python3 -m unittest discover -s scripts/workspace-volumes -p 'test_*.py' -v
       - run: python3 -m unittest discover -s cmd/forge-runner -p 'test_*.py' -v
+      - run: python3 -I -m unittest discover -s scripts/recovery -p 'test_*.py' -v
+      - run: python3 -I -m unittest discover -s scripts/evaluation -p 'test_*.py' -v
       # Actual rootless Docker/loop-mount tests are an explicit local operator
       # gate, separate from these no-paid-model CI protocol fixtures.

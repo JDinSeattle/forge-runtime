@@ -6,6 +6,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"github.com/JDinSeattle/forge-runtime/internal/domain"
 	"time"
 )
 
@@ -31,6 +32,14 @@ type Profile struct {
 }
 
 type JobSpec struct {
+	// BeforeStart durably records Docker start intent before the CLI can send it.
+	// Only the trusted runner supplies this callback; it is never an RPC field.
+	BeforeStart         func(context.Context) error
+	Epoch               uint64
+	OperationID         domain.ID
+	WorkspaceID         domain.ID
+	TenantID            domain.ID
+	RunID               domain.ID
 	ID                  string
 	Workspace           string
 	Profile             Profile
@@ -48,6 +57,9 @@ type Job struct {
 	Truncated   bool   `json:"truncated"`
 	Error       string `json:"error,omitempty"`
 	Interrupted bool   `json:"interrupted,omitempty"`
+	// NeverStarted requires durable proof that no Start was dispatched, followed
+	// by removal of the still-unstarted container under exclusive writer ownership.
+	NeverStarted bool `json:"never_started,omitempty"`
 }
 
 type Backend interface {

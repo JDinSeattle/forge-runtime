@@ -1,0 +1,133 @@
+{
+  "case": "after_docker_start",
+  "matrix_components": [
+    "F05-runner",
+    "F07-runner"
+  ],
+  "workspace_id": "fault-88842f79f46b",
+  "operation_id": "fault-88842f79f46b-op",
+  "fault_marker": {
+    "point": "after_docker_start",
+    "action": "exit",
+    "tenant_id": "runner-fault-acceptance",
+    "run_id": "fault-88842f79f46b",
+    "workspace_id": "fault-88842f79f46b",
+    "operation_id": "fault-88842f79f46b-op",
+    "epoch": 1,
+    "expires_at": "2026-09-11T12:25:01.273903538-07:00",
+    "pid": 3994705,
+    "observed_at": "2026-09-11T19:20:02.944461872Z"
+  },
+  "initial_status": "succeeded",
+  "final_operation": {
+    "request": {
+      "tenant_id": "runner-fault-acceptance",
+      "run_id": "fault-88842f79f46b",
+      "workspace_id": "fault-88842f79f46b",
+      "epoch": 1,
+      "grant": "",
+      "operation_id": "fault-88842f79f46b-op",
+      "expected_revision": 1,
+      "kind": "run_command",
+      "args": {
+        "command": [
+          "python",
+          "-I",
+          "-B",
+          "-c",
+          "import os\nwith open('fault-count.txt','a') as f:\n f.write('1\\n');f.flush();os.fsync(f.fileno())"
+        ]
+      },
+      "args_hash": "27011b2d565b2d219be51ea6d623d0fc0e2d641c478d33b4cd2367bd8ad18764",
+      "policy_version": "runner-crash-v1",
+      "deadline": "2026-09-11T19:20:47.368741064Z"
+    },
+    "status": "succeeded",
+    "job_id": "forge-4d53331ac0e31ef6dbc8953e76f05ecf9b616dc7",
+    "before_hash": "66ee6f4ae415b0735c6eb4d0645f5a8d72d33e7946d0219e319aa9158a375659",
+    "after_hash": "39958a66bbfef14ea62e44296843a207a5f43499ea6ac07d69459b86d85c2c9e",
+    "after_revision": 2,
+    "result": {
+      "id": "forge-4d53331ac0e31ef6dbc8953e76f05ecf9b616dc7",
+      "running": false,
+      "exit_code": 0,
+      "started": true,
+      "truncated": false
+    },
+    "receipt": {
+      "tenant_id": "runner-fault-acceptance",
+      "run_id": "fault-88842f79f46b",
+      "kind": "operation_receipt",
+      "object_key": "runner-fault-acceptance/fault-88842f79f46b/ce699e9614bc01a66ed2392f9d7cac825e4ad98246a4b0d1d5e71ea8b93f3cee",
+      "sha256": "ce699e9614bc01a66ed2392f9d7cac825e4ad98246a4b0d1d5e71ea8b93f3cee",
+      "size": 1022
+    },
+    "cancel_requested": false
+  },
+  "lease_epoch": 1,
+  "workspace_exists_before_resume": false,
+  "operations_before_resume": 0,
+  "dispatch_started": true,
+  "docker_start_intent": true,
+  "same_id_original_receipt": true,
+  "counter": "1\n",
+  "docker_events": [
+    {
+      "Type": "container",
+      "Action": "create",
+      "Actor": {
+        "ID": "2c84635210f52853da4fe577f15fbaf4708e9857f322654339cd7c5af5e5269a",
+        "Attributes": {
+          "forge.runtime": "1",
+          "image": "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+          "name": "forge-4d53331ac0e31ef6dbc8953e76f05ecf9b616dc7"
+        }
+      },
+      "scope": "local",
+      "time": 1789154402,
+      "timeNano": 1789154402725776573
+    },
+    {
+      "Type": "container",
+      "Action": "start",
+      "Actor": {
+        "ID": "2c84635210f52853da4fe577f15fbaf4708e9857f322654339cd7c5af5e5269a",
+        "Attributes": {
+          "forge.runtime": "1",
+          "image": "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+          "name": "forge-4d53331ac0e31ef6dbc8953e76f05ecf9b616dc7"
+        }
+      },
+      "scope": "local",
+      "time": 1789154402,
+      "timeNano": 1789154402942034564
+    },
+    {
+      "Type": "container",
+      "Action": "die",
+      "Actor": {
+        "ID": "2c84635210f52853da4fe577f15fbaf4708e9857f322654339cd7c5af5e5269a",
+        "Attributes": {
+          "execDuration": "0",
+          "exitCode": "0",
+          "forge.runtime": "1",
+          "image": "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+          "name": "forge-4d53331ac0e31ef6dbc8953e76f05ecf9b616dc7"
+        }
+      },
+      "scope": "local",
+      "time": 1789154403,
+      "timeNano": 1789154403101805274
+    }
+  ],
+  "docker_creates": 1,
+  "docker_starts": 1,
+  "journal_artifact_pins": 3,
+  "no_active": true,
+  "released": true,
+  "snapshot_sha256": "8c3347efcda1bfbf5dc9e38ddda98b00eb75613e79915e3a91f287b37f69635b",
+  "old_epoch_rejected": false,
+  "writer_exclusive": false,
+  "passed": true,
+  "control_plane_evidence": "N/A: isolated runner RPC acceptance; no PostgreSQL run/effect/budget/SSE claim"
+}

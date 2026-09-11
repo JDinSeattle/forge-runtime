@@ -42,6 +42,8 @@ func main() {
 }
 func run(args []string) error {
 	flags := flag.NewFlagSet("forge-runner", flag.ContinueOnError)
+	allowFaults := flags.Bool("allow-fault-injection", false, "explicitly allow a private one-shot operator fault plan")
+	faultFile := flags.String("fault-file", "", "absolute operator-only one-shot fault plan")
 	configPath := flags.String("config", "", "path to operator-owned runner JSON configuration")
 	if err := flags.Parse(args); err != nil {
 		return err
@@ -63,6 +65,19 @@ func run(args []string) error {
 	var extra any
 	if err = decoder.Decode(&extra); err != io.EOF {
 		return errors.New("configuration must contain exactly one JSON object")
+	}
+	if *allowFaults != (*faultFile != "") {
+		return errors.New("fault injection requires both -allow-fault-injection and -fault-file")
+	}
+	var faults *faultController
+	if *allowFaults {
+		if c.AllowTestBackend {
+			return errors.New("process fault acceptance requires the real Docker backend")
+		}
+		faults, err = loadFaultController(*faultFile, c.RootDir)
+		if err != nil {
+			return err
+		}
 	}
 	keyInfo, err := os.Stat(c.SigningKeyFile)
 	if err != nil {
@@ -87,7 +102,16 @@ func run(args []string) error {
 		return err
 	}
 	defer store.Close()
-	var backend sandbox.Backend = &sandbox.Docker{Host: c.DockerHost, Binary: c.DockerBinary, WorkspaceQuota: sandbox.FixedVolumeQuota{Slots: c.VolumeSlots}}
+	docker := &sandbox.Docker{Host: c.DockerHost, Binary: c.DockerBinary, WorkspaceQuota: sandbox.FixedVolumeQuota{Slots: c.VolumeSlots}}
+	var backend sandbox.Backend = docker
+	var operatorFault func(string, runner.OperationRequest) error
+	if faults != nil {
+		operatorFault = faults.hit
+		c.Server.OperatorFault = faults.hit
+		docker.Fault = func(point string, s sandbox.JobSpec) error {
+			return faults.hit(point, runner.OperationRequest{WorkspaceRequest: runner.WorkspaceRequest{TenantID: s.TenantID, RunID: s.RunID, WorkspaceID: s.WorkspaceID, Epoch: s.Epoch}, OperationID: s.OperationID})
+		}
+	}
 	if c.AllowTestBackend {
 		slog.Warn("explicit no-process test backend enabled; no model or container verification claim is supported")
 		backend = &sandbox.TestBackend{}
@@ -102,7 +126,7 @@ func run(args []string) error {
 		// process admission. The default Docker adapter refuses unbounded volumes.
 		slog.Info("process admission requires a verified fixed ext4 volume pool")
 	}
-	engine, err := runner.Open(runner.Config{RootDir: c.RootDir, JournalPath: c.JournalPath, Artifacts: store, Backend: backend, Signer: signer, Profiles: c.Profiles, Sources: c.Sources, VolumeSlots: c.VolumeSlots})
+	engine, err := runner.Open(runner.Config{RootDir: c.RootDir, JournalPath: c.JournalPath, Artifacts: store, Backend: backend, Signer: signer, Profiles: c.Profiles, Sources: c.Sources, VolumeSlots: c.VolumeSlots, OperatorFault: operatorFault})
 	if err != nil {
 		return err
 	}

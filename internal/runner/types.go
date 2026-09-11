@@ -28,6 +28,8 @@ type Config struct {
 	// Fault is an explicit test hook at durable boundaries. It is nil in normal
 	// deployment and is not configurable by requests or repository content.
 	Fault func(string) error
+	// OperatorFault is wired only by the local runner executable explicit fault CLI.
+	OperatorFault func(string, OperationRequest) error
 }
 
 type WorkspaceRequest struct {

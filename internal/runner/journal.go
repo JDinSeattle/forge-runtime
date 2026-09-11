@@ -2,7 +2,9 @@ package runner
 
 import (
 	"context"
+	"crypto/rand"
 	"database/sql"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -10,6 +12,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/JDinSeattle/forge-runtime/internal/artifact"
 	"github.com/JDinSeattle/forge-runtime/internal/domain"
 	_ "modernc.org/sqlite"
 )
@@ -32,7 +35,7 @@ func openJournal(filename string) (*journal, error) {
 	if err = db.QueryRow("PRAGMA user_version").Scan(&version); err != nil {
 		return fail(err)
 	}
-	if version < 0 || version > 3 {
+	if version < 0 || version > 4 {
 		return fail(fmt.Errorf("%w: unsupported runner journal schema %d", domain.ErrInvalid, version))
 	}
 	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS workspaces (
@@ -65,6 +68,35 @@ func openJournal(filename string) (*journal, error) {
 			return fail(err)
 		}
 	}
+	if version < 4 {
+		var identity [32]byte
+		if _, err = rand.Read(identity[:]); err != nil {
+			return fail(err)
+		}
+		tx, beginErr := db.Begin()
+		if beginErr != nil {
+			return fail(beginErr)
+		}
+		if _, err = tx.Exec(`
+  CREATE TABLE journal_identity(singleton INTEGER PRIMARY KEY CHECK(singleton=1),id TEXT NOT NULL);
+  CREATE TABLE runner_artifacts(object_key TEXT PRIMARY KEY,ref_json TEXT NOT NULL);
+  ALTER TABLE operations ADD COLUMN dispatch_started INTEGER NOT NULL DEFAULT 1;
+  ALTER TABLE operations ADD COLUMN docker_start_intent INTEGER NOT NULL DEFAULT 1;
+  ALTER TABLE volume_leases ADD COLUMN epoch INTEGER NOT NULL DEFAULT 0;
+  ALTER TABLE volume_leases ADD COLUMN source_hash TEXT NOT NULL DEFAULT '';
+  UPDATE volume_leases SET epoch=COALESCE((SELECT epoch FROM workspaces WHERE id=workspace_id),0),source_hash=COALESCE((SELECT baseline_hash FROM workspaces WHERE id=workspace_id),'');
+  PRAGMA user_version=4;`); err != nil {
+			tx.Rollback()
+			return fail(err)
+		}
+		if _, err = tx.Exec(`INSERT INTO journal_identity(singleton,id)VALUES(1,?)`, hex.EncodeToString(identity[:])); err != nil {
+			tx.Rollback()
+			return fail(err)
+		}
+		if err = tx.Commit(); err != nil {
+			return fail(err)
+		}
+	}
 	var mode string
 	var sync int
 	if err = db.QueryRow("PRAGMA journal_mode").Scan(&mode); err != nil {
@@ -76,7 +108,32 @@ func openJournal(filename string) (*journal, error) {
 	if mode != "wal" || sync != 2 {
 		return fail(fmt.Errorf("runner journal must use WAL and synchronous FULL"))
 	}
-	return &journal{db: db}, nil
+	j := &journal{db: db}
+	if _, err = j.identity(context.Background()); err != nil {
+		return fail(err)
+	}
+	return j, nil
+}
+
+// identity binds an artifact authority to this particular durable journal, not
+// merely to a pathname that an operator might later reuse for an empty database.
+func (j *journal) identity(ctx context.Context) (string, error) {
+	var id string
+	if err := j.db.QueryRowContext(ctx, `SELECT id FROM journal_identity WHERE singleton=1`).Scan(&id); err != nil {
+		return "", fmt.Errorf("%w: journal identity missing", domain.ErrInvalid)
+	}
+	decoded, err := hex.DecodeString(id)
+	if err != nil || len(decoded) != 32 || hex.EncodeToString(decoded) != id {
+		return "", fmt.Errorf("%w: malformed journal identity", domain.ErrInvalid)
+	}
+	var count int
+	if err = j.db.QueryRowContext(ctx, `SELECT count(*) FROM journal_identity`).Scan(&count); err != nil {
+		return "", err
+	}
+	if count != 1 {
+		return "", domain.ErrInvalid
+	}
+	return id, nil
 }
 
 type rowScanner interface{ Scan(...any) error }
@@ -190,7 +247,7 @@ func (j *journal) reserve(ctx context.Context, o Operation) (Operation, bool, er
 	if err != nil {
 		return Operation{}, false, err
 	}
-	_, err = tx.ExecContext(ctx, `INSERT INTO operations(id,workspace_id,tenant_id,run_id,request_json,status,job_id,before_hash,expected_after_hash)VALUES(?,?,?,?,?,'prepared',?,?,?)`, o.Request.OperationID, w.ID, w.TenantID, w.RunID, string(raw), o.JobID, o.BeforeHash, o.ExpectedAfterHash)
+	_, err = tx.ExecContext(ctx, `INSERT INTO operations(id,workspace_id,tenant_id,run_id,request_json,status,job_id,before_hash,expected_after_hash,dispatch_started,docker_start_intent)VALUES(?,?,?,?,?,'prepared',?,?,?,0,0)`, o.Request.OperationID, w.ID, w.TenantID, w.RunID, string(raw), o.JobID, o.BeforeHash, o.ExpectedAfterHash)
 	if err != nil {
 		return Operation{}, false, err
 	}
@@ -206,7 +263,7 @@ func (j *journal) reserve(ctx context.Context, o Operation) (Operation, bool, er
 }
 
 func (j *journal) markRunning(ctx context.Context, id domain.ID) error {
-	_, err := j.db.ExecContext(ctx, "UPDATE operations SET status='running' WHERE id=? AND status='prepared'", id)
+	_, err := j.db.ExecContext(ctx, "UPDATE operations SET status='running',dispatch_started=1 WHERE id=? AND status='prepared'", id)
 	return err
 }
 func (j *journal) markUnknown(ctx context.Context, id domain.ID, reason string) error {
@@ -309,4 +366,33 @@ func (j *journal) completeAdoption(ctx context.Context, r WorkspaceRequest) (Wor
 		return Workspace{}, domain.ErrReconciliation
 	}
 	return j.workspace(ctx, r.WorkspaceID)
+}
+
+func (j *journal) pinArtifact(ctx context.Context, ref artifact.Ref) error {
+	if ref.ObjectKey == "" || ref.SHA256 == "" {
+		return domain.ErrInvalid
+	}
+	raw, err := json.Marshal(ref)
+	if err != nil {
+		return err
+	}
+	_, err = j.db.ExecContext(ctx, `INSERT INTO runner_artifacts(object_key,ref_json)VALUES(?,?) ON CONFLICT(object_key)DO NOTHING`, ref.ObjectKey, string(raw))
+	if err != nil {
+		return err
+	}
+	var existing string
+	if err = j.db.QueryRowContext(ctx, `SELECT ref_json FROM runner_artifacts WHERE object_key=?`, ref.ObjectKey).Scan(&existing); err != nil {
+		return err
+	}
+	var pinned artifact.Ref
+	if err = json.Unmarshal([]byte(existing), &pinned); err != nil {
+		return domain.ErrConflict
+	}
+	// Kind describes the caller's use; the content-addressed object identity is
+	// tenant/run/key/hash/size. Identical bytes may safely serve multiple kinds.
+	pinned.Kind = ref.Kind
+	if pinned != ref {
+		return domain.ErrConflict
+	}
+	return nil
 }

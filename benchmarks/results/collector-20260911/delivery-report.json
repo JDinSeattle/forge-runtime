@@ -1,0 +1,33 @@
+{
+  "collector_file": "/home/postedism/Desktop/mini claude code/forge-runtime/benchmarks/results/collector-20260911/collector-traces.jsonl",
+  "payload_canary_absent": true,
+  "provider_or_command_actually_dispatched": false,
+  "separate_collector_delivery": true,
+  "spans": {
+    "POST unmatched": {
+      "traceId": "1acb3e9534d0d981b2d453b4f216a4f7",
+      "spanId": "d79074c82d7e229e",
+      "parentSpanId": "",
+      "name": "POST unmatched"
+    },
+    "forge.effect.execute": {
+      "traceId": "1acb3e9534d0d981b2d453b4f216a4f7",
+      "spanId": "6573eff9e00913dc",
+      "parentSpanId": "0791802b94f4bc35",
+      "name": "forge.effect.execute"
+    },
+    "forge.model.request": {
+      "traceId": "1acb3e9534d0d981b2d453b4f216a4f7",
+      "spanId": "61e0b62b962d5017",
+      "parentSpanId": "0791802b94f4bc35",
+      "name": "forge.model.request"
+    },
+    "forge.run.drive": {
+      "traceId": "1acb3e9534d0d981b2d453b4f216a4f7",
+      "spanId": "0791802b94f4bc35",
+      "parentSpanId": "d79074c82d7e229e",
+      "name": "forge.run.drive"
+    }
+  },
+  "trace_id": "1acb3e9534d0d981b2d453b4f216a4f7"
+}

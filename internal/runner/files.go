@@ -363,7 +363,7 @@ func (e *Engine) applyPatch(ctx context.Context, o Operation, before tree) (json
 		if syncErr != nil {
 			return nil, syncErr
 		}
-		if err = e.fault("after_patch_file"); err != nil {
+		if err = e.faultAt("after_patch_file", o.Request); err != nil {
 			return nil, err
 		}
 	}

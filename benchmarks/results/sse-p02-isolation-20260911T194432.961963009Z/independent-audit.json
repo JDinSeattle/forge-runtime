@@ -1,0 +1,44 @@
+{
+  "scope": "Independent audit of every compressed raw delivery, publication and replay; no database changes or network access",
+  "passed": true,
+  "failures": [],
+  "ticks_per_run": 1551,
+  "durable_events": 31020,
+  "healthy_deliveries": 279180,
+  "replayed_events": 31020,
+  "healthy_clients": 180,
+  "reconnected_clients": 20,
+  "healthy_latency": {
+    "count": 279180,
+    "min_ms": 7.562769,
+    "p50_ms": 83.355038,
+    "p95_ms": 92.813347,
+    "p99_ms": 94.436406,
+    "max_ms": 255.937496
+  },
+  "maximum_schedule_lateness_ms": 135.695807,
+  "exact_scheduled_interval_ns": 200000000,
+  "actual_per_run_hz": 4.999721692393885,
+  "events_per_run_after_observed_all_slow_close": 50,
+  "slow_tcp_closed_before_cancellation": 20,
+  "lost_optional_hints": 30820,
+  "audit_source_sha256": "0b27e974277a8b4555cce7bed10bc2f81ff59e3c1c9693895414d4d3bbfaad69",
+  "original_report_and_raw_sha256": {
+    "report.json": "bb35c123151a32eec66e0387f8f6e4691903378c8b8e61a089ba779ea10ad840",
+    "deliveries.jsonl.gz": "a2156f7317105f4c9056be472cdb60f07a356e4f60e0b46838ccc39000aae24f",
+    "publication.jsonl.gz": "323e92422f7be26d9421298d0b6441b9668323568ae8c4bbf81c95b731d4079e",
+    "slow-resume.jsonl.gz": "642fb9071b29d6702bdf0ff4b2ac29522227454a2266096c8f11143962930066"
+  },
+  "source_snapshot_sha256": {
+    "benchmarks/sse_p02_test.go": "68fba3bae72788b4d3084263b2233d55a0ab3e9bcc514f08490eaa21b52cbf36",
+    "benchmarks/sse_sustained_test.go": "9688593ae971731f30fe44dc78aa7e0937889f932654c82abb151474a9ea0789",
+    "benchmarks/sse_test.go": "a3fb78d3329cdc4c39eb433573084ec2d25451f8b477d66139affabc5fb0e3e2",
+    "go.mod": "61a96a6dbfdc546edcc7abab472adc49313db486443c47f2272ad75cdae21682",
+    "internal/eventstream/hub.go": "b68eb36971c13e0542421247304ff73d04f99e137b3a184e98492d242f6e8bd9",
+    "internal/httpapi/sse.go": "9e1cf3e540cc0c22970cda5731cb9428272245dd25a25311d988447f2248996c",
+    "internal/persistence/execution.go": "cd61c91ff600bd704d011734c3048206c190090b4d1f74daf2d97de620c91d56",
+    "internal/persistence/store.go": "a60c400be7d3ab9dff474f84066b598e8f6c915e4b73de55d6277e2340c72eb8",
+    "internal/telemetry/http.go": "038f5714b3a597696e0ff2b2db51a8b8511ce61ebdc84ee14d756424f308ab51"
+  },
+  "limitations": "Finite client-window/default-server local workload. Production fanout is polling-only; notification rollback is explicitly fixture-only. No paid model, container, outage or retention-deletion claim."
+}

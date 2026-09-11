@@ -1,0 +1,14 @@
+=== RUN   TestHTTPMiddlewarePreservesFlushErrorAfterRequestCancellation
+    http_flush_test.go:47: flush timeout swallowed: <nil>
+--- FAIL: TestHTTPMiddlewarePreservesFlushErrorAfterRequestCancellation (0.00s)
+=== RUN   TestHTTPMiddlewarePlainResponseWriterDoesNotInventFlushing
+--- PASS: TestHTTPMiddlewarePlainResponseWriterDoesNotInventFlushing (0.00s)
+=== RUN   TestHTTPMiddlewareKeepsExistingWriterCapabilities
+=== RUN   TestHTTPMiddlewareKeepsExistingWriterCapabilities/1
+=== RUN   TestHTTPMiddlewareKeepsExistingWriterCapabilities/2
+--- PASS: TestHTTPMiddlewareKeepsExistingWriterCapabilities (0.00s)
+    --- PASS: TestHTTPMiddlewareKeepsExistingWriterCapabilities/1 (0.00s)
+    --- PASS: TestHTTPMiddlewareKeepsExistingWriterCapabilities/2 (0.00s)
+FAIL
+FAIL	github.com/JDinSeattle/forge-runtime/internal/telemetry	0.006s
+FAIL

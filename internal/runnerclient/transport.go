@@ -26,12 +26,14 @@ type TLSFiles struct {
 	ServerName      string `json:"server_name,omitempty"`
 }
 type ServerConfig struct {
-	UnixSocket       string        `json:"unix_socket,omitempty"`
-	TCPAddress       string        `json:"tcp_address,omitempty"`
-	TLS              TLSFiles      `json:"tls"`
-	MaxMessageBytes  int           `json:"max_message_bytes,omitempty"`
-	MaxRPCTime       time.Duration `json:"max_rpc_time,omitempty"`
-	MaxOperationTime time.Duration `json:"max_operation_time,omitempty"`
+	// OperatorFault is local executable-only instrumentation, never JSON/RPC input.
+	OperatorFault    func(string, runner.OperationRequest) error `json:"-"`
+	UnixSocket       string                                      `json:"unix_socket,omitempty"`
+	TCPAddress       string                                      `json:"tcp_address,omitempty"`
+	TLS              TLSFiles                                    `json:"tls"`
+	MaxMessageBytes  int                                         `json:"max_message_bytes,omitempty"`
+	MaxRPCTime       time.Duration                               `json:"max_rpc_time,omitempty"`
+	MaxOperationTime time.Duration                               `json:"max_operation_time,omitempty"`
 }
 type Server struct {
 	server   *grpc.Server
@@ -125,7 +127,7 @@ func Serve(config ServerConfig, service runner.Service) (*Server, error) {
 		}
 	}
 	server := grpc.NewServer(options...)
-	pb.RegisterRunnerServiceServer(server, &rpcServer{service: service, maxOperationTime: config.MaxOperationTime})
+	pb.RegisterRunnerServiceServer(server, &rpcServer{service: service, fault: config.OperatorFault, maxOperationTime: config.MaxOperationTime})
 	s := &Server{server: server, listener: listener, done: make(chan error, 1)}
 	go func() { s.done <- server.Serve(listener); close(s.done) }()
 	return s, nil

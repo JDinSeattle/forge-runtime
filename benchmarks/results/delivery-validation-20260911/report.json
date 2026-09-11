@@ -1,0 +1,182 @@
+{
+  "recorded_at": "2026-09-11T19:54:22.770481+00:00",
+  "base_commit": "a4541a159484a17493db6f0c3ac85ea929543670",
+  "tested_commit": null,
+  "scope": "Working-tree continuation, local PostgreSQL private schemas on existing loopback /forge. Explicit real Docker/load/operator cases are reported separately, never inferred from skips. No paid provider calls.",
+  "go_version": "go version go1.26.8 linux/amd64",
+  "GOMAXPROCS": 2,
+  "go_package_parallelism": 2,
+  "commands": {
+    "build": "go build -p 2 -o bin/ ./cmd/...",
+    "tests": "go test -p 2 -json ./... -count=1",
+    "race": "go test -p 2 -race -json ./... -count=1",
+    "vet": "go vet -p 2 ./...",
+    "generated": "make check-generated"
+  },
+  "results": {
+    "build": "pass",
+    "tests": "pass",
+    "race": "pass",
+    "vet": "pass",
+    "generated": "pass"
+  },
+  "tests": {
+    "passed_test_subtest_entries": 296,
+    "passed_packages": 19,
+    "skips": [
+      {
+        "package": "github.com/JDinSeattle/forge-runtime/benchmarks",
+        "test": "TestSSEConnectionChurnEvidence"
+      },
+      {
+        "package": "github.com/JDinSeattle/forge-runtime/benchmarks",
+        "test": "TestHTTPMetadataEvidence"
+      },
+      {
+        "package": "github.com/JDinSeattle/forge-runtime/benchmarks",
+        "test": "TestSchedulerCompetitionEvidence"
+      },
+      {
+        "package": "github.com/JDinSeattle/forge-runtime/benchmarks",
+        "test": "TestSSEP02IsolationEvidence"
+      },
+      {
+        "package": "github.com/JDinSeattle/forge-runtime/benchmarks",
+        "test": "TestSSESustainedChurnEvidence"
+      },
+      {
+        "package": "github.com/JDinSeattle/forge-runtime/benchmarks",
+        "test": "TestSSESteadyStateEvidence"
+      },
+      {
+        "package": "github.com/JDinSeattle/forge-runtime/benchmarks",
+        "test": "TestSSEBackpressureEvidence"
+      },
+      {
+        "package": "github.com/JDinSeattle/forge-runtime/benchmarks",
+        "test": "TestSSEFanoutEvidence"
+      },
+      {
+        "package": "github.com/JDinSeattle/forge-runtime/benchmarks",
+        "test": "TestTerminalSimulationEvidence"
+      },
+      {
+        "package": "github.com/JDinSeattle/forge-runtime/internal/runnerclient",
+        "test": "TestRealDockerRunnerIsolationQuotaAndCancellation"
+      },
+      {
+        "package": "github.com/JDinSeattle/forge-runtime/internal/runnerclient",
+        "test": "TestRealRunnerCrashMatrix"
+      },
+      {
+        "package": "github.com/JDinSeattle/forge-runtime/scripts/faults/application",
+        "test": "TestApplicationFaultWorkerProcess"
+      },
+      {
+        "package": "github.com/JDinSeattle/forge-runtime/scripts/faults/application",
+        "test": "TestRealApplicationFaultMatrix"
+      },
+      {
+        "package": "github.com/JDinSeattle/forge-runtime/tests/review",
+        "test": "TestRecoveryIndependentCollectorDelivery"
+      },
+      {
+        "package": "github.com/JDinSeattle/forge-runtime/tests/review",
+        "test": "TestRecoverySourceProcess"
+      },
+      {
+        "package": "github.com/JDinSeattle/forge-runtime/tests/review",
+        "test": "TestRecoveryRestoredProcess"
+      }
+    ]
+  },
+  "race": {
+    "passed_test_subtest_entries": 296,
+    "passed_packages": 19,
+    "skips": [
+      {
+        "package": "github.com/JDinSeattle/forge-runtime/benchmarks",
+        "test": "TestSSEConnectionChurnEvidence"
+      },
+      {
+        "package": "github.com/JDinSeattle/forge-runtime/benchmarks",
+        "test": "TestHTTPMetadataEvidence"
+      },
+      {
+        "package": "github.com/JDinSeattle/forge-runtime/benchmarks",
+        "test": "TestSchedulerCompetitionEvidence"
+      },
+      {
+        "package": "github.com/JDinSeattle/forge-runtime/benchmarks",
+        "test": "TestSSEP02IsolationEvidence"
+      },
+      {
+        "package": "github.com/JDinSeattle/forge-runtime/benchmarks",
+        "test": "TestSSESustainedChurnEvidence"
+      },
+      {
+        "package": "github.com/JDinSeattle/forge-runtime/benchmarks",
+        "test": "TestSSESteadyStateEvidence"
+      },
+      {
+        "package": "github.com/JDinSeattle/forge-runtime/benchmarks",
+        "test": "TestSSEBackpressureEvidence"
+      },
+      {
+        "package": "github.com/JDinSeattle/forge-runtime/benchmarks",
+        "test": "TestSSEFanoutEvidence"
+      },
+      {
+        "package": "github.com/JDinSeattle/forge-runtime/benchmarks",
+        "test": "TestTerminalSimulationEvidence"
+      },
+      {
+        "package": "github.com/JDinSeattle/forge-runtime/internal/runnerclient",
+        "test": "TestRealDockerRunnerIsolationQuotaAndCancellation"
+      },
+      {
+        "package": "github.com/JDinSeattle/forge-runtime/internal/runnerclient",
+        "test": "TestRealRunnerCrashMatrix"
+      },
+      {
+        "package": "github.com/JDinSeattle/forge-runtime/scripts/faults/application",
+        "test": "TestApplicationFaultWorkerProcess"
+      },
+      {
+        "package": "github.com/JDinSeattle/forge-runtime/scripts/faults/application",
+        "test": "TestRealApplicationFaultMatrix"
+      },
+      {
+        "package": "github.com/JDinSeattle/forge-runtime/tests/review",
+        "test": "TestRecoveryIndependentCollectorDelivery"
+      },
+      {
+        "package": "github.com/JDinSeattle/forge-runtime/tests/review",
+        "test": "TestRecoverySourceProcess"
+      },
+      {
+        "package": "github.com/JDinSeattle/forge-runtime/tests/review",
+        "test": "TestRecoveryRestoredProcess"
+      }
+    ]
+  },
+  "artifact_sha256": {
+    "tests.jsonl": "b9e90b5f618c803239d8226f29fb5d84020ed5290ad80f704035b16338076673",
+    "tests.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "race.jsonl": "856e11d5004e82900f72e30008696944c3b287f6cbc244fee30d1e4cc625d467",
+    "race.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build.log": "9dbdd92c30fd18c5e1481b9ed65bdf454568a8e09192a88792f5c60d65637730",
+    "vet.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "generated.log": "4e45208a862d9dc2d824e4cbbfdadca9d2e639074d49ed85968118107838107c",
+    "volume-helper-tests.log": "660d3ef90096a45e91182817b66d9d62ce44d67369ff35276b5ee14186361508",
+    "runner-helper-tests.log": "a62a93b3fa2d191c73b06b4b61c8aaeaf606de3da01b416f2427dd8e7c16f4bf",
+    "evaluation-tests.log": "a11c4d6a900da5222ab9bdb4c1acde598d7058f160e7e59f62d6dfd4eb179bb6",
+    "recovery-tests.log": "f751250381948620800240f8c841fcfb1c9fcb0f74c377a2d74bdee675e7e48a"
+  },
+  "python_tests": {
+    "workspace_volume_helpers": 14,
+    "runner_helpers": 8,
+    "recovery": 10,
+    "evaluation": 13
+  }
+}

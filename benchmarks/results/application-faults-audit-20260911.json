@@ -1,0 +1,118 @@
+{
+  "evidence": "E21",
+  "source": "benchmarks/results/application-faults-20260911T194600Z",
+  "capture_semantics": "Each PostgreSQL table is read separately; these documents are not cross-table atomic snapshots. Terminal counters and identities checked with explicit independent assertions.",
+  "review_scope": "Saved evidence parsing by implementation/harness author; not independent implementation review.",
+  "cases": [
+    {
+      "case": "F05",
+      "run_id": "run_ICRDMAOQZY3EUMEZ5XBGTODP5C",
+      "target_operation": "run_ICRDMAOQZY3EUMEZ5XBGTODP5C_step_1_op_0",
+      "schema": "appfault_5pytkrcyncxqa6odyhm2ryuftu",
+      "workers": [
+        106694,
+        108086
+      ],
+      "predeath_state": "running",
+      "predeath_effect": "in_flight",
+      "outcome": "succeeded",
+      "events": 62,
+      "archived_READY_objects": 27,
+      "worker_sigkill_at": "2026-09-11T19:46:05.082384675Z",
+      "lease_until": "2026-09-11T12:46:09.120439-07:00",
+      "claim_db_time": "2026-09-11T12:46:09.158365-07:00",
+      "death_to_expiry_ns": 4038054325,
+      "expiry_to_claim_ns": 37926000,
+      "synthetic_microusd": 570,
+      "tokens": 570,
+      "capacity_before": [
+        1,
+        1
+      ],
+      "capacity_after": [
+        0,
+        0
+      ],
+      "docker_create_start": [
+        1,
+        1
+      ]
+    },
+    {
+      "case": "F07",
+      "run_id": "run_OKCGGUK44KIVWRDFNQYFS3BUSX",
+      "target_operation": "run_OKCGGUK44KIVWRDFNQYFS3BUSX_step_1_op_0",
+      "schema": "appfault_ghbqyt6rtmoazhqjkbpunhoyoo",
+      "workers": [
+        111726,
+        113490
+      ],
+      "predeath_state": "needs_reconciliation",
+      "predeath_effect": "unknown",
+      "outcome": "succeeded",
+      "events": 63,
+      "archived_READY_objects": 27,
+      "worker_sigkill_at": "2026-09-11T19:46:18.617912629Z",
+      "lease_until": "2026-09-11T12:46:22.922513-07:00",
+      "claim_db_time": "2026-09-11T12:46:23.012538-07:00",
+      "death_to_expiry_ns": 4304600371,
+      "expiry_to_claim_ns": 90025000,
+      "synthetic_microusd": 570,
+      "tokens": 570,
+      "capacity_before": [
+        1,
+        1
+      ],
+      "capacity_after": [
+        0,
+        0
+      ],
+      "docker_create_start": [
+        1,
+        1
+      ]
+    },
+    {
+      "case": "F08",
+      "run_id": "run_2K6OXI3QFTZH3X47HXRYX5LNTB",
+      "target_operation": "run_2K6OXI3QFTZH3X47HXRYX5LNTB_step_1_op_0",
+      "schema": "appfault_nrpugqpng3lq5isc36ax2cyxa5",
+      "workers": [
+        116683,
+        117384
+      ],
+      "predeath_state": "running",
+      "predeath_effect": "in_flight",
+      "outcome": "cancelled",
+      "events": 62,
+      "archived_READY_objects": 27,
+      "worker_sigkill_at": "2026-09-11T19:46:30.75620651Z",
+      "lease_until": "2026-09-11T12:46:35.225204-07:00",
+      "claim_db_time": "2026-09-11T12:46:35.283816-07:00",
+      "death_to_expiry_ns": 4468997490,
+      "expiry_to_claim_ns": 58612000,
+      "synthetic_microusd": 570,
+      "tokens": 570,
+      "capacity_before": [
+        1,
+        1
+      ],
+      "capacity_after": [
+        0,
+        0
+      ],
+      "docker_create_start": [
+        1,
+        1
+      ],
+      "old_writer_samples": 63,
+      "old_first_ns": 1789155990900846515,
+      "old_last_ns": 1789155995328654018,
+      "container_die_ns": 1789155995576829247,
+      "new_first_ns": 1789155996755662730,
+      "writer_gap_ns": 1427008712,
+      "old_last_after_lease_expiry_ns": 103450018
+    }
+  ],
+  "verified_archived_artifact_digests": 81
+}

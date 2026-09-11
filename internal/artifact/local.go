@@ -13,6 +13,7 @@ import (
 	"io"
 	"os"
 	"path"
+	"path/filepath"
 
 	"github.com/JDinSeattle/forge-runtime/internal/domain"
 )
@@ -45,6 +46,31 @@ func NewLocalStore(directory string, maxBytes int64) (*LocalStore, error) {
 	if err := os.MkdirAll(directory, 0700); err != nil {
 		return nil, err
 	}
+	// Persist the store root itself and every containing directory. This also
+	// covers a freshly provisioned nested root, whose directory entries are not
+	// made durable merely by syncing objects below it.
+	abs, err := filepath.Abs(directory)
+	if err != nil {
+		return nil, err
+	}
+	canonical, err := filepath.EvalSymlinks(abs)
+	if err != nil {
+		return nil, err
+	}
+	for current := canonical; ; current = filepath.Dir(current) {
+		dir, err := os.Open(current)
+		if err != nil {
+			return nil, err
+		}
+		err = dir.Sync()
+		_ = dir.Close()
+		if err != nil {
+			return nil, err
+		}
+		if filepath.Dir(current) == current {
+			break
+		}
+	}
 	r, err := os.OpenRoot(directory)
 	if err != nil {
 		return nil, err
@@ -55,6 +81,16 @@ func NewLocalStore(directory string, maxBytes int64) (*LocalStore, error) {
 func (s *LocalStore) Close() error { return s.root.Close() }
 
 func (s *LocalStore) Put(ctx context.Context, tenant, run domain.ID, kind string, input io.Reader) (Ref, error) {
+	var ref Ref
+	err := WithPublication(ctx, s, func(locked context.Context) error {
+		var err error
+		ref, err = s.put(locked, tenant, run, kind, input)
+		return err
+	})
+	return ref, err
+}
+
+func (s *LocalStore) put(ctx context.Context, tenant, run domain.ID, kind string, input io.Reader) (Ref, error) {
 	if err := tenant.Validate(); err != nil {
 		return Ref{}, err
 	}
@@ -112,6 +148,19 @@ func (s *LocalStore) Put(ctx context.Context, tenant, run domain.ID, kind string
 	_ = d.Close()
 	if err != nil {
 		return Ref{}, err
+	}
+	// Newly created tenant/run directories must themselves be durable before
+	// a database can publish a reference to a file below them.
+	for _, parent := range []string{string(tenant), "."} {
+		d, err := s.root.Open(parent)
+		if err != nil {
+			return Ref{}, err
+		}
+		err = d.Sync()
+		_ = d.Close()
+		if err != nil {
+			return Ref{}, err
+		}
 	}
 	return ref, nil
 }

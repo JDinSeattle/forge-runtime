@@ -1,0 +1,15 @@
+receivers:
+  otlp:
+    protocols:
+      http:
+        endpoint: 0.0.0.0:4318
+exporters:
+  file:
+    path: /evidence/collector-traces.jsonl
+    format: json
+    flush_interval: 100ms
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      exporters: [file]

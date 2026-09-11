@@ -137,7 +137,7 @@ func (e *Engine) verifyStorage(ctx context.Context, id domain.ID) error {
 	}
 	return e.verifySlot(ctx, slot)
 }
-func (e *Engine) allocateStorage(ctx context.Context, r PrepareRequest) error {
+func (e *Engine) allocateStorage(ctx context.Context, r PrepareRequest, sourceHash string) error {
 	if len(e.slots) == 0 {
 		return nil
 	}
@@ -146,12 +146,22 @@ func (e *Engine) allocateStorage(ctx context.Context, r PrepareRequest) error {
 		return err
 	}
 	defer tx.Rollback()
-	var sid, tenant, run, source, profile string
+	var sid, tenant, run, source, profile, pinnedHash string
+	var epoch uint64
 	var released bool
-	err = tx.QueryRowContext(ctx, `SELECT slot_id,tenant_id,run_id,source_id,profile_id,released FROM volume_leases WHERE workspace_id=?`, r.WorkspaceID).Scan(&sid, &tenant, &run, &source, &profile, &released)
+	err = tx.QueryRowContext(ctx, `SELECT slot_id,tenant_id,run_id,source_id,profile_id,released,epoch,source_hash FROM volume_leases WHERE workspace_id=?`, r.WorkspaceID).Scan(&sid, &tenant, &run, &source, &profile, &released, &epoch, &pinnedHash)
 	if err == nil {
 		if tenant != string(r.TenantID) || run != string(r.RunID) || source != r.SourceID || profile != r.ProfileID {
 			return domain.ErrConflict
+		}
+		if pinnedHash == "" {
+			return fmt.Errorf("%w: legacy initialization has no pinned source hash", domain.ErrReconciliation)
+		}
+		if pinnedHash != sourceHash {
+			return domain.ErrConflict
+		}
+		if r.Epoch < epoch {
+			return domain.ErrFenced
 		}
 		if released {
 			return domain.ErrFenced
@@ -174,10 +184,13 @@ func (e *Engine) allocateStorage(ctx context.Context, r PrepareRequest) error {
 		if sid == "" {
 			return domain.ErrCapacity
 		}
-		_, err = tx.ExecContext(ctx, `INSERT INTO volume_leases(workspace_id,slot_id,tenant_id,run_id,source_id,profile_id)VALUES(?,?,?,?,?,?)`, r.WorkspaceID, sid, r.TenantID, r.RunID, r.SourceID, r.ProfileID)
+		_, err = tx.ExecContext(ctx, `INSERT INTO volume_leases(workspace_id,slot_id,tenant_id,run_id,source_id,profile_id,epoch,source_hash)VALUES(?,?,?,?,?,?,?,?)`, r.WorkspaceID, sid, r.TenantID, r.RunID, r.SourceID, r.ProfileID, r.Epoch, sourceHash)
 		if err != nil {
 			return err
 		}
+	}
+	if _, err = tx.ExecContext(ctx, `UPDATE volume_leases SET epoch=? WHERE workspace_id=?`, r.Epoch, r.WorkspaceID); err != nil {
+		return err
 	}
 	if err = tx.Commit(); err != nil {
 		return err
@@ -188,7 +201,7 @@ func (e *Engine) allocateStorage(ctx context.Context, r PrepareRequest) error {
 	if err = e.verifyStorage(ctx, r.WorkspaceID); err != nil {
 		return err
 	}
-	return e.fault("after_volume_lease")
+	return e.faultAt("after_volume_lease", OperationRequest{WorkspaceRequest: r.WorkspaceRequest})
 }
 func (e *Engine) storageBase(id domain.ID) string {
 	e.mu.Lock()

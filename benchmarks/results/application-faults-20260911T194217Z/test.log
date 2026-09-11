@@ -1,0 +1,14 @@
+Running as unit: forge-runtime-application-faults.service; invocation ID: 34ed8611794a46f9946fdcc629a5fc86
+=== RUN   TestRealApplicationFaultMatrix
+=== RUN   TestRealApplicationFaultMatrix/F05
+    application_test.go:289: timeout waiting for worker ready; own schema/workspace retained
+--- FAIL: TestRealApplicationFaultMatrix (11.21s)
+    --- FAIL: TestRealApplicationFaultMatrix/F05 (11.21s)
+FAIL
+[rootlesskit:child ] error: command [/home/postedism/Desktop/mini claude code/forge-runtime/bin/application-faults.test -test.v -test.run=^TestRealApplicationFaultMatrix$ -test.timeout=6m] exited: exit status 1
+[rootlesskit:parent] error: child exited: exit status 1
+          Finished with result: exit-code
+Main processes terminated with: code=exited, status=1/FAILURE
+               Service runtime: 11.329s
+             CPU time consumed: 314ms
+                   Memory peak: 67.3M (swap: 0B)

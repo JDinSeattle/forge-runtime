@@ -1,0 +1,206 @@
+package benchmarks
+
+import (
+	"context"
+	"fmt"
+	"reflect"
+	"runtime"
+	"strings"
+	"sync"
+	"testing"
+	"time"
+
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
+)
+
+// Only per-backend counts are retained; query arguments, tokens and SQL text
+// are never recorded. The match identifies Store.Authenticate's constant query.
+type sseRowBatchTrace struct {
+	mu    sync.Mutex
+	calls map[uint32]int
+}
+
+func (q *sseRowBatchTrace) TraceQueryStart(ctx context.Context, c *pgx.Conn, d pgx.TraceQueryStartData) context.Context {
+	if strings.Contains(d.SQL, "FROM api_tokens t JOIN memberships") {
+		q.mu.Lock()
+		q.calls[c.PgConn().PID()]++
+		q.mu.Unlock()
+	}
+	return ctx
+}
+func (q *sseRowBatchTrace) TraceQueryEnd(context.Context, *pgx.Conn, pgx.TraceQueryEndData) {}
+func (q *sseRowBatchTrace) snapshot() map[uint32]int {
+	q.mu.Lock()
+	defer q.mu.Unlock()
+	result := map[uint32]int{}
+	for id, n := range q.calls {
+		result[id] = n
+	}
+	return result
+}
+func (q *sseRowBatchTrace) minimum() int {
+	min := int(^uint(0) >> 1)
+	for _, n := range q.snapshot() {
+		if n < min {
+			min = n
+		}
+	}
+	if min == int(^uint(0)>>1) {
+		return 0
+	}
+	return min
+}
+func (q *sseRowBatchTrace) connections() int { return len(q.snapshot()) }
+
+func traceSSEAuthenticationRows(t *testing.T, ctx context.Context, f *sustainedFixture) (*sseRowBatchTrace, uintptr) {
+	t.Helper()
+	trace := &sseRowBatchTrace{calls: map[uint32]int{}}
+	cfg := f.api.Pool.Config()
+	cfg.ConnConfig.Tracer = trace
+	pool, err := pgxpool.NewWithConfig(ctx, cfg)
+	if err != nil {
+		t.Fatal(err)
+	}
+	f.api.Pool.Close()
+	f.api.Pool = pool
+	t.Cleanup(pool.Close)
+	// Manager already refers to this Store pointer; it now sees the traced pool.
+	// Identity, role setup, pool limits and all server behavior are unchanged.
+	if err = f.api.CheckAPIRole(ctx); err != nil {
+		t.Fatal(err)
+	}
+	sseWarmPool(t, ctx, pool)
+	conn, err := pool.Acquire(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+	row := conn.Conn().QueryRow(ctx, "SELECT 1")
+	var one int
+	if err = row.Scan(&one); err != nil {
+		conn.Release()
+		t.Fatal(err)
+	}
+	size := reflect.TypeOf(row).Elem().Size()
+	conn.Release()
+	// Deterministically exercise every physical connection's actual Pool.QueryRow
+	// wrapper batches: keep all other connections acquired while warming one.
+	// No private fields, unsafe access, shortened lifetime or pool reset is used.
+	held := make([]*pgxpool.Conn, int(pool.Config().MaxConns))
+	defer func() {
+		for _, c := range held {
+			if c != nil {
+				c.Release()
+			}
+		}
+	}()
+	for i := range held {
+		held[i], err = pool.Acquire(ctx)
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
+	for i := range held {
+		held[i].Release()
+		held[i] = nil
+		for range 256 {
+			if _, err = f.api.Authenticate(ctx, f.token, f.run.TenantID); err != nil {
+				t.Fatal(err)
+			}
+		}
+		held[i], err = pool.Acquire(ctx)
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
+	for i, c := range held {
+		c.Release()
+		held[i] = nil
+	}
+	runtime.GC()
+	return trace, size
+}
+
+func assessSSESteadyState(samples []sseResources, trace *sseRowBatchTrace, warmed map[uint32]int, rowBytes uintptr, poolMax int) (sustainedPlateau, map[string]any) {
+	p := assessSSEPlateau(samples)
+	p.MaxWindowGrowthBytes = 256 << 10
+	p.MaxSlopeBytesPerSecond = 1024
+	p.FirstWindowMeanBytes = 0
+	p.LastWindowMeanBytes = 0
+	p.Passed = false
+	if len(samples) < 72 {
+		return p, map[string]any{"error": "too few steady samples"}
+	}
+	for _, s := range samples[:12] {
+		p.FirstWindowMeanBytes += float64(s.HeapAlloc) / 12
+	}
+	for _, s := range samples[len(samples)-12:] {
+		p.LastWindowMeanBytes += float64(s.HeapAlloc) / 12
+	}
+	p.WindowGrowthBytes = p.LastWindowMeanBytes - p.FirstWindowMeanBytes
+	minHeap, maxHeap := samples[0].HeapAlloc, samples[0].HeapAlloc
+	for _, s := range samples {
+		if s.HeapAlloc < minHeap {
+			minHeap = s.HeapAlloc
+		}
+		if s.HeapAlloc > maxHeap {
+			maxHeap = s.HeapAlloc
+		}
+	}
+	current := trace.snapshot()
+	deltas := map[uint32]int{}
+	minCalls := int(^uint(0) >> 1)
+	sameBackends := len(current) == len(warmed)
+	for id, n := range current {
+		if _, ok := warmed[id]; !ok {
+			sameBackends = false
+		}
+		deltas[id] = n - warmed[id]
+		if deltas[id] < minCalls {
+			minCalls = deltas[id]
+		}
+	}
+	p.Passed = sameBackends && len(current) == poolMax && len(warmed) == poolMax && minCalls >= 256 && p.WindowGrowthBytes <= p.MaxWindowGrowthBytes && p.LastHalfSlopeBytesPerSecond <= p.MaxSlopeBytesPerSecond && maxHeap-minHeap <= 1536<<10
+	return p, map[string]any{"auth_queries_after_warmup_by_backend": warmed, "auth_queries_at_end_by_backend": current, "measured_auth_queries_by_backend": deltas, "minimum_measured_auth_queries_per_connection": minCalls, "minimum_batch_replacements_per_connection": minCalls / 128, "inspected_pgx_pool_row_batch_cap": 128, "actual_base_row_size_bytes": rowBytes, "fixed_api_pool_connections": poolMax, "bounded_retained_api_base_rows": poolMax * 128, "bounded_api_base_row_struct_bytes": uintptr(poolMax*128) * rowBytes, "heap_min_bytes": minHeap, "heap_max_bytes": maxHeap, "heap_range_bytes": maxHeap - minHeap, "max_heap_range_bytes": 1536 << 10, "mean_window_samples": 12, "dependency": "github.com/jackc/pgx/v5@v5.10.0/pgxpool/pool.go and rows.go", "interpretation": fmt.Sprintf("At most %d current poolRow slots retain closed baseRows; Close clears ctx, SQL, args, values and scan plans. Wrapper/connection/cache allocations are additional fixed pool-bounded structures.", poolMax*128)}
+}
+
+func TestSSESteadyStateOracle(t *testing.T) {
+	trace := &sseRowBatchTrace{calls: map[uint32]int{}}
+	warmed := map[uint32]int{}
+	for id := uint32(1); id <= 16; id++ {
+		trace.calls[id] = 768
+		warmed[id] = 384
+	}
+	samples := make([]sseResources, 72)
+	for i := range samples {
+		samples[i] = sseResources{At: time.Unix(int64(i*5), 0), HeapAlloc: uint64(8<<20 + (i%4)*(32<<10))}
+	}
+	p, _ := assessSSESteadyState(samples, trace, warmed, 288, 16)
+	if !p.Passed {
+		t.Fatalf("bounded warmed oscillation rejected: %+v", p)
+	}
+	p, _ = assessSSESteadyState(samples[:24], trace, warmed, 288, 16)
+	if p.Passed {
+		t.Fatal("short measurement window passed steady-state oracle")
+	}
+	delete(trace.calls, 1)
+	trace.calls[17] = 768
+	p, _ = assessSSESteadyState(samples, trace, warmed, 288, 16)
+	if p.Passed {
+		t.Fatal("replaced backend was incorrectly treated as prewarmed")
+	}
+	delete(trace.calls, 17)
+	trace.calls[1] = 768
+	for i := range samples {
+		samples[i].HeapAlloc = 8<<20 + uint64(i)*(10<<10)
+	}
+	p, _ = assessSSESteadyState(samples, trace, warmed, 288, 16)
+	if p.Passed {
+		t.Fatal("persistent 2 KiB/s growth passed stricter steady oracle")
+	}
+	trace.calls[1] = warmed[1] + 100
+	p, _ = assessSSESteadyState(samples, trace, warmed, 288, 16)
+	if p.Passed {
+		t.Fatal("inadequate per-connection batch turnover passed")
+	}
+}

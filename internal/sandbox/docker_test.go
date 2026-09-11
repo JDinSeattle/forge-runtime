@@ -58,7 +58,7 @@ case "$1" in
    printf '%s' '[{"Config":{"Labels":{"forge.runtime":"1"}},"State":{"Running":true,"ExitCode":0,"StartedAt":"2026-09-08T00:00:00Z","Error":""}}]'
   else echo 'No such container' >&2;exit 1;fi ;;
  create) printf '%s\n' "$@" >"$FORGE_DOCKER_STUB_DIR/argv"; : >"$FORGE_DOCKER_STUB_DIR/created" ;;
- start) : ;;
+ start) test -f "$FORGE_DOCKER_STUB_DIR/start-intent" ;;
  *) exit 2 ;;
 esac
 `
@@ -66,7 +66,9 @@ esac
 				t.Fatal(err)
 			}
 			d := Docker{Binary: binary, WorkspaceQuota: recordingQuota{}}
-			_, err := d.Start(context.Background(), JobSpec{ID: "fixture", Workspace: dir, Profile: Profile{ID: "fixture", Image: "fixture@sha256:" + strings.Repeat("a", 64), MemoryBytes: 256 << 20, WorkspaceQuotaBytes: 256 << 20, CPUs: 1, PIDs: 64, User: "1000:1000", TmpfsExecutable: executable}, Command: []string{"fixture"}, Deadline: time.Now().Add(time.Minute), TrustedVerification: true})
+			_, err := d.Start(context.Background(), JobSpec{ID: "fixture", Workspace: dir, Profile: Profile{ID: "fixture", Image: "fixture@sha256:" + strings.Repeat("a", 64), MemoryBytes: 256 << 20, WorkspaceQuotaBytes: 256 << 20, CPUs: 1, PIDs: 64, User: "1000:1000", TmpfsExecutable: executable}, Command: []string{"fixture"}, Deadline: time.Now().Add(time.Minute), TrustedVerification: true, BeforeStart: func(context.Context) error {
+				return os.WriteFile(filepath.Join(dir, "start-intent"), []byte("committed"), 0600)
+			}})
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -105,3 +107,46 @@ esac
 type recordingQuota struct{}
 
 func (recordingQuota) VerifyWorkspaceQuota(context.Context, string, int64) error { return nil }
+
+// A created-state inspection is not proof that an already-dispatched start will
+// never run. Only the caller's durable no-start-intent proof permits removal.
+func TestCreatedDockerCancellationRequiresDurableNoDispatchProof(t *testing.T) {
+	for _, proof := range []bool{false, true} {
+		t.Run(fmt.Sprint(proof), func(t *testing.T) {
+			dir := t.TempDir()
+			t.Setenv("FORGE_CANCEL_STUB_DIR", dir)
+			binary := filepath.Join(dir, "docker")
+			script := `#!/bin/sh
+set -eu
+printf '%s\n' "$*" >>"$FORGE_CANCEL_STUB_DIR/calls"
+case "$1 $2" in
+ 'container inspect') printf '%s' '[{"Config":{"Labels":{"forge.runtime":"1"}},"State":{"Running":false,"ExitCode":0,"StartedAt":"0001-01-01T00:00:00Z","Error":""}}]' ;;
+ 'container rm') test "$#" = 3 ;;
+ 'logs fixture') : ;;
+ *) exit 2 ;;
+esac
+`
+			if err := os.WriteFile(binary, []byte(script), 0700); err != nil {
+				t.Fatal(err)
+			}
+			d := Docker{Binary: binary}
+			var job Job
+			var err error
+			if proof {
+				job, err = d.CancelNeverDispatched(context.Background(), "fixture")
+			} else {
+				job, err = d.Cancel(context.Background(), "fixture")
+			}
+			calls, _ := os.ReadFile(filepath.Join(dir, "calls"))
+			if proof {
+				if err != nil || !job.NeverStarted || !strings.Contains(string(calls), "container rm fixture") {
+					t.Fatalf("proven never-started cancellation: %+v %v %s", job, err, calls)
+				}
+			} else {
+				if err == nil || job.NeverStarted || strings.Contains(string(calls), "container rm") {
+					t.Fatalf("ambiguous intent removed: %+v %v %s", job, err, calls)
+				}
+			}
+		})
+	}
+}

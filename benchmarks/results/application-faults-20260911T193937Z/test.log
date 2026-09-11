@@ -1,0 +1,14 @@
+Running as unit: forge-runtime-application-faults.service; invocation ID: 3ff50ca1b48f4901badb07229582bd63
+=== RUN   TestRealApplicationFaultMatrix
+=== RUN   TestRealApplicationFaultMatrix/F05
+    application_test.go:481: open /home/postedism/Desktop/mini claude code/forge-runtime/testdata/repairs/clamp/source/clamp.py: no such file or directory
+--- FAIL: TestRealApplicationFaultMatrix (0.21s)
+    --- FAIL: TestRealApplicationFaultMatrix/F05 (0.21s)
+FAIL
+[rootlesskit:child ] error: command [/home/postedism/Desktop/mini claude code/forge-runtime/bin/application-faults.test -test.v -test.run=^TestRealApplicationFaultMatrix$ -test.timeout=6m] exited: exit status 1
+[rootlesskit:parent] error: child exited: exit status 1
+          Finished with result: exit-code
+Main processes terminated with: code=exited, status=1/FAILURE
+               Service runtime: 285ms
+             CPU time consumed: 97ms
+                   Memory peak: 43M (swap: 0B)

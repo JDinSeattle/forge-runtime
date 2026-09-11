@@ -1,0 +1,36 @@
+File: benchmarks.test
+Build ID: 5226409798d6132f267a6430074fcf2a1609a5a9
+Type: inuse_space
+Time: 2026-09-11 12:12:45 PDT
+Showing nodes accounting for -1025.76kB, 33.36% of 3074.70kB total
+      flat  flat%   sum%        cum   cum%
+   -1026kB 33.37% 33.37%    -1026kB 33.37%  bufio.NewWriterSize (inline)
+ 1024.47kB 33.32%  0.05%  1024.47kB 33.32%  runtime.mallocgc
+ -512.14kB 16.66% 16.71%  -512.14kB 16.66%  github.com/jackc/pgx/v5.(*Conn).getRows
+ -512.09kB 16.65% 33.36%  -512.09kB 16.65%  net/http.(*Transport).getConn
+         0     0% 33.36%  -512.09kB 16.65%  github.com/JDinSeattle/forge-runtime/benchmarks.(*sustainedFixture).read
+         0     0% 33.36%  -512.14kB 16.66%  github.com/JDinSeattle/forge-runtime/benchmarks.TestSSESteadyStateEvidence
+         0     0% 33.36%  -512.14kB 16.66%  github.com/JDinSeattle/forge-runtime/benchmarks.runSSESustainedChurn
+         0     0% 33.36%  -512.09kB 16.65%  github.com/JDinSeattle/forge-runtime/benchmarks.runSSESustainedChurn.func1.1
+         0     0% 33.36%  -512.14kB 16.66%  github.com/JDinSeattle/forge-runtime/benchmarks.traceSSEAuthenticationRows
+         0     0% 33.36%  -512.14kB 16.66%  github.com/JDinSeattle/forge-runtime/internal/persistence.(*Store).Authenticate
+         0     0% 33.36%  -512.14kB 16.66%  github.com/jackc/pgx/v5.(*Conn).Query
+         0     0% 33.36%  -512.14kB 16.66%  github.com/jackc/pgx/v5.(*Conn).QueryRow (inline)
+         0     0% 33.36%  -512.14kB 16.66%  github.com/jackc/pgx/v5/pgxpool.(*Conn).QueryRow
+         0     0% 33.36%  -512.14kB 16.66%  github.com/jackc/pgx/v5/pgxpool.(*Pool).QueryRow
+         0     0% 33.36%  -512.09kB 16.65%  net/http.(*Client).Do (inline)
+         0     0% 33.36%  -512.09kB 16.65%  net/http.(*Client).do
+         0     0% 33.36%  -512.09kB 16.65%  net/http.(*Client).send
+         0     0% 33.36%  -512.09kB 16.65%  net/http.(*Transport).RoundTrip
+         0     0% 33.36%  -512.09kB 16.65%  net/http.(*Transport).roundTrip
+         0     0% 33.36%    -1026kB 33.37%  net/http.(*conn).readRequest
+         0     0% 33.36%    -1026kB 33.37%  net/http.(*conn).serve
+         0     0% 33.36%    -1026kB 33.37%  net/http.newBufioWriterSize
+         0     0% 33.36%  -512.09kB 16.65%  net/http.send
+         0     0% 33.36%  1024.47kB 33.32%  runtime.malg
+         0     0% 33.36%  1024.47kB 33.32%  runtime.newobject
+         0     0% 33.36%  1024.47kB 33.32%  runtime.newproc.func1
+         0     0% 33.36%  1024.47kB 33.32%  runtime.newproc1
+         0     0% 33.36%  1024.47kB 33.32%  runtime.systemstack
+         0     0% 33.36%  -512.09kB 16.65%  sync.(*WaitGroup).Go.func1
+         0     0% 33.36%  -512.14kB 16.66%  testing.tRunner

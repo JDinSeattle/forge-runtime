@@ -1,0 +1,53 @@
+{
+  "inspected_at_utc": "2026-09-11T19:34:49.142845+00:00",
+  "test_started_at_utc": "2026-09-11T19:33:00.591537223Z",
+  "binary_mtime_utc": "2026-09-11T19:33:00.579449+00:00",
+  "binary_sha256": "142f8d5e43304ccd84bea7fffd6bef694c9efaf64c3db6c52969a4d0bac9347e",
+  "go_build_id": "CoLaVeIhkGW7zPb6Vpks/OCixwHaW0NmQN7xFfP6T/AutazO8-NriQBOxJ4zJj/HKxtN0mROzmBUlpNcfYI",
+  "sources": {
+    "benchmarks/sse_p02_test.go": {
+      "sha256": "14d97e4d721233627066cbcd416af1efe0521654466934a65e40c8d3e22caefd",
+      "mtime_utc": "2026-09-11T19:31:39.642944+00:00",
+      "last_modified_before_binary": true
+    },
+    "benchmarks/sse_sustained_test.go": {
+      "sha256": "9688593ae971731f30fe44dc78aa7e0937889f932654c82abb151474a9ea0789",
+      "mtime_utc": "2026-09-11T18:52:35.819422+00:00",
+      "last_modified_before_binary": true
+    },
+    "benchmarks/sse_test.go": {
+      "sha256": "a3fb78d3329cdc4c39eb433573084ec2d25451f8b477d66139affabc5fb0e3e2",
+      "mtime_utc": "2026-09-08T08:20:36.865256+00:00",
+      "last_modified_before_binary": true
+    },
+    "internal/httpapi/sse.go": {
+      "sha256": "9e1cf3e540cc0c22970cda5731cb9428272245dd25a25311d988447f2248996c",
+      "mtime_utc": "2026-09-11T18:45:02.257973+00:00",
+      "last_modified_before_binary": true
+    },
+    "internal/eventstream/hub.go": {
+      "sha256": "b68eb36971c13e0542421247304ff73d04f99e137b3a184e98492d242f6e8bd9",
+      "mtime_utc": "2026-09-08T07:39:40.652556+00:00",
+      "last_modified_before_binary": true
+    },
+    "internal/persistence/execution.go": {
+      "sha256": "cd61c91ff600bd704d011734c3048206c190090b4d1f74daf2d97de620c91d56",
+      "mtime_utc": "2026-09-08T00:16:45.485870+00:00",
+      "last_modified_before_binary": true
+    },
+    "internal/persistence/store.go": {
+      "sha256": "a60c400be7d3ab9dff474f84066b598e8f6c915e4b73de55d6277e2340c72eb8",
+      "mtime_utc": "2026-09-08T07:39:40.652589+00:00",
+      "last_modified_before_binary": true
+    },
+    "go.mod": {
+      "sha256": "61a96a6dbfdc546edcc7abab472adc49313db486443c47f2272ad75cdae21682",
+      "mtime_utc": "2026-09-08T08:21:39.794038+00:00",
+      "last_modified_before_binary": true
+    }
+  },
+  "executing_log_line": 420,
+  "line_matches_current_source": true,
+  "workload_changes_after_compilation": false,
+  "note": "The stricter absolute-tick checks and complete slow-client replay were already in sse_p02_test.go at 19:31:39 UTC, before the 19:33:00 binary. Documentation was added afterward; executable sources are frozen."
+}

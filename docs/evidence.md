@@ -34,6 +34,12 @@ those checks.
 | E12 | Actual Go repair with offline independent verification | CLI report, baseline/verification receipts and reapplied patch | Deterministic model and one Go fixture |
 | E13 | Final source validation before first commit | Full race JSONL, vet and three generator logs | Opt-in workloads have separate execution records |
 | E14 | Actual SQL backup and restoration | Custom-format backup checksum and restored record counts | SQL metadata only; no paired runner/workspace/object restoration |
+| E15 | Actual slow-reader TCP disconnection with healthy sequence isolation | Separate default/constrained socket reports and profiles | Heavier one-run workload; not the exact 200-client baseline |
+| E16 | Actual churn, heap diagnosis and six-minute prewarmed steady state | Original 24-cycle report plus 72-cycle strict repeat, per-backend counts and six profile times | Bounded local oscillation after row-pool saturation; finite window, no universal leak claim |
+| [E20](sse-p02-evidence.md) | Exact 200-client/20-run SSE isolation, full cursor replay and missing hints | Same-parameter failure/fix/repeat, every raw delivery/publication/replay independently audited | Slow-client receive window explicit; production server defaults; no outage/model claim |
+| [E21](application-fault-evidence.md) | Real worker F05/F07/F08 and PostgreSQL effect/quota/capacity reconciliation | Two worker PIDs, actual SIGKILL, natural lease expiry, Docker effects and 81 checked artifact files | Fake models and synthetic rates; phase exports are sequential, not atomic |
+| [E22](../benchmarks/results/evaluation-oracle-v2-20260911/report.json) | Fixed eval-v2 source/oracle target and regression checks | All 16 actual isolated container outcomes match trusted grader assertions | Corpus validation only; no real-model quality or paid usage result |
+| [E23](../benchmarks/results/delivery-validation-20260911/report.json) | Continuation whole-tree checks | Build, ordinary/race tests, vet, generated bindings and helper tests | Local working tree; original exact-commit CI remains separately identified |
 
 ## E01 — Schemas and generated code
 
@@ -469,7 +475,8 @@ hub queue overflows. TCP buffers could absorb this 60 KiB/run window; the
 sample therefore does not establish actual slow-client disconnection or
 isolation under sustained backpressure. All subscriptions are established
 before publishing, so this report also does not prove reconnect/retention
-behavior or lost-NOTIFY recovery under this load. P02 remains partially open.
+behavior or lost-NOTIFY recovery under this load. This original sample alone left P02 partial; [E20](sse-p02-evidence.md) records the later exact-workload acceptance. Actual transport backpressure at a separately
+reported heavier workload was later verified in E15.
 
 With the listener and pools kept warm, process goroutines returned from the
 connection peak to the initial six and FDs to the initial 42 after clients
@@ -502,6 +509,7 @@ accompany the exact configuration, machine, source hashes and measurements.
 cleanup. It publishes no events and runs no model, effect or container. Five
 subsecond rounds do not prove absence of sustained growth, slow-client
 backpressure behavior or long-term process stability; P05 remains partial.
+The later E16 record adds the original two-minute experiment, its positive-growth diagnosis, and a stricter six-minute prewarmed repeat.
 
 ## E12 — Actual Go repository profile
 
@@ -612,11 +620,292 @@ and runner journals, volume images and artifact bytes were not restored.
 This validates SQL restoration and its metadata relationships, not complete
 execution recovery or artifact readability after host loss.
 
+## E15 — Actual default and constrained TCP backpressure, 2026-09-11
+
+The new [`TestSSEBackpressureEvidence`](../benchmarks/sse_sustained_test.go)
+passes two independently reported network experiments using the actual SSE
+handler, a real PostgreSQL private schema and a nonowner RLS API role. Each
+has one synthetic run, four healthy consumers and one client that stops reading
+its response body after headers. It publishes 1,000 exact 16-KiB durable payloads
+at 50 events/s over 20 seconds. This deliberately heavier workload is separate
+from E10's exact 200-client/20-run/1-KiB/5-Hz sample; no production queue, poll
+interval or write deadline was reduced to obtain these results.
+
+| Socket mode | Healthy deliveries | p95 / p99 | Actual slow handler / TCP closes | Durable events committed after slow TCP close |
+| --- | ---: | ---: | ---: | ---: |
+| [Unmodified defaults](../benchmarks/results/sse-backpressure-default_socket-20260911T185400.450639770Z/report.json) | 4,000 | 98.172987 / 101.105084 ms | 1 / 1 | 581 |
+| [Explicitly constrained sockets](../benchmarks/results/sse-backpressure-constrained_socket-20260911T185421.131587097Z/report.json) | 4,000 | 98.371661 / 101.373007 ms | 1 / 1 | 746 |
+
+Both reports have 1,000 durable events, exact 16,384-byte stored payloads, zero
+sequence gaps and complete consecutive delivery to all four healthy readers.
+The continuation agent independently recomputed both latency quantiles and
+verified every raw healthy sequence. Each mode observed one queue overflow and
+one `slow_subscriber` metric. The handler returned and its actual server TCP
+connection closed **before** harness cancellation. Only then was the slow body
+drained: 2,755,688 buffered bytes for defaults and 12,295 for the constrained
+mode, both ending in `unexpected EOF`. That error is the observed termination
+of an incomplete chunked stream; it was not manufactured by client cancellation.
+All remaining TCP connections and handlers reached zero after normal cleanup.
+
+Default descriptors initially reported a 2,626,560-byte send buffer and
+131,072-byte receive buffer; Linux may subsequently autotune them. The constrained
+mode requested 4,096-byte server send and slow-client receive buffers; actual
+values were 8,192 bytes. Healthy client receive buffers retained their default.
+The reports retain each observed socket size and exact publication timestamps;
+the measured publish durations were 20.015121 and 20.004659 seconds respectively.
+
+[`internal/httpapi/sse.go`](../internal/httpapi/sse.go) now classifies network
+write timeouts as slow-subscriber closures and preserves the stream error when
+selecting a closed event channel. The real experiments verify the resulting
+metric together with actual connection termination. The initial execution failed
+before serving traffic because the new fixture requested a 15-minute lease above
+Store's five-minute maximum; the fixture was corrected to five minutes and both
+modes reran successfully. This setup failure is not a product backpressure failure.
+
+Each directory retains its final heap and goroutine profiles. Those profiles
+include the benchmark's retained raw samples; they are not used as the sustained
+heap-plateau proof. The tested files' SHA256 values matched the inspected source.
+The manifest records the base Git commit and dirty-tree status, so these working
+tree results are not retroactively described as pristine-commit measurements.
+No model, runner or container operation was invoked. These finite local samples
+prove the specified actual transport isolation cases; they do not establish a
+multi-host SLO, lost-NOTIFY recovery, or the full P02 workload under sustained
+backpressure. [E20](sse-p02-evidence.md) later supplies that exact workload with
+actual closure and complete replay, preserving its initial metric failure.
+Reproduction and threshold definitions are in
+[the experiment protocol](../benchmarks/SSE.md).
+
+## E16 — Two-minute connection and heap observation, 2026-09-11
+
+The [sustained churn report](../benchmarks/results/sse-sustained-churn-20260911T185535.771934398Z/report.json)
+records `TestSSESustainedChurnEvidence` passing in 120.811 seconds, with a
+120.053866-second measured interval. Three full-size warm-up cycles precede
+24 measured five-second cycles. Each opens 100 real TCP/RLS-authenticated SSE
+subscriptions, publishes ten durable 1-KiB events, checks all 1,000 healthy
+deliveries, cancels the requests and waits for actual TCP/handler cleanup.
+This is 2,400 measured connections and 24,000 measured healthy deliveries;
+including warmup, the database has 270 event rows of this type with no sequence
+gaps. No model, effect or container operation was involved.
+
+Every measured cycle reports exactly 100 handler starts and returns, zero
+remaining TCP connections/handlers, six goroutines and 42 FDs. The continuation
+agent independently checked every cycle and recomputed the heap criteria:
+
+| Post-GC HeapAlloc observation | Actual value | Predeclared limit |
+| --- | ---: | ---: |
+| First six samples' mean | 7,103,970.7 bytes | Reference window |
+| Last six samples' mean | 7,560,397.3 bytes | Comparison window |
+| Mean-window growth | 456,426.7 bytes | At most 1,048,576 bytes |
+| Last 12 samples' OLS slope | 7,163.05 bytes/s | At most 8,192 bytes/s |
+
+The actual HeapAlloc samples range from 6,957,136 to 7,733,888 bytes. These
+results pass the experiment's fixed finite-window growth tolerances. The
+positive slope is retained explicitly: memory did **not** return exactly to its
+initial value, and this is not proof of a flat heap or absence of a long-term
+leak. This initial result alone left P05 partial; the stricter follow-up below
+provides the later bounded steady-state evidence. The last approximately 15 seconds shared the
+host with unrelated application/retention compilation and race tests; this was
+not an idle dedicated benchmark machine.
+
+The [profile directory](../benchmarks/results/sse-sustained-churn-20260911T185535.771934398Z)
+contains heap and goroutine pprof snapshots after warmup, rounds 6 and 12, and
+at the end. The final goroutine profile accounts for six goroutines, including
+the measurement, listener and database-pool maintenance. Sampled heap-profile
+differences contain both retained and released allocations; their statistical
+sampling is distinct from the exact MemStats values above. API, clients and
+publisher share the measured Go process, while PostgreSQL runs separately.
+The harness preallocates cycle records and clears per-socket observations so
+retained raw delivery samples do not manufacture the measured trend.
+
+The report retains configuration, pool sizes, source hashes, every closed/open
+resource sample and exact sequence totals. All recorded source hashes matched
+the implementation inspected after execution. The benchmark protocol states
+its thresholds and reproduction commands before the measured results; no
+threshold was relaxed to obtain a pass. The positive trend triggered the
+independent diagnosis and stricter experiment below.
+
+### E16 follow-up — Prewarmed six-minute steady state
+
+The initial heap-profile differential identified retained `pgx.(*Conn).getRows`
+objects through `Store.Authenticate`. Inspection of pinned pgx v5.10.0 found a
+bounded mechanism: each physical connection retains closed `baseRows` through
+its current `poolRow` backing array. The initial 64-row batch grows to a maximum
+128-row batch and is replaced as calls consume it. `baseRows.Close` clears values,
+scan plans/types, context, SQL and arguments. This source-level explanation was
+an inference about the initial trend, so it was tested rather than accepted as
+proof of a plateau.
+
+[`TestSSESteadyStateEvidence`](../benchmarks/sse_plateau_test.go) and its
+[prewarm/oracle helper](../benchmarks/sse_steady_test.go) retain the production
+16-connection API pool and unmodified socket settings. Prewarm exercises every
+physical connection through at least 256 real authenticated `Pool.QueryRow`
+calls, followed by three full 100-client TCP cycles. The independently frozen
+oracle then requires 72 five-second cycles, at least 256 further auth calls per
+backend, first/last 12-sample mean growth ≤256 KiB, last-half OLS slope ≤1 KiB/s,
+and a full-window post-GC heap range ≤1,536 KiB. No limit was adjusted after
+observing this run.
+
+The [raw steady-state report](../benchmarks/results/sse-steady-state-20260911T191244.281144193Z/report.json)
+records **PASS**, 361.310 seconds test duration and 360.221470 seconds measured.
+All 72 cycles complete 100 actual TCP connections and 1,000 consecutive healthy
+deliveries, giving 7,200 connections and 72,000 deliveries. Every cycle returns
+to zero active TCP connections/handlers, six goroutines and 42 FDs. There are
+750 durable events including warmup, no durable sequence gaps, a matching final
+API cursor and no slow queue overflow. The
+[independent raw-data audit](../benchmarks/results/sse-steady-state-20260911T191244.281144193Z/independent-audit.json)
+checks each cycle, cursor continuity, backend identity/counts, source hashes and
+recomputes the statistics below.
+
+| Post-GC heap measurement | Actual value | Frozen limit |
+| --- | ---: | ---: |
+| First / last 12-sample mean | 7,374,188 / 7,632,050 bytes | Reference / comparison |
+| Mean-window difference | 257,862 bytes | 262,144 bytes |
+| Last 36 samples' OLS slope | 32.2710 bytes/s | 1,024 bytes/s |
+| Full-window minimum / maximum | 7,045,032 / 7,866,504 bytes | Reported |
+| Full-window range | 821,472 bytes | 1,572,864 bytes |
+
+The mean-window difference passes by only **4,282 bytes**; that margin is
+retained explicitly. The six consecutive one-minute means are 7,374,188,
+7,610,705, 7,483,673, 7,646,602, 7,453,571 and 7,632,050 bytes. They rise and fall
+within the reported range, and the final three-minute trend is close to flat,
+rather than continuing the initial experiment's approximately 7 KiB/s slope.
+This supports bounded oscillation under this measured workload, not exactly zero
+retained allocation or an unlimited-lifetime assertion.
+
+All 16 physical backend IDs are unchanged between prewarm and measurement end.
+Each has 266–286 prewarm auth calls and 420–477 measured calls, so every
+connection turns over at least three 128-row batches during the measurement.
+The actual `baseRows` structure is 264 bytes: the 16 ×128 current slots bound
+these structs to 2,048 objects / 540,672 structure bytes. Allocator size classes,
+wrappers and fixed connection/runtime caches are additional memory; this figure
+is not a total heap bound.
+
+[Profiles and differential text](../benchmarks/results/sse-steady-state-20260911T191244.281144193Z)
+cover warmup, rounds 6, 12, 36, 60 and final. From round 36 to final, sampled
+`getRows` retention decreases by approximately 512 KiB; positive sampled bufio
+reader retention is offset by released bufio writers and rows. The initial
+row-retention growth therefore does not persist across the warmed batches in
+this sample. Heap pprof uses statistical sampling, so its estimated object counts
+and positive/negative differences are not substituted for exact MemStats.
+Original raw reports remain unchanged, and each experiment now includes
+SHA256-matching source snapshots to preserve its tested working-tree version.
+After this run, an additional oracle unit regression made backend-ID equality
+mandatory rather than checking only the pool/count bounds. The independent audit
+confirms the recorded run already has the same 16 IDs; its raw report and frozen
+source snapshot are preserved. Both heap oracle tests pass `-race`, and benchmark
+`go vet` passes after that harness-only strengthening.
+
+This closes the local repeated-churn acceptance for the fixed six-minute
+window. It remains separate from E15's actual slow-client transport termination
+and E10's exact 200-subscription workload. API, clients and publisher share a Go
+process; PostgreSQL is separate and the host is shared. There are no models,
+effects, containers, retention deletes or outages in this experiment. Longer
+lifetimes and different traffic/deployment combinations are not established.
+
+## E17 — Cross-store orphan retention, 2026-09-11
+
+The local collector holds an exclusive filesystem publication lock while reading
+all PostgreSQL references and UUID-bound SQLite journal pins. Worker and runner
+publishers hold the shared lock across durable bytes and authoritative reference
+publication. Wrong/missing/recreated journals fail closed; a new SQLite file at
+the same path cannot impersonate the prior journal. Directory fsync covers the
+object and newly created ancestor entries. See [the protocol](object-retention.md).
+
+The [retained race log](../benchmarks/results/artifact-retention-20260911/race.log)
+uses actual private-schema PostgreSQL and WAL SQLite fixtures. It injects an
+event-write failure after artifact metadata insertion, checks metadata and event
+sequence rollback, then safely collects the unreferenced object. It also tests
+both GC/publication orderings, old-key deduplication, runner-only references,
+same-path journal replacement, actual publisher process death, staging ages,
+batch limits and dry runs. Filesystem/SQLite tests and the real PG cases ran
+under `-race`.
+
+The [actual operator report](../benchmarks/results/artifact-retention-20260911/report.json)
+records 101 READY keys and 159 total authoritative keys whose hash/size matched
+before and after collection. Exactly one deliberately aged synthetic orphan was
+selected by dry run and deleted by the seven-day policy. This is a local
+retention/correctness result, not distributed object-store or object-retirement
+semantics. Interrupted import recovery is separately exercised in E18; corrupt
+partial files and legacy orphan leases without a source hash remain preserved.
+
+## E18 — Real runner process fault matrix, 2026-09-11
+
+All 11 [actual process cases](runner-fault-evidence.md) passed in 33.93 seconds
+using the original journal, fixed ext4 pool and real rootless Docker. Evidence
+includes daemon create/start counts, same-operation receipts, durable artifact
+pins, three import-crash windows, response timeout, and old/new writer timestamps
+across epoch adoption. Five successful write cases each executed once. Every
+test slot was stopped, sealed and released; all four services were restored and
+the API readiness endpoint returned ready.
+
+The record retains the initial user-namespace startup failure, the discovered
+created-container cancellation failure, its correction and the explicit recovery
+of that exact original operation before the successful full rerun. Runner-only
+reports explicitly mark PG effect/capacity/fee ledgers N/A. Application-level
+worker/runner fault acceptance remains a separate requirement.
+
+## E19 — Additive upgrades and independent collector, 2026-09-11
+
+The [operational record](recovery-evidence.md) links actual PostgreSQL v6→v8 and
+SQLite v3→v4 upgrade results. Existing unknown state, immutable request/receipt
+bytes, and legacy audit gaps stay explicit. The SQLite migration fixture uses a
+TestBackend and is not container-isolation evidence.
+
+A distinct ordinary-user process extracted from the official digest-pinned
+OpenTelemetry Collector image received and persisted four correlated spans from
+the production OTLP exporter. The collector file proves API→run→model/effect
+topology and excludes the fixture's sensitive-data canaries. No model or command
+was dispatched for this telemetry test. Paired database/journal/object/workspace
+restore has a reviewed executable harness and new source images; its first host
+mount still awaits the operator, so full paired recovery is not yet claimed.
+
+## E21 — Real application process faults, 2026-09-11
+
+The [application record](application-fault-evidence.md) completes the combined
+F05/F07/F08 paths in 39.72 seconds. Each uses actual typed RPC, Docker, SQLite,
+PostgreSQL, two worker processes and a dedicated restricted worker login. Original
+operation identity survives timeout/crash/lease replacement; the first worker
+dies by SIGKILL, and the second claims only after natural database lease expiry.
+All three repairs finish trusted verification, preserve four synthetic model
+attempts and four settlements, release capacity and publish a snapshot before
+releasing their workspace. Independent recomputation checks 81 READY artifacts,
+all quota/capacity totals, original operation receipts and daemon histories.
+The two setup failures remain linked. Model-stream, approval, business cancel,
+database and combined API/runner outage cases retain their own open rows.
+
+## E22 — Fixed evaluation corpus validation, 2026-09-11
+
+The [eval-v2 report](../benchmarks/results/evaluation-oracle-v2-20260911/report.json)
+records 16 actual isolated container checks across two Python and two Go tasks.
+Every defective source fails an executed target assertion while its regression
+suite passes; every oracle passes both suites. The initial Go corpus exhausted
+the production 64 MiB scratch mount during compilation. Its failed evidence and
+original corpus manifest remain retained; v2 removes incidental formatting
+dependencies and keeps the same production resource limits. A plain exit 1 from
+compilation is now rejected as infrastructure failure, not a successful red test.
+This is held out from the demonstration fixtures only, without claims about
+model training contamination. No native model has run on this corpus yet.
+
+## E23 — Continuation delivery checks, 2026-09-11
+
+The [retained local report](../benchmarks/results/delivery-validation-20260911/report.json)
+and raw logs record successful build, ordinary tests, race detection, vet and
+OpenAPI/SQLC/protobuf regeneration. Ordinary and race suites each contain 296
+passing test/subtest entries, 19 passing packages and 16 explicit opt-in skips,
+using Go 1.26.8, two Go scheduler threads and package parallelism two. Database
+tests run in separate schemas on the existing loopback PostgreSQL fixture.
+The real load/process/collector results above run separately and are not inferred
+from skipped tests. Python checks cover 14 volume-helper, 8 runner-helper,
+10 recovery and 13 evaluation tests. This working-tree record is anchored at
+`a4541a1`; it is not relabeled as a test of an as-yet-uncreated commit.
+
 ## Updating this record
 
-Current delivery fields: `tested_commit: b924f1c`;
+Last committed delivery fields: `tested_commit: b924f1c`;
 `final_tree_validation: pass`; `clean_clone_reproduction: pass (bounded scope above)`;
 `github_actions_execution: success (34206855353)`; `native_provider_evaluation: pending`.
+The 2026-09-11 local working-tree continuation is recorded separately in E23;
+its new GitHub Actions and clean-clone checks remain pending.
 The earlier generator command reported by the integration agent and retained
 raw workload reports are listed separately above.
 

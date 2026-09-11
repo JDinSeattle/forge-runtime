@@ -1,0 +1,56 @@
+{
+  "inspected_at_utc": "2026-09-11T19:45:50.627789+00:00",
+  "test_started_at_utc": "2026-09-11T19:44:32.961963009Z",
+  "binary_mtime_utc": "2026-09-11T19:44:32.954217+00:00",
+  "binary_sha256": "e9d7d6be85c061225dbe9acb33fbf4ed90498c8dcd6dd4fb83b5cdf6c4a4c086",
+  "go_build_id": "oDaD-_Iu8_nlTrpfrld5/a6MlBxcuBTdv3BZ8opo4/c07tIYiofCYLvIlGEsMs/8i44PCtroYneItKSqwiJ",
+  "sources": {
+    "benchmarks/sse_p02_test.go": {
+      "sha256": "68fba3bae72788b4d3084263b2233d55a0ab3e9bcc514f08490eaa21b52cbf36",
+      "mtime_utc": "2026-09-11T19:43:48.939625+00:00",
+      "last_modified_before_binary": true
+    },
+    "benchmarks/sse_sustained_test.go": {
+      "sha256": "9688593ae971731f30fe44dc78aa7e0937889f932654c82abb151474a9ea0789",
+      "mtime_utc": "2026-09-11T18:52:35.819422+00:00",
+      "last_modified_before_binary": true
+    },
+    "benchmarks/sse_test.go": {
+      "sha256": "a3fb78d3329cdc4c39eb433573084ec2d25451f8b477d66139affabc5fb0e3e2",
+      "mtime_utc": "2026-09-08T08:20:36.865256+00:00",
+      "last_modified_before_binary": true
+    },
+    "internal/httpapi/sse.go": {
+      "sha256": "9e1cf3e540cc0c22970cda5731cb9428272245dd25a25311d988447f2248996c",
+      "mtime_utc": "2026-09-11T18:45:02.257973+00:00",
+      "last_modified_before_binary": true
+    },
+    "internal/eventstream/hub.go": {
+      "sha256": "b68eb36971c13e0542421247304ff73d04f99e137b3a184e98492d242f6e8bd9",
+      "mtime_utc": "2026-09-08T07:39:40.652556+00:00",
+      "last_modified_before_binary": true
+    },
+    "internal/persistence/execution.go": {
+      "sha256": "cd61c91ff600bd704d011734c3048206c190090b4d1f74daf2d97de620c91d56",
+      "mtime_utc": "2026-09-08T00:16:45.485870+00:00",
+      "last_modified_before_binary": true
+    },
+    "internal/persistence/store.go": {
+      "sha256": "a60c400be7d3ab9dff474f84066b598e8f6c915e4b73de55d6277e2340c72eb8",
+      "mtime_utc": "2026-09-08T07:39:40.652589+00:00",
+      "last_modified_before_binary": true
+    },
+    "internal/telemetry/http.go": {
+      "sha256": "038f5714b3a597696e0ff2b2db51a8b8511ce61ebdc84ee14d756424f308ab51",
+      "mtime_utc": "2026-09-11T19:43:07.299741+00:00",
+      "last_modified_before_binary": true
+    },
+    "go.mod": {
+      "sha256": "61a96a6dbfdc546edcc7abab472adc49313db486443c47f2272ad75cdae21682",
+      "mtime_utc": "2026-09-08T08:21:39.794038+00:00",
+      "last_modified_before_binary": true
+    }
+  },
+  "workload_changes_after_compilation": false,
+  "note": "Second execution contains the telemetry FlushError propagation fix. P02 traffic, deadlines, socket settings and acceptance thresholds are identical to the retained failed first execution; the benchmark manifest now also includes telemetry/http.go."
+}

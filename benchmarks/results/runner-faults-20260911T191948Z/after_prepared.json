@@ -1,0 +1,81 @@
+{
+  "case": "after_prepared",
+  "matrix_components": [
+    "F05-runner",
+    "F07-runner"
+  ],
+  "workspace_id": "fault-280f7182c884",
+  "operation_id": "fault-280f7182c884-op",
+  "fault_marker": {
+    "point": "after_prepared",
+    "action": "exit",
+    "tenant_id": "runner-fault-acceptance",
+    "run_id": "fault-280f7182c884",
+    "workspace_id": "fault-280f7182c884",
+    "operation_id": "fault-280f7182c884-op",
+    "epoch": 1,
+    "expires_at": "2026-09-11T12:24:55.852175581-07:00",
+    "pid": 3993001,
+    "observed_at": "2026-09-11T19:19:57.029514154Z"
+  },
+  "initial_status": "unknown",
+  "final_operation": {
+    "request": {
+      "tenant_id": "runner-fault-acceptance",
+      "run_id": "fault-280f7182c884",
+      "workspace_id": "fault-280f7182c884",
+      "epoch": 1,
+      "grant": "",
+      "operation_id": "fault-280f7182c884-op",
+      "expected_revision": 1,
+      "kind": "run_command",
+      "args": {
+        "command": [
+          "python",
+          "-I",
+          "-B",
+          "-c",
+          "import os\nwith open('fault-count.txt','a') as f:\n f.write('1\\n');f.flush();os.fsync(f.fileno())"
+        ]
+      },
+      "args_hash": "27011b2d565b2d219be51ea6d623d0fc0e2d641c478d33b4cd2367bd8ad18764",
+      "policy_version": "runner-crash-v1",
+      "deadline": "2026-09-11T19:20:41.959791795Z"
+    },
+    "status": "cancelled",
+    "job_id": "forge-94c812f5f89754ba68007f5e22ea5399e3410544",
+    "before_hash": "66ee6f4ae415b0735c6eb4d0645f5a8d72d33e7946d0219e319aa9158a375659",
+    "after_hash": "66ee6f4ae415b0735c6eb4d0645f5a8d72d33e7946d0219e319aa9158a375659",
+    "after_revision": 1,
+    "result": {
+      "never_started": true,
+      "dispatch_not_started": true
+    },
+    "receipt": {
+      "tenant_id": "runner-fault-acceptance",
+      "run_id": "fault-280f7182c884",
+      "kind": "operation_receipt",
+      "object_key": "runner-fault-acceptance/fault-280f7182c884/2106bee1a92c9998407d6262ed441ead0ca6ce200d8f8fe8eb90d3b5401ec2ab",
+      "sha256": "2106bee1a92c9998407d6262ed441ead0ca6ce200d8f8fe8eb90d3b5401ec2ab",
+      "size": 985
+    },
+    "error": "sandbox_job_not_found",
+    "cancel_requested": true
+  },
+  "lease_epoch": 1,
+  "workspace_exists_before_resume": false,
+  "operations_before_resume": 0,
+  "dispatch_started": false,
+  "docker_start_intent": false,
+  "same_id_original_receipt": true,
+  "docker_creates": 0,
+  "docker_starts": 0,
+  "journal_artifact_pins": 3,
+  "no_active": true,
+  "released": true,
+  "snapshot_sha256": "7caa2b14d25d5e62d17e35d825b48d488513345ed35cd41700d2f9108e63afaf",
+  "old_epoch_rejected": false,
+  "writer_exclusive": false,
+  "passed": true,
+  "control_plane_evidence": "N/A: isolated runner RPC acceptance; no PostgreSQL run/effect/budget/SSE claim"
+}

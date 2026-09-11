@@ -1,0 +1,18 @@
+Running as unit: forge-runtime-application-faults.service; invocation ID: 47603598188a4230b76331e9759fb41f
+=== RUN   TestRealApplicationFaultMatrix
+=== RUN   TestRealApplicationFaultMatrix/F05
+    application_test.go:670: F05 run=run_ICRDMAOQZY3EUMEZ5XBGTODP5C original_op=run_ICRDMAOQZY3EUMEZ5XBGTODP5C_step_1_op_0 epochs=2->4 worker_pids=106694/108086 ledger_fee=570 synthetic microusd
+=== RUN   TestRealApplicationFaultMatrix/F07
+    application_test.go:670: F07 run=run_OKCGGUK44KIVWRDFNQYFS3BUSX original_op=run_OKCGGUK44KIVWRDFNQYFS3BUSX_step_1_op_0 epochs=2->4 worker_pids=111726/113490 ledger_fee=570 synthetic microusd
+=== RUN   TestRealApplicationFaultMatrix/F08
+    application_test.go:670: F08 run=run_2K6OXI3QFTZH3X47HXRYX5LNTB original_op=run_2K6OXI3QFTZH3X47HXRYX5LNTB_step_1_op_0 epochs=2->4 worker_pids=116683/117384 ledger_fee=570 synthetic microusd
+--- PASS: TestRealApplicationFaultMatrix (39.72s)
+    --- PASS: TestRealApplicationFaultMatrix/F05 (12.09s)
+    --- PASS: TestRealApplicationFaultMatrix/F07 (14.88s)
+    --- PASS: TestRealApplicationFaultMatrix/F08 (12.75s)
+PASS
+          Finished with result: success
+Main processes terminated with: code=exited, status=0/SUCCESS
+               Service runtime: 39.780s
+             CPU time consumed: 8.529s
+                   Memory peak: 108.7M (swap: 0B)

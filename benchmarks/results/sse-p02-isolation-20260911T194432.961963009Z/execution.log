@@ -1,0 +1,13 @@
+=== RUN   TestSSEP02IsolationEvidence
+    sse_p02_test.go:420: tick=300/7500 slow_tcp=0 slow_handlers=0
+    sse_p02_test.go:420: tick=600/7500 slow_tcp=0 slow_handlers=0
+    sse_p02_test.go:420: tick=900/7500 slow_tcp=0 slow_handlers=0
+    sse_p02_test.go:420: tick=1200/7500 slow_tcp=0 slow_handlers=0
+    sse_p02_test.go:420: tick=1500/7500 slow_tcp=0 slow_handlers=0
+    sse_p02_test.go:415: all twenty slow TCP connections closed at tick=1501 elapsed=300.316s
+    sse_p02_test.go:420: tick=1501/7500 slow_tcp=20 slow_handlers=20
+    sse_p02_test.go:557: evidence=/home/postedism/Desktop/mini claude code/forge-runtime/benchmarks/results/local/sse-p02-isolation-20260911T194432.961963009Z
+    sse_p02_test.go:558: passed=true ticks=1551 elapsed=310.217s healthy=180 deliveries=279180 p95=92.813ms slow_tcp=20 dropped_hints=30820
+--- PASS: TestSSEP02IsolationEvidence (311.19s)
+PASS
+ok  	github.com/JDinSeattle/forge-runtime/benchmarks	311.204s

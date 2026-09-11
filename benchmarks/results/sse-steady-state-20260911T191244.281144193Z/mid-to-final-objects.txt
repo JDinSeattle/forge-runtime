@@ -1,0 +1,27 @@
+File: benchmarks.test
+Build ID: 5226409798d6132f267a6430074fcf2a1609a5a9
+Type: inuse_objects
+Time: 2026-09-11 12:15:45 PDT
+Showing nodes accounting for -1691, 76.69% of 2205 total
+      flat  flat%   sum%        cum   cum%
+     -1820 82.54% 82.54%      -1820 82.54%  github.com/jackc/pgx/v5.(*Conn).getRows
+       257 11.66% 70.88%        257 11.66%  bufio.NewReaderSize (inline)
+      -128  5.80% 76.69%       -128  5.80%  bufio.NewWriterSize (inline)
+         0     0% 76.69%        257 11.66%  bufio.NewReader (inline)
+         0     0% 76.69%      -1820 82.54%  github.com/JDinSeattle/forge-runtime/benchmarks.sustainedServer.func1
+         0     0% 76.69%      -1820 82.54%  github.com/JDinSeattle/forge-runtime/internal/httpapi.(*Server).authenticate-fm.(*Server).authenticate.func1
+         0     0% 76.69%      -1820 82.54%  github.com/JDinSeattle/forge-runtime/internal/httpapi.(*Server).requestContext-fm.(*Server).requestContext.func1
+         0     0% 76.69%      -1820 82.54%  github.com/JDinSeattle/forge-runtime/internal/persistence.(*Store).Authenticate
+         0     0% 76.69%      -1820 82.54%  github.com/JDinSeattle/forge-runtime/internal/telemetry.(*Telemetry).Middleware-fm.(*Telemetry).Middleware.func1
+         0     0% 76.69%      -1820 82.54%  github.com/go-chi/chi/v5.(*ChainHandler).ServeHTTP
+         0     0% 76.69%      -1820 82.54%  github.com/go-chi/chi/v5.(*Mux).ServeHTTP
+         0     0% 76.69%      -1820 82.54%  github.com/go-chi/chi/v5.(*Mux).routeHTTP
+         0     0% 76.69%      -1820 82.54%  github.com/jackc/pgx/v5.(*Conn).Query
+         0     0% 76.69%      -1820 82.54%  github.com/jackc/pgx/v5.(*Conn).QueryRow (inline)
+         0     0% 76.69%      -1820 82.54%  github.com/jackc/pgx/v5/pgxpool.(*Conn).QueryRow
+         0     0% 76.69%      -1820 82.54%  github.com/jackc/pgx/v5/pgxpool.(*Pool).QueryRow
+         0     0% 76.69%      -1691 76.69%  net/http.(*conn).serve
+         0     0% 76.69%      -1820 82.54%  net/http.HandlerFunc.ServeHTTP
+         0     0% 76.69%        257 11.66%  net/http.newBufioReader
+         0     0% 76.69%       -128  5.80%  net/http.newBufioWriterSize
+         0     0% 76.69%      -1820 82.54%  net/http.serverHandler.ServeHTTP

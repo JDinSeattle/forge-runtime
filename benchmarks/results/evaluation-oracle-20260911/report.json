@@ -1,0 +1,101 @@
+{
+  "cases": [
+    {
+      "case": "py-utf8-chunks",
+      "exit_code": 1,
+      "expected_exit": 1,
+      "seconds": 0.7055182009935379,
+      "suite": "target",
+      "variant": "source"
+    },
+    {
+      "case": "py-utf8-chunks",
+      "exit_code": 0,
+      "expected_exit": 0,
+      "seconds": 0.7858691869769245,
+      "suite": "regression",
+      "variant": "source"
+    },
+    {
+      "case": "py-utf8-chunks",
+      "exit_code": 0,
+      "expected_exit": 0,
+      "seconds": 0.7561362130218185,
+      "suite": "target",
+      "variant": "oracle"
+    },
+    {
+      "case": "py-utf8-chunks",
+      "exit_code": 0,
+      "expected_exit": 0,
+      "seconds": 0.8888601960497908,
+      "suite": "regression",
+      "variant": "oracle"
+    },
+    {
+      "case": "py-latest-records",
+      "exit_code": 1,
+      "expected_exit": 1,
+      "seconds": 0.5969393150298856,
+      "suite": "target",
+      "variant": "source"
+    },
+    {
+      "case": "py-latest-records",
+      "exit_code": 0,
+      "expected_exit": 0,
+      "seconds": 0.7626499570324086,
+      "suite": "regression",
+      "variant": "source"
+    },
+    {
+      "case": "py-latest-records",
+      "exit_code": 0,
+      "expected_exit": 0,
+      "seconds": 0.7046716350014322,
+      "suite": "target",
+      "variant": "oracle"
+    },
+    {
+      "case": "py-latest-records",
+      "exit_code": 0,
+      "expected_exit": 0,
+      "seconds": 0.8561685509630479,
+      "suite": "regression",
+      "variant": "oracle"
+    },
+    {
+      "case": "go-midpoint",
+      "exit_code": 1,
+      "expected_exit": 1,
+      "seconds": 9.220737154013477,
+      "suite": "target",
+      "variant": "source"
+    },
+    {
+      "case": "go-midpoint",
+      "exit_code": 1,
+      "expected_exit": 0,
+      "seconds": 8.32800625602249,
+      "suite": "regression",
+      "variant": "source"
+    }
+  ],
+  "corpus_sha256": "e6e2a4d7a7569cc49aa6f3b0d819d0e008cc09c1c440b1cd7aa3a37f3d99289d",
+  "images": {
+    "golang@sha256:9fdc884aacc3bec89b20ffc69f4bb369c78210e3e4f600387b5128b12c199f81": {
+      "id": "sha256:9fdc884aacc3bec89b20ffc69f4bb369c78210e3e4f600387b5128b12c199f81",
+      "repo_digests": [
+        "golang@sha256:9fdc884aacc3bec89b20ffc69f4bb369c78210e3e4f600387b5128b12c199f81"
+      ]
+    },
+    "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36": {
+      "id": "sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+      "repo_digests": [
+        "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36"
+      ]
+    }
+  },
+  "passed": false,
+  "scope": "fixed corpus oracle validation only; no model quality result or provider call"
+}

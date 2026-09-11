@@ -1,0 +1,133 @@
+{
+  "case": "after_job_exit",
+  "matrix_components": [
+    "F05-runner",
+    "F07-runner"
+  ],
+  "workspace_id": "fault-8a0d00d51be1",
+  "operation_id": "fault-8a0d00d51be1-op",
+  "fault_marker": {
+    "point": "after_job_exit",
+    "action": "exit",
+    "tenant_id": "runner-fault-acceptance",
+    "run_id": "fault-8a0d00d51be1",
+    "workspace_id": "fault-8a0d00d51be1",
+    "operation_id": "fault-8a0d00d51be1-op",
+    "epoch": 1,
+    "expires_at": "2026-09-11T12:25:07.183921514-07:00",
+    "pid": 3996429,
+    "observed_at": "2026-09-11T19:20:08.942841004Z"
+  },
+  "initial_status": "succeeded",
+  "final_operation": {
+    "request": {
+      "tenant_id": "runner-fault-acceptance",
+      "run_id": "fault-8a0d00d51be1",
+      "workspace_id": "fault-8a0d00d51be1",
+      "epoch": 1,
+      "grant": "",
+      "operation_id": "fault-8a0d00d51be1-op",
+      "expected_revision": 1,
+      "kind": "run_command",
+      "args": {
+        "command": [
+          "python",
+          "-I",
+          "-B",
+          "-c",
+          "import os\nwith open('fault-count.txt','a') as f:\n f.write('1\\n');f.flush();os.fsync(f.fileno())"
+        ]
+      },
+      "args_hash": "27011b2d565b2d219be51ea6d623d0fc0e2d641c478d33b4cd2367bd8ad18764",
+      "policy_version": "runner-crash-v1",
+      "deadline": "2026-09-11T19:20:53.287091996Z"
+    },
+    "status": "succeeded",
+    "job_id": "forge-bab0afd46dab6a29819afe567215ee5d8c896ecd",
+    "before_hash": "66ee6f4ae415b0735c6eb4d0645f5a8d72d33e7946d0219e319aa9158a375659",
+    "after_hash": "39958a66bbfef14ea62e44296843a207a5f43499ea6ac07d69459b86d85c2c9e",
+    "after_revision": 2,
+    "result": {
+      "id": "forge-bab0afd46dab6a29819afe567215ee5d8c896ecd",
+      "running": false,
+      "exit_code": 0,
+      "started": true,
+      "truncated": false
+    },
+    "receipt": {
+      "tenant_id": "runner-fault-acceptance",
+      "run_id": "fault-8a0d00d51be1",
+      "kind": "operation_receipt",
+      "object_key": "runner-fault-acceptance/fault-8a0d00d51be1/47517fae4b0c9c43c473a713cb7a2811ad3632ae19581e8f6a535a595eb74dfe",
+      "sha256": "47517fae4b0c9c43c473a713cb7a2811ad3632ae19581e8f6a535a595eb74dfe",
+      "size": 1022
+    },
+    "cancel_requested": false
+  },
+  "lease_epoch": 1,
+  "workspace_exists_before_resume": false,
+  "operations_before_resume": 0,
+  "dispatch_started": true,
+  "docker_start_intent": true,
+  "same_id_original_receipt": true,
+  "counter": "1\n",
+  "docker_events": [
+    {
+      "Type": "container",
+      "Action": "create",
+      "Actor": {
+        "ID": "7889f8f7ab33bffd580832908a6e823938155f0e6727d1be4d376bc2f8ea2ac4",
+        "Attributes": {
+          "forge.runtime": "1",
+          "image": "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+          "name": "forge-bab0afd46dab6a29819afe567215ee5d8c896ecd"
+        }
+      },
+      "scope": "local",
+      "time": 1789154408,
+      "timeNano": 1789154408633874684
+    },
+    {
+      "Type": "container",
+      "Action": "start",
+      "Actor": {
+        "ID": "7889f8f7ab33bffd580832908a6e823938155f0e6727d1be4d376bc2f8ea2ac4",
+        "Attributes": {
+          "forge.runtime": "1",
+          "image": "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+          "name": "forge-bab0afd46dab6a29819afe567215ee5d8c896ecd"
+        }
+      },
+      "scope": "local",
+      "time": 1789154408,
+      "timeNano": 1789154408816029982
+    },
+    {
+      "Type": "container",
+      "Action": "die",
+      "Actor": {
+        "ID": "7889f8f7ab33bffd580832908a6e823938155f0e6727d1be4d376bc2f8ea2ac4",
+        "Attributes": {
+          "execDuration": "0",
+          "exitCode": "0",
+          "forge.runtime": "1",
+          "image": "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+          "name": "forge-bab0afd46dab6a29819afe567215ee5d8c896ecd"
+        }
+      },
+      "scope": "local",
+      "time": 1789154408,
+      "timeNano": 1789154408926826317
+    }
+  ],
+  "docker_creates": 1,
+  "docker_starts": 1,
+  "journal_artifact_pins": 3,
+  "no_active": true,
+  "released": true,
+  "snapshot_sha256": "0338f87153d70fbeb353c5013229d2a56dc17aac439b15448f4a0d32cf7a04ef",
+  "old_epoch_rejected": false,
+  "writer_exclusive": false,
+  "passed": true,
+  "control_plane_evidence": "N/A: isolated runner RPC acceptance; no PostgreSQL run/effect/budget/SSE claim"
+}

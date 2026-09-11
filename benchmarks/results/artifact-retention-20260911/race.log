@@ -1,0 +1,21 @@
+=== RUN   TestJournalRegistrationIsAtomicAndRefusesOmittedAuthorities
+--- PASS: TestJournalRegistrationIsAtomicAndRefusesOmittedAuthorities (0.01s)
+=== RUN   TestImmutableConcurrentPutOwnershipAndCorruption
+--- PASS: TestImmutableConcurrentPutOwnershipAndCorruption (0.01s)
+=== RUN   TestArtifactByteLimitAndContextDoNotPublishObjects
+--- PASS: TestArtifactByteLimitAndContextDoNotPublishObjects (0.01s)
+=== RUN   TestCollectionExcludesOldDeduplicatingPublisherAndPreservesCommittedReference
+--- PASS: TestCollectionExcludesOldDeduplicatingPublisherAndPreservesCommittedReference (0.08s)
+=== RUN   TestCollectionFailsClosedAndCollectsOnlyAgedRecognizedNames
+--- PASS: TestCollectionFailsClosedAndCollectsOnlyAgedRecognizedNames (0.01s)
+=== RUN   TestPublicationLockSurvivesAcrossProcessesAndReleasesOnDeath
+--- PASS: TestPublicationLockSurvivesAcrossProcessesAndReleasesOnDeath (0.07s)
+PASS
+ok  	github.com/JDinSeattle/forge-runtime/internal/artifact	1.203s
+=== RUN   TestJournalReferenceReaderProtectsOldReceiptsAndNewPinsFailsClosed
+--- PASS: TestJournalReferenceReaderProtectsOldReceiptsAndNewPinsFailsClosed (0.01s)
+=== RUN   TestCrossStoreOrphanCollectionPublicationRaces
+    objects_test.go:244: READY refs=2, runner-only refs=1, old orphan deleted=1; both GC/publication orderings preserved consistency
+--- PASS: TestCrossStoreOrphanCollectionPublicationRaces (0.40s)
+PASS
+ok  	github.com/JDinSeattle/forge-runtime/internal/retention	1.430s

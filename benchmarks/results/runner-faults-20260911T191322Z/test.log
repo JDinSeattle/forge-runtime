@@ -1,0 +1,22 @@
+Running as unit: forge-runtime-fault-matrix.service; invocation ID: 22d6cd0616ee49cbbfb4f5ebf7515055
+=== RUN   TestRealRunnerCrashMatrix
+=== RUN   TestRealRunnerCrashMatrix/after_volume_lease
+=== RUN   TestRealRunnerCrashMatrix/after_import_file
+=== RUN   TestRealRunnerCrashMatrix/after_import_before_workspace
+=== RUN   TestRealRunnerCrashMatrix/after_prepared
+=== RUN   TestRealRunnerCrashMatrix/after_docker_create
+    fault_integration_test.go:435: never-started proof failed: {Request:{WorkspaceRequest:{TenantID: RunID: WorkspaceID: Epoch:0 Grant:} OperationID: ExpectedRevision:0 Kind: Args:[] ArgsHash: PolicyVersion: Deadline:0001-01-01 00:00:00 +0000 UTC} Status: JobID: BeforeHash: ExpectedAfterHash: AfterHash: AfterRevision:0 Result:[] ResultTruncated:false Receipt:{TenantID: RunID: Kind: ObjectKey: SHA256: Size:0} Error: CancelRequested:false} reconciliation_required: reconciliation_required
+--- FAIL: TestRealRunnerCrashMatrix (11.58s)
+    --- PASS: TestRealRunnerCrashMatrix/after_volume_lease (2.20s)
+    --- PASS: TestRealRunnerCrashMatrix/after_import_file (2.20s)
+    --- PASS: TestRealRunnerCrashMatrix/after_import_before_workspace (2.22s)
+    --- PASS: TestRealRunnerCrashMatrix/after_prepared (2.35s)
+    --- FAIL: TestRealRunnerCrashMatrix/after_docker_create (2.62s)
+FAIL
+[rootlesskit:child ] error: command [/home/postedism/Desktop/mini claude code/forge-runtime/scripts/faults/run-runner-matrix.sh] exited: exit status 1
+[rootlesskit:parent] error: child exited: exit status 1
+          Finished with result: exit-code
+Main processes terminated with: code=exited, status=1/FAILURE
+               Service runtime: 11.660s
+             CPU time consumed: 1.687s
+                   Memory peak: 72.1M (swap: 0B)

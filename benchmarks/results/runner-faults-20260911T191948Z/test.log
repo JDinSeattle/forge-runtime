@@ -1,0 +1,31 @@
+Running as unit: forge-runtime-fault-matrix.service; invocation ID: 8f1c8d6d442a4cef9d43fc48ba606812
+=== RUN   TestRealRunnerCrashMatrix
+=== RUN   TestRealRunnerCrashMatrix/after_volume_lease
+=== RUN   TestRealRunnerCrashMatrix/after_import_file
+=== RUN   TestRealRunnerCrashMatrix/after_import_before_workspace
+=== RUN   TestRealRunnerCrashMatrix/after_prepared
+=== RUN   TestRealRunnerCrashMatrix/after_docker_create
+=== RUN   TestRealRunnerCrashMatrix/after_docker_start
+=== RUN   TestRealRunnerCrashMatrix/after_job_start
+=== RUN   TestRealRunnerCrashMatrix/after_job_exit
+=== RUN   TestRealRunnerCrashMatrix/after_receipt_before_commit
+=== RUN   TestRealRunnerCrashMatrix/after_start_acceptance
+=== RUN   TestRealRunnerCrashMatrix/takeover
+--- PASS: TestRealRunnerCrashMatrix (33.93s)
+    --- PASS: TestRealRunnerCrashMatrix/after_volume_lease (2.36s)
+    --- PASS: TestRealRunnerCrashMatrix/after_import_file (2.31s)
+    --- PASS: TestRealRunnerCrashMatrix/after_import_before_workspace (2.31s)
+    --- PASS: TestRealRunnerCrashMatrix/after_prepared (2.50s)
+    --- PASS: TestRealRunnerCrashMatrix/after_docker_create (2.92s)
+    --- PASS: TestRealRunnerCrashMatrix/after_docker_start (3.00s)
+    --- PASS: TestRealRunnerCrashMatrix/after_job_start (2.91s)
+    --- PASS: TestRealRunnerCrashMatrix/after_job_exit (3.11s)
+    --- PASS: TestRealRunnerCrashMatrix/after_receipt_before_commit (3.18s)
+    --- PASS: TestRealRunnerCrashMatrix/after_start_acceptance (3.34s)
+    --- PASS: TestRealRunnerCrashMatrix/takeover (5.98s)
+PASS
+          Finished with result: success
+Main processes terminated with: code=exited, status=0/SUCCESS
+               Service runtime: 34.033s
+             CPU time consumed: 6.186s
+                   Memory peak: 83.5M (swap: 0B)

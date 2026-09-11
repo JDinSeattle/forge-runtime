@@ -1,0 +1,115 @@
+{
+  "case": "recover_after_docker_create",
+  "matrix_components": [
+    "F07-runner"
+  ],
+  "workspace_id": "fault-cde8e691cca1",
+  "operation_id": "fault-cde8e691cca1-op",
+  "fault_marker": {
+    "point": "after_docker_create",
+    "action": "exit",
+    "tenant_id": "runner-fault-acceptance",
+    "run_id": "fault-cde8e691cca1",
+    "workspace_id": "fault-cde8e691cca1",
+    "operation_id": "fault-cde8e691cca1-op",
+    "epoch": 1,
+    "expires_at": "2026-09-11T12:18:32.052952283-07:00",
+    "pid": 3919641,
+    "observed_at": "2026-09-11T19:13:33.501024443Z"
+  },
+  "final_operation": {
+    "request": {
+      "tenant_id": "runner-fault-acceptance",
+      "run_id": "fault-cde8e691cca1",
+      "workspace_id": "fault-cde8e691cca1",
+      "epoch": 1,
+      "grant": "",
+      "operation_id": "fault-cde8e691cca1-op",
+      "expected_revision": 1,
+      "kind": "run_command",
+      "args": {
+        "command": [
+          "python",
+          "-I",
+          "-B",
+          "-c",
+          "import os\nwith open('fault-count.txt','a') as f:\n f.write('1\\n');f.flush();os.fsync(f.fileno())"
+        ]
+      },
+      "args_hash": "27011b2d565b2d219be51ea6d623d0fc0e2d641c478d33b4cd2367bd8ad18764",
+      "policy_version": "runner-crash-v1",
+      "deadline": "2026-09-11T19:14:18.135647647Z"
+    },
+    "status": "cancelled",
+    "job_id": "forge-9b4d1541775bedb2d3e543e7fa9764d3c8154c87",
+    "before_hash": "66ee6f4ae415b0735c6eb4d0645f5a8d72d33e7946d0219e319aa9158a375659",
+    "after_hash": "66ee6f4ae415b0735c6eb4d0645f5a8d72d33e7946d0219e319aa9158a375659",
+    "after_revision": 1,
+    "result": {
+      "id": "forge-9b4d1541775bedb2d3e543e7fa9764d3c8154c87",
+      "running": false,
+      "exit_code": 0,
+      "started": false,
+      "truncated": false,
+      "never_started": true
+    },
+    "receipt": {
+      "tenant_id": "runner-fault-acceptance",
+      "run_id": "fault-cde8e691cca1",
+      "kind": "operation_receipt",
+      "object_key": "runner-fault-acceptance/fault-cde8e691cca1/c8c297d4737faf62a5b7b5155b40f138970c2d6c2b476157ba61012b9000632a",
+      "sha256": "c8c297d4737faf62a5b7b5155b40f138970c2d6c2b476157ba61012b9000632a",
+      "size": 1077
+    },
+    "error": "reconciliation_required",
+    "cancel_requested": true
+  },
+  "lease_epoch": 1,
+  "workspace_exists_before_resume": false,
+  "operations_before_resume": 0,
+  "dispatch_started": true,
+  "docker_start_intent": false,
+  "same_id_original_receipt": false,
+  "docker_events": [
+    {
+      "Type": "container",
+      "Action": "create",
+      "Actor": {
+        "ID": "60134e76f00bddd9fe568f6cd579cbec345d19143a668b18cba620d8f38d9eb0",
+        "Attributes": {
+          "forge.runtime": "1",
+          "image": "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+          "name": "forge-9b4d1541775bedb2d3e543e7fa9764d3c8154c87"
+        }
+      },
+      "scope": "local",
+      "time": 1789154013,
+      "timeNano": 1789154013495186814
+    },
+    {
+      "Type": "container",
+      "Action": "destroy",
+      "Actor": {
+        "ID": "60134e76f00bddd9fe568f6cd579cbec345d19143a668b18cba620d8f38d9eb0",
+        "Attributes": {
+          "forge.runtime": "1",
+          "image": "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+          "name": "forge-9b4d1541775bedb2d3e543e7fa9764d3c8154c87"
+        }
+      },
+      "scope": "local",
+      "time": 1789154294,
+      "timeNano": 1789154294002790839
+    }
+  ],
+  "docker_creates": 1,
+  "docker_starts": 0,
+  "journal_artifact_pins": 3,
+  "no_active": true,
+  "released": true,
+  "snapshot_sha256": "276f4049d8414f0e9faa44b4208309cb32e403e44c0f2a37a05177e456195ed5",
+  "old_epoch_rejected": false,
+  "writer_exclusive": false,
+  "passed": true,
+  "control_plane_evidence": "N/A: isolated runner RPC acceptance; no PostgreSQL run/effect/budget/SSE claim"
+}

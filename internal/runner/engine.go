@@ -13,6 +13,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/JDinSeattle/forge-runtime/internal/artifact"
 	"github.com/JDinSeattle/forge-runtime/internal/domain"
 	"github.com/JDinSeattle/forge-runtime/internal/sandbox"
 )
@@ -54,12 +55,21 @@ func Open(config Config) (*Engine, error) {
 	if err != nil {
 		return nil, err
 	}
+	identity, err := j.identity(context.Background())
+	if err != nil {
+		j.db.Close()
+		return nil, err
+	}
 	e := &Engine{config: config, journal: j, cancels: map[domain.ID]context.CancelFunc{}}
 	if err = e.openStorage(); err != nil {
 		for _, unlock := range e.storageUnlocks {
 			unlock()
 		}
 		j.db.Close()
+		return nil, err
+	}
+	if err = artifact.RegisterJournal(context.Background(), config.Artifacts, config.JournalPath, identity); err != nil {
+		_ = e.Close()
 		return nil, err
 	}
 	return e, nil
@@ -113,6 +123,15 @@ func (e *Engine) fault(point string) error {
 	}
 	return nil
 }
+func (e *Engine) faultAt(point string, r OperationRequest) error {
+	if err := e.fault(point); err != nil {
+		return err
+	}
+	if e.config.OperatorFault != nil {
+		return e.config.OperatorFault(point, r)
+	}
+	return nil
+}
 func (e *Engine) authorize(r WorkspaceRequest, permission string) error {
 	e.mu.Lock()
 	closed := e.closed
@@ -156,31 +175,16 @@ func (e *Engine) PrepareWorkspace(ctx context.Context, r PrepareRequest) (Worksp
 	} else if !errors.Is(err, domain.ErrNotFound) {
 		return Workspace{}, err
 	}
-	if err = e.allocateStorage(ctx, r); err != nil {
-		return Workspace{}, err
-	}
 	files, err := e.readTree(ctx, source)
 	if err != nil {
 		return Workspace{}, err
 	}
 	digest := treeHash(files)
-	// Initialization is restartable only when both existing directories match the
-	// immutable source. A partial import is retained for operator reconciliation.
+	if err = e.allocateStorage(ctx, r, digest); err != nil {
+		return Workspace{}, err
+	}
 	for _, dir := range []string{e.baselinePath(r.WorkspaceID), e.workspacePath(r.WorkspaceID)} {
-		if _, statErr := os.Stat(dir); statErr == nil {
-			existing, readErr := e.readTree(ctx, dir)
-			if readErr == nil && len(existing) == 0 && len(files) > 0 {
-				if err = e.copyTree(ctx, files, dir); err != nil {
-					return Workspace{}, err
-				}
-				continue
-			}
-			if readErr != nil || treeHash(existing) != digest {
-				return Workspace{}, domain.ErrReconciliation
-			}
-		} else if !errors.Is(statErr, os.ErrNotExist) {
-			return Workspace{}, statErr
-		} else if err = e.copyTree(ctx, files, dir); err != nil {
+		if err = e.resumeImport(ctx, files, dir, r); err != nil {
 			return Workspace{}, err
 		}
 	}
@@ -188,6 +192,9 @@ func (e *Engine) PrepareWorkspace(ctx context.Context, r PrepareRequest) (Worksp
 		return Workspace{}, err
 	}
 	if err = e.syncWorkspace(ctx, r.WorkspaceID); err != nil {
+		return Workspace{}, err
+	}
+	if err = e.faultAt("after_import_before_workspace", OperationRequest{WorkspaceRequest: r.WorkspaceRequest}); err != nil {
 		return Workspace{}, err
 	}
 	w := Workspace{TenantID: r.TenantID, RunID: r.RunID, ID: r.WorkspaceID, SourceID: r.SourceID, ProfileID: r.ProfileID, Epoch: r.Epoch, Revision: 1, BaselineHash: digest}
@@ -284,7 +291,7 @@ func (e *Engine) StartOperation(ctx context.Context, r OperationRequest) (Operat
 		unlock()
 		return o, err
 	}
-	if err = e.fault("after_prepared"); err != nil {
+	if err = e.faultAt("after_prepared", o.Request); err != nil {
 		unlock()
 		return o, err
 	}
@@ -375,12 +382,21 @@ func (e *Engine) execute(ctx context.Context, o Operation, before tree) {
 				return
 			}
 		}
-		job, err := e.config.Backend.Start(ctx, sandbox.JobSpec{ID: o.JobID, Workspace: jobWorkspace, Profile: profile, Command: command, Deadline: o.Request.Deadline, TrustedVerification: o.Request.Kind == "verify"})
+		job, err := e.config.Backend.Start(ctx, sandbox.JobSpec{ID: o.JobID, Workspace: jobWorkspace, OperationID: o.Request.OperationID, Epoch: o.Request.Epoch, WorkspaceID: o.Request.WorkspaceID, TenantID: o.Request.TenantID, RunID: o.Request.RunID, Profile: profile, Command: command, Deadline: o.Request.Deadline, TrustedVerification: o.Request.Kind == "verify", BeforeStart: func(ctx context.Context) error {
+			result, err := e.journal.db.ExecContext(ctx, `UPDATE operations SET docker_start_intent=1 WHERE id=? AND status='running' AND cancel_requested=0`, o.Request.OperationID)
+			if err != nil {
+				return err
+			}
+			if n, _ := result.RowsAffected(); n != 1 {
+				return domain.ErrReconciliation
+			}
+			return nil
+		}})
 		if err != nil {
 			e.unknown(o, err)
 			return
 		}
-		if err = e.fault("after_job_start"); err != nil {
+		if err = e.faultAt("after_job_start", o.Request); err != nil {
 			e.unknown(o, err)
 			return
 		}
@@ -422,6 +438,10 @@ func (e *Engine) execute(ctx context.Context, o Operation, before tree) {
 		if job.ExitCode != 0 && status != Cancelled {
 			status = Failed
 		}
+		if err = e.faultAt("after_job_exit", o.Request); err != nil {
+			e.unknown(o, err)
+			return
+		}
 		result, _ = json.Marshal(job)
 	} else {
 		result, execErr = e.fileTool(ctx, o, before)
@@ -429,7 +449,7 @@ func (e *Engine) execute(ctx context.Context, o Operation, before tree) {
 			status = Failed
 		}
 	}
-	if err := e.fault("before_receipt"); err != nil {
+	if err := e.faultAt("before_receipt", o.Request); err != nil {
 		e.unknown(o, err)
 		return
 	}
@@ -485,17 +505,22 @@ func (e *Engine) complete(o Operation, status Status, result json.RawMessage, ex
 		e.unknown(o, err)
 		return
 	}
-	ref, err := e.config.Artifacts.Put(ctx, o.Request.TenantID, o.Request.RunID, "operation_receipt", bytes.NewReader(data))
+	err = artifact.WithPublication(ctx, e.config.Artifacts, func(locked context.Context) error {
+		ref, err := e.config.Artifacts.Put(locked, o.Request.TenantID, o.Request.RunID, "operation_receipt", bytes.NewReader(data))
+		if err != nil {
+			return err
+		}
+		o.Receipt = ref
+		if err = e.journal.pinArtifact(locked, ref); err != nil {
+			return err
+		}
+		if err = e.faultAt("after_receipt_before_commit", o.Request); err != nil {
+			return err
+		}
+		_, err = e.journal.finish(locked, o)
+		return err
+	})
 	if err != nil {
-		e.unknown(o, err)
-		return
-	}
-	o.Receipt = ref
-	if err = e.fault("after_receipt_before_commit"); err != nil {
-		e.unknown(o, err)
-		return
-	}
-	if _, err = e.journal.finish(ctx, o); err != nil {
 		e.unknown(o, err)
 	}
 }
@@ -557,6 +582,14 @@ func (e *Engine) reconcileLocked(ctx context.Context, o Operation, cancelJob boo
 		return current, nil
 	}
 	o = current
+	var dispatched, startIntent bool
+	if err = e.journal.db.QueryRowContext(ctx, `SELECT dispatch_started,docker_start_intent FROM operations WHERE id=?`, o.Request.OperationID).Scan(&dispatched, &startIntent); err != nil {
+		return o, err
+	}
+	if !dispatched && (cancelJob || o.CancelRequested) {
+		e.complete(o, Cancelled, json.RawMessage(`{"never_started":true,"dispatch_not_started":true}`), nil)
+		return e.journal.operation(ctx, o.Request.OperationID)
+	}
 	if isProcess(o.Request.Kind) {
 		job, err := e.config.Backend.Inspect(ctx, o.JobID)
 		if err != nil {
@@ -564,8 +597,18 @@ func (e *Engine) reconcileLocked(ctx context.Context, o Operation, cancelJob boo
 			return e.journal.operation(ctx, o.Request.OperationID)
 		}
 		interrupted := false
-		if job.Running && (cancelJob || o.CancelRequested || !o.Request.Deadline.After(e.config.Now())) {
-			job, err = e.config.Backend.Cancel(ctx, o.JobID)
+		if (job.Running || !job.Started) && (cancelJob || o.CancelRequested || !o.Request.Deadline.After(e.config.Now())) {
+			if !job.Started && !startIntent {
+				if safe, ok := e.config.Backend.(interface {
+					CancelNeverDispatched(context.Context, string) (sandbox.Job, error)
+				}); ok {
+					job, err = safe.CancelNeverDispatched(ctx, o.JobID)
+				} else {
+					err = domain.ErrReconciliation
+				}
+			} else {
+				job, err = e.config.Backend.Cancel(ctx, o.JobID)
+			}
 			if err != nil {
 				e.unknown(o, err)
 				return o, err
@@ -574,6 +617,11 @@ func (e *Engine) reconcileLocked(ctx context.Context, o Operation, cancelJob boo
 		}
 		if job.Running {
 			return o, nil
+		}
+		if !job.Started && job.NeverStarted {
+			result, _ := json.Marshal(job)
+			e.complete(o, Cancelled, result, nil)
+			return e.journal.operation(ctx, o.Request.OperationID)
 		}
 		if !job.Started {
 			e.unknown(o, domain.ErrReconciliation)
@@ -645,7 +693,14 @@ func (e *Engine) SealSnapshot(ctx context.Context, r WorkspaceRequest) (Snapshot
 	if err != nil {
 		return Snapshot{}, err
 	}
-	snapshot.Artifact, err = e.config.Artifacts.Put(ctx, r.TenantID, r.RunID, "workspace_snapshot", bytes.NewReader(data))
+	err = artifact.WithPublication(ctx, e.config.Artifacts, func(locked context.Context) error {
+		var err error
+		snapshot.Artifact, err = e.config.Artifacts.Put(locked, r.TenantID, r.RunID, "workspace_snapshot", bytes.NewReader(data))
+		if err != nil {
+			return err
+		}
+		return e.journal.pinArtifact(locked, snapshot.Artifact)
+	})
 	return snapshot, err
 }
 
@@ -721,11 +776,9 @@ func (e *Engine) CancelOperation(ctx context.Context, r InspectRequest) (Operati
 		cancel()
 	}
 	e.mu.Unlock()
-	if isProcess(o.Request.Kind) {
-		if _, err = e.config.Backend.Cancel(ctx, o.JobID); err != nil && !errors.Is(err, sandbox.ErrJobNotFound) {
-			return o, err
-		}
-	}
+	// The local executor reacts to its cancelled context and releases the writer
+	// lock. Orphan jobs are inspected/cancelled only after acquiring that lock,
+	// so durable start intent and the observed interruption stay in one decision.
 	unlock, err := e.lock(ctx, r.WorkspaceID)
 	if err != nil {
 		return o, err
@@ -769,15 +822,6 @@ func (e *Engine) stopAndAdopt(ctx context.Context, r WorkspaceRequest, reopen bo
 			cancel()
 		}
 		e.mu.Unlock()
-		o, err := e.journal.operation(ctx, w.ActiveOperation)
-		if err != nil {
-			return StopReceipt{}, err
-		}
-		if isProcess(o.Request.Kind) {
-			if _, err = e.config.Backend.Cancel(ctx, o.JobID); err != nil && !errors.Is(err, sandbox.ErrJobNotFound) {
-				return StopReceipt{}, err
-			}
-		}
 	}
 	unlock, err := e.lock(ctx, r.WorkspaceID)
 	if err != nil {
@@ -821,7 +865,14 @@ func (e *Engine) stopAndAdopt(ctx context.Context, r WorkspaceRequest, reopen bo
 	}
 	receipt := StopReceipt{Workspace: w, NoActiveOperations: true}
 	raw, _ := json.Marshal(receipt)
-	receipt.Ref, err = e.config.Artifacts.Put(ctx, r.TenantID, r.RunID, "workspace_stop", bytes.NewReader(raw))
+	err = artifact.WithPublication(ctx, e.config.Artifacts, func(locked context.Context) error {
+		var err error
+		receipt.Ref, err = e.config.Artifacts.Put(locked, r.TenantID, r.RunID, "workspace_stop", bytes.NewReader(raw))
+		if err != nil {
+			return err
+		}
+		return e.journal.pinArtifact(locked, receipt.Ref)
+	})
 	return receipt, err
 }
 

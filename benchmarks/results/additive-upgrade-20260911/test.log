@@ -1,0 +1,8 @@
+=== RUN   TestRecoveryPostgresAdditiveUpgrade
+    upgrade_test.go:140: private PostgreSQL schema upgraded 6 -> 8 twice; committed unknown effect, run, artifact metadata and snapshot bytes unchanged
+--- PASS: TestRecoveryPostgresAdditiveUpgrade (0.30s)
+=== RUN   TestRecoverySQLiteV3AdditiveUpgrade
+    upgrade_test.go:301: real SQLite 3 -> 4 migration preserved two immutable operations/receipt; missing legacy dispatch evidence stays unknown; zero new backend launches
+--- PASS: TestRecoverySQLiteV3AdditiveUpgrade (0.06s)
+PASS
+ok  	github.com/JDinSeattle/forge-runtime/tests/review	0.377s

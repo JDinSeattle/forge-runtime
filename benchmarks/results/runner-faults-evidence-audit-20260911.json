@@ -1,0 +1,100 @@
+{
+  "source_directory": "benchmarks/results/runner-faults-20260911T191948Z",
+  "checked_cases": [
+    {
+      "case": "after_volume_lease",
+      "workspace_id": "init-e61b7b789ae8",
+      "status": "initialized",
+      "creates": 0,
+      "starts": 0,
+      "pins": 2
+    },
+    {
+      "case": "after_import_file",
+      "workspace_id": "init-5a4832edbd87",
+      "status": "initialized",
+      "creates": 0,
+      "starts": 0,
+      "pins": 2
+    },
+    {
+      "case": "after_import_before_workspace",
+      "workspace_id": "init-6dc1e60e53b0",
+      "status": "initialized",
+      "creates": 0,
+      "starts": 0,
+      "pins": 2
+    },
+    {
+      "case": "after_prepared",
+      "workspace_id": "fault-280f7182c884",
+      "status": "cancelled",
+      "creates": 0,
+      "starts": 0,
+      "pins": 3
+    },
+    {
+      "case": "after_docker_create",
+      "workspace_id": "fault-254c1ce80c0a",
+      "status": "cancelled",
+      "creates": 1,
+      "starts": 0,
+      "pins": 3
+    },
+    {
+      "case": "after_docker_start",
+      "workspace_id": "fault-88842f79f46b",
+      "status": "succeeded",
+      "creates": 1,
+      "starts": 1,
+      "pins": 3
+    },
+    {
+      "case": "after_job_start",
+      "workspace_id": "fault-b637892499c6",
+      "status": "succeeded",
+      "creates": 1,
+      "starts": 1,
+      "pins": 3
+    },
+    {
+      "case": "after_job_exit",
+      "workspace_id": "fault-8a0d00d51be1",
+      "status": "succeeded",
+      "creates": 1,
+      "starts": 1,
+      "pins": 3
+    },
+    {
+      "case": "after_receipt_before_commit",
+      "workspace_id": "fault-f41b865b9615",
+      "status": "succeeded",
+      "creates": 1,
+      "starts": 1,
+      "pins": 3
+    },
+    {
+      "case": "after_start_acceptance",
+      "workspace_id": "fault-6c70d59711eb",
+      "status": "succeeded",
+      "creates": 1,
+      "starts": 1,
+      "pins": 3
+    },
+    {
+      "case": "takeover",
+      "workspace_id": "fault-50ae5945eb93",
+      "status": "cancelled",
+      "creates": 1,
+      "starts": 1,
+      "pins": 3
+    }
+  ],
+  "unique_workspaces": 11,
+  "old_writer_samples": 41,
+  "old_writer_last_ns": 1789154421338093618,
+  "new_writer_first_ns": 1789154422368981266,
+  "writer_gap_ns": 1030887648,
+  "original_failed_operation_recovered_without_start": "fault-cde8e691cca1-op",
+  "review_scope": "Independent parsing of saved evidence only; author of implementation/harness, no independent implementation review claim."
+}

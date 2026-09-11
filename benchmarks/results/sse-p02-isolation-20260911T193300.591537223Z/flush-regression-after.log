@@ -1,0 +1,24 @@
+=== RUN   TestHTTPMiddlewarePreservesFlushErrorAfterRequestCancellation
+--- PASS: TestHTTPMiddlewarePreservesFlushErrorAfterRequestCancellation (0.00s)
+=== RUN   TestHTTPMiddlewarePlainResponseWriterDoesNotInventFlushing
+--- PASS: TestHTTPMiddlewarePlainResponseWriterDoesNotInventFlushing (0.00s)
+=== RUN   TestHTTPMiddlewareKeepsExistingWriterCapabilities
+=== RUN   TestHTTPMiddlewareKeepsExistingWriterCapabilities/1
+=== RUN   TestHTTPMiddlewareKeepsExistingWriterCapabilities/2
+--- PASS: TestHTTPMiddlewareKeepsExistingWriterCapabilities (0.00s)
+    --- PASS: TestHTTPMiddlewareKeepsExistingWriterCapabilities/1 (0.00s)
+    --- PASS: TestHTTPMiddlewareKeepsExistingWriterCapabilities/2 (0.00s)
+=== RUN   TestQueueTraceContinuityAndSSEWriter
+--- PASS: TestQueueTraceContinuityAndSSEWriter (0.01s)
+=== RUN   TestUntrustedDimensionsCollapseAndEndIsConcurrentSafe
+--- PASS: TestUntrustedDimensionsCollapseAndEndIsConcurrentSafe (0.00s)
+=== RUN   TestUnmatchedPathsNeverBecomeLabels
+--- PASS: TestUnmatchedPathsNeverBecomeLabels (0.05s)
+=== RUN   TestPanicEndsSpanWithoutRecordingPayload
+--- PASS: TestPanicEndsSpanWithoutRecordingPayload (0.00s)
+=== RUN   TestSetupIsolationAndInvalidTraceparent
+--- PASS: TestSetupIsolationAndInvalidTraceparent (0.00s)
+=== RUN   TestOperationalSnapshotsAndSSECleanup
+--- PASS: TestOperationalSnapshotsAndSSECleanup (0.00s)
+PASS
+ok  	github.com/JDinSeattle/forge-runtime/internal/telemetry	1.099s

@@ -1,0 +1,43 @@
+{
+  "scope": "Independent recomputation from unchanged raw JSON; source and profile-derived observations are separate from unsampled MemStats.",
+  "cycles_checked": 72,
+  "deliveries_checked_from_per_cycle_exact_sequence_assertions": 72000,
+  "connections_checked": 7200,
+  "all_closed_goroutines": 6,
+  "all_closed_fds": 42,
+  "heap_window_first_mean_bytes": 7374188,
+  "heap_window_last_mean_bytes": 7632050,
+  "heap_window_growth_bytes": 257862,
+  "growth_headroom_bytes": 4282,
+  "last_half_ols_bytes_per_second": 32.27101288835701,
+  "heap_min_bytes": 7045032,
+  "heap_max_bytes": 7866504,
+  "heap_range_bytes": 821472,
+  "twelve_sample_means_bytes": [
+    7374188,
+    7610704.666666667,
+    7483672.666666667,
+    7646602,
+    7453571.333333333,
+    7632050
+  ],
+  "same_physical_backends": true,
+  "api_connections": 16,
+  "minimum_warmup_auth_calls": 266,
+  "minimum_measured_auth_calls": 420,
+  "maximum_measured_auth_calls": 477,
+  "minimum_128_row_batch_turnovers": 3,
+  "actual_base_row_size_bytes": 264,
+  "bounded_current_api_base_row_struct_bytes": 540672,
+  "source_snapshot_sha256_verified": [
+    "benchmarks/sse_plateau_test.go",
+    "benchmarks/sse_steady_test.go",
+    "benchmarks/sse_sustained_test.go",
+    "benchmarks/sse_test.go",
+    "go.mod",
+    "internal/eventstream/hub.go",
+    "internal/httpapi/sse.go"
+  ],
+  "oracle_passed": true,
+  "caution": "Finite local process-level result; near-threshold mean-window difference is reported, and sampled heap profiles are not exact object counts."
+}

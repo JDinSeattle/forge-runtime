@@ -18,6 +18,8 @@ import (
 )
 
 type Docker struct {
+	// Fault is local executable wiring, never request/profile configuration.
+	Fault          func(string, JobSpec) error
 	Host           string
 	Binary         string
 	MaxLogBytes    int
@@ -108,8 +110,23 @@ func (d *Docker) Start(ctx context.Context, s JobSpec) (Job, error) {
 	if _, err := d.run(ctx, args...); err != nil {
 		return Job{}, err
 	}
+	if d.Fault != nil {
+		if err := d.Fault("after_docker_create", s); err != nil {
+			return Job{}, err
+		}
+	}
+	if s.BeforeStart != nil {
+		if err := s.BeforeStart(ctx); err != nil {
+			return Job{}, err
+		}
+	}
 	if _, err := d.run(ctx, "start", s.ID); err != nil {
 		return Job{}, err
+	}
+	if d.Fault != nil {
+		if err := d.Fault("after_docker_start", s); err != nil {
+			return Job{}, err
+		}
 	}
 	return d.Inspect(ctx, s.ID)
 }
@@ -163,6 +180,10 @@ func (d *Docker) Cancel(ctx context.Context, id string) (Job, error) {
 		return Job{}, err
 	}
 	if !job.Running {
+		if !job.Started {
+			// An observed created state alone cannot exclude an in-flight Start.
+			return Job{}, domain.ErrReconciliation
+		}
 		return job, nil
 	}
 	if _, err = d.run(ctx, "kill", id); err != nil {
@@ -173,6 +194,23 @@ func (d *Docker) Cancel(ctx context.Context, id string) (Job, error) {
 		job.Interrupted = true
 	}
 	return job, err
+}
+
+// CancelNeverDispatched is for the runner's durable start-intent=0 proof only.
+// Caller must own the workspace writer lock, with no previous writer alive.
+func (d *Docker) CancelNeverDispatched(ctx context.Context, id string) (Job, error) {
+	job, err := d.Inspect(ctx, id)
+	if err != nil {
+		return Job{}, err
+	}
+	if job.Running || job.Started {
+		return Job{}, domain.ErrReconciliation
+	}
+	if _, err = d.run(ctx, "container", "rm", id); err != nil {
+		return Job{}, err
+	}
+	job.NeverStarted = true
+	return job, nil
 }
 
 func (d *Docker) run(ctx context.Context, args ...string) ([]byte, error) {

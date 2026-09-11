@@ -1,0 +1,15 @@
+=== RUN   TestSSEP02IsolationEvidence
+    sse_p02_test.go:420: tick=300/7500 slow_tcp=0 slow_handlers=0
+    sse_p02_test.go:420: tick=600/7500 slow_tcp=0 slow_handlers=0
+    sse_p02_test.go:420: tick=900/7500 slow_tcp=0 slow_handlers=0
+    sse_p02_test.go:420: tick=1200/7500 slow_tcp=0 slow_handlers=0
+    sse_p02_test.go:420: tick=1500/7500 slow_tcp=0 slow_handlers=0
+    sse_p02_test.go:415: all twenty slow TCP connections closed at tick=1501 elapsed=300.284s
+    sse_p02_test.go:420: tick=1501/7500 slow_tcp=20 slow_handlers=20
+    sse_p02_test.go:557: evidence=/home/postedism/Desktop/mini claude code/forge-runtime/benchmarks/results/local/sse-p02-isolation-20260911T193300.591537223Z
+    sse_p02_test.go:558: passed=false ticks=1551 elapsed=310.215s healthy=180 deliveries=279180 p95=80.126ms slow_tcp=20 dropped_hints=30820
+    sse_p02_test.go:560: exact P02 isolation/notification-loss acceptance failed; retain report and raw samples
+--- FAIL: TestSSEP02IsolationEvidence (311.39s)
+FAIL
+FAIL	github.com/JDinSeattle/forge-runtime/benchmarks	311.404s
+FAIL
