@@ -1,0 +1,59 @@
+{
+  "base_commit": "2b0e33c7bf69c3aa13ef989060dcdd76da1eae52",
+  "commit": "5c3e804f013f10c58b2f7bc2ce96f81f75186d0d",
+  "scope": "fake executable and in-memory buffer tests only; no Docker call, socket, service, config, HOME, volume, or frozen binary changes",
+  "source_sha256": {
+    "internal/sandbox/docker.go": "2ceeccd49c93d9a7502fa99fe3d25ca9d67c39a975a2f05d4187222cbfd7831f",
+    "internal/sandbox/docker_output_test.go": "d021775c7b4ef8e9704a46681e6a0a570a86250a1cab003d7c14be4f418a6b63"
+  },
+  "test_selector": "^(TestDockerCLI|TestDockerLegacy|TestDockerFailsClosed|TestDockerTmpfs|TestCreatedDocker|TestBoundedLog)",
+  "commands": [
+    "go test ./internal/sandbox -run <selector> -count=1 -v",
+    "go test -race ./internal/sandbox -run <selector> -count=1 -v",
+    "go vet ./internal/sandbox"
+  ],
+  "logs": {
+    "/tmp/forge-docker-output-before.log": {
+      "sha256": "f23c2dd0525e4be1f9e6240d5b770b166419bfd931fb82ee50045700452f629c",
+      "meaning": "EXPECTED FAIL: valid JSON plus stderr warning contaminated protocol at original base",
+      "pass_records": 0,
+      "fail_records": 2
+    },
+    "/tmp/forge-docker-output-after.log": {
+      "sha256": "f8b1685b54142bb76dff9b0c64173458610e14c2e48cff7858f41b86fea9eb3d",
+      "meaning": "INTERMEDIATE FAIL: stdout separation works, promoted bytes.Buffer.ReadFrom bypasses bound",
+      "pass_records": 13,
+      "fail_records": 1
+    },
+    "/tmp/forge-docker-output-frozen-offline.log": {
+      "sha256": "a1e013bbb7e80555384f3f74a0426b386883fd68ad6afaad60d0526a92504f41",
+      "meaning": "FINAL PASS",
+      "pass_records": 15,
+      "fail_records": 0
+    },
+    "/tmp/forge-docker-output-frozen-race.log": {
+      "sha256": "2318cf3267c00a5ed041bce7a0fae8977b41f2f70bf09a341553a8d827d48498",
+      "meaning": "FINAL RACE PASS",
+      "pass_records": 15,
+      "fail_records": 0
+    },
+    "/tmp/forge-docker-output-frozen-vet.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "meaning": "FINAL VET PASS",
+      "pass_records": 0,
+      "fail_records": 0
+    }
+  },
+  "semantics": {
+    "successful_protocol_output": "stdout only",
+    "failed_protocol_diagnostics": "independent bounded stdout/stderr prefixes, original exit error retained",
+    "legacy_docker_logs": "intentionally combined streams, same truncation semantics; CLI warning indistinguishable from actual container stderr in legacy CLI path",
+    "strict_attach": "unchanged",
+    "stdout_limit": "MaxLogBytes+1 (default 1 MiB+1; overflow guarded)",
+    "stderr_limit": "min(stdout_limit,64 KiB)",
+    "timeout": "unchanged: configured value or15s default",
+    "retries": 0
+  },
+  "additional_defect": "bytes.Buffer promotion exposed ReaderFrom and bypassed Write during io.Copy; composition removes the bypass",
+  "real_Docker_acceptance": "pending root execution"
+}

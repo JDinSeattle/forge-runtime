@@ -1,0 +1,32 @@
+=== RUN   TestDockerCLIWarningDoesNotCorruptProtocolOutput
+--- PASS: TestDockerCLIWarningDoesNotCorruptProtocolOutput (0.00s)
+=== RUN   TestDockerCLIWarningDoesNotCorruptCreateAndInspect
+--- PASS: TestDockerCLIWarningDoesNotCorruptCreateAndInspect (0.00s)
+=== RUN   TestDockerCLIFailureRetainsBothBoundedDiagnostics
+--- PASS: TestDockerCLIFailureRetainsBothBoundedDiagnostics (0.00s)
+=== RUN   TestDockerLegacyLogsKeepContainerStderrAndTruncation
+--- PASS: TestDockerLegacyLogsKeepContainerStderrAndTruncation (0.01s)
+=== RUN   TestDockerCLISeparateBuffersDrainAndRemainBounded
+--- PASS: TestDockerCLISeparateBuffersDrainAndRemainBounded (0.07s)
+=== RUN   TestDockerCLICommandTimeoutIsUnchanged
+--- PASS: TestDockerCLICommandTimeoutIsUnchanged (0.02s)
+=== RUN   TestDockerCLIBufferCopyCannotBypassLimit
+--- PASS: TestDockerCLIBufferCopyCannotBypassLimit (0.00s)
+=== RUN   TestDockerFailsClosedWithoutActualRootlessCgroupCapabilities
+--- PASS: TestDockerFailsClosedWithoutActualRootlessCgroupCapabilities (0.00s)
+=== RUN   TestBoundedLogWriterDrainsWithoutGrowing
+--- PASS: TestBoundedLogWriterDrainsWithoutGrowing (0.00s)
+=== RUN   TestDockerTmpfsExecutionIsExplicitAndKeepsFixedBounds
+=== RUN   TestDockerTmpfsExecutionIsExplicitAndKeepsFixedBounds/false
+=== RUN   TestDockerTmpfsExecutionIsExplicitAndKeepsFixedBounds/true
+--- PASS: TestDockerTmpfsExecutionIsExplicitAndKeepsFixedBounds (0.01s)
+    --- PASS: TestDockerTmpfsExecutionIsExplicitAndKeepsFixedBounds/false (0.01s)
+    --- PASS: TestDockerTmpfsExecutionIsExplicitAndKeepsFixedBounds/true (0.00s)
+=== RUN   TestCreatedDockerCancellationRequiresDurableNoDispatchProof
+=== RUN   TestCreatedDockerCancellationRequiresDurableNoDispatchProof/false
+=== RUN   TestCreatedDockerCancellationRequiresDurableNoDispatchProof/true
+--- PASS: TestCreatedDockerCancellationRequiresDurableNoDispatchProof (0.00s)
+    --- PASS: TestCreatedDockerCancellationRequiresDurableNoDispatchProof/false (0.00s)
+    --- PASS: TestCreatedDockerCancellationRequiresDurableNoDispatchProof/true (0.00s)
+PASS
+ok  	github.com/JDinSeattle/forge-runtime/internal/sandbox	1.136s

@@ -1,0 +1,9 @@
+=== RUN   TestDockerCLIWarningDoesNotCorruptProtocolOutput
+    docker_output_test.go:33: valid daemon stdout was contaminated by stderr: sandbox_unavailable: invalid daemon capability response
+--- FAIL: TestDockerCLIWarningDoesNotCorruptProtocolOutput (0.00s)
+=== RUN   TestDockerCLIWarningDoesNotCorruptCreateAndInspect
+    docker_output_test.go:59: wrong create/inspect result: observed="" job={ContainerID: ContainerName: StrictLogs:false Log:<nil> ID: Running:false ExitCode:0 Started:false Output:[] Truncated:false Error: Interrupted:false NeverStarted:false} err=sandbox_unavailable: invalid daemon capability response
+--- FAIL: TestDockerCLIWarningDoesNotCorruptCreateAndInspect (0.00s)
+FAIL
+FAIL	github.com/JDinSeattle/forge-runtime/internal/sandbox	0.004s
+FAIL

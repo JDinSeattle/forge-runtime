@@ -1,0 +1,59 @@
+{
+  "passed": true,
+  "created_at": "2026-09-12T04:29:05.326582+00:00",
+  "commit": "5c3e804f013f10c58b2f7bc2ce96f81f75186d0d",
+  "base": "2b0e33c7bf69c3aa13ef989060dcdd76da1eae52",
+  "remaining_p1_p2": [],
+  "source_sha256": {
+    "internal/sandbox/docker.go": "2ceeccd49c93d9a7502fa99fe3d25ca9d67c39a975a2f05d4187222cbfd7831f",
+    "internal/sandbox/docker_output_test.go": "d021775c7b4ef8e9704a46681e6a0a570a86250a1cab003d7c14be4f418a6b63"
+  },
+  "scope": "Independent read-only frozen Docker commit review, previously completed pinned-overlay fake-executable race tests and vet; retained mapped Docker diagnostic bytes re-parsed only. No Docker/PG/socket/service/mount action or frozen binary rebuild.",
+  "validation": {
+    "race_records": {
+      "pass": 15,
+      "fail": 0,
+      "skip": 0
+    },
+    "package_elapsed_seconds": 1.151,
+    "vet_exit_code": 0,
+    "vet_exit_code_basis": "Original orchestrator advanced past checked vet return code and subsequently failed during moving Python source test.",
+    "author_before_intermediate_final_hashes_match": true
+  },
+  "diagnostic_recomputation": [
+    {
+      "case": "without-home",
+      "stdout_bytes": 10933,
+      "stderr_bytes": 86,
+      "stdout_sha256": "98f609e198fd8e87cb075f9f633976f642625f2f9811a5b528126a2b70c1cd6f",
+      "stderr_sha256": "4a2e50b2d21cf95153d1084cdf13065d2260c26e9bc60565b5e46538b059da5d",
+      "combined_valid_json": false
+    },
+    {
+      "case": "private-home",
+      "stdout_bytes": 10933,
+      "stderr_bytes": 0,
+      "stdout_sha256": "9ee727af4c2a5bf699372fca97c8dbfb28bc826ba7806389aeaae1fb8ec0b2cb",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "combined_valid_json": true
+    }
+  ],
+  "findings_closed": [
+    "Successful Docker protocol output contains stdout only. Independent bounded stderr is included only in failed CLI diagnostics, preserving wrapped exit status.",
+    "Composed bytes.Buffer removes promoted io.ReaderFrom, forcing io.Copy through bounded Write; consumed byte count remains complete and retained prefix bounded.",
+    "Only legacy Docker logs intentionally combines stdout/stderr; strict attach path, command timeout, dispatch/admission and retry behavior remain unchanged."
+  ],
+  "limits": [
+    "Fake executable and in-memory tests establish adapter output handling. Real host diagnostic is existing root evidence, not a rerun of production Docker.",
+    "Legacy logs intentionally cannot distinguish Docker CLI warnings from container stderr.",
+    "The initial combined review also attempted Python tests while root was editing them. Its 28-test/1-failure log is retained and excluded from this Docker result. Frozen Python continuation commit is reviewed separately."
+  ],
+  "artifacts": {
+    "python.log": "68d260c74346592703b30b6a387526ca6f26a90bab3db296326f7e0d85f4eb46",
+    "vet.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "race.log": "98c56935a36ba4554b47bfdc614851b09a754f2f934a7379b4f4c2a3a93d13ed",
+    "overlay.json": "1e1ca4b4ee8891a5aa579d5286e65f80b1a8facadd3520bae0f9cfd239bd0da3",
+    "docker_output_test.go": "d021775c7b4ef8e9704a46681e6a0a570a86250a1cab003d7c14be4f418a6b63",
+    "docker.go": "2ceeccd49c93d9a7502fa99fe3d25ca9d67c39a975a2f05d4187222cbfd7831f"
+  }
+}
