@@ -1,0 +1,56 @@
+[
+  {
+    "name": "ordinary",
+    "argv": [
+      "go",
+      "test",
+      "-json",
+      "./scripts/faults/application",
+      "-run",
+      "Test(WorkerRunner|RealWorkerRunner|RecoverWorkerRunner|StrictLogs)",
+      "-count=1"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 1.4678228730335832,
+    "tests": {
+      "pass": 43,
+      "skip": 3,
+      "fail": 0
+    }
+  },
+  {
+    "name": "race",
+    "argv": [
+      "go",
+      "test",
+      "-race",
+      "-json",
+      "./scripts/faults/application",
+      "-run",
+      "Test(WorkerRunner|RealWorkerRunner|RecoverWorkerRunner|StrictLogs)",
+      "-count=1"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 3.373598857957404,
+    "tests": {
+      "pass": 43,
+      "skip": 3,
+      "fail": 0
+    }
+  },
+  {
+    "name": "vet",
+    "argv": [
+      "go",
+      "vet",
+      "./scripts/faults/application"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.2643348650308326,
+    "tests": {
+      "pass": 0,
+      "skip": 0,
+      "fail": 0
+    }
+  }
+]

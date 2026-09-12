@@ -1,0 +1,74 @@
+{
+  "bounded_helper": {
+    "path": "/home/postedism/Desktop/mini claude code/forge-runtime/tests/review/run_api_lifecycle.py",
+    "sha256": "5d2d6c181cf93d9003a58f857dedf56a79dc93f64b8a0a5deef2a78a55f8f07b",
+    "source_checked_process_session_and_group_TERM_KILL": true
+  },
+  "closed_findings": [
+    "E50-BUILD-P2-1: fixed scope descriptor, nofollow parent directories and lexists partial-state checks",
+    "E50-BUILD-P2-2: all three compile commands use previously reviewed execute_bounded",
+    "fixed revision/tree throughout snapshot/buildinfo/final checks"
+  ],
+  "limits": [
+    "No build or actual process timeout test was run; subprocess group behavior relies on the separately reviewed helper and its retained actual cleanup evidence.",
+    "The mock valid case validates controller branching only and generates inert temporary files, not Go executables.",
+    "Test enumeration and go-version reads remain separate bounded/short metadata operations; only the three commands that launch compilation use group cleanup."
+  ],
+  "passed": true,
+  "previous_report": {
+    "path": "/tmp/forge-lifecycle-build-review.json",
+    "sha256": "67db9881f8338732b81e6706eeb260835687efb8f1dba18fe77eab53bec805ad"
+  },
+  "recording_cases": [
+    {
+      "actual_compiler_invocations": 0,
+      "case": "symlinked_bin",
+      "passed": true,
+      "recorded_bounded_builds": 0,
+      "rejection": "directory chain contains a symlink or non-directory"
+    },
+    {
+      "actual_compiler_invocations": 0,
+      "case": "dangling_runtime",
+      "passed": true,
+      "recorded_bounded_builds": 0,
+      "rejection": "fresh prepared but unconfigured scope required"
+    },
+    {
+      "actual_compiler_invocations": 0,
+      "case": "dangling_acceptance",
+      "passed": true,
+      "recorded_bounded_builds": 0,
+      "rejection": "fresh prepared but unconfigured scope required"
+    },
+    {
+      "actual_compiler_invocations": 0,
+      "case": "moved_head",
+      "passed": true,
+      "recorded_bounded_builds": 3,
+      "rejection": "revision moved during build"
+    },
+    {
+      "actual_compiler_invocations": 0,
+      "case": "dirty_buildinfo",
+      "passed": true,
+      "recorded_bounded_builds": 1,
+      "rejection": "production executable does not identify the clean frozen revision"
+    },
+    {
+      "actual_compiler_invocations": 0,
+      "case": "valid_mock_build",
+      "passed": true,
+      "recorded_bounded_builds": 3,
+      "rejection": null
+    }
+  ],
+  "remaining_p1_p2": [],
+  "review_script_sha256": "a464fc9ba08819d02ad5b9c3e101701a10c6efc994da800937dc8821aebc83bd",
+  "reviewed_source": {
+    "path": "/tmp/forge-lifecycle-build-reviewed-v2.py.txt",
+    "sha256": "cad6b45c1b9128215e603463d507c3393c5374ebf9aa812000e9338ae5bfd28c",
+    "unchanged_at_end": true
+  },
+  "scope": "independent offline delta review using temporary files and recording mocks; no compiler/host acceptance executed"
+}

@@ -1,0 +1,69 @@
+{
+  "actual_source_unchanged_at_review_end": true,
+  "additional_provenance_gap": {
+    "fix": "Capture one initial revision/tree, compare blobs against that fixed revision, require final HEAD/tree equal it, and validate runner/worker buildinfo revision and clean status. Test-binary provenance should be bound through the frozen source inventory; do not invent VCS fields absent from Go test build info.",
+    "reason": "snapshot compares each file with the current mutable HEAD; initial/final clean status plus equal non-evidence bytes do not prove the same revision was used throughout. A commit affecting only excluded evidence, or an identical-tree commit, can move HEAD during the three builds. Build-info output is retained but never checked for the expected vcs.revision/vcs.modified=false.",
+    "severity": "P2 evidence identity if HEAD changes concurrently"
+  },
+  "frozen_source": "/tmp/forge-lifecycle-build-reviewed-source.py.txt",
+  "p1_p2_findings": [
+    {
+      "evidence": [
+        {
+          "actual_build_executed": false,
+          "case": "symlinked_bin",
+          "configured_output_arg": "/tmp/forge-build-review-fstvpb_o/repo/var/lifecycle-rehearsals/lr20260912_a/bin/forge-runner",
+          "recorded_build_start_new_session": false,
+          "recorded_build_timeout": 300,
+          "resolved_output_arg": "/tmp/forge-build-review-fstvpb_o/outside/forge-runner",
+          "resolved_output_escapes_scope": true,
+          "unsafe_state_reached_build": true
+        },
+        {
+          "actual_build_executed": false,
+          "case": "dangling_runtime",
+          "configured_output_arg": "/tmp/forge-build-review-pjiaj409/repo/var/lifecycle-rehearsals/lr20260912_a/bin/forge-runner",
+          "recorded_build_start_new_session": false,
+          "recorded_build_timeout": 300,
+          "resolved_output_arg": "/tmp/forge-build-review-pjiaj409/repo/var/lifecycle-rehearsals/lr20260912_a/bin/forge-runner",
+          "resolved_output_escapes_scope": false,
+          "unsafe_state_reached_build": true
+        },
+        {
+          "actual_build_executed": false,
+          "case": "dangling_acceptance",
+          "configured_output_arg": "/tmp/forge-build-review-rip7_mqk/repo/var/lifecycle-rehearsals/lr20260912_a/bin/forge-runner",
+          "recorded_build_start_new_session": false,
+          "recorded_build_timeout": 300,
+          "resolved_output_arg": "/tmp/forge-build-review-rip7_mqk/repo/var/lifecycle-rehearsals/lr20260912_a/bin/forge-runner",
+          "resolved_output_escapes_scope": false,
+          "unsafe_state_reached_build": true
+        }
+      ],
+      "file": "/tmp/forge-lifecycle-build.py",
+      "fix": "Reuse the reviewed prepare.read_preparation for fixed identity/helper binding; validate all existing output-parent directory chains with no symlinks and intended ownership/mode, especially BASE/bin and OUT/ARCHIVE parents; use lexists for runtime/acceptance/partial outputs. Retain all failures.",
+      "id": "E50-BUILD-P2-1",
+      "priority": "P2",
+      "reason": "A symlinked BASE/bin passes current existence checks and directs the first Go output outside the fresh scope. Dangling runtime/acceptance entries are ignored by exists(). preparation.json is only is_file(), not a validated descriptor. The recording fixtures intercept before any build process; the exact unsafe output argument is retained.",
+      "title": "Scope preflight follows path substitutions and misses partial dangling entries"
+    },
+    {
+      "basis": "Read-only confirmation from installed Python subprocess.run source plus recorded invocation keywords; no runaway process experiment was executed.",
+      "file": "/tmp/forge-lifecycle-build.py",
+      "fix": "Reuse the previously reviewed execute_bounded process-group wrapper, or create a new session per command and always bounded TERM\u2192KILL/wait only that command group on failure/timeout. Keep failed command/source/partial-binary evidence.",
+      "id": "E50-BUILD-P2-2",
+      "priority": "P2",
+      "reason": "The actual source calls subprocess.run(timeout=300) without an isolated process group. Local Python subprocess.run TimeoutExpired kills/waits only the direct go process, so spawned compiler/linker processes can survive and continue writes after the build controller reports failure.",
+      "title": "Build timeout does not terminate compilation descendants"
+    }
+  ],
+  "passed": false,
+  "review_script_sha256": "60bddf3e60facbdced2d74507fdb0158db638328177c35eccf18827e5e922cea",
+  "reviewed_source_sha256": "dcf1054b38d5a4d749ca19e5d97b9dd1b73eebff2282446370419fd23e666dd5",
+  "safe_properties": [
+    "Only three fixed binary output names and two exact test enumeration names are used; no acceptance test invocation or provider/socket action is present.",
+    "Go module/proxy/toolchain network settings are explicitly disabled, log/output filenames are exclusive, prior attempt outputs are retained, and archival happens after verification.",
+    "The ordinary UID1000/clean-checkout guards and executable hashing are useful but do not close the directory-chain or process-descendant gaps."
+  ],
+  "scope": "independent source review and isolated temporary-path/recording mocks only; no Go build/test, Git mutation, PG, Docker, systemd, mount or service action"
+}

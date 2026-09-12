@@ -1,0 +1,83 @@
+#!/usr/bin/env python3
+"""Mock-only delta tests; never invokes a compiler or host acceptance."""
+import hashlib
+import importlib.util
+import json
+import os
+from pathlib import Path
+import subprocess
+import tempfile
+import types
+from unittest.mock import patch
+
+SOURCE=Path('/tmp/forge-lifecycle-build.py')
+FROZEN=Path('/tmp/forge-lifecycle-build-reviewed-v2.py.txt')
+FROZEN.write_bytes(SOURCE.read_bytes())
+def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+def load(name,path):
+    spec=importlib.util.spec_from_file_location(name,path);m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m);return m
+m=load('review_build_v2',SOURCE)
+prep=load('review_build_prep',Path('/home/postedism/Desktop/mini claude code/forge-runtime/scripts/faults/sigterm/prepare.py'))
+outcomes=[]
+for mode in ('symlinked_bin','dangling_runtime','dangling_acceptance','moved_head','dirty_buildinfo','valid_mock_build'):
+    with tempfile.TemporaryDirectory(prefix='forge-build-v2-review-') as td:
+        root=Path(td)/'repo';root.mkdir(mode=0o700)
+        base=root/'var/lifecycle-rehearsals/lr20260912_a';base.mkdir(parents=True,mode=0o700)
+        (root/'var/local').mkdir(mode=0o700)
+        archiveparent=root/'benchmarks/results';archiveparent.mkdir(parents=True,mode=0o700)
+        bindir=base/'bin';outside=Path(td)/'outside';outside.mkdir(mode=0o700)
+        if mode=='symlinked_bin':bindir.symlink_to(outside,target_is_directory=True)
+        else:bindir.mkdir(mode=0o700)
+        if mode=='dangling_runtime':(base/'runtime').symlink_to(Path(td)/'absent-runtime',target_is_directory=True)
+        if mode=='dangling_acceptance':(base/'acceptance.json').symlink_to(Path(td)/'absent-acceptance')
+        (root/'fixture.txt').write_text('unchanged tracked bytes')
+        fakego=root/'inert-go';fakego.write_text('never executed')
+        calls=[];headcalls=[];blobqueries=[]
+        def git(*args):
+            if args==('status','--porcelain'):return b''
+            if args==('rev-parse','HEAD'):
+                headcalls.append(1);return (('c' if mode=='moved_head' and len(headcalls)>1 else 'a')*40+'\n').encode()
+            if args==('rev-parse','HEAD^{tree}'):return b'b'*40+b'\n'
+            if args==('ls-files','-z'):return b'fixture.txt\0'
+            if args==('show','a'*40+':fixture.txt'):
+                blobqueries.append(args[1]);return (root/'fixture.txt').read_bytes()
+            raise AssertionError('unexpected Git query '+repr(args))
+        def execute(argv,cwd,env,log,timeout):
+            assert timeout==300
+            calls.append(argv)
+            p=Path(argv[argv.index('-o')+1]);p.write_bytes(b'inert recording output '+p.name.encode())
+            return 0
+        helper=types.SimpleNamespace(read_preparation=lambda name:(base,{}),directory=prep.directory)
+        bounded=types.SimpleNamespace(execute_bounded=execute)
+        def module(name,path):
+            if name=='lifecycle_preparation':return helper
+            if name=='lifecycle_bounded_build':return bounded
+            raise AssertionError(name)
+        def info(argv,**kwargs):
+            if argv[1:]==['version']:return 'go version mocked\n'
+            assert argv[1:3]==['version','-m']
+            return 'mocked binary\n\tbuild\tvcs.revision='+'a'*40+'\n\tbuild\tvcs.modified='+('true' if mode=='dirty_buildinfo' else 'false')+'\n'
+        listing=subprocess.CompletedProcess([],0,stdout='TestRealWorkerRunnerSIGTERM\nTestStrictLogsCombinedAcceptance\n',stderr='')
+        saved=os.getcwd();error=None
+        try:
+            os.chdir(root)
+            with patch.object(m,'REPO',root),patch.object(m,'BASE',base),patch.object(m,'OUT',root/'var/local/build'),patch.object(m,'ARCHIVE',archiveparent/'build'),patch.object(m.os,'getuid',return_value=1000),patch.object(m,'git',side_effect=git),patch.object(m,'load',side_effect=module),patch.object(m.shutil,'which',return_value=str(fakego)),patch.object(m.subprocess,'check_output',side_effect=info),patch.object(m.subprocess,'run',return_value=listing),patch('builtins.print'):
+                try:m.main()
+                except ValueError as e:error=str(e)
+        finally:os.chdir(saved)
+        if mode in ('symlinked_bin','dangling_runtime','dangling_acceptance'):
+            assert error and not calls and not list(outside.iterdir())
+        elif mode=='moved_head':assert error=='revision moved during build' and len(calls)==3
+        elif mode=='dirty_buildinfo':assert error=='production executable does not identify the clean frozen revision' and len(calls)==1
+        else:
+            assert error is None and len(calls)==3
+            assert json.loads((archiveparent/'build/result.json').read_text())['actual_acceptance_executed'] is False
+        if calls:assert blobqueries and all(q.startswith('a'*40+':') for q in blobqueries)
+        outcomes.append({'case':mode,'passed':True,'rejection':error,'recorded_bounded_builds':len(calls),'actual_compiler_invocations':0})
+assert sha(SOURCE)==sha(FROZEN)
+bounded_path=Path('/home/postedism/Desktop/mini claude code/forge-runtime/tests/review/run_api_lifecycle.py')
+bounded_source=bounded_path.read_text()
+assert 'start_new_session=True' in bounded_source and 'os.killpg' in bounded_source and 'SIGTERM' in bounded_source and 'SIGKILL' in bounded_source
+report={'scope':'independent offline delta review using temporary files and recording mocks; no compiler/host acceptance executed','passed':True,'previous_report':{'path':'/tmp/forge-lifecycle-build-review.json','sha256':sha(Path('/tmp/forge-lifecycle-build-review.json'))},'reviewed_source':{'path':str(FROZEN),'sha256':sha(FROZEN),'unchanged_at_end':True},'bounded_helper':{'path':str(bounded_path),'sha256':sha(bounded_path),'source_checked_process_session_and_group_TERM_KILL':True},'recording_cases':outcomes,'closed_findings':['E50-BUILD-P2-1: fixed scope descriptor, nofollow parent directories and lexists partial-state checks','E50-BUILD-P2-2: all three compile commands use previously reviewed execute_bounded','fixed revision/tree throughout snapshot/buildinfo/final checks'],'remaining_p1_p2':[],'limits':['No build or actual process timeout test was run; subprocess group behavior relies on the separately reviewed helper and its retained actual cleanup evidence.','The mock valid case validates controller branching only and generates inert temporary files, not Go executables.','Test enumeration and go-version reads remain separate bounded/short metadata operations; only the three commands that launch compilation use group cleanup.'],'review_script_sha256':sha(Path(__file__))}
+out=Path('/tmp/forge-lifecycle-build-review-v2.json');out.write_text(json.dumps(report,indent=2,sort_keys=True)+'\n')
+print(json.dumps({'passed':True,'report':str(out),'sha256':sha(out)}))

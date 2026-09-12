@@ -127,3 +127,8 @@ python3 -I -m unittest discover -s scripts/faults/sigterm -p 'test_*.py' -v
 
 These checks use temporary files and recording process objects; they execute no
 systemd service, privileged helper, Docker job or paid model call.
+
+The [integrated offline record](../../../benchmarks/results/lifecycle-integrated-offline-e50-20260912/identity.json)
+identifies all four merged Go fixture sources. Ordinary and race checks each
+pass 43 test/subtest entries and skip the three actual-environment entry points;
+package vet also passes. Those results are preparation evidence only.

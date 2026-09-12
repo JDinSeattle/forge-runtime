@@ -1,0 +1,48 @@
+{
+  "scope": "offline implementation only; no PostgreSQL/socket/Docker/volume/paid execution",
+  "base_commit": "98d99b767c80a467272613096ed00b9cfb5f7134",
+  "source": {
+    "scripts/faults/application/strict_logs_combined_test.go": "df7d92567f8c38324a28fc87fd318ab6a4a26e5741e9c390119a1848e11b7bc4",
+    "scripts/faults/application/strict_logs_combined_helpers_test.go": "3f4c7b89f7b1a6470822a16388702ba4e690359d8912d3c163dda176d098562a",
+    "docs/strict-logs-combined-evidence.md": "f5ab20546471ff654dd74c25b1b8f07c1b67c4a07bbb41fd9d3da92dc3a14724"
+  },
+  "logs": {
+    "/tmp/forge-strict-logs-offline.log": {
+      "sha256": "5e1a17fb46c0909a0ef2e16c6dab0b5987a7b6ea11629d8c9279cd9a4b02406c",
+      "pass_records": 19,
+      "skip_records": 1,
+      "fail_records": 0
+    },
+    "/tmp/forge-strict-logs-offline-race.log": {
+      "sha256": "96b4f2188a81db2a3d6f749340ba83f3b6b65bf0d16c9c17db7cbb69943b1dcb",
+      "pass_records": 19,
+      "skip_records": 1,
+      "fail_records": 0
+    },
+    "/tmp/forge-strict-logs-final-offline.log": {
+      "sha256": "98f77e0a0e850535473cd972247284b418eb07f7a7fd1f56ed613a6bc610d756",
+      "pass_records": 30,
+      "skip_records": 1,
+      "fail_records": 0
+    },
+    "/tmp/forge-strict-logs-final-offline-race.log": {
+      "sha256": "eb783ce81e3b69d9d031d0df2f183c5702306b4e3775a06881633bd01408db97",
+      "pass_records": 30,
+      "skip_records": 1,
+      "fail_records": 0
+    },
+    "/tmp/forge-strict-logs-final-vet.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "pass_records": 0,
+      "skip_records": 0,
+      "fail_records": 0
+    }
+  },
+  "host_acceptance": "pending",
+  "early_compilation_failure": {
+    "type": "fixture implementation error, corrected before offline tests",
+    "diagnostic": "artifact.Ref has Size, not ByteSize; initial compile rejected both wrong field references",
+    "raw_origin": "tool output only; no original shell log was recorded",
+    "production_changes": false
+  }
+}
