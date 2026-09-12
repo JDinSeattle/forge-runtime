@@ -1,0 +1,67 @@
+{
+  "scope": "review correction, offline only; actual host acceptance remains pending",
+  "base_commit": "d494e852d48f636d37c4816d545781763a0a5e81",
+  "overlay": [
+    "scripts/faults/application/strict_logs_combined_test.go",
+    "scripts/faults/application/strict_logs_combined_helpers_test.go",
+    "docs/strict-logs-combined-evidence.md"
+  ],
+  "source_sha256": {
+    "scripts/faults/application/strict_logs_combined_test.go": "d8db5f32a0f5df6b60d02fdbc056b90d698232c33b734fae378973a6860b0b79",
+    "scripts/faults/application/strict_logs_combined_helpers_test.go": "2052dfcbc2be1f4511a2d212cf1bf09e88ffceefa586a56826db88793507a5ea",
+    "docs/strict-logs-combined-evidence.md": "ad3f3c0a3812af3cc6504b22060ea9a45bb008bee0702613a5dfd52a07e679db"
+  },
+  "logs": {
+    "/tmp/forge-strict-logs-review-fix-frozen-vet.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "pass": 0,
+      "skip": 0,
+      "fail": 0
+    },
+    "/tmp/forge-strict-logs-review-fix-frozen-offline.log": {
+      "sha256": "d4b235144d21240a39bc83ca46854519452ccdb6f44531c5647cc832b0f3c5d6",
+      "pass": 53,
+      "skip": 1,
+      "fail": 0
+    },
+    "/tmp/forge-strict-logs-review-fix-frozen-race.log": {
+      "sha256": "5d0ff51bbceb8d037cc67e5f64a4426c4edaadc980554edece78e3119e32d6c4",
+      "pass": 53,
+      "skip": 1,
+      "fail": 0
+    },
+    "/tmp/forge-strict-logs-review-fix-final-vet.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "pass": 0,
+      "skip": 0,
+      "fail": 0
+    },
+    "/tmp/forge-strict-logs-review-fix-final-race.log": {
+      "sha256": "78ecde40a74fc6f0efce3e5228268100171d53cee36150c91b0f3d6b8fdf97c8",
+      "pass": 52,
+      "skip": 1,
+      "fail": 0
+    },
+    "/tmp/forge-strict-logs-review-fix-final-offline.log": {
+      "sha256": "8e1cac2ae30a0023fe53de564277c84dfb7456e37c2b1fafe44193a5487b2f8f",
+      "pass": 52,
+      "skip": 1,
+      "fail": 0
+    },
+    "/tmp/forge-strict-logs-review-fix-offline.log": {
+      "sha256": "e5bd6e1abcb157fabfc7166220b1d5e8cf2d2a833788d61b019907e303cd58b7",
+      "pass": 46,
+      "skip": 1,
+      "fail": 0
+    }
+  },
+  "historical_failures": "original guard-only invalid samples accepted: /tmp/forge-s12-9-l5-before/report.json; untouched",
+  "runtime_failures": "none observed; no host run requested or executed",
+  "changes": [
+    "L5 launch/signal/after-signal and historical+live PG claim binding",
+    "L4 own-worker bounded pause with identity-bound independent CONT watchdog",
+    "late STOP forbidden after watchdog CONT; mutable pause record reads synchronized"
+  ],
+  "old_freeze_untouched": "/tmp/forge-strict-logs-freeze.json",
+  "e48_shape_reference": "/tmp/forge-strict-logs-review-fix-e48-shape.json; field-shape only, not E50 evidence"
+}

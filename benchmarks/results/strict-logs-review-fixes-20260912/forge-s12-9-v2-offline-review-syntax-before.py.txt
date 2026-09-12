@@ -1,0 +1,51 @@
+#!/usr/bin/env python3
+import hashlib,json,os,signal,subprocess,time
+from pathlib import Path
+ROOT=Path('/home/postedism/Desktop/mini claude code/forge-runtime')
+WT=ROOT/'var/local/feature-worktrees/progress'
+OUT=Path('/tmp/forge-s12-9-v2-offline-review');OUT.mkdir(exist_ok=False)
+names={'scripts/faults/application/strict_logs_combined_test.go':'d8db5f32a0f5df6b60d02fdbc056b90d698232c33b734fae378973a6860b0b79','scripts/faults/application/strict_logs_combined_helpers_test.go':'2052dfcbc2be1f4511a2d212cf1bf09e88ffceefa586a56826db88793507a5ea'}
+sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
+overlay={}
+for name,want in names.items():
+ assert sha(WT/name)==want
+ target=OUT/Path(name).name;target.write_bytes((WT/name).read_bytes())
+ overlay[str(ROOT/name)]=str(target)
+(OUT/'overlay.json').write_text(json.dumps({'Replace':overlay},indent=2)+'\n')
+files=subprocess.check_output(['git','ls-files','*.go','go.mod','go.sum'],cwd=ROOT,text=True).splitlines()
+files=[f for f in files if not f.startswith('benchmarks/results/')]
+snap=lambda:{f:sha(Path(overlay.get(str(ROOT/f),str(ROOT/f))))) for f in files}
+before=snap()
+env={k:v for k,v in os.environ.items() if not k.startswith(('FORGE_','OTEL_'))}
+tmp=ROOT/'var/local/s12-independent-go-tmp';tmp.mkdir(exist_ok=True)
+env.update(GOCACHE=str(ROOT/'var/local/go-build-cache'),GOPROXY='off',GOSUMDB='off',GOENV='off',GOTOOLCHAIN='local',TMPDIR='/tmp',GOTMPDIR=str(tmp))
+base=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()
+cmds=[('race',['go','test','-race','-overlay',str(OUT/'overlay.json'),'./scripts/faults/application','-run','^TestStrictLogs','-count=1','-timeout=45s','-json']),('vet',['go','vet','-overlay',str(OUT/'overlay.json'),'./scripts/faults/application'])]
+records=[]
+for name,cmd in cmds:
+ start=time.monotonic()
+ with (OUT/(name+'.log')).open('wb') as log:
+  p=subprocess.Popen(cmd,cwd=ROOT,env=env,stdout=log,stderr=subprocess.STDOUT,start_new_session=True)
+  try: code=p.wait(timeout=60)
+  except subprocess.TimeoutExpired:
+   os.killpg(p.pid,signal.SIGTERM)
+   try:p.wait(timeout=.2)
+   except subprocess.TimeoutExpired:os.killpg(p.pid,signal.SIGKILL);p.wait(timeout=2)
+   raise
+ counts={k:0 for k in ('pass','fail','skip')}
+ passed=[]
+ if name=='race':
+  for line in (OUT/(name+'.log')).read_text().splitlines():
+   try:row=json.loads(line)
+   except json.JSONDecodeError:continue
+   if row.get('Test') and row.get('Action') in counts:
+    counts[row['Action']]+=1
+    if row['Action']=='pass':passed.append(row['Test'])
+ records.append({'argv':cmd,'exit':code,'wall_seconds':time.monotonic()-start,'test_records':counts,'passed_tests':passed})
+ if code!=0:break
+after=snap()
+(OUT/'input-sha256-before.json').write_text(json.dumps(before,indent=2)+'\n')
+(OUT/'input-sha256-after.json').write_text(json.dumps(after,indent=2)+'\n')
+report={'scope':'independent offline main-plus-frozen-two-file overlay; no PG/socket/container/mount/service/signal/provider execution; opted-in host case skipped','main_base':base,'feature_commit':'013b602c7cc820feb0a8d71b07eefc3b2e56c9da','overrides':names,'effective_go_inputs':len(before),'effective_inputs_unchanged':before==after,'commands':records}
+(OUT/'report.json').write_text(json.dumps(report,indent=2)+'\n')
+print(json.dumps({k:v for k,v in report.items() if k!='commands'},indent=2));print(json.dumps([{k:v for k,v in r.items() if k!='passed_tests'} for r in records],indent=2))

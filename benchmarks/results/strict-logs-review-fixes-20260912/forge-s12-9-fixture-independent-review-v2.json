@@ -1,0 +1,128 @@
+{
+  "revision": 2,
+  "reviewed_at": "2026-09-12T01:58:53.072377+00:00",
+  "verdict": "Known S12.9 L5 evidence-binding and L4 worker-ordering P2 findings closed by the frozen source correction and targeted offline verification. No unresolved P1/P2 found within this delta review.",
+  "remaining_p1_p2": [],
+  "scope": "Read-only review of two fixture corrections and directly related controls; no broader product or acceptance promotion. No actual SIGSTOP/SIGCONT, PG, socket, Docker, mounted-volume, service or provider execution.",
+  "feature_commit": "013b602c7cc820feb0a8d71b07eefc3b2e56c9da",
+  "main_commit": "62cdab79c20ad20771aad61c200437d1c2adb438",
+  "source_sha256": {
+    "scripts/faults/application/strict_logs_combined_test.go": "d8db5f32a0f5df6b60d02fdbc056b90d698232c33b734fae378973a6860b0b79",
+    "scripts/faults/application/strict_logs_combined_helpers_test.go": "2052dfcbc2be1f4511a2d212cf1bf09e88ffceefa586a56826db88793507a5ea",
+    "scripts/faults/application/worker_runner_sigterm_test.go": "1e8467244cea41421beb60db7fa64bbde3656cd2652a630834b19f698ebc455f",
+    "scripts/faults/application/worker_runner_sigterm_helpers_test.go": "b67d3280edeb44e8811ffb3ac891eebf7d70498d4f1649ed3b9028ee2516da73",
+    "docs/strict-logs-combined-evidence.md": "ad3f3c0a3812af3cc6504b22060ea9a45bb008bee0702613a5dfd52a07e679db"
+  },
+  "original_e50_sources_unchanged": true,
+  "closed_findings": [
+    {
+      "id": "S12.9-L5-P2",
+      "evidence": "slAuditSignal now decodes strict integer PID and integer exit code, requires numeric nonempty start ticks, exact expected argv/executable path/hash and launch/signal PID/ticks equality. Four actual E50 launch and signal filenames/args were checked against the E50 producer. Original signals join the saved after-signal Docker/clock and summary records; successor exits bracket recorded cleanup release.",
+      "durable_claim": "slAuditClaim binds the post-exit SQL run identity/version/lease, applies its authoritative SQL lease header to the saved snapshot, selects the first successor claimed snapshot by version, requires the entire canonical historical row to equal the current live first successor row, and validates its prior/body tenant/run, version, epoch+1, owner, 30-second lease and claim At >= old Until. Both summaries must equal those exact authorities.",
+      "negative_verification": "The direct main race run includes missing/nonnumeric/wrong/type ticks, replaced/fractional PID, argv/missing exit code, changed signal summary/after-signal clock and changed summary/historical/live/old-epoch claim cases. The old exact-guard accepted examples remain in their original before archive.",
+      "limits": "Real E50 historical-plus-live execution remains pending. Synthetic offline claim fixtures and the E48 archive shape check do not establish an actual E50 lifecycle result."
+    },
+    {
+      "id": "S12.9-L4-P2",
+      "evidence": "The fixture binds its own worker launch identity, reads an actual same-owner SQL lease with >=24 seconds remaining, SIGSTOPs only that process and observes its stopped OS state. While stopped it verifies the selected volume and pressure FD/spool/checkout device equality, observes actual original writer stop, removes only its own unchanged filler, and reconciles the original operation to terminal before normal CONT.",
+      "authority": "The reconciliation capability is inspect-only and signed from a fresh successful real LeaseProof for the unchanged epoch and actual lease expiry. No synthetic lease extension, epoch rewrite or production behavior change was introduced.",
+      "watchdog": "A context-independent 18-second timer and deferred finish resume only the bound PID/startticks/executable/argv. Timeout or resume failure fails the case. STOP and CONT are serialized by the same mutex; slPauseGate forbids STOP after prior CONT, duplicate STOP, or expired deadline. This closes the additional intermediate watchdog-before-STOP race; shared record epoch reads are now locked and later reads follow done-channel synchronization.",
+      "negative_verification": "Pure guard tests cover inadequate lease, absent stopped confirmation, late continuation/watchdog result, replacement process identity, CONT-before-STOP, expired STOP admission and duplicate STOP. These are offline control tests, not actual OS signal timing evidence.",
+      "limits": "Actual pressure latency, ENOSPC recovery and watchdog behavior under the dedicated mapped process must still be observed by the future authorized host acceptance. Failure remains conservative and retains unresolved state."
+    }
+  ],
+  "independent_direct_main_validation": {
+    "scope": "direct main targeted race, no overlay; opt-in host case skipped and FORGE/OTEL env removed; no PG/Docker/mount/socket/service/signal/provider action",
+    "main_commit": "62cdab79c20ad20771aad61c200437d1c2adb438",
+    "argv": [
+      "go",
+      "test",
+      "-race",
+      "./scripts/faults/application",
+      "-run",
+      "^TestStrictLogs",
+      "-count=1",
+      "-timeout=45s",
+      "-json"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 2.3821099029737525,
+    "test_records": {
+      "pass": 53,
+      "fail": 0,
+      "skip": 1
+    },
+    "source_inputs": 236,
+    "source_unchanged": true
+  },
+  "independent_overlay_validation": {
+    "scope": "independent offline main-plus-frozen-two-file overlay; no PG/socket/container/mount/service/signal/provider execution; opted-in host case skipped",
+    "main_base": "c48e9be98510c86634d0b962d05b70d80292d4aa",
+    "feature_commit": "013b602c7cc820feb0a8d71b07eefc3b2e56c9da",
+    "overrides": {
+      "scripts/faults/application/strict_logs_combined_test.go": "d8db5f32a0f5df6b60d02fdbc056b90d698232c33b734fae378973a6860b0b79",
+      "scripts/faults/application/strict_logs_combined_helpers_test.go": "2052dfcbc2be1f4511a2d212cf1bf09e88ffceefa586a56826db88793507a5ea"
+    },
+    "effective_go_inputs": 236,
+    "effective_inputs_unchanged": true
+  },
+  "overlay_commands": [
+    {
+      "argv": [
+        "go",
+        "test",
+        "-race",
+        "-overlay",
+        "/tmp/forge-s12-9-v2-offline-review/overlay.json",
+        "./scripts/faults/application",
+        "-run",
+        "^TestStrictLogs",
+        "-count=1",
+        "-timeout=45s",
+        "-json"
+      ],
+      "exit": 0,
+      "wall_seconds": 3.220606854010839,
+      "test_records": {
+        "pass": 53,
+        "fail": 0,
+        "skip": 1
+      }
+    },
+    {
+      "argv": [
+        "go",
+        "vet",
+        "-overlay",
+        "/tmp/forge-s12-9-v2-offline-review/overlay.json",
+        "./scripts/faults/application"
+      ],
+      "exit": 0,
+      "wall_seconds": 0.314601649006363,
+      "test_records": {
+        "pass": 0,
+        "fail": 0,
+        "skip": 0
+      }
+    }
+  ],
+  "documentation": "Correction is appended to the original pending-evidence document; actual combined execution remains pending. Original freeze/review/failure records were not overwritten.",
+  "review_tool_failure": "The independent overlay wrapper first had a Python parenthesis SyntaxError before any Go execution; its source/log are preserved. After correction the overlay test/vet and direct-main test passed. This was a reviewer wrapper error, not a fixture runtime failure.",
+  "supporting_reports": {
+    "/tmp/forge-s12-9-fixture-independent-review.json": "71f772e882fbbdf73f368c86a1a945a17ac0c4d16187bb63760fb424692b0ab1",
+    "/tmp/forge-s12-9-l5-before/report.json": "c42062359d9fcb6b8b61fd5ec46f345153e99dd251f1a7b2ab3d216055e83baa",
+    "/tmp/forge-s12-9-enospc-source-review.json": "dc98fe3e69ff21014d0e5cd9c14ce16a81a61c6e7e938fabe50277a4bcf1d108",
+    "/tmp/forge-s12-9-pause-intermediate-review.json": "fdb79af9905ce4ccb5ab4130d0db7a0686560bc675577550433d8f2a02fb39ed",
+    "/tmp/forge-s12-9-v2-main-offline-review/report.json": "8051f93310044d42763cc6c75867376988fa7583a0a1655b5a8b206da16675de",
+    "/tmp/forge-s12-9-v2-offline-review/report.json": "b0f2769a47ef626ad0070cd080f9d63fec819af6d61a057668edd60a15689f67",
+    "/tmp/forge-strict-logs-review-fix-freeze.json": "8a47262bc18f6938a864325467bfb2e636a2dbfc8cfa1eb3771a8de0550a02ed",
+    "/tmp/forge-strict-logs-review-fix-e48-shape.json": "55e7009aaa9d3063f708326b918e89f76efef8b9ee94f1e539c5c8ad5464e0b0",
+    "/tmp/forge-s12-9-v2-offline-review-syntax-before.log": "3786730eb39ce539cb8636babe57178d890d3dda239dbda2a1aaa9a41ef6d77d"
+  },
+  "unchanged_scope_limits": [
+    "No daemon versus worker UID/GID map equality measurement.",
+    "No atomic cross-system snapshot claim.",
+    "No deployment API database-role proof from fixture-admin HTTP checks.",
+    "No actual new-scope binary build, fixture service launch or user mount performed by this reviewer."
+  ]
+}

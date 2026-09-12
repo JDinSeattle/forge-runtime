@@ -1,0 +1,8 @@
+{
+  "scope": "read-only review of intermediate P2 fix; no execution or process signaling",
+  "source_sha256": "bb62660c2bb7c07f6999f16e3e0b2dd2dc2e659ffbb1c572e05173f76aaa1101",
+  "source_copy": "/tmp/forge-s12-9-pause-intermediate-source.go.txt",
+  "finding": "If watchdog completes CONT/once before delayed setup sends SIGSTOP, deferred resume cannot CONT again. Serialize STOP/CONT under the same mutex and refuse STOP after elapsed deadline or finished continuation. This is a control-flow counterexample, not an actual host execution.",
+  "author_acknowledged": true,
+  "secondary": "Read pause record epoch under mutex or immutable copy to avoid concurrent watchdog map write."
+}

@@ -1,0 +1,242 @@
+{
+  "scope": "direct main targeted race, no overlay; opt-in host case skipped and FORGE/OTEL env removed; no PG/Docker/mount/socket/service/signal/provider action",
+  "main_commit": "62cdab79c20ad20771aad61c200437d1c2adb438",
+  "argv": [
+    "go",
+    "test",
+    "-race",
+    "./scripts/faults/application",
+    "-run",
+    "^TestStrictLogs",
+    "-count=1",
+    "-timeout=45s",
+    "-json"
+  ],
+  "exit_code": 0,
+  "wall_seconds": 2.3821099029737525,
+  "test_records": {
+    "pass": 53,
+    "fail": 0,
+    "skip": 1
+  },
+  "source_inputs": 236,
+  "source_unchanged": true,
+  "tests": [
+    {
+      "test": "TestStrictLogsOfflineOracle/wrong_receipt_run",
+      "action": "pass"
+    },
+    {
+      "test": "TestStrictLogsOfflineOracle/wrong_artifact_tenant",
+      "action": "pass"
+    },
+    {
+      "test": "TestStrictLogsOfflineOracle/wrong_hash",
+      "action": "pass"
+    },
+    {
+      "test": "TestStrictLogsOfflineOracle/gap_with_exact_count",
+      "action": "pass"
+    },
+    {
+      "test": "TestStrictLogsOfflineOracle/forged_success",
+      "action": "pass"
+    },
+    {
+      "test": "TestStrictLogsOfflineOracle/seen_mismatch",
+      "action": "pass"
+    },
+    {
+      "test": "TestStrictLogsOfflineOracle/missing_stop",
+      "action": "pass"
+    },
+    {
+      "test": "TestStrictLogsOfflineOracle",
+      "action": "pass"
+    },
+    {
+      "test": "TestStrictLogsOfflinePreflight/shared_pool",
+      "action": "pass"
+    },
+    {
+      "test": "TestStrictLogsOfflinePreflight/shared_journal",
+      "action": "pass"
+    },
+    {
+      "test": "TestStrictLogsOfflinePreflight/fake_backend",
+      "action": "pass"
+    },
+    {
+      "test": "TestStrictLogsOfflinePreflight/unbounded_profile",
+      "action": "pass"
+    },
+    {
+      "test": "TestStrictLogsOfflinePreflight/wrong_oracle",
+      "action": "pass"
+    },
+    {
+      "test": "TestStrictLogsOfflinePreflight/rebound_source",
+      "action": "pass"
+    },
+    {
+      "test": "TestStrictLogsOfflinePreflight/weaker_default_quota",
+      "action": "pass"
+    },
+    {
+      "test": "TestStrictLogsOfflinePreflight/three_slots",
+      "action": "pass"
+    },
+    {
+      "test": "TestStrictLogsOfflinePreflight/wrong_daemon",
+      "action": "pass"
+    },
+    {
+      "test": "TestStrictLogsOfflinePreflight/foreign_binary",
+      "action": "pass"
+    },
+    {
+      "test": "TestStrictLogsOfflinePreflight",
+      "action": "pass"
+    },
+    {
+      "test": "TestStrictLogsDurableBindingOracle/tenant_id",
+      "action": "pass"
+    },
+    {
+      "test": "TestStrictLogsDurableBindingOracle/run_id",
+      "action": "pass"
+    },
+    {
+      "test": "TestStrictLogsDurableBindingOracle/status",
+      "action": "pass"
+    },
+    {
+      "test": "TestStrictLogsDurableBindingOracle/job_id",
+      "action": "pass"
+    },
+    {
+      "test": "TestStrictLogsDurableBindingOracle/before_hash",
+      "action": "pass"
+    },
+    {
+      "test": "TestStrictLogsDurableBindingOracle/after_hash",
+      "action": "pass"
+    },
+    {
+      "test": "TestStrictLogsDurableBindingOracle/after_revision",
+      "action": "pass"
+    },
+    {
+      "test": "TestStrictLogsDurableBindingOracle/result_json",
+      "action": "pass"
+    },
+    {
+      "test": "TestStrictLogsDurableBindingOracle/request_json",
+      "action": "pass"
+    },
+    {
+      "test": "TestStrictLogsDurableBindingOracle/receipt_json",
+      "action": "pass"
+    },
+    {
+      "test": "TestStrictLogsDurableBindingOracle",
+      "action": "pass"
+    },
+    {
+      "test": "TestStrictLogsSignalHistoryOracle/replacement_PID",
+      "action": "pass"
+    },
+    {
+      "test": "TestStrictLogsSignalHistoryOracle/fractional_PID",
+      "action": "pass"
+    },
+    {
+      "test": "TestStrictLogsSignalHistoryOracle/argv_change",
+      "action": "pass"
+    },
+    {
+      "test": "TestStrictLogsSignalHistoryOracle/missing_exit_code",
+      "action": "pass"
+    },
+    {
+      "test": "TestStrictLogsSignalHistoryOracle/missing_ticks",
+      "action": "pass"
+    },
+    {
+      "test": "TestStrictLogsSignalHistoryOracle/nonnumeric_ticks",
+      "action": "pass"
+    },
+    {
+      "test": "TestStrictLogsSignalHistoryOracle/wrong_ticks",
+      "action": "pass"
+    },
+    {
+      "test": "TestStrictLogsSignalHistoryOracle/numeric_type_ticks",
+      "action": "pass"
+    },
+    {
+      "test": "TestStrictLogsSignalHistoryOracle",
+      "action": "pass"
+    },
+    {
+      "test": "TestStrictLogsClaimHistoryOracle/summary_lease_changed",
+      "action": "pass"
+    },
+    {
+      "test": "TestStrictLogsClaimHistoryOracle/summary_claim_changed",
+      "action": "pass"
+    },
+    {
+      "test": "TestStrictLogsClaimHistoryOracle/both_summaries_moved",
+      "action": "pass"
+    },
+    {
+      "test": "TestStrictLogsClaimHistoryOracle/live_claim_changed",
+      "action": "pass"
+    },
+    {
+      "test": "TestStrictLogsClaimHistoryOracle/historical_claim_changed",
+      "action": "pass"
+    },
+    {
+      "test": "TestStrictLogsClaimHistoryOracle/prior_epoch_changed",
+      "action": "pass"
+    },
+    {
+      "test": "TestStrictLogsClaimHistoryOracle",
+      "action": "pass"
+    },
+    {
+      "test": "TestStrictLogsPauseControlOracle/missing_tick",
+      "action": "pass"
+    },
+    {
+      "test": "TestStrictLogsPauseControlOracle/replacement_PID",
+      "action": "pass"
+    },
+    {
+      "test": "TestStrictLogsPauseControlOracle/new_start",
+      "action": "pass"
+    },
+    {
+      "test": "TestStrictLogsPauseControlOracle/changed_executable",
+      "action": "pass"
+    },
+    {
+      "test": "TestStrictLogsPauseControlOracle/changed_arguments",
+      "action": "pass"
+    },
+    {
+      "test": "TestStrictLogsPauseControlOracle",
+      "action": "pass"
+    },
+    {
+      "test": "TestStrictLogsPauseSignalOrdering",
+      "action": "pass"
+    },
+    {
+      "test": "TestStrictLogsCombinedAcceptance",
+      "action": "skip"
+    }
+  ]
+}

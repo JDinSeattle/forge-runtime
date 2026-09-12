@@ -1,0 +1,111 @@
+=== RUN   TestStrictLogsOfflineOracle
+=== RUN   TestStrictLogsOfflineOracle/forged_success
+=== RUN   TestStrictLogsOfflineOracle/seen_mismatch
+=== RUN   TestStrictLogsOfflineOracle/missing_stop
+=== RUN   TestStrictLogsOfflineOracle/wrong_receipt_run
+=== RUN   TestStrictLogsOfflineOracle/wrong_artifact_tenant
+=== RUN   TestStrictLogsOfflineOracle/wrong_hash
+=== RUN   TestStrictLogsOfflineOracle/gap_with_exact_count
+--- PASS: TestStrictLogsOfflineOracle (0.00s)
+    --- PASS: TestStrictLogsOfflineOracle/forged_success (0.00s)
+    --- PASS: TestStrictLogsOfflineOracle/seen_mismatch (0.00s)
+    --- PASS: TestStrictLogsOfflineOracle/missing_stop (0.00s)
+    --- PASS: TestStrictLogsOfflineOracle/wrong_receipt_run (0.00s)
+    --- PASS: TestStrictLogsOfflineOracle/wrong_artifact_tenant (0.00s)
+    --- PASS: TestStrictLogsOfflineOracle/wrong_hash (0.00s)
+    --- PASS: TestStrictLogsOfflineOracle/gap_with_exact_count (0.00s)
+=== RUN   TestStrictLogsOfflinePreflight
+=== RUN   TestStrictLogsOfflinePreflight/shared_pool
+=== RUN   TestStrictLogsOfflinePreflight/three_slots
+=== RUN   TestStrictLogsOfflinePreflight/unbounded_profile
+=== RUN   TestStrictLogsOfflinePreflight/wrong_oracle
+=== RUN   TestStrictLogsOfflinePreflight/wrong_daemon
+=== RUN   TestStrictLogsOfflinePreflight/rebound_source
+=== RUN   TestStrictLogsOfflinePreflight/weaker_default_quota
+=== RUN   TestStrictLogsOfflinePreflight/shared_journal
+=== RUN   TestStrictLogsOfflinePreflight/fake_backend
+=== RUN   TestStrictLogsOfflinePreflight/foreign_binary
+--- PASS: TestStrictLogsOfflinePreflight (0.00s)
+    --- PASS: TestStrictLogsOfflinePreflight/shared_pool (0.00s)
+    --- PASS: TestStrictLogsOfflinePreflight/three_slots (0.00s)
+    --- PASS: TestStrictLogsOfflinePreflight/unbounded_profile (0.00s)
+    --- PASS: TestStrictLogsOfflinePreflight/wrong_oracle (0.00s)
+    --- PASS: TestStrictLogsOfflinePreflight/wrong_daemon (0.00s)
+    --- PASS: TestStrictLogsOfflinePreflight/rebound_source (0.00s)
+    --- PASS: TestStrictLogsOfflinePreflight/weaker_default_quota (0.00s)
+    --- PASS: TestStrictLogsOfflinePreflight/shared_journal (0.00s)
+    --- PASS: TestStrictLogsOfflinePreflight/fake_backend (0.00s)
+    --- PASS: TestStrictLogsOfflinePreflight/foreign_binary (0.00s)
+=== RUN   TestStrictLogsDurableBindingOracle
+=== RUN   TestStrictLogsDurableBindingOracle/tenant_id
+=== RUN   TestStrictLogsDurableBindingOracle/run_id
+=== RUN   TestStrictLogsDurableBindingOracle/status
+=== RUN   TestStrictLogsDurableBindingOracle/job_id
+=== RUN   TestStrictLogsDurableBindingOracle/before_hash
+=== RUN   TestStrictLogsDurableBindingOracle/after_hash
+=== RUN   TestStrictLogsDurableBindingOracle/after_revision
+=== RUN   TestStrictLogsDurableBindingOracle/result_json
+=== RUN   TestStrictLogsDurableBindingOracle/request_json
+=== RUN   TestStrictLogsDurableBindingOracle/receipt_json
+--- PASS: TestStrictLogsDurableBindingOracle (0.00s)
+    --- PASS: TestStrictLogsDurableBindingOracle/tenant_id (0.00s)
+    --- PASS: TestStrictLogsDurableBindingOracle/run_id (0.00s)
+    --- PASS: TestStrictLogsDurableBindingOracle/status (0.00s)
+    --- PASS: TestStrictLogsDurableBindingOracle/job_id (0.00s)
+    --- PASS: TestStrictLogsDurableBindingOracle/before_hash (0.00s)
+    --- PASS: TestStrictLogsDurableBindingOracle/after_hash (0.00s)
+    --- PASS: TestStrictLogsDurableBindingOracle/after_revision (0.00s)
+    --- PASS: TestStrictLogsDurableBindingOracle/result_json (0.00s)
+    --- PASS: TestStrictLogsDurableBindingOracle/request_json (0.00s)
+    --- PASS: TestStrictLogsDurableBindingOracle/receipt_json (0.00s)
+=== RUN   TestStrictLogsSignalHistoryOracle
+=== RUN   TestStrictLogsSignalHistoryOracle/numeric_type_ticks
+=== RUN   TestStrictLogsSignalHistoryOracle/replacement_PID
+=== RUN   TestStrictLogsSignalHistoryOracle/fractional_PID
+=== RUN   TestStrictLogsSignalHistoryOracle/argv_change
+=== RUN   TestStrictLogsSignalHistoryOracle/missing_exit_code
+=== RUN   TestStrictLogsSignalHistoryOracle/missing_ticks
+=== RUN   TestStrictLogsSignalHistoryOracle/nonnumeric_ticks
+=== RUN   TestStrictLogsSignalHistoryOracle/wrong_ticks
+--- PASS: TestStrictLogsSignalHistoryOracle (0.00s)
+    --- PASS: TestStrictLogsSignalHistoryOracle/numeric_type_ticks (0.00s)
+    --- PASS: TestStrictLogsSignalHistoryOracle/replacement_PID (0.00s)
+    --- PASS: TestStrictLogsSignalHistoryOracle/fractional_PID (0.00s)
+    --- PASS: TestStrictLogsSignalHistoryOracle/argv_change (0.00s)
+    --- PASS: TestStrictLogsSignalHistoryOracle/missing_exit_code (0.00s)
+    --- PASS: TestStrictLogsSignalHistoryOracle/missing_ticks (0.00s)
+    --- PASS: TestStrictLogsSignalHistoryOracle/nonnumeric_ticks (0.00s)
+    --- PASS: TestStrictLogsSignalHistoryOracle/wrong_ticks (0.00s)
+=== RUN   TestStrictLogsClaimHistoryOracle
+=== RUN   TestStrictLogsClaimHistoryOracle/summary_lease_changed
+=== RUN   TestStrictLogsClaimHistoryOracle/summary_claim_changed
+=== RUN   TestStrictLogsClaimHistoryOracle/both_summaries_moved
+=== RUN   TestStrictLogsClaimHistoryOracle/live_claim_changed
+=== RUN   TestStrictLogsClaimHistoryOracle/historical_claim_changed
+=== RUN   TestStrictLogsClaimHistoryOracle/prior_epoch_changed
+--- PASS: TestStrictLogsClaimHistoryOracle (0.01s)
+    --- PASS: TestStrictLogsClaimHistoryOracle/summary_lease_changed (0.00s)
+    --- PASS: TestStrictLogsClaimHistoryOracle/summary_claim_changed (0.00s)
+    --- PASS: TestStrictLogsClaimHistoryOracle/both_summaries_moved (0.00s)
+    --- PASS: TestStrictLogsClaimHistoryOracle/live_claim_changed (0.00s)
+    --- PASS: TestStrictLogsClaimHistoryOracle/historical_claim_changed (0.00s)
+    --- PASS: TestStrictLogsClaimHistoryOracle/prior_epoch_changed (0.00s)
+=== RUN   TestStrictLogsPauseControlOracle
+=== RUN   TestStrictLogsPauseControlOracle/missing_tick
+=== RUN   TestStrictLogsPauseControlOracle/replacement_PID
+=== RUN   TestStrictLogsPauseControlOracle/new_start
+=== RUN   TestStrictLogsPauseControlOracle/changed_executable
+=== RUN   TestStrictLogsPauseControlOracle/changed_arguments
+--- PASS: TestStrictLogsPauseControlOracle (0.00s)
+    --- PASS: TestStrictLogsPauseControlOracle/missing_tick (0.00s)
+    --- PASS: TestStrictLogsPauseControlOracle/replacement_PID (0.00s)
+    --- PASS: TestStrictLogsPauseControlOracle/new_start (0.00s)
+    --- PASS: TestStrictLogsPauseControlOracle/changed_executable (0.00s)
+    --- PASS: TestStrictLogsPauseControlOracle/changed_arguments (0.00s)
+=== RUN   TestStrictLogsPauseSignalOrdering
+--- PASS: TestStrictLogsPauseSignalOrdering (0.00s)
+=== RUN   TestStrictLogsCombinedAcceptance
+    strict_logs_combined_test.go:1482: operator opt-in: completed E50 dedicated fixed pool; actual runner/worker binaries, private PG, finite physical ENOSPC
+--- SKIP: TestStrictLogsCombinedAcceptance (0.00s)
+PASS
+ok  	github.com/JDinSeattle/forge-runtime/scripts/faults/application	1.054s
