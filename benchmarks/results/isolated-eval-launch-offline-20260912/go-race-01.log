@@ -1,0 +1,38 @@
+=== RUN   TestReadOnlyJournalRequiresActualSettledIdentity
+=== RUN   TestReadOnlyJournalRequiresActualSettledIdentity/prepared
+=== RUN   TestReadOnlyJournalRequiresActualSettledIdentity/running
+=== RUN   TestReadOnlyJournalRequiresActualSettledIdentity/unknown
+=== RUN   TestReadOnlyJournalRequiresActualSettledIdentity/active_workspace
+=== RUN   TestReadOnlyJournalRequiresActualSettledIdentity/retained_workspace
+=== RUN   TestReadOnlyJournalRequiresActualSettledIdentity/retained_lease
+=== RUN   TestReadOnlyJournalRequiresActualSettledIdentity/log_container_cleanup_pending
+=== RUN   TestReadOnlyJournalRequiresActualSettledIdentity/version_mismatch
+=== RUN   TestReadOnlyJournalRequiresActualSettledIdentity/replacement_uuid
+=== RUN   TestReadOnlyJournalRequiresActualSettledIdentity/slot_mismatch
+=== RUN   TestReadOnlyJournalRequiresActualSettledIdentity/missing_slot
+--- PASS: TestReadOnlyJournalRequiresActualSettledIdentity (5.96s)
+    --- PASS: TestReadOnlyJournalRequiresActualSettledIdentity/prepared (0.47s)
+    --- PASS: TestReadOnlyJournalRequiresActualSettledIdentity/running (0.52s)
+    --- PASS: TestReadOnlyJournalRequiresActualSettledIdentity/unknown (0.48s)
+    --- PASS: TestReadOnlyJournalRequiresActualSettledIdentity/active_workspace (0.49s)
+    --- PASS: TestReadOnlyJournalRequiresActualSettledIdentity/retained_workspace (0.51s)
+    --- PASS: TestReadOnlyJournalRequiresActualSettledIdentity/retained_lease (0.51s)
+    --- PASS: TestReadOnlyJournalRequiresActualSettledIdentity/log_container_cleanup_pending (0.50s)
+    --- PASS: TestReadOnlyJournalRequiresActualSettledIdentity/version_mismatch (0.46s)
+    --- PASS: TestReadOnlyJournalRequiresActualSettledIdentity/replacement_uuid (0.48s)
+    --- PASS: TestReadOnlyJournalRequiresActualSettledIdentity/slot_mismatch (0.56s)
+    --- PASS: TestReadOnlyJournalRequiresActualSettledIdentity/missing_slot (0.50s)
+=== RUN   TestArtifactAuthorityAndRegularInputsFailClosed
+=== RUN   TestArtifactAuthorityAndRegularInputsFailClosed/foreign_registry
+=== RUN   TestArtifactAuthorityAndRegularInputsFailClosed/symlink_journal
+=== RUN   TestArtifactAuthorityAndRegularInputsFailClosed/hardlink_input
+=== RUN   TestArtifactAuthorityAndRegularInputsFailClosed/missing_journal_is_never_created
+--- PASS: TestArtifactAuthorityAndRegularInputsFailClosed (0.98s)
+    --- PASS: TestArtifactAuthorityAndRegularInputsFailClosed/foreign_registry (0.46s)
+    --- PASS: TestArtifactAuthorityAndRegularInputsFailClosed/symlink_journal (0.51s)
+    --- PASS: TestArtifactAuthorityAndRegularInputsFailClosed/hardlink_input (0.00s)
+    --- PASS: TestArtifactAuthorityAndRegularInputsFailClosed/missing_journal_is_never_created (0.00s)
+=== RUN   TestBinaryAndModeCannotSelectOtherRuntime
+--- PASS: TestBinaryAndModeCannotSelectOtherRuntime (0.00s)
+PASS
+ok  	github.com/JDinSeattle/forge-runtime/scripts/evaluation/preflight	7.978s

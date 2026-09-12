@@ -1,0 +1,50 @@
+{
+  "scope": "offline guards only; real temporary SQLite and filesystem; mocked host/PG/Docker/model boundaries",
+  "base_commit": "49c2899739e08a1e126cbff549052ab913dfa0ba",
+  "owned_sources": {
+    "scripts/evaluation/isolated.py": "22922689c438e7e2b464e92048c24db15b50441b035907790d5c626c3826e805",
+    "scripts/evaluation/isolated_checks.py": "f7554839a034b46478ccc8df15c554528fe8cf3224f1e46b36047c3f00d37a54",
+    "scripts/evaluation/isolated_state.py": "05044e79c1d1eb3ca42be3a0f6547172501eed0bf6b149f0b096bfd396a3b680",
+    "scripts/evaluation/test_isolated.py": "9ef471f5a72323fef67bd484aa7c080b37b3aa8d630fc4afe61e824ffda6b3df",
+    "scripts/evaluation/ISOLATED.md": "4213b46da7a1279d24de6dd519256c8b98056b30085ecff0b6ae98967f48e286",
+    "scripts/evaluation/preflight/main.go": "77639af15191f4e13e0e3a6706611798e99c6f13efd5e212f5da4124efd6e266",
+    "scripts/evaluation/preflight/main_test.go": "90a70cd35b028fab704c0f5f630b4fca0f08fcb8ac9e059ec7143af2415a9bd5"
+  },
+  "ordinary_and_race": {
+    "go-test-final": {
+      "test_pass_entries": 18,
+      "package_pass": 1,
+      "skips": 0
+    },
+    "go-race-final": {
+      "test_pass_entries": 18,
+      "package_pass": 1,
+      "skips": 0
+    }
+  },
+  "python_tests": 54,
+  "new_launcher_python_tests": 24,
+  "existing_collector_python_tests": 30,
+  "vet_exit_code": 0,
+  "build_exit_code": 0,
+  "source_unchanged_during_final_checks": true,
+  "read_only_existing_material_manifest_members": 547,
+  "history_scope": "existing nonsecret pinned logs01 manifest plus closed cleanup manifest and exact stop/snapshot objects only; no key/DSN read, no PG or services",
+  "fixed_in_draft_review": [
+    "legacy historical allowlist rejected actual cleanup proof expansion",
+    "nonexistent project list CLI replaced with implemented read-only GET auth contrast",
+    "large final-journal JSON gets specific16MiB bound, not wider key/config limits"
+  ],
+  "offline_binary": {
+    "path": "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/feature-worktrees/logs/var/local/eval-preflight-offline",
+    "sha256": "af92641e61276dc23c9594714f71205a06436788224f425d07cf714ba3ef9045",
+    "size": 65927217,
+    "deployment_qualified": false,
+    "reason": "built during untracked WIP; host deployment requires clean integrated source and seven new fixed binaries"
+  },
+  "actual_host_execution": false,
+  "actual_pg_execution": false,
+  "actual_docker_execution": false,
+  "provider_key_read": false,
+  "paid_calls": 0
+}
