@@ -1,0 +1,70 @@
+#!/usr/bin/env python3
+"""Offline review of exact-test listing and final acceptance-report gates."""
+import hashlib
+import importlib.util
+import json
+from pathlib import Path
+import subprocess
+import sys
+from unittest.mock import patch
+
+sys.dont_write_bytecode=True
+ROOT=Path('/home/postedism/Desktop/mini claude code/forge-runtime')
+OUT=Path('/tmp/forge-lifecycle-launcher-review-v2.json')
+FILES=['scripts/faults/sigterm/run.py','scripts/faults/sigterm/test_run.py']
+def sha(p): return hashlib.sha256(p.read_bytes()).hexdigest()
+before={n:sha(ROOT/n) for n in FILES}
+report={'scope':'independent offline delta review; no unit, process acceptance, Docker, socket or database execution','passed':False,'source_sha256_before':before,'previous_review':{'path':'/tmp/forge-lifecycle-launcher-review.json','sha256':sha(Path('/tmp/forge-lifecycle-launcher-review.json'))},'p1_p2_findings':[]}
+try:
+    argv=['python3','-I','-m','unittest','discover','-s','scripts/faults/sigterm','-p','test_*.py','-v']
+    result=subprocess.run(argv,cwd=ROOT,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=30,check=False)
+    logfile=Path('/tmp/forge-lifecycle-launcher-v2-offline.log');logfile.write_bytes(result.stdout)
+    assert result.returncode==0 and b'Ran 18 tests' in result.stdout and b'\nOK\n' in result.stdout
+    spec=importlib.util.spec_from_file_location('independent_lifecycle_v2',ROOT/FILES[0]);run=importlib.util.module_from_spec(spec);spec.loader.exec_module(run)
+    base=Path('/tmp/synthetic-lifecycle-v2-not-created')
+    a={'scope_root':str(base),'test_binary':str(base/'not-executed.test')}
+    tests=[]
+    for phase in ('sigterm','logs'):
+        expected=run.PHASES[phase][0]
+        for mode,listed,code in [('missing','',0),('extra',expected+'\nUnexpected\n',0),('list_error',expected+'\n',1),('actual_failure',expected+'\n',0),('missing_report',expected+'\n',0),('success',expected+'\n',0)]:
+            def read_map(path,*args,**kwargs):
+                if str(path) in ('/proc/self/uid_map','/proc/self/gid_map'):return '0 1000 1\n1 100000 65536\n'
+                raise AssertionError('unexpected read '+str(path))
+            responses=[subprocess.CompletedProcess(['mock-list'],code,stdout=listed,stderr='')]
+            if mode in ('actual_failure','missing_report','success'):responses.append(subprocess.CompletedProcess(['mock-test'],23 if mode=='actual_failure' else 0))
+            with patch.object(run.os,'getuid',return_value=0),patch.object(Path,'read_text',read_map),patch.object(run,'inputs',return_value=(base,a)),patch.object(run,'credential',return_value='synthetic-env-only'),patch.object(run.subprocess,'run',side_effect=responses) as process,patch.object(run,'completed_report',side_effect=FileNotFoundError('synthetic missing final record') if mode=='missing_report' else None) as complete:
+                error=None
+                try: rc=run.mapped_child(phase)
+                except (ValueError,OSError) as e:error=type(e).__name__
+                if mode in ('missing','extra','list_error'):
+                    assert error=='ValueError' and process.call_count==1
+                    complete.assert_not_called()
+                elif mode=='missing_report':
+                    assert error=='FileNotFoundError' and process.call_count==2
+                    complete.assert_called_once_with(phase,base)
+                elif mode=='actual_failure':
+                    assert error is None and rc==23 and process.call_count==2
+                    complete.assert_not_called()
+                else:
+                    assert error is None and rc==0 and process.call_count==2
+                    complete.assert_called_once_with(phase,base)
+                first=process.call_args_list[0]
+                assert first.args[0]==[a['test_binary'],'-test.list=^'+expected+'$'] and first.kwargs['timeout']==15
+                assert 'synthetic-env-only' not in str(first.args[0]) and first.kwargs['env']['FORGE_TEST_DATABASE_URL']=='synthetic-env-only'
+            tests.append({'phase':phase,'mode':mode,'passed':True})
+    after={n:sha(ROOT/n) for n in FILES};assert after==before
+    report.update(passed=True,source_sha256_after=after,source_unchanged=True,offline_tests={'command':argv,'exit_code':0,'count':18,'log':str(logfile),'sha256':sha(logfile)},independent_recording_checks=tests)
+    report['conclusions']=[
+        'The same frozen executable must list exactly one exact selected acceptance test before actual invocation; empty, extra or failed listing cannot proceed.',
+        'A nonzero actual test exit is retained. A zero exit requires the exact private final report with passed strictly true; logs additionally require the six exact case keys and each case passed strictly true.',
+        'Listing is bounded15seconds, uses only child environment credentials and does not expose them in argv. It fits within the dedicated service RuntimeMaxSec margin.',
+        'The old17-test source review/history is retained unchanged. This separate18-test revision closes the no-matching-test/zero-exit concern at the launcher boundary.'
+    ]
+    report['limitations']=['All added control-flow executions are recording mocks; no actual binary, service, container, database or acceptance report was produced.','Final passed flags are a launch completion gate, not an independent raw-evidence audit. Future actual cases still require UUID/lease/signal/request/receipt/artifact integrity recomputation.','Original service-wide timeout and child-entry limitations from the prior review remain; no production implementation was changed by this reviewer.']
+except Exception as e:
+    report['error']=type(e).__name__+': '+str(e)
+    raise
+finally:
+    report['review_script_sha256']=sha(Path(__file__))
+    OUT.write_text(json.dumps(report,indent=2,sort_keys=True)+'\n')
+    print(json.dumps({'passed':report['passed'],'report':str(OUT),'error':report.get('error'),'sha256':sha(OUT)}))

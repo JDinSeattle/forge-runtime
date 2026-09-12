@@ -1,0 +1,88 @@
+{
+  "copied_helper_sha256": {
+    "common.py": "bf50b9bfaef24a1d6b2980495a6d84baa68ab10b6184ba21b56a0b5e89229bc2",
+    "mount.py": "bfa00fab40652ba84e18409f85fd56bc1c1285923cfea6295a3bd31a7130027a",
+    "volumes.py": "683ebc5e3538ba65a701b4d7cad17d6e21d12cb1ab1cfc54835d2689718cd4bc"
+  },
+  "limitations": [
+    "Only metadata and the ext4 superblock prefix were read; this is not a full image hash or filesystem integrity scan.",
+    "Mount absence is observed in this review process namespace, with the creator log also recording mount=null; no losetup/daemon query or global namespace inspection was run.",
+    "The reviewed mount command remains unexecuted by this reviewer and requires the parent to coordinate explicit user-terminal authorization. It references only this new copied helper/pool and does not stop services, unmount other filesystems or delete images."
+  ],
+  "manifest_sha256": "be1e456946bd8972d9d773fa172dc1c99d7c73bc62fe18cc9c3e07d8c8cfceaf",
+  "no_runtime_or_acceptance_or_mount_state": true,
+  "passed": true,
+  "preparation_sha256": "ec1af57531ce47c151d869c52036a99dd3b7a56fe6fb244efec46968f21306dd",
+  "prepare_log_sha256": "2eeb85f3ea19bf0de289989aaf2420bbc388e3a22ca1b19f0d499c213cdbd7f1",
+  "review_script_sha256": "c816af495d8f9469c95c373688a82f1c9fc16d91f44b150c420c6a9820381079",
+  "reviewed_mount_argv": [
+    "sudo",
+    "/usr/bin/python3",
+    "-I",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/pool-root/scripts/workspace-volumes/mount.py",
+    "mount"
+  ],
+  "scope": "read-only review of artifacts already prepared by parent; no helper execution or privileged/daemon/service action",
+  "slots": [
+    {
+      "allocated_bytes": 268439552,
+      "device": 66307,
+      "distinct_from_original_image_inodes": true,
+      "empty_mountpoint": true,
+      "filesystem_uuid": "a56bfa92-eef4-40bd-8dcf-6d0c457e45bb",
+      "id": "slot-001",
+      "image": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/pool-root/var/workspace-storage/images/slot-001.ext4",
+      "inode": 75120869,
+      "mount_path": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/pool-root/var/workspace-storage/mounts/slot-001",
+      "mount_visible_in_current_namespace": false,
+      "size": 268435456,
+      "superblock_inodes": 65536,
+      "superblock_sha256": "1922f36a6ad24506c1810192fcbe89edba7a040f660cfbd92d9856c97ae197d6"
+    },
+    {
+      "allocated_bytes": 268439552,
+      "device": 66307,
+      "distinct_from_original_image_inodes": true,
+      "empty_mountpoint": true,
+      "filesystem_uuid": "dab0eb89-c8df-4115-a01e-ad9b98a2b683",
+      "id": "slot-002",
+      "image": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/pool-root/var/workspace-storage/images/slot-002.ext4",
+      "inode": 75120871,
+      "mount_path": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/pool-root/var/workspace-storage/mounts/slot-002",
+      "mount_visible_in_current_namespace": false,
+      "size": 268435456,
+      "superblock_inodes": 65536,
+      "superblock_sha256": "b05f73e79c5a94599e299a7e80653ce2c4f61afac29dd89bf48bcab9b69f3709"
+    },
+    {
+      "allocated_bytes": 268439552,
+      "device": 66307,
+      "distinct_from_original_image_inodes": true,
+      "empty_mountpoint": true,
+      "filesystem_uuid": "9e94242d-72af-4c18-bc12-f16070909733",
+      "id": "slot-003",
+      "image": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/pool-root/var/workspace-storage/images/slot-003.ext4",
+      "inode": 75120873,
+      "mount_path": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/pool-root/var/workspace-storage/mounts/slot-003",
+      "mount_visible_in_current_namespace": false,
+      "size": 268435456,
+      "superblock_inodes": 65536,
+      "superblock_sha256": "78795791b36ebcbae62eeafd4d9a37493256cc3e5a595b0d903732aac9c84e6e"
+    },
+    {
+      "allocated_bytes": 268439552,
+      "device": 66307,
+      "distinct_from_original_image_inodes": true,
+      "empty_mountpoint": true,
+      "filesystem_uuid": "fcb32202-7ad3-4172-a746-ac2330b1baf7",
+      "id": "slot-004",
+      "image": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/pool-root/var/workspace-storage/images/slot-004.ext4",
+      "inode": 75120875,
+      "mount_path": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/pool-root/var/workspace-storage/mounts/slot-004",
+      "mount_visible_in_current_namespace": false,
+      "size": 268435456,
+      "superblock_inodes": 65536,
+      "superblock_sha256": "3d2552058a79ae10be56277da3fe31949fca386c9a6e824c50b582935e35df6e"
+    }
+  ]
+}

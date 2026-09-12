@@ -1,0 +1,105 @@
+#!/usr/bin/env python3
+"""Offline source/test review; every service/process operation is mocked."""
+import importlib.util
+import json
+import hashlib
+import os
+from pathlib import Path
+import subprocess
+import sys
+import tempfile
+from unittest.mock import patch, Mock
+
+sys.dont_write_bytecode=True
+ROOT=Path('/home/postedism/Desktop/mini claude code/forge-runtime')
+OUT=Path('/tmp/forge-lifecycle-launcher-review.json')
+FILES=['scripts/faults/sigterm/'+n for n in ('run.py','test_run.py','prepare.py','configure.py')] + ['.github/workflows/ci.yml']
+def sha(p): return hashlib.sha256(p.read_bytes()).hexdigest()
+def load(name,path):
+    spec=importlib.util.spec_from_file_location(name,path); m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m);return m
+
+before={f:sha(ROOT/f) for f in FILES}
+report={'scope':'independent read-only source review plus offline unit/recording mocks; no host service, container, mount, database or socket action', 'passed':False,'p1_p2_findings':[],'source_sha256_before':before}
+try:
+    argv=['python3','-I','-m','unittest','discover','-s','scripts/faults/sigterm','-p','test_*.py','-v']
+    proc=subprocess.run(argv,cwd=ROOT,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=30,check=False)
+    logfile=Path('/tmp/forge-lifecycle-launcher-offline.log');logfile.write_bytes(proc.stdout)
+    assert proc.returncode==0 and b'Ran 17 tests' in proc.stdout and b'\nOK\n' in proc.stdout
+    report['offline_tests']={'command':argv,'exit_code':proc.returncode,'count':17,'log':str(logfile),'sha256':sha(logfile)}
+    run=load('independent_lifecycle_run',ROOT/'scripts/faults/sigterm/run.py')
+    independent=[]
+    for mode in ('timeout_client_kill','unconfirmed_unit','preexisting_unit'):
+        with tempfile.TemporaryDirectory(prefix='forge-lifecycle-review-') as td:
+            base=Path(td);(base/'evidence').mkdir(mode=0o700)
+            records=[]
+            class RecordingClient:
+                def __init__(self,cmd,**kwargs): records.append({'action':'Popen','argv':cmd,'kwargs':list(kwargs)})
+                def wait(self,timeout):
+                    records.append({'action':'wait','timeout':timeout})
+                    if mode=='timeout_client_kill' and sum(r['action']=='wait' for r in records)<3:
+                        raise subprocess.TimeoutExpired(['recording-process-only'],timeout)
+                    return -9 if mode=='timeout_client_kill' else 0
+                def terminate(self): records.append({'action':'terminate'})
+                def kill(self): records.append({'action':'kill'})
+            after={'LoadState':'loaded','ActiveState':'inactive','MainPID':'0'}
+            if mode=='unconfirmed_unit': after={'LoadState':'loaded','ActiveState':'active','MainPID':'1234'}
+            states=[{'LoadState':'not-found'},after]
+            if mode=='preexisting_unit': states=[{'LoadState':'loaded','ActiveState':'active','MainPID':'999'}]
+            with patch.object(run.os,'getuid',return_value=1000),patch.object(run.os,'geteuid',return_value=1000),patch.object(run,'inputs',return_value=(base,{})),patch.object(run,'credential',return_value='synthetic-private-value'),patch.object(run,'unit_state',side_effect=states),patch.object(run.p,'digest',return_value='a'*64),patch.object(run.subprocess,'Popen',RecordingClient),patch('builtins.print'):
+                if mode=='timeout_client_kill':
+                    assert run.launch('sigterm')==124
+                else:
+                    try: run.launch('sigterm')
+                    except ValueError as e: rejection=str(e)
+                    else: raise AssertionError('expected safe refusal '+mode)
+            if mode=='timeout_client_kill':
+                assert [r['action'] for r in records]==['Popen','wait','terminate','wait','kill','wait']
+                assert [r['timeout'] for r in records if r['action']=='wait']==[285,5,5]
+                result=json.loads((base/'evidence/host-sigterm/result.json').read_text())
+                assert result['exit_code']==124 and result['after']==after
+                assert not any('systemctl' in str(r) or 'docker' in str(r) for r in records)
+            elif mode=='unconfirmed_unit':
+                assert 'termination not confirmed' in rejection
+                result=json.loads((base/'evidence/host-sigterm/result.json').read_text())
+                assert result['after']==after and result['exit_code']==0
+            else:
+                assert not records and 'new unit' in rejection
+                assert not (base/'evidence/host-sigterm/intent.json').exists()
+            independent.append({'case':mode,'passed':True,'mock_process_actions':[r['action'] for r in records]})
+    for uid_map,gid_map in [('0 0 4294967295','0 0 4294967295'),('0 1000 1 1 100000 65535','0 1000 1 1 100000 65536'),('0 1000 1 1 100000 65536','0 1001 1 1 100000 65536')]:
+        def map_text(path,*args,**kwargs):
+            if str(path)=='/proc/self/uid_map': return uid_map
+            if str(path)=='/proc/self/gid_map': return gid_map
+            raise AssertionError('unexpected read in mapping gate '+str(path))
+        with patch.object(run.os,'getuid',return_value=0),patch.object(Path,'read_text',map_text),patch.object(run,'inputs') as inputs,patch.object(run,'credential') as credential:
+            try: run.mapped_child('sigterm')
+            except ValueError as e: assert 'subordinate' in str(e)
+            else: raise AssertionError('bad namespace accepted')
+            inputs.assert_not_called();credential.assert_not_called()
+    independent.append({'case':'host-root-short-subid-wrong-parent-gid-refused-before-inputs','passed':True,'variants':3})
+    after={f:sha(ROOT/f) for f in FILES};assert before==after
+    report.update(passed=True,source_sha256_after=after,source_unchanged=True,independent_recording_checks=independent)
+    report['review_conclusions']=[
+        'Fixed lr20260912_a identity and two exact test/opt-in phase contracts; no caller-supplied executable, pool root, arbitrary shell command or phase expansion.',
+        'Host preflight compares the complete acceptance object against confined paths and actual protected executable SHA256, plus runner configuration SHA and runtime storage paths. It validates credentials without putting the DSN in unit argv, intent or properties.',
+        'Credential parser accepts only one private owned single-link DSN for 127.0.0.1:32773/forge with optional sslmode. The secret enters only the actual test environment created inside the mapped child; parser rejection text is generic.',
+        'A random fresh transient unit and RootlessKit state path are required, evidence directory creation is exclusive, and no automatic retry or state reset exists. systemd argv fixes Delegate=yes, KillMode=control-group, RuntimeMaxSec and TimeoutStopSec.',
+        'The ordinary host must be UID1000. Child requires full two-row subordinate UID/GID maps before reading inputs/credentials, excluding host-root and short/unmapped execution.',
+        'The wrapper has no mount, existing-unit stop, Docker cleanup or journal reset path. Uncertain process/container identities are intentionally retained by the actual test for later inspection.',
+        'Outer waiting-client timeout performs bounded TERM then KILL only on its own systemd-run client. Dedicated unit RuntimeMaxSec and control-group termination provide the separate service-side bound. An active/nonzero-MainPID unit after client return is refused with retained state.'
+    ]
+    report['limitations']=[
+        'No systemd or RootlessKit execution was performed. Recording tests verify argv/branch behavior; actual cgroup accounting, timeout delivery and descendants must be checked in the future dedicated-unit run.',
+        'The child subcommand is an internal entry intended only for the new bounded systemd unit. It directly runs the Go test with its Go test timeout and does not independently provide the service-wide RuntimeMaxSec guarantee.',
+        'The live Go fixture preflights are still required for exact Docker UID/GID-map equality, pool/owner/UUID/mount identity, signing-key/source material and scoped existing-runtime state. Static config hashing is not a substitute for these runtime checks.',
+        'Launcher result exit_code is explicitly only the waiting client/test status. A zero exit must be paired with the selected Go case having actually run and its retained case assertions; a Go binary with no matching test could otherwise return zero.',
+        'If state inspection or file output fails, intent and existing logs remain but a final result record is not guaranteed. No completion should be inferred from an absent final result.',
+        'Controlled shutdown applies to this new unit cgroup, while Docker jobs are created by the dedicated daemon outside it. Failure must retain and report their exact ownership/unknown state, not infer all Docker jobs were killed.'
+    ]
+except Exception as e:
+    report['error']=type(e).__name__+': '+str(e)
+    raise
+finally:
+    report['review_script_sha256']=sha(Path(__file__))
+    OUT.write_text(json.dumps(report,indent=2,sort_keys=True)+'\n')
+    print(json.dumps({'passed':report['passed'],'report':str(OUT),'error':report.get('error')}))

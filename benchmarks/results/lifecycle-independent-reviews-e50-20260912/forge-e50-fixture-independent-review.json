@@ -1,0 +1,71 @@
+{
+  "author_evidence": {
+    "actual_cases_skipped": [
+      "TestRealWorkerRunnerSIGTERM",
+      "TestRecoverWorkerRunnerSIGTERM"
+    ],
+    "author_binary": {
+      "path": "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/feature-worktrees/logs/var/local/e50-application.test",
+      "sha256": "7b2605b46413bb0507119b53935a24f245bfb5691cc509f74dae45f457d32dfc",
+      "size": 87183842
+    },
+    "initial_ast_failure_preserved_and_hex_trace_decoded": true,
+    "manifest_files_verified": 13,
+    "ordinary_race_vet_compile_exit_codes": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "source_inventory_unchanged": 281
+  },
+  "independent_offline": {
+    "command": [
+      "go",
+      "test",
+      "-race",
+      "./scripts/faults/application",
+      "-run",
+      "^(TestWorkerRunnerSIGTERMPreflight|TestWorkerRunnerSIGTERMRejectsSharedState)$",
+      "-count=1",
+      "-v"
+    ],
+    "elapsed_seconds": 2.619428317004349,
+    "exit_code": 0,
+    "log": "/tmp/forge-e50-fixture-independent-offline.log",
+    "log_sha256": "6321b50f0aab80408b9174b1933449858bfd1b000fee8c6022534d6af383af7c",
+    "record": "/tmp/forge-e50-fixture-independent-offline.json",
+    "record_sha256": "2df5a89808a9f87ca845f37d67abfcc86cf483807318382747fbe730ab33990a"
+  },
+  "limitations": [
+    "No actual PostgreSQL/Docker/fixed-volume operation, systemd launch, SIGTERM or recovery entry point ran here. E50 remains pending an actual host run and independent retained-raw audit; this review does not promote S16.4.",
+    "lifecycleMapping validates only this process map shape. It does not compare subordinate ranges with the Docker daemon actual maps. Rootless/cgroup capability checks and a runnable baseline do not prove map equality; parent accepted this reporting limit.",
+    "PostgreSQL/SQLite/Docker/filesystem captures are sequential, not atomic. Future audit must bind signals, claims, requests, receipts, fee rows and exact artifact bytes to their original raw timestamps.",
+    "Old-epoch inspect after both process exits and successor startup must still fit within the original natural30-second lease. Slow-host timing may correctly fail closed; the test does not rewrite or renew the preserved lease.",
+    "Recovery assumes its private schema has not been reused for unrelated queued runs. The worker is schema-scoped, not a generic run-ID-only worker; rejection of foreign journal workspaces alone is not such a restriction.",
+    "No API/HTTP lifecycle or artifact-download evidence is supplied. PG READY publication and strict disk-spool evidence become actual only when the opt-in host case succeeds."
+  ],
+  "p1_p2_findings": [],
+  "passed": true,
+  "review_script_sha256": "30d3afb2349730e3553efd7652133d6a3b71f517d366d545a55429ea1e7fdc94",
+  "scope": "independent frozen source/offline evidence review, not actual SIGTERM acceptance",
+  "source_review": [
+    "Exact fresh lr20260912_a identity, binary hashes/package paths and no symlinked ancestors, prior journal/socket/occupied slot or TestBackend. Production VerifyVolume inspects all four ext4 image/mount identities before schema/process creation. Exact source and trusted grader oracles are checked.",
+    "Uses real runner/worker executables, production gRPC/Driver/Store/Docker.Start and a deterministic provider with synthetic fees. Restricted credentials stay in private settings and child env; journal request grants are stripped from public capture.",
+    "Both parent/child markers and binary stdout/stderr must appear before signaling. Container ID/name/operation label/profile/exact leased checkout and nonempty container process tree are checked.",
+    "SIGTERM helpers bind executable SHA and /proc start ticks to launched child, record DB/wall timestamps, require clean bounded exit. Original worker exit must leave reserved capacity and original live writer. Original runner exit must leave same live writer, uncancelled Unknown operation and sealed runner_shutdown capture gap.",
+    "Successor runner must preserve journal UUID and old-epoch inspection must not restart/settle the live writer. Successor real worker must wait until original natural30-second lease expiry; every claim remains30seconds and old worker cannot claim after signal.",
+    "Adoption may stop/fence the original writer. Original request is compared bytewise after grant stripping; same JobID/container, one counter line, exactly one create/start/die and post-claim stop before natural70-second bound are required. Incomplete log cannot become trusted verification.",
+    "Only after next unapproved tool wait does explicit business cancel occur. Exactly one cancel event, one effect confirmation, two settled synthetic model reservations/300microusd, zero active/reserved capacity and old heartbeat fencing are required. Gap log must be uniquely PG READY with exact bytes/hash/length.",
+    "Production CleanupWorkspace must seal/publish then release. Zero unsettled operations/leased slots, unchanged2operation/1MiB cumulative log reservation, durable owned-container removal, original pool owner and config SHA are asserted.",
+    "Failure cleanup stops only spawned child processes and retains uncertain Docker/workspace/journal/PG identities. Separate explicit recovery rejects changed hashes/UUID/owners, incomplete identity, already released cases or journal use by other workspaces; it does not submit a replacement run."
+  ],
+  "source_sha256": {
+    "docs/worker-runner-sigterm-evidence.md": "1e5042ee18ab57424966476c8ba0dc4ad376e7f6eb97647677b3df003f1dd75b",
+    "internal/runnerclient/client.go": "8e9f1a94de888d46f10b0e2960ee45dbeb7692fc72bd930bacff9e3826d9ce85",
+    "scripts/faults/application/application_test.go": "d546891dba040fb3b6d905b0f018953d904309f5b7b973890f119cf6cd8fd835",
+    "scripts/faults/application/worker_runner_sigterm_helpers_test.go": "b67d3280edeb44e8811ffb3ac891eebf7d70498d4f1649ed3b9028ee2516da73",
+    "scripts/faults/application/worker_runner_sigterm_test.go": "1e8467244cea41421beb60db7fa64bbde3656cd2652a630834b19f698ebc455f",
+    "scripts/faults/application/worker_sigterm_test.go": "96c3da3fe17cae12a9d92006a17e8b74487250ddef6df616eeac00920b51c661"
+  }
+}

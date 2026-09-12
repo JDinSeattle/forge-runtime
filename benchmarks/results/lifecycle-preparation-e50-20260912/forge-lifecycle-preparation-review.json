@@ -1,0 +1,78 @@
+{
+  "independent_pure_checks": {
+    "bounded_default_log_policy": true,
+    "explicit_ci_discovery_occurrences": 1,
+    "original_project_manifest": "refused: manifest scope does not match this fixed project configuration",
+    "scoped_runtime_paths": true,
+    "strict_backend_default": true,
+    "wrong_backing_inode": "refused: loop identity/offset/size/read-write mode does not match image"
+  },
+  "limitations": [
+    "No actual image preparation, root mount, four-slot positive mount validation, runner startup or SIGTERM acceptance has been executed by this review. The reported configured state means generated configuration, not completed acceptance.",
+    "inspect_binaries checks protected executable files and freezes their current SHA256 into acceptance; it does not compare those hashes with a pre-approved build manifest. Subsequent launch harness must bind these hashes and source provenance to its actual processes.",
+    "The real positive actual_slots path remains an operator-host check. These offline tests exercise rejection and configuration rendering; they must not be reported as proof of live mount identity or capacity.",
+    "The preparer contains only bounded copied volume-helper prepare/inspect invocations; operational success and helper timeout recovery are not exercised here. Interrupted partial fixture scopes require inspection and are deliberately not reset.",
+    "A configured Unix socket path or Docker endpoint is not a readiness check. Subsequent process harness must refuse an existing foreign listener and keep all operations confined to this fresh fixture."
+  ],
+  "offline_tests": {
+    "argv": [
+      "python3",
+      "-I",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "scripts/faults/sigterm",
+      "-p",
+      "test_*.py",
+      "-v"
+    ],
+    "count": 12,
+    "exit_code": 0,
+    "limitations": "configuration rendering tests intentionally mock mount validation; no positive real mounted-pool assertion",
+    "log": "/tmp/forge-lifecycle-preparation-offline.log",
+    "sha256": "662ddbe4d6f35a8273815a9585844ea1399537762e768cfc208f50904d06e77a"
+  },
+  "p1_p2_findings": [],
+  "passed": true,
+  "prepared_scope_followup": {
+    "passed": true,
+    "performed": "read-only metadata/header review of parent-created independent fixture; no actual prepare/mount by reviewer",
+    "report": "/tmp/forge-lifecycle-prepared-scope-review.json",
+    "sha256": "eddc84a116be7e10f90d1c4f480dad4e5b4fc647634899ffd8149a9550ef8fa8"
+  },
+  "review_script_sha256": "6f782cc710f9e69f784c90d9e4c4ca5d5f65494014e7a078608cd0dfcb7612d2",
+  "scope": "independent source review and offline tests only; no actual prepare, mount, Docker, socket, service, private key inspection or database operations",
+  "source_review": [
+    "Exact lr... ID and fixed repository-owned private var/lifecycle-rehearsals root; layout refuses existing scope, symlink directory chains and overwrites. Copied helpers derive their fixed root from their new location.",
+    "read_preparation rejects substituted scope_root/pool_root, helper mutation/symlink and non-private descriptor. build_slots binds the manifest project root, four distinct slot identities and root-owned mount-state digest.",
+    "actual_slots validates backing file ownership/mode/single link/device/inode/size/UUID, live exact mount ID, loop backing identity, ext4 root/rw/nosuid/nodev, empty root and actual block-device/filesystem limits. mkfs root mode 0755 is permitted only with correct owner and no group/other write; enclosing private directory chain remains mandatory.",
+    "All binary and mounted-slot checks precede runtime creation; any existing runtime or acceptance file, including partial state, is retained rather than reset. Successful acceptance is written only after all private configuration outputs.",
+    "New signing key is 32 random bytes in a 0600 exclusive-created file under 0700 runtime. No key bytes or digest are serialized into preparation, acceptance or configuration-observations. Generated source, key, configs and acceptance stay inside the dedicated scope.",
+    "Byteguard and countguard configs change only run_bytes=2MiB and max_operations=2 respectively; source/journal/key/volume/transport identity and production backend remain unchanged.",
+    "CI adds exactly one explicit non-recursive discovery group for these nested tests. The 12 tests pass independently with no service/container/image preparation."
+  ],
+  "source_sha256_after": {
+    ".github/workflows/ci.yml": "12e983d822145f2d859f792ebccc1807ff3297b98372f7770192dcc885e5d7b4",
+    "cmd/forge-runner/configure-local.py": "e38d12e2822b0b5941d7fce38ff2c8ad93d927a4de78421193187e65770450eb",
+    "scripts/faults/sigterm/configure.py": "271111f49ba981d5d3d6ff76e3555b6876098a328c60dcb0a60b1b75c37eb1ad",
+    "scripts/faults/sigterm/prepare.py": "6cb0af3805dfaeae3bf3e1b03df7b5daf46f36127e1c7c278247d3193543d1c9",
+    "scripts/faults/sigterm/test_configure.py": "03a727e0b545163a62294112261dd3d3612e6763ef90751f61dbbd61b180c1ef",
+    "scripts/faults/sigterm/test_prepare.py": "1f3c972b05cb6feed5f8c56f7dde2bdc9b36734364d794c09d51b21a0f885d79",
+    "scripts/workspace-volumes/common.py": "bf50b9bfaef24a1d6b2980495a6d84baa68ab10b6184ba21b56a0b5e89229bc2",
+    "scripts/workspace-volumes/mount.py": "bfa00fab40652ba84e18409f85fd56bc1c1285923cfea6295a3bd31a7130027a",
+    "scripts/workspace-volumes/volumes.py": "683ebc5e3538ba65a701b4d7cad17d6e21d12cb1ab1cfc54835d2689718cd4bc"
+  },
+  "source_sha256_before": {
+    ".github/workflows/ci.yml": "12e983d822145f2d859f792ebccc1807ff3297b98372f7770192dcc885e5d7b4",
+    "cmd/forge-runner/configure-local.py": "e38d12e2822b0b5941d7fce38ff2c8ad93d927a4de78421193187e65770450eb",
+    "scripts/faults/sigterm/configure.py": "271111f49ba981d5d3d6ff76e3555b6876098a328c60dcb0a60b1b75c37eb1ad",
+    "scripts/faults/sigterm/prepare.py": "6cb0af3805dfaeae3bf3e1b03df7b5daf46f36127e1c7c278247d3193543d1c9",
+    "scripts/faults/sigterm/test_configure.py": "03a727e0b545163a62294112261dd3d3612e6763ef90751f61dbbd61b180c1ef",
+    "scripts/faults/sigterm/test_prepare.py": "1f3c972b05cb6feed5f8c56f7dde2bdc9b36734364d794c09d51b21a0f885d79",
+    "scripts/workspace-volumes/common.py": "bf50b9bfaef24a1d6b2980495a6d84baa68ab10b6184ba21b56a0b5e89229bc2",
+    "scripts/workspace-volumes/mount.py": "bfa00fab40652ba84e18409f85fd56bc1c1285923cfea6295a3bd31a7130027a",
+    "scripts/workspace-volumes/volumes.py": "683ebc5e3538ba65a701b4d7cad17d6e21d12cb1ab1cfc54835d2689718cd4bc"
+  },
+  "source_unchanged": true
+}

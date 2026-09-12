@@ -1,0 +1,61 @@
+#!/usr/bin/env python3
+import hashlib
+import json
+import re
+from pathlib import Path
+
+ROOT=Path('/home/postedism/Desktop/mini claude code/forge-runtime/var/local/feature-worktrees/logs')
+RAW=ROOT/'benchmarks/results/worker-runner-sigterm-e50'
+OUT=Path('/tmp/forge-e50-fixture-independent-review.json')
+def sha(p): return hashlib.sha256(p.read_bytes()).hexdigest()
+def read(p): return json.loads(p.read_text())
+
+manifest=read(RAW/'manifest.json')
+for name,f in manifest.items():
+    p=RAW/name
+    assert p.stat().st_size==f['size'] and sha(p)==f['sha256'],name
+author=read(RAW/'offline-02/report.json')
+before,after=read(RAW/'offline-02/source-before.json'),read(RAW/'offline-02/source-after.json')
+assert before==after and len(before)==281 and all(c['exit_code']==0 for c in author['commands'])
+for name in ('01.log','02.log'):
+    data=(RAW/'offline-02'/name).read_text()
+    assert data.count('--- SKIP: TestRealWorkerRunnerSIGTERM')==1 and data.count('--- SKIP: TestRecoverWorkerRunnerSIGTERM')==1 and '\nPASS\n' in data
+failure=(RAW/'offline-01/test.log').read_text()
+failure_hex=re.search(r'exit status 1 ([0-9a-f]+)',failure).group(1)
+assert b'required field "lineno" missing' in bytes.fromhex(failure_hex) and '--- FAIL:' in failure
+binary=author['binary']
+assert Path(binary['path']).stat().st_size==binary['size'] and sha(Path(binary['path']))==binary['sha256']
+independent=read(Path('/tmp/forge-e50-fixture-independent-offline.json'))
+assert independent['exit_code']==0 and independent['source_unchanged']
+for name,value in independent['source_before'].items(): assert sha(ROOT/name)==value,name
+
+report={
+ 'scope':'independent frozen source/offline evidence review, not actual SIGTERM acceptance',
+ 'passed':True,
+ 'p1_p2_findings':[],
+ 'source_sha256':independent['source_after'],
+ 'author_evidence':{'manifest_files_verified':len(manifest),'source_inventory_unchanged':281,'ordinary_race_vet_compile_exit_codes':[c['exit_code'] for c in author['commands']],'actual_cases_skipped':['TestRealWorkerRunnerSIGTERM','TestRecoverWorkerRunnerSIGTERM'],'initial_ast_failure_preserved_and_hex_trace_decoded':True,'author_binary':binary},
+ 'independent_offline':{'command':independent['argv'],'exit_code':0,'elapsed_seconds':independent['elapsed_seconds'],'log':'/tmp/forge-e50-fixture-independent-offline.log','log_sha256':sha(Path('/tmp/forge-e50-fixture-independent-offline.log')),'record':'/tmp/forge-e50-fixture-independent-offline.json','record_sha256':sha(Path('/tmp/forge-e50-fixture-independent-offline.json'))},
+ 'source_review':[
+  'Exact fresh lr20260912_a identity, binary hashes/package paths and no symlinked ancestors, prior journal/socket/occupied slot or TestBackend. Production VerifyVolume inspects all four ext4 image/mount identities before schema/process creation. Exact source and trusted grader oracles are checked.',
+  'Uses real runner/worker executables, production gRPC/Driver/Store/Docker.Start and a deterministic provider with synthetic fees. Restricted credentials stay in private settings and child env; journal request grants are stripped from public capture.',
+  'Both parent/child markers and binary stdout/stderr must appear before signaling. Container ID/name/operation label/profile/exact leased checkout and nonempty container process tree are checked.',
+  'SIGTERM helpers bind executable SHA and /proc start ticks to launched child, record DB/wall timestamps, require clean bounded exit. Original worker exit must leave reserved capacity and original live writer. Original runner exit must leave same live writer, uncancelled Unknown operation and sealed runner_shutdown capture gap.',
+  'Successor runner must preserve journal UUID and old-epoch inspection must not restart/settle the live writer. Successor real worker must wait until original natural30-second lease expiry; every claim remains30seconds and old worker cannot claim after signal.',
+  'Adoption may stop/fence the original writer. Original request is compared bytewise after grant stripping; same JobID/container, one counter line, exactly one create/start/die and post-claim stop before natural70-second bound are required. Incomplete log cannot become trusted verification.',
+  'Only after next unapproved tool wait does explicit business cancel occur. Exactly one cancel event, one effect confirmation, two settled synthetic model reservations/300microusd, zero active/reserved capacity and old heartbeat fencing are required. Gap log must be uniquely PG READY with exact bytes/hash/length.',
+  'Production CleanupWorkspace must seal/publish then release. Zero unsettled operations/leased slots, unchanged2operation/1MiB cumulative log reservation, durable owned-container removal, original pool owner and config SHA are asserted.',
+  'Failure cleanup stops only spawned child processes and retains uncertain Docker/workspace/journal/PG identities. Separate explicit recovery rejects changed hashes/UUID/owners, incomplete identity, already released cases or journal use by other workspaces; it does not submit a replacement run.'
+ ],
+ 'limitations':[
+  'No actual PostgreSQL/Docker/fixed-volume operation, systemd launch, SIGTERM or recovery entry point ran here. E50 remains pending an actual host run and independent retained-raw audit; this review does not promote S16.4.',
+  'lifecycleMapping validates only this process map shape. It does not compare subordinate ranges with the Docker daemon actual maps. Rootless/cgroup capability checks and a runnable baseline do not prove map equality; parent accepted this reporting limit.',
+  'PostgreSQL/SQLite/Docker/filesystem captures are sequential, not atomic. Future audit must bind signals, claims, requests, receipts, fee rows and exact artifact bytes to their original raw timestamps.',
+  'Old-epoch inspect after both process exits and successor startup must still fit within the original natural30-second lease. Slow-host timing may correctly fail closed; the test does not rewrite or renew the preserved lease.',
+  'Recovery assumes its private schema has not been reused for unrelated queued runs. The worker is schema-scoped, not a generic run-ID-only worker; rejection of foreign journal workspaces alone is not such a restriction.',
+  'No API/HTTP lifecycle or artifact-download evidence is supplied. PG READY publication and strict disk-spool evidence become actual only when the opt-in host case succeeds.'
+ ],
+ 'review_script_sha256':sha(Path(__file__))
+}
+OUT.write_text(json.dumps(report,indent=2,sort_keys=True)+'\n')
+print(json.dumps({'passed':True,'report':str(OUT),'sha256':sha(OUT),'manifest_files':len(manifest)}))

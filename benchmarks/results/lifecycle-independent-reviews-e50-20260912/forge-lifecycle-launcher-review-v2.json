@@ -1,0 +1,110 @@
+{
+  "conclusions": [
+    "The same frozen executable must list exactly one exact selected acceptance test before actual invocation; empty, extra or failed listing cannot proceed.",
+    "A nonzero actual test exit is retained. A zero exit requires the exact private final report with passed strictly true; logs additionally require the six exact case keys and each case passed strictly true.",
+    "Listing is bounded15seconds, uses only child environment credentials and does not expose them in argv. It fits within the dedicated service RuntimeMaxSec margin.",
+    "The old17-test source review/history is retained unchanged. This separate18-test revision closes the no-matching-test/zero-exit concern at the launcher boundary."
+  ],
+  "independent_recording_checks": [
+    {
+      "mode": "missing",
+      "passed": true,
+      "phase": "sigterm"
+    },
+    {
+      "mode": "extra",
+      "passed": true,
+      "phase": "sigterm"
+    },
+    {
+      "mode": "list_error",
+      "passed": true,
+      "phase": "sigterm"
+    },
+    {
+      "mode": "actual_failure",
+      "passed": true,
+      "phase": "sigterm"
+    },
+    {
+      "mode": "missing_report",
+      "passed": true,
+      "phase": "sigterm"
+    },
+    {
+      "mode": "success",
+      "passed": true,
+      "phase": "sigterm"
+    },
+    {
+      "mode": "missing",
+      "passed": true,
+      "phase": "logs"
+    },
+    {
+      "mode": "extra",
+      "passed": true,
+      "phase": "logs"
+    },
+    {
+      "mode": "list_error",
+      "passed": true,
+      "phase": "logs"
+    },
+    {
+      "mode": "actual_failure",
+      "passed": true,
+      "phase": "logs"
+    },
+    {
+      "mode": "missing_report",
+      "passed": true,
+      "phase": "logs"
+    },
+    {
+      "mode": "success",
+      "passed": true,
+      "phase": "logs"
+    }
+  ],
+  "limitations": [
+    "All added control-flow executions are recording mocks; no actual binary, service, container, database or acceptance report was produced.",
+    "Final passed flags are a launch completion gate, not an independent raw-evidence audit. Future actual cases still require UUID/lease/signal/request/receipt/artifact integrity recomputation.",
+    "Original service-wide timeout and child-entry limitations from the prior review remain; no production implementation was changed by this reviewer."
+  ],
+  "offline_tests": {
+    "command": [
+      "python3",
+      "-I",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "scripts/faults/sigterm",
+      "-p",
+      "test_*.py",
+      "-v"
+    ],
+    "count": 18,
+    "exit_code": 0,
+    "log": "/tmp/forge-lifecycle-launcher-v2-offline.log",
+    "sha256": "46211898e81cb2b4e0e552826e8981ba37b4ef584438c20ad9f23df506ab4442"
+  },
+  "p1_p2_findings": [],
+  "passed": true,
+  "previous_review": {
+    "path": "/tmp/forge-lifecycle-launcher-review.json",
+    "sha256": "61e7ea3aa7bcdbf7f99db3434b6a016dc9513532a7470049e6e14fb3155bc836"
+  },
+  "review_script_sha256": "76b831ecd257fdcdc68976c4c8d56d81383efbe8c54d7182301309d903cd680f",
+  "scope": "independent offline delta review; no unit, process acceptance, Docker, socket or database execution",
+  "source_sha256_after": {
+    "scripts/faults/sigterm/run.py": "7d6cdbf62f347da5d330312930049f03e806cb12799bfe0e291ec5133a195f21",
+    "scripts/faults/sigterm/test_run.py": "e61114cfa4669dcc888f0e9aa1273a10665e377d1c84a550e9e34ef94b42884a"
+  },
+  "source_sha256_before": {
+    "scripts/faults/sigterm/run.py": "7d6cdbf62f347da5d330312930049f03e806cb12799bfe0e291ec5133a195f21",
+    "scripts/faults/sigterm/test_run.py": "e61114cfa4669dcc888f0e9aa1273a10665e377d1c84a550e9e34ef94b42884a"
+  },
+  "source_unchanged": true
+}

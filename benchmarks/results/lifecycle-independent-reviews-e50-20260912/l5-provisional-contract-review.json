@@ -1,0 +1,25 @@
+{
+  "scope": "message-based provisional L5 producer/consumer source contract review by runtime_development; no actual raw audit or host execution",
+  "first_read": {
+    "test": "9e2e2bdd6c05820acc319f29c52e3ea1689ac254206f55b8d5c7b0568bdf03fe",
+    "helper": "672ec6e6b5c5a066e0d406216dbc2c98fd7de68aad1a0cfcafecbfa873644883"
+  },
+  "last_read": {
+    "test": "0cbea4cda97b62a88480743cc03548b9df0cd9cc327bad3b280d899079d766f7",
+    "helper": "e252e5ce08eb529bd2ea83aa51c710c1f59642e3bcc884c0e56769b38075ae92"
+  },
+  "identified_and_observed_fixed": [
+    "Use a schema-bound fixture API Store for token/auth operations rather than expanding restricted worker privileges.",
+    "Compare artifact identity fields explicitly and timestamps with time.Time.Equal."
+  ],
+  "additional_requests_before_freeze": [
+    "Compare full immutable live operation request and receipt with original E50 record.",
+    "Require precise 404 responses for authorized cross-tenant negative checks.",
+    "Read and compare prior executable identity from E50 input/preflight rather than copying current identity."
+  ],
+  "limits": [
+    "Source changed during review.",
+    "E50 actual acceptance report has not been generated.",
+    "No full S12.9 execution or independent final source audit is implied."
+  ]
+}

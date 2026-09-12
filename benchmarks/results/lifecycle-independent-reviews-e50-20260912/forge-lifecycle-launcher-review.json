@@ -1,0 +1,88 @@
+{
+  "independent_recording_checks": [
+    {
+      "case": "timeout_client_kill",
+      "mock_process_actions": [
+        "Popen",
+        "wait",
+        "terminate",
+        "wait",
+        "kill",
+        "wait"
+      ],
+      "passed": true
+    },
+    {
+      "case": "unconfirmed_unit",
+      "mock_process_actions": [
+        "Popen",
+        "wait"
+      ],
+      "passed": true
+    },
+    {
+      "case": "preexisting_unit",
+      "mock_process_actions": [],
+      "passed": true
+    },
+    {
+      "case": "host-root-short-subid-wrong-parent-gid-refused-before-inputs",
+      "passed": true,
+      "variants": 3
+    }
+  ],
+  "limitations": [
+    "No systemd or RootlessKit execution was performed. Recording tests verify argv/branch behavior; actual cgroup accounting, timeout delivery and descendants must be checked in the future dedicated-unit run.",
+    "The child subcommand is an internal entry intended only for the new bounded systemd unit. It directly runs the Go test with its Go test timeout and does not independently provide the service-wide RuntimeMaxSec guarantee.",
+    "The live Go fixture preflights are still required for exact Docker UID/GID-map equality, pool/owner/UUID/mount identity, signing-key/source material and scoped existing-runtime state. Static config hashing is not a substitute for these runtime checks.",
+    "Launcher result exit_code is explicitly only the waiting client/test status. A zero exit must be paired with the selected Go case having actually run and its retained case assertions; a Go binary with no matching test could otherwise return zero.",
+    "If state inspection or file output fails, intent and existing logs remain but a final result record is not guaranteed. No completion should be inferred from an absent final result.",
+    "Controlled shutdown applies to this new unit cgroup, while Docker jobs are created by the dedicated daemon outside it. Failure must retain and report their exact ownership/unknown state, not infer all Docker jobs were killed."
+  ],
+  "offline_tests": {
+    "command": [
+      "python3",
+      "-I",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "scripts/faults/sigterm",
+      "-p",
+      "test_*.py",
+      "-v"
+    ],
+    "count": 17,
+    "exit_code": 0,
+    "log": "/tmp/forge-lifecycle-launcher-offline.log",
+    "sha256": "d3adc9dcf0fac7cc8350021737d1ae4129283d25b9ae99747be8f7167c7cdc07"
+  },
+  "p1_p2_findings": [],
+  "passed": true,
+  "review_conclusions": [
+    "Fixed lr20260912_a identity and two exact test/opt-in phase contracts; no caller-supplied executable, pool root, arbitrary shell command or phase expansion.",
+    "Host preflight compares the complete acceptance object against confined paths and actual protected executable SHA256, plus runner configuration SHA and runtime storage paths. It validates credentials without putting the DSN in unit argv, intent or properties.",
+    "Credential parser accepts only one private owned single-link DSN for 127.0.0.1:32773/forge with optional sslmode. The secret enters only the actual test environment created inside the mapped child; parser rejection text is generic.",
+    "A random fresh transient unit and RootlessKit state path are required, evidence directory creation is exclusive, and no automatic retry or state reset exists. systemd argv fixes Delegate=yes, KillMode=control-group, RuntimeMaxSec and TimeoutStopSec.",
+    "The ordinary host must be UID1000. Child requires full two-row subordinate UID/GID maps before reading inputs/credentials, excluding host-root and short/unmapped execution.",
+    "The wrapper has no mount, existing-unit stop, Docker cleanup or journal reset path. Uncertain process/container identities are intentionally retained by the actual test for later inspection.",
+    "Outer waiting-client timeout performs bounded TERM then KILL only on its own systemd-run client. Dedicated unit RuntimeMaxSec and control-group termination provide the separate service-side bound. An active/nonzero-MainPID unit after client return is refused with retained state."
+  ],
+  "review_script_sha256": "a5c225380e6dc47a53f5d3316d0729835fa6a0485dcb160dc1fdfadfe2d43af9",
+  "scope": "independent read-only source review plus offline unit/recording mocks; no host service, container, mount, database or socket action",
+  "source_sha256_after": {
+    ".github/workflows/ci.yml": "12e983d822145f2d859f792ebccc1807ff3297b98372f7770192dcc885e5d7b4",
+    "scripts/faults/sigterm/configure.py": "271111f49ba981d5d3d6ff76e3555b6876098a328c60dcb0a60b1b75c37eb1ad",
+    "scripts/faults/sigterm/prepare.py": "6cb0af3805dfaeae3bf3e1b03df7b5daf46f36127e1c7c278247d3193543d1c9",
+    "scripts/faults/sigterm/run.py": "27f79d2cff946a6b49566fed906512e32494982b212d060e09690428a2299b62",
+    "scripts/faults/sigterm/test_run.py": "72c0acd2bd4efb7efb093326a680463313a20d4de0f55c7aa657f6394e3e07d2"
+  },
+  "source_sha256_before": {
+    ".github/workflows/ci.yml": "12e983d822145f2d859f792ebccc1807ff3297b98372f7770192dcc885e5d7b4",
+    "scripts/faults/sigterm/configure.py": "271111f49ba981d5d3d6ff76e3555b6876098a328c60dcb0a60b1b75c37eb1ad",
+    "scripts/faults/sigterm/prepare.py": "6cb0af3805dfaeae3bf3e1b03df7b5daf46f36127e1c7c278247d3193543d1c9",
+    "scripts/faults/sigterm/run.py": "27f79d2cff946a6b49566fed906512e32494982b212d060e09690428a2299b62",
+    "scripts/faults/sigterm/test_run.py": "72c0acd2bd4efb7efb093326a680463313a20d4de0f55c7aa657f6394e3e07d2"
+  },
+  "source_unchanged": true
+}
