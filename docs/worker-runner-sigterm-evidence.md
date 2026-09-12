@@ -21,9 +21,9 @@ The operator supplies `acceptance.json` with these exact fields:
   "runner_sha256": "64 lowercase hexadecimal digits",
   "worker_binary": "/absolute/project/var/lifecycle-rehearsals/lr20260912_a/bin/forge-worker",
   "worker_sha256": "64 lowercase hexadecimal digits",
-  "test_binary": "/absolute/project/var/lifecycle-rehearsals/lr20260912_a/bin/application.test",
+  "test_binary": "/absolute/project/var/lifecycle-rehearsals/lr20260912_a/bin/application-faults.test",
   "test_sha256": "64 lowercase hexadecimal digits",
-  "evidence_dir": "/absolute/project/var/lifecycle-rehearsals/lr20260912_a/evidence/first"
+  "evidence_dir": "/absolute/project/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-01"
 }
 ```
 
@@ -50,13 +50,13 @@ PostgreSQL tables, SQLite tables, Docker inspect/events and filesystem reads are
 
 ## Execution and recovery entry points
 
-Build the production commands and the application test package from one frozen source identity. The root-owned prepare/configure/launch workflow installs their paths/hashes in the manifest. The underlying invocation, run only in the authorized dedicated mapped namespace, is:
+Build the production commands and the application test package from one frozen source identity. The repository prepare/configure/launch workflow, invoked by the ordinary checkout owner, installs their paths/hashes in the manifest. The underlying invocation, run only in the authorized dedicated mapped namespace, is:
 
 ```text
 FORGE_RUN_WORKER_RUNNER_SIGTERM=1
 FORGE_WORKER_RUNNER_SIGTERM_ACCEPTANCE=/absolute/path/to/acceptance.json
 FORGE_TEST_DATABASE_URL=<privately injected dedicated loopback admin credential>
-application.test -test.run '^TestRealWorkerRunnerSIGTERM$' -test.v -test.timeout 4m
+application-faults.test -test.run '^TestRealWorkerRunnerSIGTERM$' -test.v -test.timeout 4m
 ```
 
 The case uses a new `worker-runner-sigterm` child of `evidence_dir`, allowing the host launcher to keep its own files alongside it. It refuses to overwrite an earlier case. `recovery.json` records the original run/operation, schema, private configuration path and hashes, journal UUID, container ID/name when observed, and last durable test phase. Process failure cleanup signals only children launched by the test; it never business-cancels or deletes an unknown container/workspace automatically.
@@ -66,7 +66,7 @@ The case uses a new `worker-runner-sigterm` child of `evidence_dir`, allowing th
 ```text
 FORGE_RECOVER_WORKER_RUNNER_SIGTERM=1
 FORGE_WORKER_RUNNER_SIGTERM_ACCEPTANCE=/absolute/path/to/the/original/acceptance.json
-application.test -test.run '^TestRecoverWorkerRunnerSIGTERM$' -test.v -test.timeout 3m
+application-faults.test -test.run '^TestRecoverWorkerRunnerSIGTERM$' -test.v -test.timeout 3m
 ```
 
 Recovery requires the original executable/configuration hashes, journal UUID, four unchanged owners, absent runner socket, original isolated schema/run and private restricted credential. It refuses incomplete identity, an already released case, a changed config/binary or a journal subsequently used by another fixture. It starts only the original runner configuration, applies explicit business cancellation to the original run, lets a real worker settle it under natural lease rules, and seals/releases through production cleanup. It creates a new timestamped recovery evidence directory and never overwrites the failed case. A failed preflight before a usable UUID/credential descriptor needs read-only operator diagnosis; the recovery test fails closed. The recovery entry point itself has only been compiled, not actually exercised.
