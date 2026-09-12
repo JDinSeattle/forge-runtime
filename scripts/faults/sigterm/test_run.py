@@ -75,6 +75,12 @@ class LaunchBoundaryTests(unittest.TestCase):
         self.assertEqual(old["FORGE_STRICT_LOGS_EXECUTION"], "01")
         self.assertEqual(new["FORGE_STRICT_LOGS_ACCEPTANCE"], str(self.repo / "acceptance-logs-02.json"))
         self.assertEqual(new["FORGE_STRICT_LOGS_EXECUTION"], "02")
+        _, third = run.command("logs", a, "02", "03")
+        self.assertEqual(third["FORGE_STRICT_LOGS_ACCEPTANCE"], str(self.repo / "acceptance-logs-03.json"))
+        self.assertEqual(third["FORGE_STRICT_LOGS_EXECUTION"], "03")
+        for phase, attempt, execution in (("logs", "01", "03"), ("sigterm", "02", "03"), ("logs-cleanup", "02", "03"), ("logs", "02", "04")):
+            with self.assertRaises(ValueError):
+                run.command(phase,a,attempt,execution)
 
     def test_new_log_report_does_not_accept_old_success_or_partial_cleanup(self):
         evidence = self.repo / "evidence"

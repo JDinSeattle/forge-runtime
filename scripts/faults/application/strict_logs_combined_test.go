@@ -621,7 +621,7 @@ func (f *slFixture) l1() {
 	h, file := f.submit("L1", slCompleteProgram)
 	dir := filepath.Join(f.c.RootDir, "operator-faults")
 	f.check(os.MkdirAll(dir, 0700))
-	plan := filepath.Join(dir, "strict-log-publication.json")
+	plan := filepath.Join(dir, "strict-log-publication-"+string(h.s.RunID)+".json")
 	f.check(slSave(plan, map[string]any{"point": "after_receipt_before_commit", "action": "delay", "tenant_id": h.s.Tenant, "run_id": h.s.RunID, "workspace_id": h.s.RunID, "operation_id": h.s.TargetOp, "epoch": 2, "expires_at": time.Now().Add(5 * time.Minute), "delay_millis": 10000}))
 	f.startRunner("default", plan)
 	p := f.worker(h, file, "L1")
@@ -1200,7 +1200,7 @@ func (f *slFixture) l5() {
 	f.check(err)
 	var historical slAcceptance
 	f.check(slReadJSON(filepath.Join(dir, "acceptance-input.json"), &historical))
-	historicalInputs, err := slHistoricalAuthority(f.a, historical, f.c, filepath.Base(f.dir) == "logs-02")
+	historicalInputs, err := slHistoricalAuthority(f.a, historical, f.c, filepath.Base(f.dir) != "logs-01")
 	f.check(err)
 	for path, hash := range historicalInputs {
 		f.inputs[path] = hash
@@ -1566,10 +1566,17 @@ func TestStrictLogsCombinedAcceptance(t *testing.T) {
 	f.check(e)
 	f.check(slIdle(j))
 	f.journalID = j.Identity
-	if execution == "02" {
+	if execution == "02" || execution == "03" {
 		cleanupInputs, err := slCleanupPrerequisite(a, c, j)
 		f.check(err)
 		for path, hash := range cleanupInputs {
+			f.inputs[path] = hash
+		}
+	}
+	if execution == "03" {
+		priorInputs, err := slLogs02Prerequisite(a, c, j)
+		f.check(err)
+		for path, hash := range priorInputs {
 			f.inputs[path] = hash
 		}
 	}

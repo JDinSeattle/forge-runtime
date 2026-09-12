@@ -204,5 +204,21 @@ original SIGTERM manifest, old executable bytes and original process signals
 separately from the new log executable identity; it never claims that E50 ran
 the newer binary. Both phases acquire the existing fixture control lock.
 
+The actual logs02 attempt stopped after Submit and before any runner/worker
+start because its fixed publication-fault filename already belonged to logs01.
+Its failed manifest, private schema and queued version1/epoch0 run are retained.
+An additional read-only observation records zero execution/capacity and a
+normalized journal comparison with the original preflight. It performs no
+cancellation and does not authorize routing that schema to another worker.
+
+The explicit third execution uses a run-specific publication-fault filename,
+`acceptance-logs-03.json`, `evidence/logs-03`, `runtime/strict-logs-private-03`,
+and `evidence/host-logs-03`. After freezing new binaries, use
+`prepare-logs-third --revision FULL_REVISION`, then
+`launch --phase logs --attempt 02 --logs-execution 03`. Before creating a new
+schema or runner it rechecks the original cleanup plus the pinned logs02 failure
+and read-only observation, historical binaries and retained fault files.
+Existing manifests, tasks and actual test outcomes are never replaced.
+
 These commands describe the reviewed continuation interface. Their presence
 is not evidence that cleanup or the new full log execution has passed.

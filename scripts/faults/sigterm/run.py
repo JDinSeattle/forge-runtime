@@ -43,7 +43,7 @@ def private_json(path):
 
 
 def manifest_name(phase, attempt, logs_execution="01"):
-    if phase not in PHASES or attempt not in ("01", "02") or (phase == "abort" and attempt != "01") or logs_execution not in ("01", "02"):
+    if phase not in PHASES or attempt not in ("01", "02") or (phase == "abort" and attempt != "01") or logs_execution not in ("01", "02", "03"):
         raise ValueError("explicit supported lifecycle phase and attempt required")
     if phase == "logs-cleanup":
         if attempt != "02" or logs_execution != "01":
@@ -51,8 +51,8 @@ def manifest_name(phase, attempt, logs_execution="01"):
         return "acceptance-logs-cleanup-01.json"
     if logs_execution != "01":
         if phase != "logs" or attempt != "02":
-            raise ValueError("logs execution02 requires the completed SIGTERM02 source")
-        return "acceptance-logs-02.json"
+            raise ValueError("later logs execution requires the completed SIGTERM02 source")
+        return "acceptance-logs-" + logs_execution + ".json"
     return "acceptance-abort-01.json" if phase == "abort" else ("acceptance.json" if attempt == "01" else "acceptance-02.json")
 
 
@@ -138,6 +138,32 @@ def prepare_logs_continuation(revision):
     for path in paths:
         p.save(path, updated)
     return {"prepared": [str(path) for path in paths], "executed": False}
+
+
+def prepare_logs_third(revision):
+    if not isinstance(revision, str) or not re.fullmatch(r"[a-f0-9]{40}", revision):
+        raise ValueError("full reviewed source revision required")
+    base, old = inputs("logs", "02", "02")
+    failed = private_json(base / "evidence/logs-02/acceptance.json")
+    observed = private_json(base / "evidence/logs-02-before-runner-observation/report.json")
+    if failed.get("passed") is not False or observed.get("passed") is not True or observed.get("status") != "queued" or observed.get("version") != 1 or observed.get("epoch") != 0 or observed.get("no_execution") is not True:
+        raise ValueError("preserved failed logs02 and its before-runner observation required")
+    if any(os.path.lexists(base / rel) for rel in ("acceptance-logs-03.json", "evidence/logs-03", "evidence/host-logs-03", "runtime/strict-logs-private-03")):
+        raise ValueError("third execution preparation or evidence already exists")
+    binary_dir = p.directory(base / "bin" / revision, private=True)
+    updated = dict(old)
+    for label, filename in (("runner", "forge-runner"), ("worker", "forge-worker"), ("test", "application-faults.test")):
+        path = binary_dir / filename
+        st = path.lstat()
+        if not stat.S_ISREG(st.st_mode) or st.st_uid != os.getuid() or st.st_nlink != 1 or st.st_mode & 0o022 or not st.st_mode & stat.S_IXUSR:
+            raise ValueError("frozen owned executable required")
+        updated[label + "_binary"] = str(path)
+        updated[label + "_sha256"] = p.digest(path)
+    if updated == old:
+        raise ValueError("third execution requires new reviewed binaries")
+    target = base / "acceptance-logs-03.json"
+    p.save(target, updated)
+    return {"prepared": [str(target)], "executed": False}
 
 
 def credential():
@@ -245,6 +271,8 @@ def launch(phase, attempt="01", logs_execution="01"):
     suffix = "-02" if attempt == "02" else ""
     if phase == "logs" and logs_execution == "02":
         suffix += "-retry"
+    if phase == "logs" and logs_execution == "03":
+        suffix = "-03"
     out = base / "evidence" / ("host-" + phase + suffix)
     p.directory(out.parent, private=True)
     out.mkdir(mode=0o700)  # Exclusive: no automatic retry or evidence overwrite.
@@ -290,16 +318,16 @@ def launch(phase, attempt="01", logs_execution="01"):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("action", choices=("launch", "child", "prepare-continuation", "prepare-logs-continuation"))
+    parser.add_argument("action", choices=("launch", "child", "prepare-continuation", "prepare-logs-continuation", "prepare-logs-third"))
     parser.add_argument("--phase", choices=PHASES)
     parser.add_argument("--attempt", default="01", choices=("01", "02"))
-    parser.add_argument("--logs-execution", default="01", choices=("01", "02"))
+    parser.add_argument("--logs-execution", default="01", choices=("01", "02", "03"))
     parser.add_argument("--revision")
     args = parser.parse_args()
-    if args.action in ("prepare-continuation", "prepare-logs-continuation"):
+    if args.action in ("prepare-continuation", "prepare-logs-continuation", "prepare-logs-third"):
         if args.phase is not None or args.attempt != "01" or args.logs_execution != "01":
             parser.error("preparation does not execute a phase")
-        prepare = prepare_continuation if args.action == "prepare-continuation" else prepare_logs_continuation
+        prepare = {"prepare-continuation": prepare_continuation, "prepare-logs-continuation": prepare_logs_continuation, "prepare-logs-third": prepare_logs_third}[args.action]
         print(json.dumps(prepare(args.revision), sort_keys=True))
         return 0
     if args.phase is None or args.revision is not None:
