@@ -139,6 +139,38 @@ python3 -I -m unittest discover -s scripts/faults/sigterm -p 'test_*.py' -v
 These checks use temporary files and recording process objects; they execute no
 systemd service, privileged helper, Docker job or paid model call.
 
+## Explicit continuation after failure before runner startup
+
+If the first trial failed before a journal, workspace or execution was created,
+retain its original binaries, manifest, private database settings and failed
+evidence. Freeze a reviewed new revision and build the three executables under
+`bin/<full-40-character-revision>/`; never overwrite the original `bin/*` files.
+Prepare separate manifests and execute each step explicitly:
+
+```bash
+python3 -I scripts/faults/sigterm/run.py prepare-continuation --revision <full-revision>
+python3 -I scripts/faults/sigterm/run.py launch --phase abort
+python3 -I scripts/faults/sigterm/run.py launch --phase sigterm --attempt 02
+python3 -I scripts/faults/sigterm/run.py launch --phase logs --attempt 02
+```
+
+Preparation writes only `acceptance-abort-01.json` and `acceptance-02.json`.
+The abort fixture verifies the exact original run and its absence of execution,
+then requests cancellation through the production store. Its report explicitly
+records nonterminal `cancel_requested`; it does not claim terminal cancellation
+or successful lifecycle recovery. The original deadline remains unchanged.
+The second trial must recheck that proof against the live original database and
+unused pool, then use a different schema, run and private worker configuration.
+Its worker never connects to the original schema. A later run cannot silently
+resume or replace the first trial.
+
+Trial 02 records SIGTERM evidence under `evidence/sigterm-02` and launcher logs
+under `evidence/host-sigterm-02`. Its log phase still records the six cases under
+`evidence/logs-01`, with L5 bound to the selected trial 02 SIGTERM evidence;
+the log launcher uses `evidence/host-logs-02`. All outputs remain exclusive.
+The child receives the validated private scope as `HOME`, preventing Docker
+from looking for mapped-root credentials in `/root/.docker`.
+
 The [integrated offline record](../../../benchmarks/results/lifecycle-integrated-offline-e50-20260912/identity.json)
 identifies all four merged Go fixture sources. Ordinary and race checks each
 pass 43 test/subtest entries and skip the three actual-environment entry points;

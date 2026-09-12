@@ -36,8 +36,95 @@ class LaunchBoundaryTests(unittest.TestCase):
             argv, env = run.command(phase, a)
             self.assertNotIn(self.secret, repr(argv))
             self.assertEqual(env["FORGE_TEST_DATABASE_URL"], self.dsn)
-            self.assertEqual(sum(key.startswith("FORGE_RUN_") for key in env), 1)
+            self.assertEqual(env["HOME"], str(self.repo))
+            self.assertEqual(sum(details[1] in env for details in run.PHASES.values()), 1)
             self.assertNotIn("FORGE_REVIEW_DATABASE_URL", env)
+
+    def test_attempt_selection_is_explicit_and_does_not_read_credentials_on_invalid_input(self):
+        a = {"scope_root": str(self.repo), "test_binary": str(self.repo / "bin/application-faults.test")}
+        with patch.object(run, "credential", return_value=self.dsn) as credentials:
+            for phase, attempt in (("abort", "02"), ("sigterm", "03"), ("missing", "01")):
+                with self.assertRaises(ValueError):
+                    run.command(phase, a, attempt)
+                with self.assertRaises(ValueError):
+                    run.launch(phase, attempt)
+            credentials.assert_not_called()
+            for phase, attempt, name in (("sigterm", "01", "acceptance.json"), ("sigterm", "02", "acceptance-02.json"),
+                                         ("logs", "02", "acceptance-02.json"), ("abort", "01", "acceptance-abort-01.json")):
+                argv, env = run.command(phase, a, attempt)
+                self.assertEqual(env[run.PHASES[phase][2]], str(self.repo / name))
+                self.assertNotIn(self.secret, repr(argv))
+
+    def test_second_attempt_cannot_use_old_success_or_claim_terminal_abort(self):
+        case = self.repo / "evidence/sigterm-01/worker-runner-sigterm"
+        case.mkdir(mode=0o700, parents=True)
+        run.p.save(case / "acceptance.json", {"passed": True})
+        run.completed_report("sigterm", self.repo)
+        with self.assertRaises(OSError):
+            run.completed_report("sigterm", self.repo, "02")
+        abort = self.repo / "evidence/sigterm-01/abort-before-runner"
+        abort.mkdir(mode=0o700)
+        path = abort / "report.json"
+        run.p.save(path, {"passed": True, "status": "cancel_requested", "terminal": False})
+        run.completed_report("abort", self.repo)
+        for value in ({"passed": True}, {"passed": True, "status": "cancelled", "terminal": True}):
+            path.write_text(run.json.dumps(value))
+            with self.assertRaises(ValueError):
+                run.completed_report("abort", self.repo)
+
+    def test_continuation_preserves_original_and_requires_one_versioned_binary_set(self):
+        base = self.repo / "scope"
+        base.mkdir(mode=0o700)
+        for relative in ("bin", "runtime", "evidence"):
+            (base / relative).mkdir(mode=0o700, parents=True)
+        host = "unix:///run/user/1000/test.sock"
+        original = {"purpose": run.p.PURPOSE, "fixture_id": run.IDENTITY, "scope_root": str(base), "pool_root": str(base / "pool-root"),
+                    "runner_config": str(base / "runtime/runner.json"), "evidence_dir": str(base / "evidence/sigterm-01")}
+        revision = "a" * 40
+        new_bin = base / "bin" / revision
+        new_bin.mkdir(mode=0o700)
+        for label, filename in (("runner", "forge-runner"), ("worker", "forge-worker"), ("test", "application-faults.test")):
+            old = base / "bin" / filename
+            old.write_bytes(b"old " + label.encode())
+            old.chmod(0o700)
+            new = new_bin / filename
+            new.write_bytes(b"new " + label.encode())
+            new.chmod(0o700)
+            original[label + "_binary"] = str(old)
+            original[label + "_sha256"] = run.p.digest(old)
+        run.p.save(base / "acceptance.json", original)
+        config = {key: str(base / "runtime" / leaf) for key, leaf in
+                  {"root_dir": "engine", "journal_path": "journal.sqlite", "artifact_root": "artifacts", "signing_key_file": "runner.key"}.items()}
+        config.update(allow_test_backend=False, docker_host=host)
+        run.p.save(base / "runtime/runner.json", config)
+        run.p.save(base / "runtime/configuration-observations.json", {"runner_config_sha256": run.p.digest(base / "runtime/runner.json")})
+        retained = {path: path.read_bytes() for path in (base / "acceptance.json", base / "runtime/runner.json", base / "bin/forge-runner")}
+        with patch.object(run.p, "read_preparation", return_value=(base, {"docker_host": host})), patch.object(run, "credential") as credential:
+            for value in ("../bad", "a" * 39, "A" * 40, None):
+                with self.assertRaises(ValueError):
+                    run.prepare_continuation(value)
+            result = run.prepare_continuation(revision)
+            self.assertFalse(result["executed"])
+            run.inputs("abort", "01")
+            run.inputs("sigterm", "02")
+            credential.assert_not_called()
+            with self.assertRaises(ValueError):
+                run.prepare_continuation(revision)
+            continuation = base / "acceptance-02.json"
+            valid = continuation.read_bytes()
+            a = run.json.loads(valid)
+            for replacement in (str(base / "bin/forge-worker"), str(new_bin / "nested/forge-worker")):
+                a["worker_binary"] = replacement
+                continuation.write_text(run.json.dumps(a))
+                with self.assertRaises(ValueError):
+                    run.inputs("sigterm", "02")
+            continuation.write_bytes(valid)
+            executable = new_bin / "forge-worker"
+            executable.unlink()
+            executable.symlink_to(base / "bin/forge-worker")
+            with self.assertRaises(ValueError):
+                run.inputs("sigterm", "02")
+        self.assertEqual({path: path.read_bytes() for path in retained}, retained)
 
     def test_wrong_database_and_duplicates_refused_without_disclosing_secret(self):
         for value in (self.dsn.replace("127.0.0.1", "example.com"), self.dsn + "&search_path=public", self.dsn.replace("32773", "5432")):

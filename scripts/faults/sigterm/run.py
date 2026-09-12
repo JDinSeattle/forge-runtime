@@ -12,6 +12,7 @@ import importlib.util
 import json
 import os
 from pathlib import Path
+import re
 import secrets
 import shlex
 import stat
@@ -28,6 +29,7 @@ IDENTITY = "lr20260912_a"
 PHASES = {
     "sigterm": ("TestRealWorkerRunnerSIGTERM", "FORGE_RUN_WORKER_RUNNER_SIGTERM", "FORGE_WORKER_RUNNER_SIGTERM_ACCEPTANCE", 210),
     "logs": ("TestStrictLogsCombinedAcceptance", "FORGE_RUN_STRICT_LOGS_COMBINED", "FORGE_STRICT_LOGS_ACCEPTANCE", 600),
+    "abort": ("TestAbortUnstartedLifecycle", "FORGE_ABORT_UNSTARTED_LIFECYCLE", "FORGE_WORKER_RUNNER_SIGTERM_ACCEPTANCE", 90),
 }
 
 
@@ -39,13 +41,27 @@ def private_json(path):
     return json.loads(path.read_bytes())
 
 
-def inputs():
+def manifest_name(phase, attempt):
+    if phase not in PHASES or attempt not in ("01", "02") or (phase == "abort" and attempt != "01"):
+        raise ValueError("explicit supported lifecycle phase and attempt required")
+    return "acceptance-abort-01.json" if phase == "abort" else ("acceptance.json" if attempt == "01" else "acceptance-02.json")
+
+
+def inputs(phase="sigterm", attempt="01"):
+    name = manifest_name(phase, attempt)
     base, preparation = p.read_preparation(IDENTITY)
-    a = private_json(base / "acceptance.json")
+    a = private_json(base / name)
     expected = {"purpose": p.PURPOSE, "fixture_id": IDENTITY, "scope_root": str(base), "pool_root": str(base / "pool-root"),
-                "runner_config": str(base / "runtime/runner.json"), "evidence_dir": str(base / "evidence/sigterm-01")}
+                "runner_config": str(base / "runtime/runner.json"), "evidence_dir": str(base / ("evidence/sigterm-" + attempt))}
+    binary_dir = base / "bin"
+    if name != "acceptance.json":
+        if not isinstance(a, dict) or not isinstance(a.get("test_binary"), str):
+            raise ValueError("versioned frozen executable required")
+        binary_dir = Path(a["test_binary"]).parent
+        if binary_dir.parent != base / "bin" or not re.fullmatch(r"[a-f0-9]{40}", binary_dir.name):
+            raise ValueError("versioned frozen executable must select one full revision")
     for label, filename in (("runner", "forge-runner"), ("worker", "forge-worker"), ("test", "application-faults.test")):
-        path = base / "bin" / filename
+        path = binary_dir / filename
         p.directory(path.parent, private=True)
         st = path.lstat()
         if not stat.S_ISREG(st.st_mode) or st.st_uid != os.getuid() or st.st_mode & 0o022 or not st.st_mode & stat.S_IXUSR:
@@ -64,6 +80,28 @@ def inputs():
     if c.get("allow_test_backend") is not False or c.get("docker_host") != preparation["docker_host"]:
         raise ValueError("production backend identity required")
     return base, a
+
+
+def prepare_continuation(revision):
+    if not isinstance(revision, str) or not re.fullmatch(r"[a-f0-9]{40}", revision):
+        raise ValueError("full reviewed source revision required")
+    base, original = inputs()
+    binary_dir = p.directory(base / "bin" / revision, private=True)
+    updated = dict(original)
+    for label, filename in (("runner", "forge-runner"), ("worker", "forge-worker"), ("test", "application-faults.test")):
+        path = binary_dir / filename
+        st = path.lstat()
+        if not stat.S_ISREG(st.st_mode) or st.st_uid != os.getuid() or st.st_mode & 0o022 or not st.st_mode & stat.S_IXUSR:
+            raise ValueError("frozen owned executable required")
+        updated[label + "_binary"] = str(path)
+        updated[label + "_sha256"] = p.digest(path)
+    paths = [base / "acceptance-abort-01.json", base / "acceptance-02.json"]
+    if any(os.path.lexists(path) for path in paths):
+        raise ValueError("continuation manifests already exist; retain and inspect")
+    p.save(paths[0], updated)
+    updated["evidence_dir"] = str(base / "evidence/sigterm-02")
+    p.save(paths[1], updated)
+    return {"prepared": [str(path) for path in paths], "executed": False}
 
 
 def credential():
@@ -94,19 +132,25 @@ def credential():
     return values[0]
 
 
-def command(phase, a):
+def command(phase, a, attempt="01"):
+    name = manifest_name(phase, attempt)
     test, optin, acceptance, timeout = PHASES[phase]
     env = {"PATH": "/usr/local/bin:/usr/bin:/bin", "LC_ALL": "C", "TMPDIR": "/tmp",
+           "HOME": str(Path(a["scope_root"])),
            "XDG_RUNTIME_DIR": "/run/user/1000", "FORGE_METRICS_LISTEN": "127.0.0.1:0",
-           "FORGE_TEST_DATABASE_URL": credential(), optin: "1", acceptance: str(Path(a["scope_root"]) / "acceptance.json")}
+           "FORGE_TEST_DATABASE_URL": credential(), optin: "1", acceptance: str(Path(a["scope_root"]) / name)}
     return [a["test_binary"], "-test.run=^" + test + "$", "-test.timeout=" + str(timeout) + "s", "-test.v"], env
 
 
-def completed_report(phase, base):
-    relative = "evidence/sigterm-01/worker-runner-sigterm/acceptance.json" if phase == "sigterm" else "evidence/logs-01/acceptance.json"
+def completed_report(phase, base, attempt="01"):
+    manifest_name(phase, attempt)
+    relative = {"sigterm": "evidence/sigterm-" + attempt + "/worker-runner-sigterm/acceptance.json",
+                "logs": "evidence/logs-01/acceptance.json", "abort": "evidence/sigterm-01/abort-before-runner/report.json"}[phase]
     report = private_json(base / relative)
     if not isinstance(report, dict) or report.get("passed") is not True:
         raise ValueError("actual acceptance did not record a successful final report")
+    if phase == "abort" and (report.get("status") != "cancel_requested" or report.get("terminal") is not False):
+        raise ValueError("abort must record nonterminal cancellation intent, not lifecycle success")
     if phase == "logs":
         cases = report.get("cases")
         expected = {"L1", "L2-L3-default", "L3-bytes", "L3-count", "L4", "L5"}
@@ -114,15 +158,16 @@ def completed_report(phase, base):
             raise ValueError("all six actual log case results are required")
 
 
-def mapped_child(phase):
+def mapped_child(phase, attempt="01"):
+    manifest_name(phase, attempt)
     # UID 0 is expected only inside a full subordinate mapping. Host-root and
     # unmapped execution are rejected before opening a credential or a DB.
     uid = Path("/proc/self/uid_map").read_text().split()
     gid = Path("/proc/self/gid_map").read_text().split()
     if os.getuid() != 0 or len(uid) != 6 or len(gid) != 6 or uid[:3] != ["0", "1000", "1"] or gid[:3] != ["0", "1000", "1"] or uid[3] != "1" or gid[3] != "1" or int(uid[5]) < 65536 or int(gid[5]) < 65536:
         raise ValueError("dedicated full subordinate UID/GID map required")
-    base, a = inputs()
-    argv, env = command(phase, a)
+    base, a = inputs(phase, attempt)
+    argv, env = command(phase, a, attempt)
     # Go returns zero even when a -test.run expression matches no test. Check
     # the actual frozen binary and the final case report, not just its status.
     listed = subprocess.run([a["test_binary"], "-test.list=^" + PHASES[phase][0] + "$"], env=env, cwd=base,
@@ -133,7 +178,7 @@ def mapped_child(phase):
     # test retains its exact identities; this wrapper performs no Docker action.
     code = subprocess.run(argv, env=env, cwd=base).returncode
     if code == 0:
-        completed_report(phase, base)
+        completed_report(phase, base, attempt)
     return code
 
 
@@ -146,13 +191,14 @@ def unit_state(unit):
     return state
 
 
-def launch(phase):
+def launch(phase, attempt="01"):
+    name = manifest_name(phase, attempt)
     if os.getuid() != 1000 or os.getuid() != os.geteuid():
         raise ValueError("launch from the ordinary UID 1000 host session")
-    base, a = inputs()
+    base, a = inputs(phase, attempt)
     # Validate privately now; do not log or put this value in a unit property.
     credential()
-    out = base / "evidence" / ("host-" + phase)
+    out = base / "evidence" / ("host-" + phase + ("-02" if attempt == "02" else ""))
     p.directory(out.parent, private=True)
     out.mkdir(mode=0o700)  # Exclusive: no automatic retry or evidence overwrite.
     unit = "forge-lifecycle-" + IDENTITY + "-" + phase + "-" + secrets.token_hex(8) + ".service"
@@ -163,11 +209,11 @@ def launch(phase):
     argv = ["/usr/bin/systemd-run", "--user", "--unit=" + unit, "--collect", "--wait", "--pipe",
             "--property=Delegate=yes", "--property=KillMode=control-group", "--property=RuntimeMaxSec=" + str(maximum) + "s", "--property=TimeoutStopSec=15s",
             "--working-directory=" + str(base), "/usr/bin/rootlesskit", "--propagation=rslave", "--state-dir=" + str(state_dir),
-            "/usr/bin/python3", "-I", str(Path(__file__).absolute()), "child", "--phase", phase]
-    p.save(out / "intent.json", {"unit": unit, "argv": argv, "phase": phase,
+            "/usr/bin/python3", "-I", str(Path(__file__).absolute()), "child", "--phase", phase, "--attempt", attempt]
+    p.save(out / "intent.json", {"unit": unit, "argv": argv, "phase": phase, "attempt": attempt,
         "input_sha256": {str(Path(__file__).absolute()): p.digest(Path(__file__).absolute()),
                          str(Path(__file__).with_name("prepare.py").absolute()): p.digest(Path(__file__).with_name("prepare.py")),
-                         str(base / "acceptance.json"): p.digest(base / "acceptance.json"),
+                         str(base / name): p.digest(base / name),
                          "/usr/bin/rootlesskit": p.digest(Path("/usr/bin/rootlesskit"))},
         "scope": "only this new transient service; original services and uncertain Docker work untouched"})
     fd = os.open(out / "execution.log", os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
@@ -197,10 +243,19 @@ def launch(phase):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("action", choices=("launch", "child"))
-    parser.add_argument("--phase", required=True, choices=PHASES)
+    parser.add_argument("action", choices=("launch", "child", "prepare-continuation"))
+    parser.add_argument("--phase", choices=PHASES)
+    parser.add_argument("--attempt", default="01", choices=("01", "02"))
+    parser.add_argument("--revision")
     args = parser.parse_args()
-    return launch(args.phase) if args.action == "launch" else mapped_child(args.phase)
+    if args.action == "prepare-continuation":
+        if args.phase is not None or args.attempt != "01":
+            parser.error("preparation does not execute a phase")
+        print(json.dumps(prepare_continuation(args.revision), sort_keys=True))
+        return 0
+    if args.phase is None or args.revision is not None:
+        parser.error("launch/child require a phase and select existing manifests")
+    return launch(args.phase, args.attempt) if args.action == "launch" else mapped_child(args.phase, args.attempt)
 
 
 if __name__ == "__main__":
