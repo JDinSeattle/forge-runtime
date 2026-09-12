@@ -1,0 +1,48 @@
+{
+  "schema": "appfault_lifecycle_v5tmt66sh5a2fyvssj5rubdbqe",
+  "scope": "Read-only observation of original failed run; not a cancellation or retry authorization",
+  "observation": {
+    "run": {
+      "id": "run_OAZ33S3LRG5O7EOUL6GDQ5QB4N",
+      "state": "queued",
+      "version": 1,
+      "lease_epoch": 0,
+      "lease_owner": "",
+      "workspace_id": "",
+      "snapshot": {
+        "schema_version": 2,
+        "run_id": "run_OAZ33S3LRG5O7EOUL6GDQ5QB4N",
+        "tenant_id": "lifecycle-n5yz43ws7vos67f4hzxdujv6sf",
+        "version": 1,
+        "status": "queued",
+        "stage": "initialize",
+        "lease": {
+          "owner": "",
+          "epoch": 0,
+          "until": "0001-01-01T00:00:00Z"
+        },
+        "step_seq": 0,
+        "workspace_revision": 0,
+        "verification_status": "unverified",
+        "verification_revision": 0,
+        "model_rounds": 0,
+        "tool_calls": 0,
+        "cost_microusd": 0,
+        "limits": {
+          "max_no_progress_batches": 3,
+          "max_model_rounds": 4,
+          "max_tool_calls": 4,
+          "max_cost_microusd": 1000000,
+          "deadline": "2026-09-11T21:04:17.356217-07:00"
+        }
+      }
+    },
+    "model_attempts": 0,
+    "effects": 0,
+    "steps": 0,
+    "runner_allocations": 0,
+    "quota_reservations": 0,
+    "artifacts": 0,
+    "workspace_cleanup": 0
+  }
+}

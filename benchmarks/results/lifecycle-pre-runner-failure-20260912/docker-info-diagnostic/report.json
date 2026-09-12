@@ -1,0 +1,27 @@
+{
+  "scope": "Read-only Docker info; no runner, worker, database, container or mount mutation",
+  "uid_map": "         0       1000          1\n         1     100000      65536\n",
+  "gid_map": "         0       1000          1\n         1     100000      65536\n",
+  "cases": [
+    {
+      "case": "without-home",
+      "exit_code": 0,
+      "stdout_bytes": 10933,
+      "stderr_bytes": 86,
+      "valid_json": {
+        "stdout": true,
+        "combined": false
+      }
+    },
+    {
+      "case": "private-home",
+      "exit_code": 0,
+      "stdout_bytes": 10933,
+      "stderr_bytes": 0,
+      "valid_json": {
+        "stdout": true,
+        "combined": true
+      }
+    }
+  ]
+}

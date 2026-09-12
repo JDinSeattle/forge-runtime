@@ -1,0 +1,72 @@
+{
+  "passed": true,
+  "remaining_p1_p2": [],
+  "commit": "349ed14c5f353c86f05cb70264be32e8e6d76e0d",
+  "base": "a49efa80bf959f5e1e19d1e3e542e2d63c5af390",
+  "reviewed_source_sha256": {
+    "scripts/faults/sigterm/configure.py": "567aa4fd085a39d11bc7313dd612ec8204c8f159255d3fe3542a96230162ce05",
+    "scripts/faults/sigterm/test_configure.py": "79b39b181dad760ca9fa00a451eba4c75ed6bbacbc66c8c947c3ce7ab790e7be",
+    "scripts/faults/sigterm/README.md": "05c3d0381f7c9e1389c4457434bf38ce49a14cff91d4727d7a5e498aedd49500"
+  },
+  "protected_copied_helpers_unchanged": {
+    "common.py": "bf50b9bfaef24a1d6b2980495a6d84baa68ab10b6184ba21b56a0b5e89229bc2",
+    "volumes.py": "683ebc5e3538ba65a701b4d7cad17d6e21d12cb1ab1cfc54835d2689718cd4bc",
+    "mount.py": "bfa00fab40652ba84e18409f85fd56bc1c1285923cfea6295a3bd31a7130027a"
+  },
+  "offline_command": [
+    "/usr/bin/python3",
+    "-I",
+    "-B",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "scripts/faults/sigterm",
+    "-p",
+    "test_*.py",
+    "-v"
+  ],
+  "offline_tests": 28,
+  "offline_exit_code": 0,
+  "source_unchanged_after_tests": true,
+  "scope": "Independent source review, synthetic offline tests, read-only retained preflight evidence and live sysfs/image metadata. No configuration, journal/key creation, service, Docker, PG, mount, paid provider or Go binary action.",
+  "verified_contracts": [
+    "Null/missing BACK-INO and BACK-MAJ:MIN are accepted only with required exact kernel sysfs backing path and geometry plus independently validated image identity. The input row is not filled with invented ioctl values.",
+    "All explicit selected losetup identity/offset/sizelimit/ro values must match; bool/float/null geometry cannot coerce to a valid integer.",
+    "Every sysfs field is mandatory even when all tool identity fields are populated. Wrong, deleted, relative or traversal-form backing paths fail exact comparison; malformed or wrong offset/limit/sector/ro data fails closed.",
+    "The existing root-owned mount-state and manifest hash/complete distinct slot checks, exact mount ID, ext4 whole-filesystem rw/nosuid/nodev, empty protected root, matching st_dev and bounded filesystem capacity remain on the same actual_slots path.",
+    "Image validation runs twice under the same provisioning lock. The existing helper opens O_RDONLY|O_NOFOLLOW and uses fstat/pread; neither added call writes images or state.",
+    "All checks still occur before runtime/key/config/acceptance creation; existing partial state is still refused. Copied privileged helpers are byte-identical to their frozen descriptor and baseline."
+  ],
+  "live_evidence": {
+    "slots_observed": 4,
+    "mount_state_uid_in_review_namespace": 65534,
+    "mount_state_mode": "0o644",
+    "host_root_ownership_evidence": "Original host configure-before reached verify_loop after unchanged Tree.read_json(owner=0); current sandbox does not directly observe host UID0",
+    "review_uid_map": "      1000          0          1\n",
+    "recorded_manifest_digest_matches": true,
+    "all_readonly_image_fd_identities_and_sysfs_fields_match": true,
+    "ioctl_identity_values_claimed": false,
+    "scope": "Path/geometry were read from kernel sysfs; dev/inode/UUID/protection were read from the image FD. This does not claim unavailable losetup/ioctl identity fields were directly observed."
+  },
+  "original_failure": {
+    "path": "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/lifecycle-mounted-preflight-20260912T035116Z",
+    "record_sha256": "6a06278627ea89066674ad8c74ff03403a030fdf395a59f89870f0ce5c64cc15",
+    "all_10_retained_file_hashes_checked": true,
+    "cause": "The old unchanged privileged verify_loop coerced Python None from the unprivileged backing-inode field with int(None). The failed configure returned before runtime/key/acceptance creation."
+  },
+  "review_wrapper_initial_note": "/tmp/forge-lifecycle-loop-sysfs-independent-review/namespace-note.json; initial audit UID0 assertion failure retained, product tests had passed",
+  "limits": [
+    "Host-root ownership is not directly visible in this reviewer user namespace; overflow UID65534 is recorded separately, never substituted into production owner=0 validation.",
+    "The 28 tests use temporary synthetic sysfs rows and mocked mount/image guard wiring; they are not successful real configuration or lifecycle acceptance.",
+    "The additional live observations are read-only and separate from running the new validator. Root must execute actual configure after review in the proper host mount namespace.",
+    "No service readiness, container execution, SIGTERM or combined log acceptance was rerun by this reviewer."
+  ],
+  "artifacts": {
+    "live-readonly-sysfs-and-images.json": "711f2532d832c7e9e26a41237cc3f148fb26e27e4a09fb4bda67765621543531",
+    "offline-28.log": "aa1443926c9726b19ef0b857a5e63b1a519ed9382a263ec0af40c99352d46e4c",
+    "README.md": "05c3d0381f7c9e1389c4457434bf38ce49a14cff91d4727d7a5e498aedd49500",
+    "test_configure.py": "79b39b181dad760ca9fa00a451eba4c75ed6bbacbc66c8c947c3ce7ab790e7be",
+    "configure.py": "567aa4fd085a39d11bc7313dd612ec8204c8f159255d3fe3542a96230162ce05"
+  }
+}

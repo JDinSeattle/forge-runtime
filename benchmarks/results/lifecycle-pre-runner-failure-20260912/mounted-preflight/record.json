@@ -1,0 +1,117 @@
+{
+  "observed_at": "2026-09-12T03:51:16.255191+00:00",
+  "head": "a49efa80bf959f5e1e19d1e3e542e2d63c5af390",
+  "commands": {
+    "host-pool-inspect": {
+      "argv": [
+        "python3",
+        "-I",
+        "scripts/faults/sigterm/prepare.py",
+        "inspect",
+        "--id",
+        "lr20260912_a"
+      ],
+      "exit_code": 0
+    },
+    "configure-before": {
+      "argv": [
+        "python3",
+        "-I",
+        "scripts/faults/sigterm/configure.py",
+        "--id",
+        "lr20260912_a"
+      ],
+      "exit_code": 1
+    },
+    "docker-info": {
+      "argv": [
+        "docker",
+        "--host",
+        "unix:///run/user/1000/forge-runtime-docker.sock",
+        "info",
+        "--format",
+        "{{json .ServerVersion}} {{json .CgroupVersion}} {{json .CgroupDriver}} {{json .SecurityOptions}}"
+      ],
+      "exit_code": 0
+    },
+    "pinned-image": {
+      "argv": [
+        "docker",
+        "--host",
+        "unix:///run/user/1000/forge-runtime-docker.sock",
+        "image",
+        "inspect",
+        "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+        "--format",
+        "{{json .RepoDigests}}"
+      ],
+      "exit_code": 0
+    },
+    "postgres-ready": {
+      "argv": [
+        "pg_isready",
+        "-h",
+        "127.0.0.1",
+        "-p",
+        "32773"
+      ],
+      "exit_code": 0
+    }
+  },
+  "files": [
+    {
+      "file": "host-pool-inspect.stdout",
+      "sha256": "4ecc6a737aa3d8cf02841e8d79f631c2bc0e9e7f4595ed095e68926df5ab4305",
+      "bytes": 3975
+    },
+    {
+      "file": "host-pool-inspect.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "configure-before.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "configure-before.stderr",
+      "sha256": "47c69d291c23d64b48f9ade08e97f1cc383191de78f3b7388cffdcbd7e66d978",
+      "bytes": 1187
+    },
+    {
+      "file": "docker-info.stdout",
+      "sha256": "85f160f155945388681be36c24a01568031b5eec67480ebd5a8b3d2dbf511a19",
+      "bytes": 88
+    },
+    {
+      "file": "docker-info.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "pinned-image.stdout",
+      "sha256": "189fad2bd3fe972616be068a1c6a5651095586e5f4720bc835ec6718067353cc",
+      "bytes": 83
+    },
+    {
+      "file": "pinned-image.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "postgres-ready.stdout",
+      "sha256": "358ec880ce5153008a0c9dd32447a4965992447a96a60db4de9ae3aa25beff04",
+      "bytes": 40
+    },
+    {
+      "file": "postgres-ready.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    }
+  ],
+  "runtime_exists": false,
+  "acceptance_exists": false,
+  "configure_source_sha256": "271111f49ba981d5d3d6ff76e3555b6876098a328c60dcb0a60b1b75c37eb1ad",
+  "scope": "Host mount/configuration preflight; no acceptance process started; failed configuration before runtime/key creation retained."
+}

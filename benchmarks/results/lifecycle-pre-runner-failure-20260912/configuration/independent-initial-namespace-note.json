@@ -1,0 +1,7 @@
+{
+  "scope": "reviewer namespace observation, not product test failure",
+  "initial_assertion": "The review wrapper asserted directly observed state_st.uid==0, but this sandbox maps host root to overflow UID65534. File is regular/singly linked0644.",
+  "observed_uid_map": "      1000          0          1\n",
+  "observed_gid_map": "      1000          0          1\n",
+  "correction": "Preserve 28 passing offline log and distinguish host-preflight ownership check from current namespace UID observation."
+}

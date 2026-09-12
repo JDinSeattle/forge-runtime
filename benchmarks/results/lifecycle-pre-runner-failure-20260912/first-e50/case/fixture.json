@@ -1,0 +1,100 @@
+{
+  "default_worker_lease_seconds": 30,
+  "maximum_child_seconds": 70,
+  "profile_id": "lifecycle-python",
+  "provider": "deterministic ScriptedProvider; no network or paid usage",
+  "run_id": "run_OAZ33S3LRG5O7EOUL6GDQ5QB4N",
+  "schema": "appfault_lifecycle_v5tmt66sh5a2fyvssj5rubdbqe",
+  "scripts": [
+    {
+      "Chunks": [
+        {
+          "Kind": "tool_start",
+          "CallID": "lifecycle-original",
+          "Name": "run_command",
+          "Delta": ""
+        },
+        {
+          "Kind": "tool_delta",
+          "CallID": "lifecycle-original",
+          "Name": "",
+          "Delta": "{\"command\":[\"python\",\"-I\",\"-B\",\"-c\",\"import os,time,json,subprocess,sys\\nwith open('lifecycle-counter.txt','a') as f:\\n f.write('1\\\\n');f.flush();os.fsync(f.fileno())\\nchild=subprocess.Popen([sys.executable,'-I','-B','-c',\\\"import os,time; print('LIFECYCLE_CHILD_READY',flush=True); os.write(2,b'child-stderr\\\\\\\\x00\\\\\\\\xff'); time.sleep(70)\\\"])\\nprint('LIFECYCLE_PARENT_READY',flush=True)\\nos.write(2,b'parent-stderr\\\\x00\\\\xff')\\ntry:\\n with open('lifecycle-writer.txt','a') as f:\\n  end=time.monotonic()+70\\n  while time.monotonic()\\u003cend:\\n   n=time.time_ns();f.write(str(n)+'\\\\n');f.flush();os.fsync(f.fileno())\\n   print(json.dumps({'writer_ns':n}),flush=True);time.sleep(.2)\\nfinally:\\n child.terminate();child.wait(timeout=2)\\n\"]}"
+        },
+        {
+          "Kind": "tool_end",
+          "CallID": "lifecycle-original",
+          "Name": "",
+          "Delta": ""
+        }
+      ],
+      "Usage": {
+        "final": false,
+        "input": {
+          "value": 100,
+          "known": true
+        },
+        "output": {
+          "value": 50,
+          "known": true
+        },
+        "cache_read": {
+          "value": 0,
+          "known": false
+        },
+        "cache_write": {
+          "value": 0,
+          "known": false
+        }
+      },
+      "FinishReason": "tool_calls",
+      "Failure": null
+    },
+    {
+      "Chunks": [
+        {
+          "Kind": "tool_start",
+          "CallID": "unapproved-next",
+          "Name": "run_command",
+          "Delta": ""
+        },
+        {
+          "Kind": "tool_delta",
+          "CallID": "unapproved-next",
+          "Name": "",
+          "Delta": "{\"command\":[\"python\",\"-I\",\"-B\",\"-c\",\"raise RuntimeError('must remain unapproved')\"]}"
+        },
+        {
+          "Kind": "tool_end",
+          "CallID": "unapproved-next",
+          "Name": "",
+          "Delta": ""
+        }
+      ],
+      "Usage": {
+        "final": false,
+        "input": {
+          "value": 100,
+          "known": true
+        },
+        "output": {
+          "value": 50,
+          "known": true
+        },
+        "cache_read": {
+          "value": 0,
+          "known": false
+        },
+        "cache_write": {
+          "value": 0,
+          "known": false
+        }
+      },
+      "FinishReason": "tool_calls",
+      "Failure": null
+    }
+  ],
+  "source_hash": "8b0fc272ee30b0c4aa6f0b1d286033c5b1519ff2d6f019e3c962c45dc4123357",
+  "source_id": "lifecycle",
+  "synthetic_price_version": "synthetic-1microusd-per-token-v1",
+  "tenant": "lifecycle-n5yz43ws7vos67f4hzxdujv6sf"
+}

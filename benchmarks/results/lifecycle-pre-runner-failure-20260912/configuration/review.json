@@ -1,0 +1,91 @@
+{
+  "base_commit": "a49efa80bf959f5e1e19d1e3e542e2d63c5af390",
+  "worktree": "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/feature-worktrees/logs",
+  "branch": "fix/lifecycle-loop-sysfs",
+  "scope": "Offline synthetic sysfs/losetup validation and existing local filesystem guard tests only. No actual configure/mount/Docker/PG/service commands, no Go binary edits or rebuilds.",
+  "sources": [
+    {
+      "path": "scripts/faults/sigterm/configure.py",
+      "sha256": "567aa4fd085a39d11bc7313dd612ec8204c8f159255d3fe3542a96230162ce05",
+      "size": 11613
+    },
+    {
+      "path": "scripts/faults/sigterm/test_configure.py",
+      "sha256": "79b39b181dad760ca9fa00a451eba4c75ed6bbacbc66c8c947c3ce7ab790e7be",
+      "size": 15177
+    },
+    {
+      "path": "scripts/faults/sigterm/README.md",
+      "sha256": "05c3d0381f7c9e1389c4457434bf38ce49a14cff91d4727d7a5e498aedd49500",
+      "size": 7640
+    }
+  ],
+  "protected_sources": [
+    {
+      "path": "scripts/workspace-volumes/common.py",
+      "sha256": "bf50b9bfaef24a1d6b2980495a6d84baa68ab10b6184ba21b56a0b5e89229bc2",
+      "size": 13114,
+      "equals_base": true
+    },
+    {
+      "path": "scripts/workspace-volumes/mount.py",
+      "sha256": "bfa00fab40652ba84e18409f85fd56bc1c1285923cfea6295a3bd31a7130027a",
+      "size": 11434,
+      "equals_base": true
+    },
+    {
+      "path": "cmd/forge-runner/configure-local.py",
+      "sha256": "e38d12e2822b0b5941d7fce38ff2c8ad93d927a4de78421193187e65770450eb",
+      "size": 12751,
+      "equals_base": true
+    },
+    {
+      "path": "internal/sandbox/volume_linux.go",
+      "sha256": "130208395c4ad95012307e1238daafb3faf2b7f19e1c93f7fc31ca43dbc239e2",
+      "size": 5324,
+      "equals_base": true
+    }
+  ],
+  "evidence": [
+    {
+      "path": "/tmp/forge-lifecycle-loop-sysfs-before.txt",
+      "sha256": "360e2b056201d28c3e51850f0f75944f014d42696e97f5e8628f9086e963e17a",
+      "size": 769
+    },
+    {
+      "path": "/tmp/forge-lifecycle-loop-sysfs-tests-01.log",
+      "sha256": "aa1443926c9726b19ef0b857a5e63b1a519ed9382a263ec0af40c99352d46e4c",
+      "size": 4381
+    },
+    {
+      "path": "/tmp/forge-lifecycle-loop-sysfs-config-local-tests.log",
+      "sha256": "b6629c5145a47b813ae11d6821d0e5173b2e381c976cdb33114fea9086cea8a6",
+      "size": 1470
+    },
+    {
+      "path": "/tmp/forge-lifecycle-loop-sysfs-volume-tests.log",
+      "sha256": "300ee284b8ae0f949fd5c3c82c3f9b17545dbfc84fec9c0ea61d7478f2189a7f",
+      "size": 2125
+    }
+  ],
+  "tests": [
+    {
+      "command": "python3 -B -m unittest discover -s scripts/faults/sigterm -p test_*.py -v",
+      "count": 28,
+      "exit_code": 0
+    },
+    {
+      "command": "python3 -B -m unittest discover -s cmd/forge-runner -p test_configure_local.py -v",
+      "count": 8,
+      "exit_code": 0
+    },
+    {
+      "command": "python3 -B -m unittest discover -s scripts/workspace-volumes -p test_*.py -v",
+      "count": 14,
+      "exit_code": 0
+    }
+  ],
+  "before": "Synthetic losetup null identity hits original common.verify_loop TypeError int(None); complete live-mounted configuration remains parent-operated after independent review.",
+  "commit": "349ed14c5f353c86f05cb70264be32e8e6d76e0d",
+  "status": ""
+}

@@ -1,0 +1,19 @@
+{
+  "scope": "offline synthetic losetup null identity reproducer; no host inspection",
+  "source_sha256": "bf50b9bfaef24a1d6b2980495a6d84baa68ab10b6184ba21b56a0b5e89229bc2",
+  "row": {
+    "name": "/dev/loop10",
+    "maj:min": "7:10",
+    "back-ino": null,
+    "back-maj:min": null,
+    "offset": 0,
+    "sizelimit": 268435456,
+    "ro": false
+  }
+}
+Traceback (most recent call last):
+  File "<stdin>", line 11, in <module>
+  File "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/feature-worktrees/logs/scripts/workspace-volumes/common.py", line 307, in verify_loop
+    or int(row.get("back-ino", -1)) != slot["inode"]
+       ~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: int() argument must be a string, a bytes-like object or a real number, not 'NoneType'

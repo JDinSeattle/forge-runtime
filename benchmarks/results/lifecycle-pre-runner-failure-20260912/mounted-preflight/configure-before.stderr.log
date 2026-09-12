@@ -1,0 +1,17 @@
+Traceback (most recent call last):
+  File "/home/postedism/Desktop/mini claude code/forge-runtime/scripts/faults/sigterm/configure.py", line 162, in <module>
+    main()
+    ~~~~^^
+  File "/home/postedism/Desktop/mini claude code/forge-runtime/scripts/faults/sigterm/configure.py", line 157, in main
+    print(json.dumps(configure(args.id), indent=2, sort_keys=True))
+                     ~~~~~~~~~^^^^^^^^^
+  File "/home/postedism/Desktop/mini claude code/forge-runtime/scripts/faults/sigterm/configure.py", line 116, in configure
+    slots, observed = actual_slots(base, descriptor, config_module)
+                      ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/postedism/Desktop/mini claude code/forge-runtime/scripts/faults/sigterm/configure.py", line 92, in actual_slots
+    common.verify_loop(matches[0], slot)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/home/postedism/Desktop/mini claude code/forge-runtime/scripts/workspace-volumes/common.py", line 307, in verify_loop
+    or int(row.get("back-ino", -1)) != slot["inode"]
+       ~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: int() argument must be a string, a bytes-like object or a real number, not 'NoneType'

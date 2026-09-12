@@ -1,0 +1,12 @@
+Running as unit: forge-lifecycle-lr20260912_a-sigterm-e9dd21420dcb0edb.service; invocation ID: 664de0236f1f43aba5c746bce8f22d51
+=== RUN   TestRealWorkerRunnerSIGTERM
+    worker_runner_sigterm_helpers_test.go:537: runner exited before readiness: exit status 1; 2026/09/11 21:01:27 ERROR runner stopped error="sandbox_unavailable: invalid daemon capability response"
+--- FAIL: TestRealWorkerRunnerSIGTERM (0.59s)
+FAIL
+[rootlesskit:child ] error: command [/usr/bin/python3 -I /home/postedism/Desktop/mini claude code/forge-runtime/scripts/faults/sigterm/run.py child --phase sigterm] exited: exit status 1
+[rootlesskit:parent] error: child exited: exit status 1
+          Finished with result: exit-code
+Main processes terminated with: code=exited, status=1/FAILURE
+               Service runtime: 815ms
+             CPU time consumed: 488ms
+                   Memory peak: 272.7M (swap: 0B)
