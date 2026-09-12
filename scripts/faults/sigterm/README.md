@@ -222,3 +222,36 @@ Existing manifests, tasks and actual test outcomes are never replaced.
 
 These commands describe the reviewed continuation interface. Their presence
 is not evidence that cleanup or the new full log execution has passed.
+
+## Explicit recovery and targeted L4
+
+The third actual sample passed L1, default limits, byte/count limits and L5, but
+its bulk pressure write left enough tail space for small spool writes. Its
+aggregate remains failed. After freezing the reviewed recovery and corrected
+fixture into one new versioned binary directory:
+
+```bash
+python3 -I scripts/faults/sigterm/run.py prepare-l4-recovery --revision FULL_REVISION
+python3 -I scripts/faults/sigterm/run.py launch --phase logs-recovery --attempt 02
+python3 -I scripts/faults/sigterm/run.py prepare-l4-targeted --revision FULL_REVISION
+python3 -I scripts/faults/sigterm/run.py launch --phase logs-l4 --attempt 02
+```
+
+Recovery selects only `run_DKT2OOLEVCKYXHW5NGNS7BKBHJ` through
+`acceptance-logs-03-recovery.json`, preserving its unknown log and original
+failed report before production cancellation/reconciliation/publication/release.
+Its actual evidence belongs to `evidence/logs-03-recovery`, with its own host
+record under `evidence/host-logs-recovery`. This command is distinct from normal
+failure cleanup and cannot silently retry a partially executed recovery.
+
+Only after the complete recovery report, the targeted preparation seals
+`acceptance-logs-l4-01.json` and `logs-l4-continuation.json`. The latter pins the
+failed and observed manifests, the completed recovery manifest, and new binary
+acceptance. The new L4 checks the unchanged recovered journal and live idle SQL
+authority, then uses a fresh private schema and new operation. Its output is
+`evidence/logs-l4-01`, host record `evidence/host-logs-l4-01`, and credentials stay
+under `runtime/strict-logs-l4-private-01`. All directories are exclusive; neither
+phase accepts `--logs-execution`, and the original six-case gate is unchanged.
+The targeted case includes real spool failure, retained prefix publication,
+HTTP retrieval, production cleanup and a real slot-health operation. These
+commands document preparation; they do not claim the actual recovery or L4 passed.

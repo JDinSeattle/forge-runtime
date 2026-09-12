@@ -33,7 +33,7 @@ class LaunchBoundaryTests(unittest.TestCase):
         self.credential()
         a = {"scope_root": str(self.repo), "test_binary": str(self.repo / "bin/application-faults.test")}
         for phase in run.PHASES:
-            argv, env = run.command(phase, a, "02" if phase == "logs-cleanup" else "01")
+            argv, env = run.command(phase, a, "02" if phase in ("logs-cleanup", "logs-recovery", "logs-l4") else "01")
             self.assertNotIn(self.secret, repr(argv))
             if phase == "logs-cleanup":
                 self.assertNotIn("FORGE_TEST_DATABASE_URL", env)
@@ -100,6 +100,68 @@ class LaunchBoundaryTests(unittest.TestCase):
         report.write_text(run.json.dumps({"passed": True, "released": True}))
         with self.assertRaises(ValueError):
             run.completed_report("logs-cleanup", self.repo, "02")
+
+    def test_l4_phases_cannot_be_confused_with_prior_combined_results(self):
+        self.credential()
+        a = {"scope_root": str(self.repo), "test_binary": str(self.repo / "application-faults.test")}
+        for phase, test, name in (("logs-recovery", "TestStrictLogsL4Recovery", "acceptance-logs-03-recovery.json"),
+                                  ("logs-l4", "TestStrictLogsTargetedL4Acceptance", "acceptance-logs-l4-01.json")):
+            argv, env = run.command(phase, a, "02")
+            self.assertIn("-test.run=^" + test + "$", argv)
+            self.assertEqual(env["FORGE_STRICT_LOGS_ACCEPTANCE"], str(self.repo / name))
+            self.assertNotIn("FORGE_STRICT_LOGS_EXECUTION", env)
+            for attempt, execution in (("01", "01"), ("02", "02"), ("02", "03")):
+                with self.assertRaises(ValueError):
+                    run.command(phase, a, attempt, execution)
+        evidence = self.repo / "evidence"
+        (evidence / "logs-l4-01").mkdir(mode=0o700, parents=True)
+        (evidence / "logs-03-recovery").mkdir(mode=0o700)
+        recovery = {"passed": True, "run_id": "run_DKT2OOLEVCKYXHW5NGNS7BKBHJ", "released": True, "snapshot_verified": True,
+                    "input_sha256_before": {"bound": "hash"}, "input_sha256_after": {"bound": "hash"}}
+        rp = evidence / "logs-03-recovery/report.json"
+        run.p.save(rp, recovery)
+        run.completed_report("logs-recovery", self.repo, "02")
+        for field in ("passed", "run_id", "released", "snapshot_verified", "input_sha256_after"):
+            changed = dict(recovery); changed.pop(field)
+            rp.write_text(run.json.dumps(changed))
+            with self.assertRaises(ValueError): run.completed_report("logs-recovery", self.repo, "02")
+        report = evidence / "logs-l4-01/acceptance.json"
+        for cases in ({"L4": {"passed": True}}, {"L5": {"passed": True}}, {"L4": {"passed": False}}, {"L4": {"passed": True}, "L1": {"passed": True}}):
+            report.write_text(run.json.dumps({"passed": True, "cases": cases})); report.chmod(0o600)
+            if cases == {"L4": {"passed": True}}: run.completed_report("logs-l4", self.repo, "02")
+            else:
+                with self.assertRaises(ValueError): run.completed_report("logs-l4", self.repo, "02")
+
+    def test_l4_preparation_is_exclusive_and_targeted_case_requires_completed_recovery(self):
+        base = self.repo / "scope"; base.mkdir(mode=0o700)
+        for leaf in ("evidence/logs-03", "evidence/logs-03-retained-observation", "runtime", "bin/" + "c"*40):
+            (base / leaf).mkdir(mode=0o700, parents=True, exist_ok=True)
+        names = ("forge-runner", "forge-worker", "application-faults.test")
+        for name in names:
+            p = base / "bin" / ("c"*40) / name; p.write_bytes(name.encode()); p.chmod(0o700)
+        run.p.save(base / "evidence/logs-03/acceptance.json", {"passed": False, "cases": {name: {"passed": True} for name in ("L1", "L2-L3-default", "L3-bytes", "L3-count", "L5")}})
+        original = {"scope_root": str(base), "runner_config": "unchanged", "test_binary": "old"}
+        digest = run.p.digest
+        def selected_digest(path):
+            if path == base / "evidence/logs-03/manifest.json": return "8781bba443e5a83da96cb077eb18223facfeee3469de0b23fce6c37529eef97c"
+            if path == base / "evidence/logs-03-retained-observation/manifest.json": return "7ace4cab71b3f4fbaba9f8ed58ae73dbfe202ab94d83bb4ecbe85bac6d8ab736"
+            return digest(path)
+        with patch.object(run, "inputs", return_value=(base, original)), patch.object(run.p, "digest", side_effect=selected_digest), patch.object(run, "credential") as credential:
+            with self.assertRaises(OSError): run.prepare_l4("logs-l4", "c"*40)
+            self.assertFalse((base / "acceptance-logs-l4-01.json").exists())
+            result = run.prepare_l4("logs-recovery", "c"*40)
+            self.assertFalse(result["executed"])
+            self.assertEqual(run.private_json(base / "acceptance-logs-03-recovery.json")["runner_config"], "unchanged")
+            with self.assertRaises(ValueError): run.prepare_l4("logs-recovery", "c"*40)
+            (base / "evidence/logs-03-recovery").mkdir(mode=0o700)
+            run.p.save(base / "evidence/logs-03-recovery/report.json", {"passed": True, "run_id": "run_DKT2OOLEVCKYXHW5NGNS7BKBHJ", "released": True, "snapshot_verified": True, "input_sha256_before": {"a":"b"}, "input_sha256_after": {"a":"b"}})
+            run.p.save(base / "evidence/logs-03-recovery/manifest.json", {"preserved":"hash"})
+            result = run.prepare_l4("logs-l4", "c"*40)
+            seal = run.private_json(base / "logs-l4-continuation.json")
+            self.assertEqual(seal["acceptance_sha256"], digest(base / "acceptance-logs-l4-01.json"))
+            self.assertEqual(seal["recovery_manifest_sha256"], digest(base / "evidence/logs-03-recovery/manifest.json"))
+            with self.assertRaises(ValueError): run.prepare_l4("logs-l4", "c"*40)
+            credential.assert_not_called()
 
     def test_second_attempt_cannot_use_old_success_or_claim_terminal_abort(self):
         case = self.repo / "evidence/sigterm-01/worker-runner-sigterm"

@@ -31,6 +31,8 @@ PHASES = {
     "logs": ("TestStrictLogsCombinedAcceptance", "FORGE_RUN_STRICT_LOGS_COMBINED", "FORGE_STRICT_LOGS_ACCEPTANCE", 600),
     "abort": ("TestAbortUnstartedLifecycle", "FORGE_ABORT_UNSTARTED_LIFECYCLE", "FORGE_WORKER_RUNNER_SIGTERM_ACCEPTANCE", 90),
     "logs-cleanup": ("TestStrictLogsRetainedCleanup", "FORGE_RUN_STRICT_LOGS_CLEANUP", "FORGE_STRICT_LOGS_ACCEPTANCE", 180),
+    "logs-recovery": ("TestStrictLogsL4Recovery", "FORGE_RUN_STRICT_LOGS_L4_RECOVERY", "FORGE_STRICT_LOGS_ACCEPTANCE", 180),
+    "logs-l4": ("TestStrictLogsTargetedL4Acceptance", "FORGE_RUN_STRICT_LOGS_L4", "FORGE_STRICT_LOGS_ACCEPTANCE", 240),
 }
 
 
@@ -49,6 +51,10 @@ def manifest_name(phase, attempt, logs_execution="01"):
         if attempt != "02" or logs_execution != "01":
             raise ValueError("cleanup belongs only to the failed logs01 on SIGTERM02")
         return "acceptance-logs-cleanup-01.json"
+    if phase in ("logs-recovery", "logs-l4"):
+        if attempt != "02" or logs_execution != "01":
+            raise ValueError("explicit L4 recovery/targeted case requires SIGTERM02 without a combined execution selector")
+        return "acceptance-logs-03-recovery.json" if phase == "logs-recovery" else "acceptance-logs-l4-01.json"
     if logs_execution != "01":
         if phase != "logs" or attempt != "02":
             raise ValueError("later logs execution requires the completed SIGTERM02 source")
@@ -166,6 +172,49 @@ def prepare_logs_third(revision):
     return {"prepared": [str(target)], "executed": False}
 
 
+def prepare_l4(phase, revision):
+    if phase not in ("logs-recovery", "logs-l4") or not isinstance(revision, str) or not re.fullmatch(r"[a-f0-9]{40}", revision):
+        raise ValueError("explicit L4 phase and full reviewed source revision required")
+    base, old = inputs("logs", "02", "03")
+    failed_hash = "8781bba443e5a83da96cb077eb18223facfeee3469de0b23fce6c37529eef97c"
+    observed_hash = "7ace4cab71b3f4fbaba9f8ed58ae73dbfe202ab94d83bb4ecbe85bac6d8ab736"
+    if p.digest(base / "evidence/logs-03/manifest.json") != failed_hash or p.digest(base / "evidence/logs-03-retained-observation/manifest.json") != observed_hash:
+        raise ValueError("original failed L4 evidence changed")
+    failed = private_json(base / "evidence/logs-03/acceptance.json")
+    expected = {"L1", "L2-L3-default", "L3-bytes", "L3-count", "L5"}
+    if failed.get("passed") is not False or set(failed.get("cases", {})) != expected or any(v.get("passed") is not True for v in failed["cases"].values()):
+        raise ValueError("preserve original aggregate failure and its five actual passing cases")
+    evidence_leaf = "logs-03-recovery" if phase == "logs-recovery" else "logs-l4-01"
+    manifest = base / manifest_name(phase, "02")
+    excluded = [manifest, base / "evidence" / evidence_leaf, base / "evidence" / ("host-" + phase + ("-01" if phase == "logs-l4" else ""))]
+    if phase == "logs-l4":
+        excluded.extend([base / "logs-l4-continuation.json", base / "runtime/strict-logs-l4-private-01"])
+        completed_report("logs-recovery", base, "02")
+    if any(os.path.lexists(path) for path in excluded):
+        raise ValueError("explicit L4 preparation or retained evidence already exists")
+    binary_dir = p.directory(base / "bin" / revision, private=True)
+    updated = dict(old)
+    for label, filename in (("runner", "forge-runner"), ("worker", "forge-worker"), ("test", "application-faults.test")):
+        path = binary_dir / filename
+        st = path.lstat()
+        if not stat.S_ISREG(st.st_mode) or st.st_uid != os.getuid() or st.st_nlink != 1 or st.st_mode & 0o022 or not st.st_mode & stat.S_IXUSR:
+            raise ValueError("frozen owned executable required")
+        updated[label + "_binary"] = str(path)
+        updated[label + "_sha256"] = p.digest(path)
+    if updated == old:
+        raise ValueError("new L4 phase requires the reviewed corrected fixture")
+    p.save(manifest, updated)
+    prepared = [str(manifest)]
+    if phase == "logs-l4":
+        seal = base / "logs-l4-continuation.json"
+        p.save(seal, {"purpose": "strict-logs-targeted-l4-v1", "recovered_run_id": "run_DKT2OOLEVCKYXHW5NGNS7BKBHJ",
+                      "failed_manifest_sha256": failed_hash, "observation_manifest_sha256": observed_hash,
+                      "recovery_manifest_sha256": p.digest(base / "evidence/logs-03-recovery/manifest.json"),
+                      "acceptance_sha256": p.digest(manifest)})
+        prepared.append(str(seal))
+    return {"prepared": prepared, "executed": False, "scope": "one explicit recovery or one new complete L4; original five passing cases are not repeated"}
+
+
 def credential():
     path = p.REPO / "var/local/review-database.env"
     p.directory(path.parent, private=True)
@@ -212,7 +261,9 @@ def completed_report(phase, base, attempt="01", logs_execution="01"):
     manifest_name(phase, attempt, logs_execution)
     relative = {"sigterm": "evidence/sigterm-" + attempt + "/worker-runner-sigterm/acceptance.json",
                 "logs": "evidence/logs-" + logs_execution + "/acceptance.json", "abort": "evidence/sigterm-01/abort-before-runner/report.json",
-                "logs-cleanup": "evidence/logs-01-cleanup/report.json"}[phase]
+                "logs-cleanup": "evidence/logs-01-cleanup/report.json",
+                "logs-recovery": "evidence/logs-03-recovery/report.json",
+                "logs-l4": "evidence/logs-l4-01/acceptance.json"}[phase]
     report = private_json(base / relative)
     if not isinstance(report, dict) or report.get("passed") is not True:
         raise ValueError("actual acceptance did not record a successful final report")
@@ -220,6 +271,10 @@ def completed_report(phase, base, attempt="01", logs_execution="01"):
         raise ValueError("abort must record nonterminal cancellation intent, not lifecycle success")
     if phase == "logs-cleanup" and (report.get("released") is not True or report.get("snapshot_verified") is not True):
         raise ValueError("cleanup requires a verified archived snapshot and released workspace")
+    if phase == "logs-recovery" and (report.get("run_id") != "run_DKT2OOLEVCKYXHW5NGNS7BKBHJ" or report.get("released") is not True or report.get("snapshot_verified") is not True or not report.get("input_sha256_before") or report.get("input_sha256_before") != report.get("input_sha256_after")):
+        raise ValueError("exact prior L4 recovery and unchanged input authority required")
+    if phase == "logs-l4" and (set(report.get("cases", {})) != {"L4"} or report["cases"]["L4"].get("passed") is not True):
+        raise ValueError("separate complete L4 result required")
     if phase == "logs":
         cases = report.get("cases")
         expected = {"L1", "L2-L3-default", "L3-bytes", "L3-count", "L4", "L5"}
@@ -273,6 +328,8 @@ def launch(phase, attempt="01", logs_execution="01"):
         suffix += "-retry"
     if phase == "logs" and logs_execution == "03":
         suffix = "-03"
+    if phase in ("logs-recovery", "logs-l4"):
+        suffix = "-01" if phase == "logs-l4" else ""
     out = base / "evidence" / ("host-" + phase + suffix)
     p.directory(out.parent, private=True)
     out.mkdir(mode=0o700)  # Exclusive: no automatic retry or evidence overwrite.
@@ -318,16 +375,17 @@ def launch(phase, attempt="01", logs_execution="01"):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("action", choices=("launch", "child", "prepare-continuation", "prepare-logs-continuation", "prepare-logs-third"))
+    parser.add_argument("action", choices=("launch", "child", "prepare-continuation", "prepare-logs-continuation", "prepare-logs-third", "prepare-l4-recovery", "prepare-l4-targeted"))
     parser.add_argument("--phase", choices=PHASES)
     parser.add_argument("--attempt", default="01", choices=("01", "02"))
     parser.add_argument("--logs-execution", default="01", choices=("01", "02", "03"))
     parser.add_argument("--revision")
     args = parser.parse_args()
-    if args.action in ("prepare-continuation", "prepare-logs-continuation", "prepare-logs-third"):
+    if args.action in ("prepare-continuation", "prepare-logs-continuation", "prepare-logs-third", "prepare-l4-recovery", "prepare-l4-targeted"):
         if args.phase is not None or args.attempt != "01" or args.logs_execution != "01":
             parser.error("preparation does not execute a phase")
-        prepare = {"prepare-continuation": prepare_continuation, "prepare-logs-continuation": prepare_logs_continuation, "prepare-logs-third": prepare_logs_third}[args.action]
+        prepare = {"prepare-continuation": prepare_continuation, "prepare-logs-continuation": prepare_logs_continuation, "prepare-logs-third": prepare_logs_third,
+                   "prepare-l4-recovery": lambda revision: prepare_l4("logs-recovery", revision), "prepare-l4-targeted": lambda revision: prepare_l4("logs-l4", revision)}[args.action]
         print(json.dumps(prepare(args.revision), sort_keys=True))
         return 0
     if args.phase is None or args.revision is not None:

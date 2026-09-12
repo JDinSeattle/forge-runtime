@@ -65,7 +65,7 @@ const slENOSPCProgram = `import os,time
 os.write(1,b'SL_STDOUT\x00\xff');os.write(2,b'SL_STDERR\x00\xfe')
 time.sleep(8)
 for i in range(300):
- os.write(1,b'X'*128);os.write(2,b'Y'*128);time.sleep(.05)`
+ os.write(1,b'X'*4096);os.write(2,b'Y'*4096);time.sleep(.05)`
 
 type slFixture struct {
 	t         *testing.T
@@ -890,27 +890,16 @@ func (f *slFixture) pressure(path string) func() {
 	}
 	var before unix.Statfs_t
 	f.check(unix.Fstatfs(n, &before))
-	block := bytes.Repeat([]byte{0x5a}, 1<<20)
-	written := int64(0)
-	var writeErr error
-	for written < 256<<20 {
-		count, err := file.Write(block)
-		written += int64(count)
-		if err != nil {
-			writeErr = err
-			break
-		}
-	}
-	if !errors.Is(writeErr, syscall.ENOSPC) {
-		file.Close()
-		f.t.Fatal("real fixed-volume ENOSPC not reached within frozen capacity", writeErr, written)
-	}
-	syncErr := file.Sync()
+	pressure, fillErr := slFillPressure(file, file.Sync, 256<<20)
 	f.check(unix.Fstat(n, &st))
 	var after unix.Statfs_t
 	f.check(unix.Fstatfs(n, &after))
 	f.check(file.Close())
-	f.save("L4-pressure.json", map[string]any{"path": filepath.Join(dir, name), "device": st.Dev, "inode": st.Ino, "effective_uid": os.Geteuid(), "owner_uid": st.Uid, "written_bytes": written, "allocated_bytes": st.Blocks * 512, "errno": writeErr.Error(), "sync_error": fmt.Sprint(syncErr), "before": before, "after": after, "observed_at": time.Now().UTC()})
+	f.save("L4-pressure.json", map[string]any{"path": filepath.Join(dir, name), "device": st.Dev, "inode": st.Ino, "effective_uid": os.Geteuid(), "owner_uid": st.Uid, "written_bytes": pressure.Written, "allocated_bytes": st.Blocks * 512, "stages": pressure.Stages, "fill_error": fmt.Sprint(fillErr), "before": before, "after": after, "observed_at": time.Now().UTC()})
+	f.check(fillErr)
+	if after.Bavail != 0 {
+		f.t.Fatal("pressure left available filesystem blocks; retain evidence and pressure")
+	}
 	if st.Uid != uint32(os.Geteuid()) || st.Blocks*512 <= 0 || st.Blocks*512 > 256<<20 {
 		f.t.Fatal("pressure allocation/identity differs")
 	}
@@ -1122,6 +1111,34 @@ func (f *slFixture) l4() {
 	inspect := f.daemon("inspect", cid)
 	f.check(slWrite(filepath.Join(f.dir, "L4-stopped-before-pressure-removal.json"), inspect))
 	f.check(slDockerOracle(inspect, cid, req, filepath.Dir(filepath.Dir(path)), false))
+	// Finish can itself fail to write metadata while full. An ENOSPC string
+	// alone therefore does not identify the failing sink. The same command is
+	// finite but needs at least 23 seconds to exit naturally; a non-OOM early
+	// stop, before its immutable deadline and while the only worker is paused,
+	// binds this observation to the production sink-failure kill branch.
+	f.check(slENOSPCStop(inspect, req, time.Now().UTC()))
+	fullSpool, e := slRead(path, int64(f.c.Logs.OperationBytes))
+	f.check(e)
+	initialSpool, e := slRead(filepath.Join(f.dir, "L4-before-pressure.spool"), int64(f.c.Logs.OperationBytes))
+	f.check(e)
+	fullFrames, e := slParseFrames(fullSpool, f.c.Logs, true)
+	f.check(e)
+	if !bytes.HasPrefix(fullSpool, initialSpool) || fullFrames.StreamBytes[0] == 0 || fullFrames.StreamBytes[1] == 0 || len(fullSpool) >= f.c.Logs.OperationBytes-f.c.Logs.EntryBytes {
+		f.t.Fatal("physical failure lost the original prefix or could be an operation-byte-limit stop")
+	}
+	f.check(slWrite(filepath.Join(f.dir, "L4-physical-full.spool"), fullSpool))
+	f.save("L4-physical-full-spool-oracle.json", fullFrames)
+	for _, suffix := range []string{".meta", ".meta.tmp"} {
+		if raw, e := slRead(path+suffix, 1<<20); e == nil {
+			f.check(slWrite(filepath.Join(f.dir, "L4-physical-full"+suffix), raw))
+		} else if !os.IsNotExist(e) {
+			f.check(e)
+		}
+	}
+	if f.ctx.Err() != nil || h.getRun().State.Status != domain.StatusRunning {
+		f.t.Fatal("external cancellation contaminated the physical spool failure")
+	}
+	f.save("L4-full-spool-stop-proof.json", map[string]any{"container_id": cid, "operation_id": req.OperationID, "natural_runtime_min_seconds": 23, "observed_before_request_deadline": true, "worker_paused": true, "same_run_still_running": true, "source_of_error": "SQLite ENOSPC plus early non-OOM Docker stop while no worker/fixture cancellation is possible; metadata alone is not the oracle"})
 	var count int
 	for _, r := range before.Tables["log_runs"] {
 		if r["tenant_id"] == string(req.TenantID) && r["run_id"] == string(req.RunID) {
@@ -1485,6 +1502,17 @@ func TestStrictLogsCombinedAcceptance(t *testing.T) {
 	if os.Getenv("FORGE_RUN_STRICT_LOGS_COMBINED") != "1" {
 		t.Skip("operator opt-in: completed E50 dedicated fixed pool; actual runner/worker binaries, private PG, finite physical ENOSPC")
 	}
+	slRunLogsAcceptance(t, false)
+}
+
+func TestStrictLogsTargetedL4Acceptance(t *testing.T) {
+	if os.Getenv("FORGE_RUN_STRICT_LOGS_L4") != "1" {
+		t.Skip("operator opt-in: archived logs03 failure and completed explicit L4 recovery; only new L4 and health operation")
+	}
+	slRunLogsAcceptance(t, true)
+}
+
+func slRunLogsAcceptance(t *testing.T, targeted bool) {
 	path := os.Getenv("FORGE_STRICT_LOGS_ACCEPTANCE")
 	var a slAcceptance
 	var c slRunnerConfig
@@ -1499,7 +1527,12 @@ func TestStrictLogsCombinedAcceptance(t *testing.T) {
 	}
 	execution := os.Getenv("FORGE_STRICT_LOGS_EXECUTION")
 	dir, private, err := slExecutionPaths(a, path, execution)
-	if err != nil {
+	if targeted {
+		if path != filepath.Join(a.ScopeRoot, "acceptance-logs-l4-01.json") || execution != "" {
+			t.Fatal("targeted L4 requires its own explicit acceptance and no combined execution selector")
+		}
+		dir, private = filepath.Join(a.ScopeRoot, "evidence/logs-l4-01"), filepath.Join(a.ScopeRoot, "runtime/strict-logs-l4-private-01")
+	} else if err != nil {
 		t.Fatal(err)
 	}
 	unlock, err := lifecycleControlLock(a.ScopeRoot)
@@ -1566,15 +1599,22 @@ func TestStrictLogsCombinedAcceptance(t *testing.T) {
 	f.check(e)
 	f.check(slIdle(j))
 	f.journalID = j.Identity
-	if execution == "02" || execution == "03" {
+	if !targeted && (execution == "02" || execution == "03") {
 		cleanupInputs, err := slCleanupPrerequisite(a, c, j)
 		f.check(err)
 		for path, hash := range cleanupInputs {
 			f.inputs[path] = hash
 		}
 	}
-	if execution == "03" {
+	if !targeted && execution == "03" {
 		priorInputs, err := slLogs02Prerequisite(a, c, j)
+		f.check(err)
+		for path, hash := range priorInputs {
+			f.inputs[path] = hash
+		}
+	}
+	if targeted {
+		priorInputs, err := slL4Prerequisite(a, c, j)
 		f.check(err)
 		for path, hash := range priorInputs {
 			f.inputs[path] = hash
@@ -1621,12 +1661,16 @@ func TestStrictLogsCombinedAcceptance(t *testing.T) {
 	clear(key)
 	f.objects, e = artifact.NewLocalStore(c.ArtifactRoot, 64<<20)
 	f.check(e)
-	f.l5()
+	if !targeted {
+		f.l5()
+	}
 	f.setupPG()
-	f.l1()
-	f.quotaCase("L2-L3-default", "default", 32, true)
-	f.quotaCase("L3-bytes", "bytes", 4, false)
-	f.quotaCase("L3-count", "count", 2, false)
+	if !targeted {
+		f.l1()
+		f.quotaCase("L2-L3-default", "default", 32, true)
+		f.quotaCase("L3-bytes", "bytes", 4, false)
+		f.quotaCase("L3-count", "count", 2, false)
+	}
 	f.l4()
 	f.stopRunner()
 	final := f.snapshot("final-journal.json")
@@ -1634,7 +1678,11 @@ func TestStrictLogsCombinedAcceptance(t *testing.T) {
 	for _, v := range c.VolumeSlots {
 		f.check(sandbox.VerifyVolume(ctx, v))
 	}
-	if len(f.cases) != 6 {
+	wantCases := 6
+	if targeted {
+		wantCases = 1
+	}
+	if len(f.cases) != wantCases {
 		t.Fatal("all five groups including independent byte/count subcases required")
 	}
 	f.completed = true

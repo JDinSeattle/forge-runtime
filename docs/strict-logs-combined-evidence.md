@@ -1,11 +1,14 @@
 # S12.9 combined fixed-volume log acceptance
 
-Status on 2026-09-12: **the first actual combined attempt failed overall**.
-L1, default limits and L5 passed with real Engine/Docker/fixed-volume spool/private-PG
-evidence. L3-bytes stopped at its fourth operation because of an incorrect retained-stream
-fairness oracle. Remaining byte-guard checks, L3-count and L4 were not reached.
-The correction has source/offline review; retained-workspace cleanup and a new full
-logs-02 attempt remain pending. S12.9 and the overall acceptance goal remain open.
+Status on 2026-09-12: **logs03 failed overall; five cases passed and L4 remains open**.
+The first run's incorrect stream-fairness oracle was fixed, its retained workspace
+was explicitly archived/released, and logs02 stopped before runner/worker launch
+on an already-owned fault filename. Logs03 used a unique filename and passed L1,
+default limits, independent byte/count limits, and L5. L4 timed out because its
+1 MiB pressure writer stopped with 430,080 bytes still available. The later
+read-only sample proves a valid 29,206-byte prefix marked `runner_shutdown`,
+followed by the original container's natural exit 0; this is not an ENOSPC pass.
+The original aggregate remains FAIL. S12.9 and the overall goal remain open.
 The [first-failure archive](../benchmarks/results/strict-logs-first-failure-20260912/README.md)
 preserves original raw, source identities and independent recomputation.
 
@@ -67,7 +70,14 @@ reports. Private recovery settings stay in `runtime/*-private`.
 
 ## Required cases and independent assertions
 
-All six expanded case entries must pass to complete the five groups:
+All six expanded case entries must have actual passing evidence to complete the
+five groups. The original S12 implementation requirement does not require one
+successful invocation containing every group. The continuation therefore keeps
+the five logs03 passes at their original source revision and adds one complete
+targeted L4 after explicit recovery of the failed old L4. It never changes the
+original aggregate result, reruns the old operation, or substitutes a pressure-only
+probe for the full publication/cleanup/health loop. Any composite result must
+identify both source revisions and both immutable evidence manifests.
 
 | Report entry | Actual workload | Required evidence |
 |---|---|---|
@@ -104,12 +114,23 @@ Docker container.
 ## Bounds, failures and reporting
 
 Execution is serial, with one task container running at a time, a 10-minute Go
-context and launcher deadline. Commands are finite; the largest flood demands
+context and launcher deadline. Commands are finite; each quota overflow demands
 1 MiB then sleeps for at most ten seconds, so a policy stop can be observed while
 the task is still alive. The cancel program installs SIGTERM ignore before fork,
 prints distinct parent/child ready markers, and has a 60-second natural bound.
-The ENOSPC program sleeps eight seconds for pressure setup and emits at most
-76,822 bytes over a bounded loop. No infinite output or host shell executes.
+The corrected L4 emits an initial two-stream prefix, waits eight seconds, then
+emits at most 300 pairs of 4 KiB chunks with 50 ms pauses (23 seconds minimum
+natural duration). Pressure writes 1 MiB, then 4 KiB, then single bytes on the
+same exclusive FD until each stage returns ENOSPC; all stages must sync and the
+final filesystem must have zero available blocks. The spool is read before any
+pressure removal and must retain its original prefix below the byte-policy limit.
+A nonzero, non-OOM Docker exit before 20 seconds and before the immutable request
+deadline, while the actual worker remains paused and PG remains running, excludes
+natural completion, operation timeout, business cancellation and byte-limit stop.
+This strengthens the existing production-path oracle without changing runtime
+logging or kill policy. Metadata ENOSPC alone cannot satisfy it.
+The corrected ENOSPC program emits at most 2,457,622 payload bytes including its
+two initial markers. No infinite output or host shell executes.
 
 Default bounds remain entry 16 KiB including its 32-byte header, operation
 512 KiB, run lifetime reservations 16 MiB/32 operations, preview 64 KiB. The
