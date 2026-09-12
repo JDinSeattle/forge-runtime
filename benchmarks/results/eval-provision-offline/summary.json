@@ -1,0 +1,93 @@
+{
+  "base_revision": "c9414210b58124aa7c9dd25edd3f18c89004cf10",
+  "scope": "offline provisioner tests/build only; no DB connection, migration, role creation, credential acquisition, service, key, journal, mount or provider action",
+  "source_before_after_equal": true,
+  "sources": {
+    "scripts/evaluation/provision/database.go": "0eeeccfe1c5756fe5deaf2d344baf7beb3cfde8b7208793bc6401801d8d0d838",
+    "scripts/evaluation/provision/main.go": "3b1ac96881f1a6a1c6e56b6686424cd0fd5b2d14577c79352e382bbc614a6e59",
+    "scripts/evaluation/provision/provision_test.go": "a07805941bfe174044674aa7d03bd52948413499103e5142bc3184c282941273",
+    "scripts/evaluation/provision/validate.go": "de7179494fcb3a0fba12c6d77010a95c09f04a52013f3c6aa63daf507bfac300"
+  },
+  "commands": [
+    {
+      "name": "ordinary",
+      "command": [
+        "go",
+        "test",
+        "./scripts/evaluation/provision",
+        "-count=1",
+        "-json"
+      ],
+      "exit_code": 0,
+      "seconds": 1.0818994045257568
+    },
+    {
+      "name": "race",
+      "command": [
+        "go",
+        "test",
+        "-race",
+        "./scripts/evaluation/provision",
+        "-count=1",
+        "-json"
+      ],
+      "exit_code": 0,
+      "seconds": 2.578880548477173
+    },
+    {
+      "name": "vet",
+      "command": [
+        "go",
+        "vet",
+        "./scripts/evaluation/provision"
+      ],
+      "exit_code": 0,
+      "seconds": 0.16190266609191895
+    },
+    {
+      "name": "build",
+      "command": [
+        "go",
+        "build",
+        "-o",
+        "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/feature-worktrees/logs/var/local/eval-provision/eval-provision-audit",
+        "./scripts/evaluation/provision"
+      ],
+      "exit_code": 0,
+      "seconds": 1.2893354892730713
+    }
+  ],
+  "tests": {
+    "ordinary": {
+      "pass_entries": 35,
+      "top_level_pass": 8,
+      "failure_entries": 0
+    },
+    "race": {
+      "pass_entries": 35,
+      "top_level_pass": 8,
+      "failure_entries": 0
+    }
+  },
+  "binaries": [
+    {
+      "path": "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/feature-worktrees/logs/var/local/eval-provision/eval-provision",
+      "size": 70980931,
+      "sha256": "35d1174f3220f6999b474144c3279b8443ff983ad34972beac6a93c4ea16ba2b"
+    },
+    {
+      "path": "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/feature-worktrees/logs/var/local/eval-provision/eval-provision-audit",
+      "size": 70981641,
+      "sha256": "2dfdaeb64e720f37dc261b9247c0c984f64f2847809e8f26b39f0f3ee5c9ce3e"
+    },
+    {
+      "path": "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/feature-worktrees/logs/var/local/eval-provision/eval-provision-final",
+      "size": 70980323,
+      "sha256": "80ed3807b94c84c596cb9262adfe5c3021a706022f8ba86ea28e9c25ae64e768"
+    }
+  ],
+  "retained_failures": [
+    "initial-compile.log and ordinary-01.log: unused fmt import; no executable test ran",
+    "ordinary-02.log: RawMessage nil-vs-JSON-null DeepEqual oracle; changed to JSON wire roundtrip, no production behavior change"
+  ]
+}

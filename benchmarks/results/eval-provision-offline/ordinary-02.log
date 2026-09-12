@@ -1,0 +1,72 @@
+=== RUN   TestBundleDoesNotReadKeysOrCreateRuntime
+--- PASS: TestBundleDoesNotReadKeysOrCreateRuntime (0.03s)
+=== RUN   TestExactAdminRoute
+--- PASS: TestExactAdminRoute (0.00s)
+=== RUN   TestFixedPolicyRejectsExpansion
+=== RUN   TestFixedPolicyRejectsExpansion/fake
+=== RUN   TestFixedPolicyRejectsExpansion/old_api
+=== RUN   TestFixedPolicyRejectsExpansion/new_key
+=== RUN   TestFixedPolicyRejectsExpansion/test_backend
+=== RUN   TestFixedPolicyRejectsExpansion/profile_uid
+=== RUN   TestFixedPolicyRejectsExpansion/more_rounds
+=== RUN   TestFixedPolicyRejectsExpansion/new_quote
+=== RUN   TestFixedPolicyRejectsExpansion/credential_url
+=== RUN   TestFixedPolicyRejectsExpansion/other_model
+=== RUN   TestFixedPolicyRejectsExpansion/exact_pricing
+=== RUN   TestFixedPolicyRejectsExpansion/fallback
+=== RUN   TestFixedPolicyRejectsExpansion/public_api
+=== RUN   TestFixedPolicyRejectsExpansion/tcp_runner
+=== RUN   TestFixedPolicyRejectsExpansion/task_transfer
+=== RUN   TestFixedPolicyRejectsExpansion/thinking_contract
+=== RUN   TestFixedPolicyRejectsExpansion/worker_fanout
+=== RUN   TestFixedPolicyRejectsExpansion/no_pool
+=== RUN   TestFixedPolicyRejectsExpansion/bigger_batch
+=== RUN   TestFixedPolicyRejectsExpansion/missing_task
+=== RUN   TestFixedPolicyRejectsExpansion/other_group
+--- PASS: TestFixedPolicyRejectsExpansion (0.00s)
+    --- PASS: TestFixedPolicyRejectsExpansion/fake (0.00s)
+    --- PASS: TestFixedPolicyRejectsExpansion/old_api (0.00s)
+    --- PASS: TestFixedPolicyRejectsExpansion/new_key (0.00s)
+    --- PASS: TestFixedPolicyRejectsExpansion/test_backend (0.00s)
+    --- PASS: TestFixedPolicyRejectsExpansion/profile_uid (0.00s)
+    --- PASS: TestFixedPolicyRejectsExpansion/more_rounds (0.00s)
+    --- PASS: TestFixedPolicyRejectsExpansion/new_quote (0.00s)
+    --- PASS: TestFixedPolicyRejectsExpansion/credential_url (0.00s)
+    --- PASS: TestFixedPolicyRejectsExpansion/other_model (0.00s)
+    --- PASS: TestFixedPolicyRejectsExpansion/exact_pricing (0.00s)
+    --- PASS: TestFixedPolicyRejectsExpansion/fallback (0.00s)
+    --- PASS: TestFixedPolicyRejectsExpansion/public_api (0.00s)
+    --- PASS: TestFixedPolicyRejectsExpansion/tcp_runner (0.00s)
+    --- PASS: TestFixedPolicyRejectsExpansion/task_transfer (0.00s)
+    --- PASS: TestFixedPolicyRejectsExpansion/thinking_contract (0.00s)
+    --- PASS: TestFixedPolicyRejectsExpansion/worker_fanout (0.00s)
+    --- PASS: TestFixedPolicyRejectsExpansion/no_pool (0.00s)
+    --- PASS: TestFixedPolicyRejectsExpansion/bigger_batch (0.00s)
+    --- PASS: TestFixedPolicyRejectsExpansion/missing_task (0.00s)
+    --- PASS: TestFixedPolicyRejectsExpansion/other_group (0.00s)
+=== RUN   TestAuthorityPreservedAndOutputExclusive
+=== RUN   TestAuthorityPreservedAndOutputExclusive/journal
+=== RUN   TestAuthorityPreservedAndOutputExclusive/key
+=== RUN   TestAuthorityPreservedAndOutputExclusive/root
+=== RUN   TestAuthorityPreservedAndOutputExclusive/artifact
+=== RUN   TestAuthorityPreservedAndOutputExclusive/slot
+--- PASS: TestAuthorityPreservedAndOutputExclusive (0.03s)
+    --- PASS: TestAuthorityPreservedAndOutputExclusive/journal (0.00s)
+    --- PASS: TestAuthorityPreservedAndOutputExclusive/key (0.00s)
+    --- PASS: TestAuthorityPreservedAndOutputExclusive/root (0.00s)
+    --- PASS: TestAuthorityPreservedAndOutputExclusive/artifact (0.00s)
+    --- PASS: TestAuthorityPreservedAndOutputExclusive/slot (0.00s)
+=== RUN   TestCandidateHashAndPathBinding
+=== RUN   TestCandidateHashAndPathBinding/tamper
+=== RUN   TestCandidateHashAndPathBinding/symlink
+--- PASS: TestCandidateHashAndPathBinding (0.04s)
+    --- PASS: TestCandidateHashAndPathBinding/tamper (0.02s)
+    --- PASS: TestCandidateHashAndPathBinding/symlink (0.02s)
+=== RUN   TestPrivateIdentifiersAndPrivilegeOracle
+--- PASS: TestPrivateIdentifiersAndPrivilegeOracle (0.00s)
+=== RUN   TestDescriptorsHaveNoCredentialFields
+    provision_test.go:271: descriptor roundtrip changed
+--- FAIL: TestDescriptorsHaveNoCredentialFields (0.00s)
+FAIL
+FAIL	github.com/JDinSeattle/forge-runtime/scripts/evaluation/provision	0.102s
+FAIL

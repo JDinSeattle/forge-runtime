@@ -1,0 +1,49 @@
+[
+  {
+    "name": "ordinary",
+    "command": [
+      "go",
+      "test",
+      "./scripts/evaluation/provision",
+      "-count=1",
+      "-json"
+    ],
+    "exit_code": 0,
+    "seconds": 1.0818994045257568
+  },
+  {
+    "name": "race",
+    "command": [
+      "go",
+      "test",
+      "-race",
+      "./scripts/evaluation/provision",
+      "-count=1",
+      "-json"
+    ],
+    "exit_code": 0,
+    "seconds": 2.578880548477173
+  },
+  {
+    "name": "vet",
+    "command": [
+      "go",
+      "vet",
+      "./scripts/evaluation/provision"
+    ],
+    "exit_code": 0,
+    "seconds": 0.16190266609191895
+  },
+  {
+    "name": "build",
+    "command": [
+      "go",
+      "build",
+      "-o",
+      "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/feature-worktrees/logs/var/local/eval-provision/eval-provision-audit",
+      "./scripts/evaluation/provision"
+    ],
+    "exit_code": 0,
+    "seconds": 1.2893354892730713
+  }
+]
