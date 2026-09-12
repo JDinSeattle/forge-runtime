@@ -9,10 +9,21 @@ import (
 	"path/filepath"
 
 	"github.com/JDinSeattle/forge-runtime/internal/application"
+	api "github.com/JDinSeattle/forge-runtime/internal/httpcontract"
 	"github.com/JDinSeattle/forge-runtime/internal/runner"
 )
 
 func main() {
+	if len(os.Args) == 2 && os.Args[1] == "--submit-json" {
+		var input api.Submit
+		if err := json.NewDecoder(os.Stdin).Decode(&input); err != nil {
+			panic(err)
+		}
+		if err := json.NewEncoder(os.Stdout).Encode(input); err != nil {
+			panic(err)
+		}
+		return
+	}
 	// Unit-test bridge through the actual production JSON field types/tags.
 	// It performs no database, network, worker, runner or model operations.
 	if len(os.Args) == 2 && os.Args[1] == "--model-spec-json" {

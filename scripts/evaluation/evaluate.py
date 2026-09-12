@@ -4,6 +4,7 @@ import argparse
 import collections
 import datetime
 import importlib.util
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -51,6 +52,94 @@ def load_bundle(directory):
     if platform.get("fake_scripts") or "fake" in platform["providers"]:
         raise ValueError("fake scripts/provider cannot produce evaluation results")
     return manifest, seal, registration, platform
+
+
+def saved_json(path):
+    return json.loads(path.read_text(), object_pairs_hook=deployment.pairs)
+
+
+def valid_timestamp(value):
+    if not isinstance(value, str):
+        raise ValueError("evidence timestamp is missing")
+    parsed = datetime.datetime.fromisoformat(value)
+    if parsed.tzinfo is None:
+        raise ValueError("evidence timestamp must include its timezone")
+    return value
+
+
+def batch_envelope(manifest, seal, registration, binding, created_at):
+    return {"created_at": valid_timestamp(created_at), "corpus_sha256": manifest["sha256"], "seal": seal, "registration": registration, "task_order": list(common.CASES), "allocated_total_microusd": sum(registration["task_budgets_microusd"].values()), "total_budget_microusd": registration["total_budget_microusd"], **({"deployment_binding": binding} if binding else {})}
+
+
+def validate_batch(batch, manifest, seal, registration, binding):
+    expected = batch_envelope(manifest, seal, registration, binding, batch.get("created_at"))
+    # Serialized comparison also distinguishes booleans from integer caps.
+    if json.dumps(batch, sort_keys=True) != json.dumps(expected, sort_keys=True):
+        raise ValueError("saved batch envelope differs from the frozen authorization")
+
+
+def unique_saved_runs(output):
+    seen = set()
+    for case in common.CASES:
+        path = output / case / "submission.json"
+        if path.exists():
+            run_id = saved_json(path).get("run_id")
+            if not common.valid_id(run_id) or run_id in seen:
+                raise ValueError("invalid or duplicate run ID across batch cases")
+            seen.add(run_id)
+
+
+def submit_body(case, source, registration):
+    if case not in common.CASES or not isinstance(source, dict) or source.get("path") != str(common.CORPUS / case / "source") or source.get("profile_id") != common.SOURCE_PREFIX + case:
+        raise ValueError("case requires its exact sealed source/profile")
+    deployment.sha(source.get("hash"))
+    return {"base_commit": source["hash"], "budget": {"max_cost_microusd": registration["task_budgets_microusd"][case], "max_model_rounds": registration["max_model_rounds"], "max_runtime_seconds": registration["max_runtime_seconds"], "max_tool_calls": registration["max_tool_calls"]}, "config_id": registration["config_id"], "task": (common.CORPUS / case / "task.txt").read_text()}
+
+
+def cli_body_bytes(body):
+    # The generated Submit/Budget struct fields are ordered by JSON name. This
+    # matches encoding/json, including HTML and U+2028/U+2029 string escaping;
+    # a Go bridge regression checks the actual production request type.
+    raw = json.dumps(body, ensure_ascii=False, separators=(",", ":"), sort_keys=True)
+    for char, escaped in (("&", "\\u0026"), ("<", "\\u003c"), (">", "\\u003e"), ("\u2028", "\\u2028"), ("\u2029", "\\u2029")):
+        raw = raw.replace(char, escaped)
+    return raw.encode()
+
+
+def submission_binding(cli, case, directory, registration, source):
+    body = submit_body(case, source, registration)
+    project, intent, submitted = (saved_json(directory / name) for name in ("project.json", "submission-intent.json", "submission.json"))
+    project_id, run_id = project.get("id"), submitted.get("run_id")
+    if not common.valid_id(project_id) or not common.valid_id(run_id) or project.get("tenant_id") != cli.tenant or project.get("source_id") != common.SOURCE_PREFIX + case or project.get("profile_id") != source["profile_id"]:
+        raise ValueError("saved project/run does not bind the fixed case and tenant")
+    if set(intent) != {"idempotency_key", "project_id", "budget_microusd", "submitted_at"} or intent["project_id"] != project_id or type(intent["budget_microusd"]) is not int or intent["budget_microusd"] != body["budget"]["max_cost_microusd"] or not common.valid_id(intent["idempotency_key"]):
+        raise ValueError("saved submission intent differs from the case/project/budget")
+    valid_timestamp(intent["submitted_at"])
+    scope = cli.env["FORGE_API_URL"].rstrip("/") + "\n" + cli.tenant + "\n/v1/projects/" + project_id + "/runs\n"
+    path = directory.parent / "cli-receipts" / ("key-" + hashlib.sha256((scope + intent["idempotency_key"]).encode()).hexdigest() + ".json")
+    receipt = saved_json(path)
+    if receipt.get("key") != intent["idempotency_key"] or receipt.get("body_hash") != hashlib.sha256(scope.encode() + cli_body_bytes(body)).hexdigest() or receipt.get("response", {}).get("run_id") != run_id:
+        raise ValueError("saved CLI receipt does not bind the submitted case and run")
+    valid_timestamp(receipt.get("created_at"))
+    return {"tenant_id": cli.tenant, "id": run_id, "project_id": project_id, "task": body["task"], "base_commit": body["base_commit"]}
+
+
+def check_collected_input(run, ledger, expected, case, source, registration):
+    authoritative = ledger["run"]
+    for row in (run, authoritative):
+        if any(row.get(k) != v for k, v in expected.items()):
+            raise ValueError("collected GET/SQL run differs from saved case submission")
+    accepted = authoritative.get("input_snapshot")
+    if isinstance(accepted, str):
+        accepted = json.loads(accepted, object_pairs_hook=deployment.pairs)
+    expected_input = {"schema_version": 1, "project_id": expected["project_id"], "task": expected["task"], "base_commit": expected["base_commit"], "source_id": common.SOURCE_PREFIX + case, "profile_id": source["profile_id"]}
+    if accepted != expected_input:
+        raise ValueError("SQL admission source/profile/task differs from the fixed case")
+    for config in (run.get("config", {}), authoritative["config_snapshot"]):
+        if config.get("fallback") is not None or config.get("provider") != registration["provider"] or config.get("model") != registration["model_id"] or any(config.get(k) != v for k, v in submit_body(case, source, registration)["budget"].items()):
+            raise ValueError("collected run configuration differs from frozen request")
+    if run["state"].get("run_id") != expected["id"] or run["state"].get("tenant_id") != expected["tenant_id"] or authoritative["state"] != run["state"]["status"]:
+        raise ValueError("GET and SQL run status/identity differ; collect again")
 
 
 def audit_environment(binding=None):
@@ -171,9 +260,9 @@ class CLI:
         return json.loads(result.stdout)
 
 
-def collect_task(cli, case, directory, registration, wait_seconds):
-    submitted = json.loads((directory / "submission.json").read_text())
-    run_id = submitted["run_id"]
+def collect_task(cli, case, directory, registration, wait_seconds, source=None):
+    expected = submission_binding(cli, case, directory, registration, source)
+    run_id = expected["id"]
     if not common.valid_id(run_id):
         raise ValueError("invalid submitted run identity")
     started = time.monotonic()
@@ -223,6 +312,7 @@ def collect_task(cli, case, directory, registration, wait_seconds):
         if artifact["kind"] == "verification_report" and artifact["id"] == run["state"].get("verification_report_ref"):
             verification = json.loads(path.read_text())
     ledger = audit_run(cli.tenant, run_id, directory, cli.binding)
+    check_collected_input(run, ledger, expected, case, source, registration)
     billing = summarize_ledger(ledger, registration)
     limit = registration["task_budgets_microusd"][case]
     violation = ledger["run"]["config_snapshot"]["max_cost_microusd"] != limit or billing["conservative_ledger_exposure_microusd"] > limit
@@ -275,14 +365,14 @@ def main():
     os.umask(0o077)
     if args.execute:
         output.mkdir(mode=0o700)
-        common.save_json(output / "batch.json", {"created_at": timestamp(), "corpus_sha256": manifest["sha256"], "seal": seal, "registration": registration, "task_order": list(common.CASES), "allocated_total_microusd": sum(registration["task_budgets_microusd"].values()), "total_budget_microusd": registration["total_budget_microusd"], **({"deployment_binding": binding} if binding else {})})
-    batch = json.loads((output / "batch.json").read_text())
-    if batch["seal"] != seal or batch["registration"] != registration or batch.get("deployment_binding") != binding:
-        raise ValueError("collect must use the exact original corpus/model/prices/budget")
+        common.save_json(output / "batch.json", batch_envelope(manifest, seal, registration, binding, timestamp()))
+    batch = saved_json(output / "batch.json")
+    validate_batch(batch, manifest, seal, registration, binding)
+    unique_saved_runs(output)
     cli = CLI(Path(args.client_env), output, binding)
     audit_preflight(binding)
     committed = {case: registration["task_budgets_microusd"][case] for case in common.CASES if (output / case / "submission-intent.json").is_file()}
-    report = {"scope": "real-provider CLI and trusted-grader evaluation; finite held-out-from-demo corpus, no training-contamination claim", "started_at": batch["created_at"], "collected_at": timestamp(), "corpus_sha256": manifest["sha256"], "provider": registration["provider"], "model_id": registration["model_id"], "total_budget_microusd": batch["total_budget_microusd"], "allocated_total_microusd": batch["allocated_total_microusd"], "submitted_or_unconfirmed_task_allocations": committed, "tasks": [], "complete": False, "audit_mode": "isolated" if binding else "legacy-public", **({"deployment_binding": binding} if binding else {})}
+    report = {"scope": "real-provider CLI and trusted-grader evaluation; finite held-out-from-demo corpus, no training-contamination claim", "started_at": batch["created_at"], "collected_at": timestamp(), "corpus_sha256": manifest["sha256"], "provider": registration["provider"], "model_id": registration["model_id"], "total_budget_microusd": registration["total_budget_microusd"], "allocated_total_microusd": sum(registration["task_budgets_microusd"].values()), "submitted_or_unconfirmed_task_allocations": committed, "tasks": [], "complete": False, "audit_mode": "isolated" if binding else "legacy-public", **({"deployment_binding": binding} if binding else {})}
     try:
         for case in common.CASES:
             directory = output / case
@@ -302,7 +392,8 @@ def main():
             if not (directory / "submission.json").is_file():
                 report["stopped_reason"] = "missing confirmed run ID; inspect saved submission intent and CLI receipt, never allocate a new key blindly"
                 break
-            item = collect_task(cli, case, directory, registration, registration["max_runtime_seconds"] + 60 if args.execute else 0)
+            unique_saved_runs(output)
+            item = collect_task(cli, case, directory, registration, registration["max_runtime_seconds"] + 60 if args.execute else 0, platform["sources"][common.SOURCE_PREFIX + case])
             report["tasks"].append(item)
             aggregate(report)
             common.save_json(output / "report.json", report, replace=True)

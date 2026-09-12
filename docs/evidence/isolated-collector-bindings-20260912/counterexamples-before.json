@@ -1,0 +1,30 @@
+{
+  "commit": "28abdcafb67e2048b7de333949bd20addbb9cfc1",
+  "expected": "both must reject inconsistent saved evidence before reporting",
+  "observed": [
+    {
+      "case": "batch_envelope_substitution",
+      "rejected": false,
+      "observed_report_total_budget": 999999999,
+      "bound_descriptor_budget": 2000000,
+      "observed_allocated_total": 999999999,
+      "mutated_fields": [
+        "total_budget_microusd",
+        "allocated_total_microusd",
+        "corpus_sha256",
+        "task_order"
+      ],
+      "scope": "Synthetic saved batch and mocked no-network preflight; no task submitted."
+    },
+    {
+      "case": "wrong_project_run_credited_to_case",
+      "rejected": false,
+      "expected_project": "proj_expected",
+      "ledger_project": "proj_other",
+      "reported_case": "py-utf8-chunks",
+      "actual_synthetic_artifact_case": "py-latest-records",
+      "reported_verified_repair": true,
+      "scope": "Synthetic CLI/ledger/artifacts. No process, socket, provider or PostgreSQL invocation. The mismatching run/project is intentionally not rejected by frozen collector."
+    }
+  ]
+}

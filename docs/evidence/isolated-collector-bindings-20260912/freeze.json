@@ -1,0 +1,74 @@
+{
+  "parent_commit": "28abdcafb67e2048b7de333949bd20addbb9cfc1",
+  "scope": "bounded offline fixes for two independently reproduced collector evidence-binding defects; no live database/model/credential calls",
+  "reviewed_findings": [
+    "collector-batch-envelope",
+    "collector-task-run-binding"
+  ],
+  "changes": [
+    "exact supported batch envelope, corpus/task order/allocation/total/binding and aware timestamp; report caps derived from validated registration",
+    "saved case project/intent/submission and actual CLI receipt scope/key/request-body/response binding",
+    "GET and exact-schema SQL run identity/task/base/project/config plus admission source/profile snapshot",
+    "reject duplicated saved run IDs across batch cases"
+  ],
+  "validation": {
+    "offline_tests": 30,
+    "failures": 0,
+    "elapsed_seconds": 3.229,
+    "go_submit_json_bridge": "actual generated Submit/Budget JSON bytes match Python body hashing including HTML and Unicode escaping",
+    "python_ast": "passed",
+    "diff_check": "passed",
+    "real_postgresql": "not run",
+    "provider_calls": 0
+  },
+  "files": [
+    {
+      "path": "independent-review-before.json",
+      "source": "/tmp/forge-isolated-collector-independent-review-v1.json",
+      "sha256": "281638d443d1ae5ebd3e17816ca28154d6468c1237d5f85e7821c1881475b45a",
+      "bytes": 6219
+    },
+    {
+      "path": "counterexamples-before.json",
+      "source": "/tmp/forge-isolated-collector-independent/counterexamples-before.json",
+      "sha256": "4cfb113e18f54b07fbc9a4fe0ae008d0d422ef0796d3be06a2cf788808308902",
+      "bytes": 1114
+    },
+    {
+      "path": "independent-counterexamples-before.py.txt",
+      "source": "/tmp/forge-isolated-collector-counterexamples.py",
+      "sha256": "7654b7dae3425fb76cd033c36d7395920881bef9b6e8bf7e093265b6af631d0d",
+      "bytes": 5421
+    },
+    {
+      "path": "after-30-tests.log",
+      "source": "/tmp/forge-eval-bindings-after.log",
+      "sha256": "5820bd54fff878421c80bbd457073feaecebbb95ae8204a2e8b862cd87d44dd7",
+      "bytes": 4877
+    }
+  ],
+  "source_files": [
+    {
+      "path": "scripts/evaluation/evaluate.py",
+      "sha256": "69e00ca8ee0a27ce4986562bf46caf093ae56ec8807b4b5aa2002b43fc25557f"
+    },
+    {
+      "path": "scripts/evaluation/audit.sql",
+      "sha256": "b43b5bb995c049d0dcc8a7207264278d454760b91a27124eff67753287a199a2"
+    },
+    {
+      "path": "scripts/evaluation/hash-sources.go",
+      "sha256": "d4058d23b203b5161cd13825981e71475cf87111f1c004ffccbb50d9d267c41a"
+    },
+    {
+      "path": "scripts/evaluation/test_collection_binding.py",
+      "sha256": "33826bde0e43f8f074f6fb2b61840494106293fec794a88ecc6f0b54c94e98b4"
+    }
+  ],
+  "limits": [
+    "SQL/RLS/private role integration remains untested here",
+    "positive/mutation tests exercise the binding helpers using synthetic artifacts; no model-quality evidence",
+    "actual runtime loaded-config attestation remains the external launcher responsibility",
+    "old original evidence and failed independent counterexamples retained unchanged; independent delta review pending"
+  ]
+}

@@ -1,0 +1,101 @@
+{
+  "passed": false,
+  "reviewed_at": "2026-09-12T04:50:13.398442+00:00",
+  "commit": "28abdcafb67e2048b7de333949bd20addbb9cfc1",
+  "scope": "Independent frozen-source review and 26 offline tests. Counterexamples use only copied synthetic files and mocked subprocess/audit results; no PostgreSQL, provider, Docker, service or real CLI invocation.",
+  "validation": {
+    "commit": "28abdcafb67e2048b7de333949bd20addbb9cfc1",
+    "exit_code": 0,
+    "tests": 26,
+    "elapsed_seconds": 2.4210185399861075,
+    "source_count": 36,
+    "source_matches_git_blob": true,
+    "source_unchanged": true,
+    "argv": [
+      "python3",
+      "-I",
+      "-B",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "scripts/evaluation",
+      "-p",
+      "test_*.py",
+      "-v"
+    ],
+    "author_source_log_hashes_match": true
+  },
+  "remaining_findings": [
+    {
+      "priority": "P2",
+      "id": "collector-batch-envelope",
+      "file": "scripts/evaluation/evaluate.py",
+      "function": "main batch validation",
+      "confirmed": true,
+      "problem": "The batch consistency gate compares only seal, registration and deployment_binding. It accepts changed top-level total_budget_microusd, allocated_total_microusd, corpus_sha256 and task_order, then reports the substituted budget fields.",
+      "minimal_reproduction": {
+        "case": "batch_envelope_substitution",
+        "rejected": false,
+        "observed_report_total_budget": 999999999,
+        "bound_descriptor_budget": 2000000,
+        "observed_allocated_total": 999999999,
+        "mutated_fields": [
+          "total_budget_microusd",
+          "allocated_total_microusd",
+          "corpus_sha256",
+          "task_order"
+        ],
+        "scope": "Synthetic saved batch and mocked no-network preflight; no task submitted."
+      },
+      "recommendation": "Validate the exact batch envelope: fixed corpus hash and task order, authorized registration total and allocation sum, full binding, valid creation timestamp, and supported field set. Derive report cap fields from validated registration/binding, not unverified redundant batch fields."
+    },
+    {
+      "priority": "P2",
+      "id": "collector-task-run-binding",
+      "file": "scripts/evaluation/evaluate.py",
+      "function": "collect_task",
+      "confirmed": true,
+      "problem": "A saved submission run_id is audited for tenant/run but never bound to the case project or submission intent. A successful other-project run with identical provider/model/prices/cap can be counted as a verified repair of this case.",
+      "minimal_reproduction": {
+        "case": "wrong_project_run_credited_to_case",
+        "rejected": false,
+        "expected_project": "proj_expected",
+        "ledger_project": "proj_other",
+        "reported_case": "py-utf8-chunks",
+        "actual_synthetic_artifact_case": "py-latest-records",
+        "reported_verified_repair": true,
+        "scope": "Synthetic CLI/ledger/artifacts. No process, socket, provider or PostgreSQL invocation. The mismatching run/project is intentionally not rejected by frozen collector."
+      },
+      "recommendation": "Before collection verify project.json and submission-intent/submission/CLI identity consistency, and bind GET/SQL project/run/input evidence to the expected fixed case/source/profile/task. Reject duplicate run IDs across batch cases. Preserve raw evidence and stop on mismatch rather than crediting a repair."
+    }
+  ],
+  "unconfirmed_hypothesis": {
+    "schema_usage_preflight": "Table SELECT ACL proof does not explicitly test schema USAGE. However the text relation-name resolution inside has_table_privilege may already reject missing schema USAGE. Do not count this as a confirmed P2 without a real isolated PostgreSQL negative. Root has been informed of this uncertainty."
+  },
+  "accepted_boundaries": [
+    "Descriptor strict fields/types/duplicate detection pin one model/budget/corpus/bundle/CLI/API/tenant/schema/OID/audit role and one exclusive output path; no isolated fallback to public or another CLI on validation failure.",
+    "Audit SQL qualifies all business tables with psql quoted schema identifiers and uses read-only transactions plus pg_catalog search path. Scope is rechecked on preflight and each run audit.",
+    "Isolated CLI environment contains only three explicit client values and minimal process fields; audit process receives only its own exact connection fields. Provider keys and inherited PG service/options are not forwarded.",
+    "Missing/duplicate/orphan reservation identity and invalid reserved/settled costs fail rather than silently becoming zero. Failed task auditing remains in aggregate committed allocation exposure."
+  ],
+  "limits": [
+    "Offline SQL outputs are mocked. No PostgreSQL syntax, RLS/ACL/OID or actual API/worker deployment proof is claimed.",
+    "Descriptor and clean binary hash are local operator evidence, not attestation of which actual worker configuration loaded; external deployment attestation remains required.",
+    "Fixed output prevents accidental duplicate batches for an intact descriptor, not a lifetime provider entitlement.",
+    "The source worktree was switched by another agent after the completed 26-test before/after check. New counterexamples therefore run the frozen copied source; first missing-module wrapper failure is unrelated to collector behavior."
+  ],
+  "artifacts_base": "/tmp/forge-isolated-collector-independent",
+  "artifact_sha256": {
+    "test-result.json": "33dd5ebf5c5d465cb020c6b78c51b02edd722d81ab8f34810604cbadf4e76b40",
+    "offline.log": "d6e2f8f2ef43756371fba8d3bd05c45fa766a4328c1e7afe15dec4af82f0c2c7",
+    "inputs-before.json": "28e07b8cbda675bffc23e19f4d8272d6a5777421fe923d258a26af50c407eca2",
+    "inputs-after.json": "28e07b8cbda675bffc23e19f4d8272d6a5777421fe923d258a26af50c407eca2",
+    "author-freeze.json": "25e969308346226bfbcab76bf59761816fd6d6d99d4b445f09d15a2d031ef738",
+    "counterexamples-before.json": "4cfb113e18f54b07fbc9a4fe0ae008d0d422ef0796d3be06a2cf788808308902"
+  },
+  "counterexample_script": {
+    "path": "/tmp/forge-isolated-collector-counterexamples.py",
+    "sha256": "7654b7dae3425fb76cd033c36d7395920881bef9b6e8bf7e093265b6af631d0d"
+  }
+}
