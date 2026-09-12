@@ -1,0 +1,8 @@
+# github.com/JDinSeattle/forge-runtime/scripts/faults/application [github.com/JDinSeattle/forge-runtime/scripts/faults/application.test]
+scripts/faults/application/worker_sigterm_test.go:10:2: "errors" imported and not used
+scripts/faults/application/worker_sigterm_test.go:364: undefined: application
+scripts/faults/application/worker_sigterm_test.go:456:65: too many arguments in call to signer.Sign
+	have (runner.WorkspaceRequest, []string, "time".Time, "time".Time)
+	want (runner.Claims, "time".Time)
+FAIL	github.com/JDinSeattle/forge-runtime/scripts/faults/application [build failed]
+FAIL
