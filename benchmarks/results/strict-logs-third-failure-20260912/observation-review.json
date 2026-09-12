@@ -1,0 +1,49 @@
+{
+  "archive_audit_passed": true,
+  "checks": 2485,
+  "cleanup_constraints": [
+    "Exact target operation remains unknown/log_capture_incomplete with no result/receipt; Docker exit 0 does not make its verification/log complete.",
+    "Reconcile the same operation and preserve truthful incomplete logs, durable receipt/publication and charged synthetic usage before Stop/seal/release. Do not infer release from expired SQL lease or dead container.",
+    "The later SQL capture contains current run snapshots and aggregate ledger counts; it is not a full individual effect/attempt/allocation/event history. Cleanup must capture and compare exact relevant rows before and after.",
+    "Original aggregate false and its manifest remain unchanged. A separately frozen full targeted L4 can be explicitly composed with the five existing case records only after old retained work is safely settled and identity/config compatibility is checked."
+  ],
+  "diagnosis": "The 1 MiB pressure-write ENOSPC left 430080 B available. Actual small spool writes succeeded; the captured prefix ended on runner shutdown, and the original command naturally exited 0 later. No actual spool I/O failure or log-policy stop was established.",
+  "executed_source_revision": "bdff9b1b511ae1c38327b8441ac973bb4db262e2",
+  "not_completed": "L4",
+  "observation_at": "2026-09-12T18:33:29.232059+00:00",
+  "observation_manifest_members": 6,
+  "original_manifest_members": 602,
+  "original_suite_passed": false,
+  "passed_case_records": [
+    "L1",
+    "L2-L3-default",
+    "L3-bytes",
+    "L3-count",
+    "L5"
+  ],
+  "pressure": {
+    "available_bytes_after_large_write_failure": 430080,
+    "available_bytes_at_later_observation": 364544,
+    "same_file_retained": true
+  },
+  "process": {
+    "container_exit_after_runner_seconds": 10.474809,
+    "container_exit_code": 0,
+    "lease_remaining_at_resume_seconds": 17.042176,
+    "natural_command_seconds": 23.181205,
+    "oom": false,
+    "pause_seconds": 12.380968
+  },
+  "projected_members": 2,
+  "raw_members": 613,
+  "scope": "Portable offline recomputation of historical raw only, with exact recorded UTC timestamps. No current live-state assertion, no resource/credential/model calls, no acceptance status promotion.",
+  "spool": {
+    "bytes": 29206,
+    "each_stream_payload": 11659,
+    "payload_bytes": 23318,
+    "reason": "runner_shutdown",
+    "records": 184,
+    "sha256": "090d01e19fd1c6e57ff07b95b1a983b273ccd268688ae640af59497a9010fc32",
+    "torn_tail": false
+  }
+}

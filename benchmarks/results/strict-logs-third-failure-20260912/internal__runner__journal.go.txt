@@ -1,0 +1,412 @@
+package runner
+
+import (
+	"context"
+	"crypto/rand"
+	"database/sql"
+	"encoding/hex"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"net/url"
+	"os"
+	"path/filepath"
+
+	"github.com/JDinSeattle/forge-runtime/internal/artifact"
+	"github.com/JDinSeattle/forge-runtime/internal/domain"
+	"github.com/JDinSeattle/forge-runtime/internal/sandbox"
+	_ "modernc.org/sqlite"
+)
+
+type journal struct{ db *sql.DB }
+
+func openJournal(filename string) (*journal, error) {
+	if err := os.MkdirAll(filepath.Dir(filename), 0700); err != nil {
+		return nil, err
+	}
+	q := url.Values{"_pragma": {"journal_mode(WAL)", "synchronous(FULL)", "foreign_keys(ON)", "busy_timeout(5000)"}, "_txlock": {"immediate"}}
+	u := url.URL{Scheme: "file", Path: filename, RawQuery: q.Encode()}
+	db, err := sql.Open("sqlite", u.String())
+	if err != nil {
+		return nil, err
+	}
+	db.SetMaxOpenConns(1)
+	fail := func(err error) (*journal, error) { _ = db.Close(); return nil, err }
+	var version int
+	if err = db.QueryRow("PRAGMA user_version").Scan(&version); err != nil {
+		return fail(err)
+	}
+	if version < 0 || version > 5 {
+		return fail(fmt.Errorf("%w: unsupported runner journal schema %d", domain.ErrInvalid, version))
+	}
+	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS workspaces (
+ id TEXT PRIMARY KEY,tenant_id TEXT NOT NULL,run_id TEXT NOT NULL,source_id TEXT NOT NULL,profile_id TEXT NOT NULL,
+ epoch INTEGER NOT NULL CHECK(epoch>0),revision INTEGER NOT NULL CHECK(revision>0),active_operation TEXT NOT NULL DEFAULT '',
+ adopting INTEGER NOT NULL DEFAULT 0,released INTEGER NOT NULL DEFAULT 0,baseline_hash TEXT NOT NULL,
+ UNIQUE(tenant_id,run_id,id));
+ CREATE TABLE IF NOT EXISTS operations (
+ id TEXT PRIMARY KEY,workspace_id TEXT NOT NULL REFERENCES workspaces(id),tenant_id TEXT NOT NULL,run_id TEXT NOT NULL,
+ request_json TEXT NOT NULL,status TEXT NOT NULL CHECK(status IN('prepared','running','succeeded','failed','cancelled','unknown')),
+ job_id TEXT NOT NULL,before_hash TEXT NOT NULL,expected_after_hash TEXT NOT NULL DEFAULT '',after_hash TEXT NOT NULL DEFAULT '',
+ after_revision INTEGER NOT NULL DEFAULT 0,result_json TEXT NOT NULL DEFAULT '{}',receipt_json TEXT NOT NULL DEFAULT '{}',error TEXT NOT NULL DEFAULT '',cancel_requested INTEGER NOT NULL DEFAULT 0,
+ FOREIGN KEY(tenant_id,run_id,workspace_id) REFERENCES workspaces(tenant_id,run_id,id));
+ CREATE INDEX IF NOT EXISTS operations_workspace ON operations(workspace_id,status);
+ `)
+	if err != nil {
+		return fail(err)
+	}
+	if version < 2 {
+		if _, err = db.Exec(`BEGIN IMMEDIATE; ALTER TABLE workspaces ADD COLUMN stopped INTEGER NOT NULL DEFAULT 0; PRAGMA user_version=2; COMMIT;`); err != nil {
+			return fail(err)
+		}
+	}
+	if version < 3 {
+		if _, err = db.Exec(`BEGIN IMMEDIATE;
+  CREATE TABLE volume_slots(id TEXT PRIMARY KEY,spec_json TEXT NOT NULL);
+  CREATE TABLE volume_leases(workspace_id TEXT PRIMARY KEY,slot_id TEXT NOT NULL REFERENCES volume_slots(id),tenant_id TEXT NOT NULL,run_id TEXT NOT NULL,source_id TEXT NOT NULL,profile_id TEXT NOT NULL,released INTEGER NOT NULL DEFAULT 0);
+  CREATE UNIQUE INDEX occupied_volume_slot ON volume_leases(slot_id) WHERE released=0;
+  PRAGMA user_version=3; COMMIT;`); err != nil {
+			return fail(err)
+		}
+	}
+	if version < 4 {
+		var identity [32]byte
+		if _, err = rand.Read(identity[:]); err != nil {
+			return fail(err)
+		}
+		tx, beginErr := db.Begin()
+		if beginErr != nil {
+			return fail(beginErr)
+		}
+		if _, err = tx.Exec(`
+  CREATE TABLE journal_identity(singleton INTEGER PRIMARY KEY CHECK(singleton=1),id TEXT NOT NULL);
+  CREATE TABLE runner_artifacts(object_key TEXT PRIMARY KEY,ref_json TEXT NOT NULL);
+  ALTER TABLE operations ADD COLUMN dispatch_started INTEGER NOT NULL DEFAULT 1;
+  ALTER TABLE operations ADD COLUMN docker_start_intent INTEGER NOT NULL DEFAULT 1;
+  ALTER TABLE volume_leases ADD COLUMN epoch INTEGER NOT NULL DEFAULT 0;
+  ALTER TABLE volume_leases ADD COLUMN source_hash TEXT NOT NULL DEFAULT '';
+  UPDATE volume_leases SET epoch=COALESCE((SELECT epoch FROM workspaces WHERE id=workspace_id),0),source_hash=COALESCE((SELECT baseline_hash FROM workspaces WHERE id=workspace_id),'');
+  PRAGMA user_version=4;`); err != nil {
+			tx.Rollback()
+			return fail(err)
+		}
+		if _, err = tx.Exec(`INSERT INTO journal_identity(singleton,id)VALUES(1,?)`, hex.EncodeToString(identity[:])); err != nil {
+			tx.Rollback()
+			return fail(err)
+		}
+		if err = tx.Commit(); err != nil {
+			return fail(err)
+		}
+	}
+	if version < 5 {
+		if _, err = db.Exec(`BEGIN IMMEDIATE;
+ CREATE TABLE log_runs(tenant_id TEXT NOT NULL,run_id TEXT NOT NULL,policy_json TEXT NOT NULL,reserved_bytes INTEGER NOT NULL CHECK(reserved_bytes>=0),operations INTEGER NOT NULL CHECK(operations>=0),PRIMARY KEY(tenant_id,run_id));
+ CREATE TABLE operation_logs(operation_id TEXT PRIMARY KEY REFERENCES operations(id),policy_json TEXT NOT NULL,container_id TEXT NOT NULL DEFAULT '',cleanup_state TEXT NOT NULL DEFAULT 'retained' CHECK(cleanup_state IN('retained','removing','removed')));
+ PRAGMA user_version=5; COMMIT;`); err != nil {
+			return fail(err)
+		}
+	}
+	var mode string
+	var sync int
+	if err = db.QueryRow("PRAGMA journal_mode").Scan(&mode); err != nil {
+		return fail(err)
+	}
+	if err = db.QueryRow("PRAGMA synchronous").Scan(&sync); err != nil {
+		return fail(err)
+	}
+	if mode != "wal" || sync != 2 {
+		return fail(fmt.Errorf("runner journal must use WAL and synchronous FULL"))
+	}
+	j := &journal{db: db}
+	if _, err = j.identity(context.Background()); err != nil {
+		return fail(err)
+	}
+	return j, nil
+}
+
+// identity binds an artifact authority to this particular durable journal, not
+// merely to a pathname that an operator might later reuse for an empty database.
+func (j *journal) identity(ctx context.Context) (string, error) {
+	var id string
+	if err := j.db.QueryRowContext(ctx, `SELECT id FROM journal_identity WHERE singleton=1`).Scan(&id); err != nil {
+		return "", fmt.Errorf("%w: journal identity missing", domain.ErrInvalid)
+	}
+	decoded, err := hex.DecodeString(id)
+	if err != nil || len(decoded) != 32 || hex.EncodeToString(decoded) != id {
+		return "", fmt.Errorf("%w: malformed journal identity", domain.ErrInvalid)
+	}
+	var count int
+	if err = j.db.QueryRowContext(ctx, `SELECT count(*) FROM journal_identity`).Scan(&count); err != nil {
+		return "", err
+	}
+	if count != 1 {
+		return "", domain.ErrInvalid
+	}
+	return id, nil
+}
+
+type rowScanner interface{ Scan(...any) error }
+
+const workspaceColumns = `id,tenant_id,run_id,source_id,profile_id,epoch,revision,active_operation,adopting,released,baseline_hash,stopped`
+
+func scanWorkspace(row rowScanner) (Workspace, error) {
+	var w Workspace
+	err := row.Scan(&w.ID, &w.TenantID, &w.RunID, &w.SourceID, &w.ProfileID, &w.Epoch, &w.Revision, &w.ActiveOperation, &w.Adopting, &w.Released, &w.BaselineHash, &w.Stopped)
+	if errors.Is(err, sql.ErrNoRows) {
+		err = domain.ErrNotFound
+	}
+	return w, err
+}
+func (j *journal) workspace(ctx context.Context, id domain.ID) (Workspace, error) {
+	return scanWorkspace(j.db.QueryRowContext(ctx, "SELECT "+workspaceColumns+" FROM workspaces WHERE id=?", id))
+}
+func (j *journal) createWorkspace(ctx context.Context, w Workspace) (Workspace, error) {
+	_, err := j.db.ExecContext(ctx, `INSERT INTO workspaces(id,tenant_id,run_id,source_id,profile_id,epoch,revision,baseline_hash)VALUES(?,?,?,?,?,?,?,?) ON CONFLICT(id) DO NOTHING`, w.ID, w.TenantID, w.RunID, w.SourceID, w.ProfileID, w.Epoch, w.Revision, w.BaselineHash)
+	if err != nil {
+		return Workspace{}, err
+	}
+	existing, err := j.workspace(ctx, w.ID)
+	if err != nil {
+		return Workspace{}, err
+	}
+	if existing.TenantID != w.TenantID || existing.RunID != w.RunID || existing.SourceID != w.SourceID || existing.ProfileID != w.ProfileID || existing.BaselineHash != w.BaselineHash {
+		return Workspace{}, domain.ErrConflict
+	}
+	return existing, nil
+}
+
+const operationColumns = `request_json,status,job_id,before_hash,expected_after_hash,after_hash,after_revision,result_json,receipt_json,error,cancel_requested`
+
+func scanOperation(row rowScanner) (Operation, error) {
+	var o Operation
+	var req, result, receipt []byte
+	err := row.Scan(&req, &o.Status, &o.JobID, &o.BeforeHash, &o.ExpectedAfterHash, &o.AfterHash, &o.AfterRevision, &result, &receipt, &o.Error, &o.CancelRequested)
+	if errors.Is(err, sql.ErrNoRows) {
+		return o, domain.ErrNotFound
+	}
+	if err != nil {
+		return o, err
+	}
+	if err = json.Unmarshal(req, &o.Request); err != nil {
+		return o, err
+	}
+	if err = json.Unmarshal(receipt, &o.Receipt); err != nil {
+		return o, err
+	}
+	o.Result = result
+	return o, nil
+}
+func (j *journal) operation(ctx context.Context, id domain.ID) (Operation, error) {
+	return scanOperation(j.db.QueryRowContext(ctx, "SELECT "+operationColumns+" FROM operations WHERE id=?", id))
+}
+
+func sameBinding(a, b OperationRequest) bool {
+	a.Grant, b.Grant = "", ""
+	a.Epoch, b.Epoch = 0, 0
+	// Wire-equivalent timestamps must remain equal after a JSON round trip;
+	// reflect.DeepEqual would compare location/monotonic clock internals.
+	a.Deadline, b.Deadline = a.Deadline.UTC(), b.Deadline.UTC()
+	left, _ := json.Marshal(a)
+	right, _ := json.Marshal(b)
+	return string(left) == string(right)
+}
+func workspaceBinding(w Workspace, r WorkspaceRequest) error {
+	if w.TenantID != r.TenantID || w.RunID != r.RunID || w.ID != r.WorkspaceID {
+		return domain.ErrForbidden
+	}
+	return nil
+}
+
+// reserve performs admission and the durable prepared record in one IMMEDIATE
+// transaction. The caller already holds the cross-process workspace file lock.
+func (j *journal) reserve(ctx context.Context, o Operation, logs *sandbox.LogPolicy) (Operation, bool, error) {
+	tx, err := j.db.BeginTx(ctx, nil)
+	if err != nil {
+		return Operation{}, false, err
+	}
+	defer tx.Rollback()
+	w, err := scanWorkspace(tx.QueryRowContext(ctx, "SELECT "+workspaceColumns+" FROM workspaces WHERE id=?", o.Request.WorkspaceID))
+	if err != nil {
+		return Operation{}, false, err
+	}
+	if err = workspaceBinding(w, o.Request.WorkspaceRequest); err != nil {
+		return Operation{}, false, err
+	}
+	if w.Epoch != o.Request.Epoch || w.Adopting || w.Released || w.Stopped {
+		return Operation{}, false, domain.ErrFenced
+	}
+	existing, err := scanOperation(tx.QueryRowContext(ctx, "SELECT "+operationColumns+" FROM operations WHERE id=?", o.Request.OperationID))
+	if err == nil {
+		if !sameBinding(existing.Request, o.Request) {
+			return Operation{}, false, domain.ErrConflict
+		}
+		return existing, false, nil
+	}
+	if !errors.Is(err, domain.ErrNotFound) {
+		return Operation{}, false, err
+	}
+	if w.ActiveOperation != "" {
+		return Operation{}, false, domain.ErrCapacity
+	}
+	if w.Revision != o.Request.ExpectedRevision {
+		return Operation{}, false, domain.ErrConflict
+	}
+	o.Request.Grant = ""
+	raw, err := json.Marshal(o.Request)
+	if err != nil {
+		return Operation{}, false, err
+	}
+	_, err = tx.ExecContext(ctx, `INSERT INTO operations(id,workspace_id,tenant_id,run_id,request_json,status,job_id,before_hash,expected_after_hash,dispatch_started,docker_start_intent)VALUES(?,?,?,?,?,'prepared',?,?,?,0,0)`, o.Request.OperationID, w.ID, w.TenantID, w.RunID, string(raw), o.JobID, o.BeforeHash, o.ExpectedAfterHash)
+	if err != nil {
+		return Operation{}, false, err
+	}
+	if logs != nil && isProcess(o.Request.Kind) {
+		if err = j.reserveLogs(ctx, tx, o, *logs); err != nil {
+			return Operation{}, false, err
+		}
+	}
+	_, err = tx.ExecContext(ctx, "UPDATE workspaces SET active_operation=? WHERE id=?", o.Request.OperationID, w.ID)
+	if err != nil {
+		return Operation{}, false, err
+	}
+	if err = tx.Commit(); err != nil {
+		return Operation{}, false, err
+	}
+	o.Status = Prepared
+	return o, true, nil
+}
+
+func (j *journal) markRunning(ctx context.Context, id domain.ID) error {
+	_, err := j.db.ExecContext(ctx, "UPDATE operations SET status='running',dispatch_started=1 WHERE id=? AND status='prepared'", id)
+	return err
+}
+func (j *journal) markUnknown(ctx context.Context, id domain.ID, reason string) error {
+	_, err := j.db.ExecContext(ctx, "UPDATE operations SET status='unknown',error=? WHERE id=? AND status IN('prepared','running','unknown')", reason, id)
+	return err
+}
+func (j *journal) requestCancel(ctx context.Context, id domain.ID) error {
+	_, err := j.db.ExecContext(ctx, "UPDATE operations SET cancel_requested=1 WHERE id=? AND status IN('prepared','running','unknown')", id)
+	return err
+}
+
+// finish atomically publishes receipt and clears the write reservation. Receipt
+// bytes have already been fsync'ed by ArtifactStore; failed commits leave an
+// orphan, not a falsely completed effect. Repeated finalization is idempotent.
+func (j *journal) finish(ctx context.Context, o Operation) (Operation, error) {
+	if !o.Status.Terminal() || o.Receipt.ObjectKey == "" || o.AfterHash == "" {
+		return Operation{}, domain.ErrInvalid
+	}
+	tx, err := j.db.BeginTx(ctx, nil)
+	if err != nil {
+		return Operation{}, err
+	}
+	defer tx.Rollback()
+	old, err := scanOperation(tx.QueryRowContext(ctx, "SELECT "+operationColumns+" FROM operations WHERE id=?", o.Request.OperationID))
+	if err != nil {
+		return Operation{}, err
+	}
+	if old.Status.Terminal() {
+		return old, nil
+	}
+	w, err := scanWorkspace(tx.QueryRowContext(ctx, "SELECT "+workspaceColumns+" FROM workspaces WHERE id=?", o.Request.WorkspaceID))
+	if err != nil {
+		return Operation{}, err
+	}
+	if w.ActiveOperation != o.Request.OperationID {
+		return Operation{}, domain.ErrConflict
+	}
+	if o.AfterRevision < w.Revision {
+		return Operation{}, domain.ErrConflict
+	}
+	receipt, _ := json.Marshal(o.Receipt)
+	if len(o.Result) == 0 {
+		o.Result = json.RawMessage(`{}`)
+	}
+	_, err = tx.ExecContext(ctx, `UPDATE operations SET status=?,after_hash=?,after_revision=?,result_json=?,receipt_json=?,error=? WHERE id=?`, o.Status, o.AfterHash, o.AfterRevision, string(o.Result), string(receipt), o.Error, o.Request.OperationID)
+	if err != nil {
+		return Operation{}, err
+	}
+	_, err = tx.ExecContext(ctx, "UPDATE workspaces SET active_operation='',revision=? WHERE id=?", o.AfterRevision, w.ID)
+	if err != nil {
+		return Operation{}, err
+	}
+	if err = tx.Commit(); err != nil {
+		return Operation{}, err
+	}
+	return o, nil
+}
+
+// fence is committed BEFORE waiting for the old writer. No new operation may
+// enter while adopting=1, including one from the new epoch itself.
+func (j *journal) fence(ctx context.Context, r WorkspaceRequest) (Workspace, error) {
+	return j.setFence(ctx, r, false)
+}
+func (j *journal) stopFence(ctx context.Context, r WorkspaceRequest) (Workspace, error) {
+	return j.setFence(ctx, r, true)
+}
+func (j *journal) setFence(ctx context.Context, r WorkspaceRequest, stop bool) (Workspace, error) {
+	tx, err := j.db.BeginTx(ctx, nil)
+	if err != nil {
+		return Workspace{}, err
+	}
+	defer tx.Rollback()
+	w, err := scanWorkspace(tx.QueryRowContext(ctx, "SELECT "+workspaceColumns+" FROM workspaces WHERE id=?", r.WorkspaceID))
+	if err != nil {
+		return Workspace{}, err
+	}
+	if err = workspaceBinding(w, r); err != nil {
+		return Workspace{}, err
+	}
+	if r.Epoch < w.Epoch || w.Released || (w.Stopped && !stop) {
+		return Workspace{}, domain.ErrFenced
+	}
+	_, err = tx.ExecContext(ctx, "UPDATE workspaces SET epoch=?,adopting=1,stopped=? WHERE id=?", r.Epoch, w.Stopped || stop, w.ID)
+	if err != nil {
+		return Workspace{}, err
+	}
+	if err = tx.Commit(); err != nil {
+		return Workspace{}, err
+	}
+	w.Epoch, w.Adopting, w.Stopped = r.Epoch, true, w.Stopped || stop
+	return w, nil
+}
+func (j *journal) completeAdoption(ctx context.Context, r WorkspaceRequest) (Workspace, error) {
+	result, err := j.db.ExecContext(ctx, "UPDATE workspaces SET adopting=0 WHERE id=? AND epoch=? AND active_operation='' AND stopped=0 AND released=0", r.WorkspaceID, r.Epoch)
+	if err != nil {
+		return Workspace{}, err
+	}
+	n, _ := result.RowsAffected()
+	if n != 1 {
+		return Workspace{}, domain.ErrReconciliation
+	}
+	return j.workspace(ctx, r.WorkspaceID)
+}
+
+func (j *journal) pinArtifact(ctx context.Context, ref artifact.Ref) error {
+	if ref.ObjectKey == "" || ref.SHA256 == "" {
+		return domain.ErrInvalid
+	}
+	raw, err := json.Marshal(ref)
+	if err != nil {
+		return err
+	}
+	_, err = j.db.ExecContext(ctx, `INSERT INTO runner_artifacts(object_key,ref_json)VALUES(?,?) ON CONFLICT(object_key)DO NOTHING`, ref.ObjectKey, string(raw))
+	if err != nil {
+		return err
+	}
+	var existing string
+	if err = j.db.QueryRowContext(ctx, `SELECT ref_json FROM runner_artifacts WHERE object_key=?`, ref.ObjectKey).Scan(&existing); err != nil {
+		return err
+	}
+	var pinned artifact.Ref
+	if err = json.Unmarshal([]byte(existing), &pinned); err != nil {
+		return domain.ErrConflict
+	}
+	// Kind describes the caller's use; the content-addressed object identity is
+	// tenant/run/key/hash/size. Identical bytes may safely serve multiple kinds.
+	pinned.Kind = ref.Kind
+	if pinned != ref {
+		return domain.ErrConflict
+	}
+	return nil
+}

@@ -1,0 +1,74 @@
+"""Archive historical evidence only; no live-resource or credential access."""
+from pathlib import Path
+import collections,datetime,gzip,hashlib,io,json,re,shutil,tarfile
+R=Path('/home/postedism/Desktop/mini claude code/forge-runtime')
+W=R/'var/local/feature-worktrees/progress'
+E=R/'var/lifecycle-rehearsals/lr20260912_a/evidence'
+D=W/'benchmarks/results/strict-logs-third-failure-20260912'
+T=Path('/tmp/forge-logs03-l4-diagnosis')
+D.mkdir(parents=True,exist_ok=False)
+sha=lambda b:hashlib.sha256(b).hexdigest()
+encode=lambda v:(json.dumps(v,indent=2,sort_keys=True)+'\n').encode()
+files=[];counts=collections.Counter();env_names=set();nonjson=[];original_manifests={}
+PROJECTIONS={'logs-03/L1/fixture.json','logs-03/L4/fixture.json'}
+def scan(v,path,depth=0):
+ if depth>80:raise AssertionError('excessive JSON depth')
+ if isinstance(v,dict):
+  for k,x in v.items():
+   if k.lower() in {'password','pgpassword','api_key','access_token','refresh_token','client_secret','authorization','private_key','worker_config_sha256','signing_key_sha256','database_dsn','worker_dsn'}:
+    assert x in ('',None,{},[]),('unexpected sensitive value',path,k)
+   if k=='grant':
+    assert x in ('',None,{}),('nonempty grant',path)
+    counts['empty_grants_verified']+=1
+   if k=='Env' and isinstance(x,list):
+    for item in x:
+     name=item.partition('=')[0];assert name in {'PATH','LANG','GPG_KEY','PYTHON_VERSION','PYTHON_SHA256'},('unexpected Docker environment',path,name)
+     env_names.add(name)
+   scan(x,path,depth+1)
+ elif isinstance(v,list):
+  for x in v:scan(x,path,depth+1)
+ elif isinstance(v,str) and len(v)>1 and v[0] in '[{':
+  try:embedded=json.loads(v)
+  except ValueError:pass
+  else:scan(embedded,path,depth+1)
+def byte_scan(data,path):
+ # No values are printed on rejection. Public Docker image GPG fingerprint and SHA are not credentials.
+ for pat in [rb'(?:postgres(?:ql)?|https?)://[^\s/"<>]+:[^\s/@"<>]+@',rb'Bearer\s+[A-Za-z0-9._~-]{16,}',rb'-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----',rb'\bsk-[A-Za-z0-9_-]{20,}']:
+  assert re.search(pat,data) is None,('credential-shaped content',path)
+ try:v=json.loads(data)
+ except (ValueError,UnicodeError):
+  if path.endswith('.json'):nonjson.append(path)
+ else:scan(v,path)
+for sub,expected in [('logs-03',602),('logs-03-retained-observation',6)]:
+ p=E/sub/'manifest.json';m=json.loads(p.read_bytes());assert len(m)==expected
+ actual={str(q.relative_to(E/sub)) for q in (E/sub).rglob('*') if q.is_file()}
+ assert actual==set(m)|{'manifest.json'}
+ for n,h in m.items():assert sha((E/sub/n).read_bytes())==h,(sub,n)
+ original_manifests[sub]={'members':len(m),'sha256':sha(p.read_bytes()),'all_source_hashes_recomputed':True}
+paths=sorted(p for sub in ['logs-03','host-logs-03','logs-03-retained-observation'] for p in (E/sub).rglob('*') if p.is_file())
+with (D/'raw-evidence.tar.gz').open('xb') as f:
+ with gzip.GzipFile(filename='',mode='wb',fileobj=f,mtime=0,compresslevel=6) as gz:
+  with tarfile.open(fileobj=gz,mode='w|',format=tarfile.PAX_FORMAT) as tf:
+   for p in paths:
+    assert p.is_file() and not p.is_symlink()
+    rel=str(p.relative_to(E));original=p.read_bytes();data=original;projection=None
+    if rel in PROJECTIONS:
+     value=json.loads(data);assert 'worker_config_sha256' in value;value.pop('worker_config_sha256')
+     projection={'reason':'Exclude the digest of a private worker configuration; no credential or private configuration file was read or hashed by the archivist.','removed_fields':['worker_config_sha256'],'original_file_sha256':sha(original)}
+     value['_archive_projection']=projection;data=encode(value)
+    byte_scan(data,rel)
+    member='raw/'+rel;info=tarfile.TarInfo(member);info.size=len(data);info.mode=0o644;info.uid=info.gid=info.mtime=0
+    tf.addfile(info,io.BytesIO(data))
+    files.append({'source_path':str(p),'source_sha256':sha(original),'source_bytes':len(original),'archived_member':member,'archived_sha256':sha(data),'archived_bytes':len(data),'projection':projection})
+    counts['raw_members']+=1;counts['source_bytes']+=len(original)
+    counts['projected_members' if projection else 'byte_identical_members']+=1
+for name in sorted(p.name for p in T.iterdir() if p.is_file()):
+ if name in {'audit.py','report.json'} or name.endswith('.txt'):
+  p=T/name;dest={'audit.py':'initial-audit.py.txt','report.json':'initial-static-review.json'}.get(name,name)
+  data=p.read_bytes();byte_scan(data,dest);(D/dest).write_bytes(data)
+  files.append({'source_path':str(p),'source_sha256':sha(data),'source_bytes':len(data),'archived_file':dest,'archived_sha256':sha(data),'archived_bytes':len(data),'projection':None})
+report={'archive_created_at':datetime.datetime.now(datetime.timezone.utc).isoformat(),'scope':'Historical logs03 failure and the exact later read-only retained-L4 observation. No live DB, Docker, services, runtime configuration, credentials or provider calls.','counts':dict(counts),'original_manifests':original_manifests,'projection_members':sorted(PROJECTIONS),'docker_environment_names':sorted(env_names),'credential_shape_scan_passed':True,'structured_sensitive_value_scan_passed':True,'binary_artifacts_with_json_extension':nonjson,'limits':['Conservative syntactic and structural scan; not a mathematical guarantee that arbitrary bytes cannot encode secrets. Actual private configuration/key/DSN files were excluded without being opened.','Two fixture digests are explicitly projected. The enclosing original fixture file hashes remain available to bind original manifests.','Original 602- and 6-member manifest bytes remain unchanged.']}
+(D/'secret-scan.json').write_bytes(encode(report))
+index={'version':1,'tar_sha256':sha((D/'raw-evidence.tar.gz').read_bytes()),'tar_bytes':(D/'raw-evidence.tar.gz').stat().st_size,'original_manifests':original_manifests,'files':files}
+(D/'archive-manifest.json').write_bytes(encode(index))
+print(json.dumps({'archive':str(D),'tar_sha256':index['tar_sha256'],'tar_bytes':index['tar_bytes'],'counts':dict(counts)},sort_keys=True))

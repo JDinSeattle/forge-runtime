@@ -1,0 +1,54 @@
+"""Read-only capture of the exact logs03 L4 failure; no reconciliation or cleanup."""
+import fcntl,hashlib,importlib.util,json,os,sqlite3,stat,subprocess,sys
+from pathlib import Path
+sys.dont_write_bytecode=True
+R=Path('/home/postedism/Desktop/mini claude code/forge-runtime')
+S=R/'var/lifecycle-rehearsals/lr20260912_a'
+W=R/'var/local/feature-worktrees/logs/scripts/evaluation/isolated_state.py'
+spec=importlib.util.spec_from_file_location('l4_readonly_state',W);m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
+run='run_DKT2OOLEVCKYXHW5NGNS7BKBHJ';op=run+'_step_1_op_0'
+sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
+lockfd=os.open(S/'runtime/.sigterm-control.lock',os.O_RDONLY|os.O_NOFOLLOW)
+with os.fdopen(lockfd,'rb') as lock:
+ st=os.fstat(lock.fileno());assert stat.S_ISREG(st.st_mode) and st.st_uid==os.getuid()==1000 and st.st_nlink==1 and stat.S_IMODE(st.st_mode)==0o600
+ fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
+ out=S/'evidence/logs-03-retained-observation';assert not os.path.lexists(out)
+ pressure=json.loads((S/'evidence/logs-03/L4-pressure.json').read_bytes())
+ path=Path(pressure['path'])
+ assert path==S/'pool-root/var/workspace-storage/mounts/slot-001'/('workspace-'+run)/'strict-logs-enospc-pressure'
+ st=path.lstat();assert stat.S_ISREG(st.st_mode) and st.st_ino==pressure['inode'] and st.st_dev==pressure['device'] and st.st_uid==1000 and st.st_nlink==1
+ fs=os.statvfs(path)
+ files={}
+ for name in (op+'.spool',op+'.spool.meta',op+'.spool.meta.tmp'):
+  p=path.parent/'logs'/name
+  if not os.path.lexists(p):continue
+  s=p.lstat();assert stat.S_ISREG(s.st_mode) and s.st_nlink==1 and s.st_size<2<<20
+  files[name]={'path':str(p),'bytes':s.st_size,'allocated':s.st_blocks*512,'inode':s.st_ino,'device':s.st_dev,'sha256':sha(p)}
+ db=sqlite3.connect((S/'runtime/journal.sqlite').as_uri()+'?mode=ro',uri=True,timeout=3);db.row_factory=sqlite3.Row;db.execute('PRAGMA query_only=ON');db.execute('BEGIN')
+ journal={'identity':db.execute('SELECT id FROM journal_identity WHERE singleton=1').fetchone()[0],'version':db.execute('PRAGMA user_version').fetchone()[0],'tables':{}}
+ for table in ('volume_slots','volume_leases','workspaces','operations','operation_logs','log_runs','runner_artifacts'):
+  rows=[{k:(v.decode() if isinstance(v,bytes) else v) for k,v in dict(row).items()} for row in db.execute('SELECT * FROM '+table)]
+  if table=='operations':
+   for row in rows:
+    req=json.loads(row['request_json']);req.pop('grant',None);row['request_json']=json.dumps(req,sort_keys=True,separators=(',',':'))
+  journal['tables'][table]=rows
+ db.close()
+ record=next(x for x in journal['tables']['operations'] if x['id']==op)
+ lr=next(x for x in journal['tables']['operation_logs'] if x['operation_id']==op)
+ cid=lr['container_id'];assert len(cid)==64 and all(c in '0123456789abcdef' for c in cid)
+ result=subprocess.run(['/usr/bin/docker','--host','unix:///run/user/1000/forge-runtime-docker.sock','inspect',cid],env={'PATH':'/usr/bin:/bin','LC_ALL':'C','XDG_RUNTIME_DIR':'/run/user/1000'},capture_output=True,timeout=20)
+ assert result.returncode==0
+ docker=json.loads(result.stdout);assert len(docker)==1 and docker[0]['Id']==cid
+ fixture=json.loads((S/'evidence/logs-03/L4/fixture.json').read_bytes());assert fixture['run_id']==run
+ schema=json.loads((S/'evidence/logs-03/private-schema.json').read_bytes())['schema']
+ env,_=m.admin_environment(R);pg=m.sql_json(m.QUERIES,env,schema);del env
+ unit='forge-lifecycle-lr20260912_a-logs-d35cd3fbd8c182db.service';state=m.unit_state(unit)
+ assert state.get('LoadState')=='not-found' and state.get('MainPID')=='0'
+ out.mkdir(mode=0o700);fd=os.open(out.parent,os.O_RDONLY|os.O_DIRECTORY);os.fsync(fd);os.close(fd)
+ m.c.save(out/'journal.json',journal);m.c.save(out/'postgres.json',pg);m.c.save(out/'docker-inspect.json',docker)
+ for name,desc in files.items():
+  raw=Path(desc['path']).read_bytes();fd=os.open(out/name,os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o600)
+  with os.fdopen(fd,'wb') as f:f.write(raw);f.flush();os.fsync(f.fileno())
+ m.c.save(out/'report.json',{'observed_at':m.c.now(),'scope':'Read-only exact retained L4 SQLite/PG/container/pressure and log bytes; no Inspect RPC, Cancel, runner, worker, release or file removal. Operation grants omitted from journal projection.','unit':unit,'unit_state':state,'run_id':run,'operation_id':op,'container_id':cid,'docker_state':docker[0]['State'],'operation_status':record['status'],'operation_error':record['error'],'pressure':{'path':str(path),'inode':st.st_ino,'device':st.st_dev,'uid':st.st_uid,'bytes':st.st_size,'allocated_bytes':st.st_blocks*512,'free_bytes':fs.f_bfree*fs.f_frsize,'available_bytes':fs.f_bavail*fs.f_frsize},'files':files,'source_hashes':{str(Path(__file__)):sha(Path(__file__)),str(W):sha(W)}})
+ m.c.save(out/'manifest.json',{p.name:sha(p) for p in out.iterdir()})
+ print(json.dumps({'evidence':str(out),'operation_status':record['status'],'operation_error':record['error'],'container_running':docker[0]['State']['Running'],'container_exit_code':docker[0]['State']['ExitCode'],'spool_files':files,'available_bytes':fs.f_bavail*fs.f_frsize}))

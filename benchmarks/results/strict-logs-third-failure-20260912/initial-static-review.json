@@ -1,0 +1,114 @@
+{
+  "all_manifest_hashes_match": true,
+  "audited_at": "2026-09-12T18:34:21.984578+00:00",
+  "checked_conditions": 616,
+  "composition_scope": {
+    "current_harness_all_six_pass_contract": true,
+    "eligible_after_targeted_L4": "Keep logs03 overallfalse. A separately frozen completeactual L4 recovery/publication/release+health case can be explicitly composed with these5 preserved cases if production/defaultpolicy/identitycompatibility is audited. Do not relabeloldaggregatePASS.",
+    "note": "Existing authoredopen-acceptance wording says a newfullattempt. If switching to composedevidence, explain that methodchange transparently; originalbehavior scope remains unchanged. No claim thatcurrentpartialL4 closesS12.",
+    "original_source": "../SDE_IMPLEMENTATION_PLAN.md:301; lines352-367",
+    "single_all_six_run_required_by_original_spec": false
+  },
+  "findings": [
+    {
+      "classification": "Concrete insufficient-pressure fixture oracle; no production failure established by this timeout.",
+      "confirmation_missing": "Current/post-run spool bytes, validprefix/meta and originaloperation/container state needed to verify the expected no-spool-error execution path.",
+      "finding": "The fixture treats first1MiB pressure-write ENOSPC as proof that smaller future spool writes will fail. Recorded statfs contradicts that precondition:430080B remain available, well above finite planned payload/ordinary encoding. The initial8s sleep also consumes most12s observer window.",
+      "location": "scripts/faults/application/strict_logs_combined_test.go:pressure",
+      "priority": "P2"
+    },
+    {
+      "finding": "Sink error is initially in memory, triggers kill/inspect/drain, then Finish/sidecar. SQLite updates only after backend return. Fullvolume may replace original sink errno with sidecar.meta.tmp ENOSPC; Engine error branch does not persist returned job.Log. Generic operations.error ENOSPC alone is not an exact originalspool syscall witness.",
+      "location": "internal/sandbox/docker_attach.go:startCaptured and internal/runner/engine.go:execute",
+      "priority": "observation limitation"
+    }
+  ],
+  "manifest_bytes": 498165314,
+  "manifest_members": 602,
+  "minimal_fixture_correction": [
+    "Keep same profile/defaultlogpolicy/pool. After largepressure writes fail, consume tail using smaller writes under a fixed byte/time bound, with final Sync and FD identity/statfs; stop only once samepressureFD small write also returnsENOSPC.",
+    "Do not equate pressure errno orBavail0 alone with acceptance: retain actualspool validprefix/torn tail, independent prematurecontainer stop whileworkerpaused, cancel/OOM/deadline exclusions, originaloperation/epoch and durableerror.",
+    "Preserve captured lease/pause watchdog. Bounds must include output starting, kill/drain/Finish and observation; do not relax originalactualIOfailure condition merely to pass.",
+    "Confirm oldtarget and unknown effects safely before pressure removal/slot reuse. Keep originallogs03/failedL4 evidence; no destructive action by reviewer."
+  ],
+  "not_completed": "L4",
+  "original_suite_passed": false,
+  "passed_cases": [
+    "L1",
+    "L2-L3-default",
+    "L3-bytes",
+    "L3-count",
+    "L5"
+  ],
+  "pause": {
+    "lease_remaining_at_resume_seconds": 17.042176,
+    "seconds": 12.380968,
+    "watchdog": false
+  },
+  "pressure_observed": {
+    "allocated_bytes": 228593664,
+    "available_bytes": 430080,
+    "bavail_blocks": 105,
+    "block_bytes": 4096,
+    "device": 1802,
+    "errno": "ENOSPC",
+    "inode": 26,
+    "path": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/pool-root/var/workspace-storage/mounts/slot-001/workspace-run_DKT2OOLEVCKYXHW5NGNS7BKBHJ/strict-logs-enospc-pressure",
+    "reported_at": "2026-09-12T18:24:17.664428967Z",
+    "write_size_bytes": 1048576,
+    "written_bytes": 228589568
+  },
+  "program": {
+    "encoded_bytes_if_one_frame_per_write": 96086,
+    "encoding_note": "Docker multiplexing/chunk grouping can change frame count; this is the ordinary per-write framing comparison, not a universal kernel allocation guarantee.",
+    "initial_frames": 2,
+    "initial_payload_per_stream": [
+      11,
+      11
+    ],
+    "initial_spool_bytes": 86,
+    "iteration_sleep_seconds": 0.05,
+    "iterations": 300,
+    "per_iteration_payload": 256,
+    "planned_total_payload": 76822,
+    "sleep_seconds": 8
+  },
+  "raw_hashes": {
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/host-logs-03/execution.log": "1376448809423b086d6d3bd7abe3e548b8f65512346bd0baaaab3c9a8429c9de",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/host-logs-03/result.json": "698d2ede877825cb39d2c6834a5f2428562eed2df08c0a00e10d62867ac3954d",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/logs-03/L4-before-pressure-journal.json": "4813daadb374ab355a407eb3dd776c85c475b97ecee1e8233f5f27289701eeb3",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/logs-03/L4-before-pressure.spool": "417dabef6eab6db1b133e9e3b09d9270cff46cbdb38046a7310f41a78bb6d8ee",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/logs-03/L4-pressure.json": "e2fe0b82fd1220164263be77b2eb14f1fda3b34cb881a9f47574a155b968e9c4",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/logs-03/L4-worker-pause.json": "84973521160a8b6bbc89d68fd39d2a6976dd8ab7b8680c93571130f8bc8ccf50",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/logs-03/L4-worker-paused.json": "90c4b05a0cc48fee7234b017780d73f86944a3eed6740c47786af49666535293",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/logs-03/acceptance.json": "8319cefe795b6b1429bf15381617dc50143393eba50b2c63960042a8b7b677f6",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/logs-03/manifest.json": "8781bba443e5a83da96cb077eb18223facfeee3469de0b23fce6c37529eef97c"
+  },
+  "raw_manifest_sha256": "8781bba443e5a83da96cb077eb18223facfeee3469de0b23fce6c37529eef97c",
+  "remaining_live_readonly_requests": [
+    "Samecontrol scope: exact targetoperation/workspace/logrun/logcontainer/leases/pins, actualprivaterun/effects/attempts/resources/events snapshots; do not Invoke InspectOperation or startworker.",
+    "Exact storedcontainer ID inspect only: running/exit/OOM/started/finished/identity; identify whether it ended afterrunnerSIGTERM.",
+    "Pressure FD/file identity/statfs; copy ownspool and sidecars (including anytmp) withtimes/size/hash and parse verifiedprefix before anypressureunlink.",
+    "Exactown runner/worker/serviceexitstate."
+  ],
+  "review_scope": "Historical rawfiles and Git source only. No live SQLite/PostgreSQL/Docker/process/credential/provider action.",
+  "run": {
+    "container_id": "483c36964c0d87a9b94af7ae44f7a3ac4a1d54191afba1deddb2e6d1515c7bf4",
+    "deadline": "2026-09-12T18:28:15.823102Z",
+    "epoch": 2,
+    "id": "run_DKT2OOLEVCKYXHW5NGNS7BKBHJ",
+    "operation": "run_DKT2OOLEVCKYXHW5NGNS7BKBHJ_step_1_op_0",
+    "tenant": "sl-L4-xsra53ckdacsus345hmddtehsj"
+  },
+  "source_revision": "bdff9b1b511ae1c38327b8441ac973bb4db262e2",
+  "source_sha256": {
+    "internal/runner/engine.go": "0075fb5540cf700dea321910b807b241e99e1fc33118f832cf757cad33b733c4",
+    "internal/runner/journal.go": "559ff6d2b65b63b670e0d27736f8f203a5a09fde3004a4d48bbc3a516610f97f",
+    "internal/runner/log_capture.go": "3b7c93353804d757d5bece4531363045c521a5f9c52f561b45214f574d1cfdcc",
+    "internal/runner/log_publication.go": "81e9f4cbd72970bd7dc22b7b0879ae709c91df4c3436b765bd3e549930e38ef0",
+    "internal/sandbox/docker.go": "2ceeccd49c93d9a7502fa99fe3d25ca9d67c39a975a2f05d4187222cbfd7831f",
+    "internal/sandbox/docker_attach.go": "267e80742e8d636fb7ffa48feaaf1144dfe1b6ce8fcf42fb08ef3bb60fa4983b",
+    "scripts/faults/application/strict_logs_combined_test.go": "03239b78c0fac5dec7c0a6a6065eefe0001aa24121fcdd6efd41e3da72e0797f"
+  },
+  "test_seconds": 77.14
+}
