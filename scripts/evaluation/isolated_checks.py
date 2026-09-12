@@ -82,6 +82,17 @@ def authority(root):
  if root/'source'!=common.REPO or Path(__file__).absolute()!=root/'source/scripts/evaluation/isolated_checks.py':raise ValueError('execute the frozen evaluator from E/source')
  return root,scope,repo
 
+def client_transport(value,socket):
+ # ClientConfig has no JSON tags; its Go marshal keys are PascalCase. Nested
+ # TLSFiles and the independent runner ServerConfig retain snake_case tags.
+ fields={'UnixSocket','TCPAddress','TLS','MaxMessageBytes','RPCTimeout','ReconcileTimeout'}
+ if not isinstance(value,dict) or set(value)-fields or value.get('UnixSocket')!=socket:return False
+ if type(value.get('TCPAddress','')) is not str or value.get('TCPAddress','')!='':return False
+ for key in ('MaxMessageBytes','RPCTimeout','ReconcileTimeout'):
+  if type(value.get(key,0)) is not int or value.get(key,0)!=0:return False
+ tls=value.get('TLS',{})
+ return isinstance(tls,dict) and not set(tls)-{'cert_file','key_file','ca_file','expected_peer_uri','server_name'} and all(type(v) is str and v=='' for v in tls.values())
+
 def policy(platform,runner,registration,scope):
  if registration['provider']!='deepseek' or registration['model_id']!='deepseek-v4-flash' or registration['total_budget_microusd']!=2000000 or registration['task_budgets_microusd']!={k:500000 for k in common.CASES}:raise ValueError('fixed selected alias and four $0.50 allocations required')
  if (registration['max_model_rounds'],registration['max_tool_calls'],registration['max_runtime_seconds'])!=(20,64,600):raise ValueError('fixed run bounds required')
@@ -102,13 +113,13 @@ def policy(platform,runner,registration,scope):
  run={'provider':'deepseek','model':'deepseek-v4-flash','max_model_rounds':20,'max_tool_calls':64,'max_cost_microusd':500000,'max_runtime_seconds':600}
  if platform['configs']!={registration['config_id']:run} or platform['models']!={'deepseek/deepseek-v4-flash':registration['model_spec']} or platform['providers']!={'deepseek':{'deepseek-v4-flash':registration['capabilities']}} or platform.get('fake_scripts') or platform['worker_slots']!=1:raise ValueError('platform routes, limits or worker concurrency changed')
  transport=platform['runner']
- if set(transport)-{'unix_socket','tls'} or any(transport.get('tls',{}).values()) or platform['runner_id']!='application-fault-runner' or transport.get('unix_socket')!=runner['server']['unix_socket'] or platform['artifact_root']!=runner['artifact_root'] or platform['signing_key_file']!=runner['signing_key_file']:raise ValueError('platform must retain exact existing runner authority')
+ if not client_transport(transport,runner['server']['unix_socket']) or platform['runner_id']!='application-fault-runner' or platform['artifact_root']!=runner['artifact_root'] or platform['signing_key_file']!=runner['signing_key_file']:raise ValueError('platform must retain exact existing runner authority')
  if platform.get('telemetry') or platform.get('otlp_endpoint'):raise ValueError('external telemetry configuration forbidden')
  return original
 
 def provision_binding(root,provision,registration,platform):
  expected_hashes={name+'.json':sha(root/'candidate'/(name+'.json')) for name in ('candidate','platform','runner','registration')}
- expected={'phase':'ready','purpose':'deepseek-eval-v2-provision','schema_version':1,'candidate_dir':str(root/'candidate'),'candidate_hashes':expected_hashes,'provider':'deepseek','model':'deepseek-v4-flash','config_id':registration['config_id'],'credential_group':registration['model_spec']['credential_group'],'price_version':registration['model_spec']['price_version'],'exact_pricing':False,'batch_id':'deepseek-flash-2usd-'+expected_hashes['registration.json'],'budget':{'total_microusd':2000000,'task_budgets_microusd':{k:500000 for k in common.CASES}},'runner_slots':4,'worker_slots':1,'runner_id':platform['runner_id'],'runner_endpoint':'unix://'+platform['runner']['unix_socket'],'api_url':'http://'+platform['listen']}
+ expected={'phase':'ready','purpose':'deepseek-eval-v2-provision','schema_version':1,'candidate_dir':str(root/'candidate'),'candidate_hashes':expected_hashes,'provider':'deepseek','model':'deepseek-v4-flash','config_id':registration['config_id'],'credential_group':registration['model_spec']['credential_group'],'price_version':registration['model_spec']['price_version'],'exact_pricing':False,'batch_id':'deepseek-flash-2usd-'+expected_hashes['registration.json'],'budget':{'total_microusd':2000000,'task_budgets_microusd':{k:500000 for k in common.CASES}},'runner_slots':4,'worker_slots':1,'runner_id':platform['runner_id'],'runner_endpoint':'unix://'+platform['runner']['UnixSocket'],'api_url':'http://'+platform['listen']}
  if any(provision.get(k)!=v or type(provision.get(k)) is not type(v) for k,v in expected.items()):raise ValueError('provisioned candidate/batch/config identity differs from current closed inputs')
 
 FAILED_SECOND_MANIFEST_SHA='fb68b27b8a05a22f7c572d64788b044f81fdc4111c3c07a0dda9a724d1842da2'

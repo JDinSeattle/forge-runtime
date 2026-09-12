@@ -42,7 +42,7 @@ class IsolatedTests(unittest.TestCase):
  def test_exact_profile_reconstruction_and_authority(self):
   scope=Path('/dedicated/var/lifecycle-rehearsals/lr20260912_a');runner={'sources':{},'profiles':{},'allow_test_backend':False,'logs':{'entry_bytes':16384,'operation_bytes':524288,'run_bytes':16777216,'max_operations':32,'preview_bytes':65536},'server':{'unix_socket':'/tmp/dedicated.sock'},'artifact_root':str(scope/'runtime/artifacts'),'signing_key_file':str(scope/'runtime/runner.key')}
   registration={'provider':'deepseek','model_id':'deepseek-v4-flash','total_budget_microusd':2000000,'task_budgets_microusd':{x:500000 for x in c.common.CASES},'max_model_rounds':20,'max_tool_calls':64,'max_runtime_seconds':600,'model_spec':{'exact_pricing':False,'credential_group':'deepseek-flash-evalv2','price_version':'deepseek-flash-peak-ceiling-20260912'},'capabilities':{'tool_calling':True},'config_id':'eval-config'}
-  platform={'sources':{},'configs':{'eval-config':{'provider':'deepseek','model':'deepseek-v4-flash','max_model_rounds':20,'max_tool_calls':64,'max_cost_microusd':500000,'max_runtime_seconds':600}},'models':{'deepseek/deepseek-v4-flash':registration['model_spec']},'providers':{'deepseek':{'deepseek-v4-flash':registration['capabilities']}},'worker_slots':1,'runner_id':'application-fault-runner','runner':{'unix_socket':'/tmp/dedicated.sock','tls':{'cert_file':'','key_file':'','ca_file':'','expected_peer_uri':''}},'artifact_root':runner['artifact_root'],'signing_key_file':runner['signing_key_file']}
+  platform={'sources':{},'configs':{'eval-config':{'provider':'deepseek','model':'deepseek-v4-flash','max_model_rounds':20,'max_tool_calls':64,'max_cost_microusd':500000,'max_runtime_seconds':600}},'models':{'deepseek/deepseek-v4-flash':registration['model_spec']},'providers':{'deepseek':{'deepseek-v4-flash':registration['capabilities']}},'worker_slots':1,'runner_id':'application-fault-runner','runner':{'UnixSocket':'/tmp/dedicated.sock','TCPAddress':'','TLS':{'cert_file':'','key_file':'','ca_file':'','expected_peer_uri':''},'MaxMessageBytes':0,'RPCTimeout':0,'ReconcileTimeout':0},'artifact_root':runner['artifact_root'],'signing_key_file':runner['signing_key_file']}
   for case in c.common.CASES:
    identity=c.common.SOURCE_PREFIX+case;source=str(c.common.CORPUS/case/'source');runner['sources'][identity]=source;platform['sources'][identity]={'path':source,'hash':'a'*64,'profile_id':identity,'has_target':True}
    runner['profiles'][identity]={'id':identity,'image':c.PYTHON_IMAGE if case.startswith('py-') else c.GO_IMAGE,'verify_command':c.common.grade_command(case,'regression'),'target_command':c.common.grade_command(case,'target'),'tmpfs_executable':case.startswith('go-'),'trusted_tests_dir':str(c.common.CORPUS/'graders'),'memory_bytes':256<<20,'workspace_quota_bytes':256<<20,'cpus':1,'pids':64,'user':'1000:1000'}
@@ -50,10 +50,20 @@ class IsolatedTests(unittest.TestCase):
   with patch.object(c,'read_json',return_value=original):
    c.policy(platform,runner,registration,scope)
    first=next(iter(runner['profiles']))
-   mutations=[lambda p,r:g_set(r['profiles'][first],'verify_command',['sh','-c','untrusted']),lambda p,r:g_set(r['profiles'][first],'trusted_tests_dir','/foreign'),lambda p,r:g_set(r['profiles'][first],'image','python:latest'),lambda p,r:g_set(r,'signing_key_file','/new-key'),lambda p,r:g_set(r['logs'],'run_bytes',1<<30),lambda p,r:g_set(p,'worker_slots',2),lambda p,r:g_set(p['configs']['eval-config'],'fallback',{'provider':'openai'}),lambda p,r:g_set(p['runner']['tls'],'key_file','/foreign-key')]
+   mutations=[lambda p,r:g_set(r['profiles'][first],'verify_command',['sh','-c','untrusted']),lambda p,r:g_set(r['profiles'][first],'trusted_tests_dir','/foreign'),lambda p,r:g_set(r['profiles'][first],'image','python:latest'),lambda p,r:g_set(r,'signing_key_file','/new-key'),lambda p,r:g_set(r['logs'],'run_bytes',1<<30),lambda p,r:g_set(p,'worker_slots',2),lambda p,r:g_set(p['configs']['eval-config'],'fallback',{'provider':'openai'}),lambda p,r:g_set(p['runner']['TLS'],'key_file','/foreign-key')]
    for mutate in mutations:
     p,r=copy.deepcopy(platform),copy.deepcopy(runner);mutate(p,r)
     with self.assertRaises(ValueError):c.policy(p,r,registration,scope)
+ def test_actual_go_client_transport_defaults_and_override_rejection(self):
+  full={'UnixSocket':'/tmp/runner.sock','TCPAddress':'','TLS':{'cert_file':'','key_file':'','ca_file':'','expected_peer_uri':''},'MaxMessageBytes':0,'RPCTimeout':0,'ReconcileTimeout':0}
+  self.assertTrue(c.client_transport(full,'/tmp/runner.sock'))
+  self.assertTrue(c.client_transport({'UnixSocket':'/tmp/runner.sock'},'/tmp/runner.sock'))
+  for key,value in [('TCPAddress','127.0.0.1:99'),('MaxMessageBytes',1024),('RPCTimeout',1),('ReconcileTimeout',1),('MaxMessageBytes',False),('Telemetry',None),('unix_socket','/tmp/runner.sock'),('tls',{}),('UnixSocket','/foreign.sock')]:
+   bad=copy.deepcopy(full);bad[key]=value
+   with self.subTest(key=key):self.assertFalse(c.client_transport(bad,'/tmp/runner.sock'))
+  for key,value in [('cert_file','/cert'),('key_file','/key'),('ca_file','/ca'),('expected_peer_uri','spiffe://foreign'),('server_name','remote'),('insecure',False),('ServerName','')]:
+   bad=copy.deepcopy(full);bad['TLS'][key]=value
+   with self.subTest(tls=key):self.assertFalse(c.client_transport(bad,'/tmp/runner.sock'))
  def test_existing_socket_is_never_unlinked(self):
   with tempfile.TemporaryDirectory() as tmp:
    p=Path(tmp)/'stale.sock';p.write_bytes(b'retained')
@@ -223,7 +233,7 @@ class IsolatedTests(unittest.TestCase):
    root=Path(tmp);hashes={}
    for name in ('candidate','platform','runner','registration'):
     p=self.write(root/'candidate'/(name+'.json'),{'synthetic':name});hashes[name+'.json']=c.sha(p)
-   reg={'config_id':'eval-config','model_spec':{'credential_group':'deepseek-flash-evalv2','price_version':'fixed'}};platform={'runner_id':'fixture','runner':{'unix_socket':'/retained.sock'},'listen':'127.0.0.1:18098'}
+   reg={'config_id':'eval-config','model_spec':{'credential_group':'deepseek-flash-evalv2','price_version':'fixed'}};platform={'runner_id':'fixture','runner':{'UnixSocket':'/retained.sock'},'listen':'127.0.0.1:18098'}
    report={'phase':'ready','purpose':'deepseek-eval-v2-provision','schema_version':1,'candidate_dir':str(root/'candidate'),'candidate_hashes':hashes,'provider':'deepseek','model':'deepseek-v4-flash','config_id':'eval-config','credential_group':'deepseek-flash-evalv2','price_version':'fixed','exact_pricing':False,'batch_id':'deepseek-flash-2usd-'+hashes['registration.json'],'budget':{'total_microusd':2000000,'task_budgets_microusd':{k:500000 for k in c.common.CASES}},'runner_slots':4,'worker_slots':1,'runner_id':'fixture','runner_endpoint':'unix:///retained.sock','api_url':'http://127.0.0.1:18098'}
    c.provision_binding(root,report,reg,platform)
    for key,value in (('batch_id','new-batch'),('worker_slots',2),('exact_pricing',0),('candidate_hashes',{})):
