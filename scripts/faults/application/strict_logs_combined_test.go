@@ -22,6 +22,7 @@ import (
 	"path/filepath"
 	"reflect"
 	"strings"
+	"sync"
 	"syscall"
 	"testing"
 	"time"
@@ -880,6 +881,13 @@ func (f *slFixture) pressure(path string) func() {
 	file := os.NewFile(uintptr(n), filepath.Join(dir, name))
 	var st unix.Stat_t
 	f.check(unix.Fstat(n, &st))
+	var logsDevice, checkoutDevice unix.Stat_t
+	f.check(unix.Stat(path, &logsDevice))
+	f.check(unix.Stat(filepath.Join(dir, "checkout"), &checkoutDevice))
+	if st.Dev != logsDevice.Dev || st.Dev != checkoutDevice.Dev {
+		file.Close()
+		f.t.Fatal("pressure FD/spool/checkout devices differ")
+	}
 	var before unix.Statfs_t
 	f.check(unix.Fstatfs(n, &before))
 	block := bytes.Repeat([]byte{0x5a}, 1<<20)
@@ -916,6 +924,127 @@ func (f *slFixture) pressure(path string) func() {
 		f.save("L4-pressure-removed.json", map[string]any{"at": time.Now().UTC(), "device": st.Dev, "inode": st.Ino, "only_after_confirmed_job_stop": true})
 	}
 }
+
+// The watchdog outlives fixture contexts and Fatal: it only resumes the exact
+// still-identical child. No signal is sent to a PID copied from an old report.
+type slWorkerPause struct {
+	mu       sync.Mutex
+	gate     slPauseGate
+	once     sync.Once
+	done     chan struct{}
+	timer    *time.Timer
+	deadline time.Time
+	record   map[string]any
+	resume   func(bool)
+	f        *slFixture
+}
+
+func (p *slWorkerPause) finish() {
+	p.timer.Stop()
+	p.resume(false)
+	<-p.done
+	clock := func(key string) time.Time { v, _ := p.record[key].(time.Time); return v }
+	if e := slPauseWindow(clock("db_before_pause"), clock("lease_until"), clock("stop_sent_at"), clock("stopped_confirmed_at"), clock("continued_at"), p.record["watchdog"] == true); e != nil {
+		p.record["window_error"] = e.Error()
+		p.f.t.Error(e)
+	}
+	if e := slSave(filepath.Join(p.f.dir, "L4-worker-pause.json"), p.record); e != nil {
+		p.f.t.Error(e)
+	}
+	if p.record["watchdog"] == true || p.record["resume_error"] != nil {
+		p.f.t.Error("worker pause exceeded its bound or resume identity failed")
+	}
+}
+func (p *slWorkerPause) check() {
+	select {
+	case <-p.done:
+		p.f.t.Fatal("pressure observation exceeded the paused-worker window")
+	default:
+	}
+	if !time.Now().Before(p.deadline.Add(-time.Second)) {
+		p.f.t.Fatal("insufficient paused-worker time remains")
+	}
+}
+func (f *slFixture) pauseWorker(h *harness, worker *process) *slWorkerPause {
+	var launched slProcessIdentity
+	f.check(slReadJSON(worker.log.Name()+".identity.json", &launched))
+	current, e := sigtermProcessProof(worker, f.a.WorkerSHA)
+	f.check(e)
+	var observed slProcessIdentity
+	f.check(json.Unmarshal(slJSON(current), &observed))
+	f.check(slBindProcess(launched, observed))
+	var dbNow, until time.Time
+	var owner string
+	var epoch uint64
+	f.check(h.db.Pool.QueryRow(f.ctx, `SELECT clock_timestamp(),lease_until,lease_owner,lease_epoch FROM runs WHERE tenant_id=$1 AND id=$2`, h.s.Tenant, h.s.RunID).Scan(&dbNow, &until, &owner, &epoch))
+	if owner != "sl-L4-0" || epoch == 0 || until.Sub(dbNow) < 24*time.Second {
+		f.t.Fatal("worker pause needs actual same-owner DB lease with 24 seconds remaining")
+	}
+	p := &slWorkerPause{done: make(chan struct{}), f: f, record: map[string]any{"identity": observed, "db_before_pause": dbNow, "lease_until": until, "lease_owner": owner, "lease_epoch": epoch, "watchdog_seconds": 18}}
+	p.resume = func(watchdog bool) {
+		p.once.Do(func() {
+			defer close(p.done)
+			p.mu.Lock()
+			defer p.mu.Unlock()
+			p.gate.resume()
+			p.record["watchdog"] = watchdog
+			proof, e := sigtermProcessProof(worker, f.a.WorkerSHA)
+			if e == nil {
+				var latest slProcessIdentity
+				e = json.Unmarshal(slJSON(proof), &latest)
+				if e == nil {
+					e = slBindProcess(launched, latest)
+				}
+			}
+			if e == nil {
+				e = worker.cmd.Process.Signal(syscall.SIGCONT)
+			}
+			if e != nil {
+				p.record["resume_error"] = e.Error()
+			}
+			p.record["continued_at"] = time.Now().UTC()
+		})
+	}
+	// Timer is armed before SIGSTOP so even a setup Fatal or cancellation cannot
+	// strand this child. Normal bounds are measured from the recorded signal.
+	stoppedAt := time.Now().UTC()
+	p.record["stop_sent_at"] = stoppedAt
+	p.deadline = stoppedAt.Add(18 * time.Second)
+	p.timer = time.AfterFunc(18*time.Second, func() { p.resume(true) })
+	setupComplete := false
+	defer func() {
+		if !setupComplete {
+			p.finish()
+		}
+	}()
+	// Serialize STOP with the watchdog. If CONT already won, no later STOP
+	// may strand the process after the one-shot recovery has been consumed.
+	p.mu.Lock()
+	stopErr := p.gate.stop(time.Now(), p.deadline)
+	if stopErr == nil {
+		stopErr = worker.cmd.Process.Signal(syscall.SIGSTOP)
+	}
+	p.mu.Unlock()
+	f.check(stopErr)
+	f.wait(time.Second, "actual worker stopped", func() bool {
+		raw, e := os.ReadFile(fmt.Sprintf("/proc/%d/status", worker.cmd.Process.Pid))
+		f.check(e)
+		for _, line := range strings.Split(string(raw), "\n") {
+			if strings.HasPrefix(line, "State:") {
+				return strings.Contains(line, "T (stopped)")
+			}
+		}
+		return false
+	})
+	p.mu.Lock()
+	p.record["stopped_confirmed_at"] = time.Now().UTC()
+	pausedRaw := slJSON(p.record)
+	p.mu.Unlock()
+	f.check(slWrite(filepath.Join(f.dir, "L4-worker-paused.json"), pausedRaw))
+	setupComplete = true
+	return p
+}
+
 func (f *slFixture) l4() {
 	f.startRunner("default", "")
 	h, file := f.submit("L4", slENOSPCProgram)
@@ -946,12 +1075,35 @@ func (f *slFixture) l4() {
 		f.check(slWrite(filepath.Join(f.dir, "L4-before-pressure.spool"), raw))
 		return len(cid) == 64
 	})
+	pause := f.pauseWorker(h, p)
+	defer pause.finish()
+	pause.mu.Lock()
+	pausedEpoch := pause.record["lease_epoch"]
+	pause.mu.Unlock()
+	if pausedEpoch != req.Epoch {
+		f.t.Fatal("paused worker SQL epoch differs from original operation")
+	}
 	before := f.snapshot("L4-before-pressure-journal.json")
+	pause.check()
+	lease, e := slRow(before, "volume_leases", "workspace_id", string(req.WorkspaceID))
+	f.check(e)
+	for _, v := range f.c.VolumeSlots {
+		if v.ID == lease["slot_id"] {
+			f.check(sandbox.VerifyVolume(f.ctx, v))
+			var spool, slot unix.Stat_t
+			f.check(unix.Stat(path, &spool))
+			f.check(unix.Stat(v.MountPath, &slot))
+			if spool.Dev != slot.Dev {
+				f.t.Fatal("pressure target no longer on selected fixed volume")
+			}
+		}
+	}
 	releasePressure := f.pressure(filepath.Dir(path))
 	// Read SQLite, not Inspect, while full: the observation must precede any
 	// reconciliation that could replace the original spool I/O error with a gap.
 	var failed slJournal
-	f.wait(35*time.Second, "actual spool write failure", func() bool {
+	f.wait(12*time.Second, "actual spool write failure", func() bool {
+		pause.check()
 		j, e := slJournalSnapshot(f.ctx, f.c.JournalPath)
 		f.check(e)
 		row, e := slRow(j, "operations", "id", string(h.s.TargetOp))
@@ -977,13 +1129,38 @@ func (f *slFixture) l4() {
 		}
 	}
 	f.check(slReservation(failed, req.TenantID, req.RunID, f.c.Logs, count))
-	lease, e := slRow(failed, "volume_leases", "workspace_id", string(req.WorkspaceID))
+	lease, e = slRow(failed, "volume_leases", "workspace_id", string(req.WorkspaceID))
 	f.check(e)
 	if slNum(lease["released"]) != 0 {
 		f.t.Fatal("full/unknown workspace prematurely released")
 	}
+	pause.check()
 	releasePressure()
-	op := f.settle(req)
+	// Reconcile before allowing the production worker to consume the receipt;
+	// capability expiry comes from the unchanged real DB lease, not a fake lease.
+	run := h.getRun()
+	if run.State.Lease.Epoch != req.Epoch {
+		f.t.Fatal("pressure fixture epoch changed while worker paused")
+	}
+	leaseProof, dbClock, e := h.db.LeaseProof(f.ctx, h.s.Tenant, h.s.RunID, run.State.Lease.Owner, req.Epoch)
+	f.check(e)
+	grant, e := f.signer.Sign(runner.Claims{TenantID: req.TenantID, RunID: req.RunID, WorkspaceID: req.WorkspaceID, Epoch: req.Epoch, IssuedAt: dbClock, ExpiresAt: leaseProof.Until.Add(-f.signer.Skew), Permissions: []string{"inspect"}}, leaseProof.Until)
+	f.check(e)
+	reconcileCtx, endReconcile := context.WithDeadline(f.ctx, pause.deadline.Add(-time.Second))
+	op, e := f.client.InspectOperation(reconcileCtx, runner.InspectRequest{WorkspaceRequest: runner.WorkspaceRequest{TenantID: req.TenantID, RunID: req.RunID, WorkspaceID: req.WorkspaceID, Epoch: req.Epoch, Grant: grant}, OperationID: req.OperationID})
+	endReconcile()
+	f.check(e)
+	if !op.Status.Terminal() {
+		f.t.Fatal("ENOSPC same-epoch recovery unresolved")
+	}
+	pause.check()
+	pause.timer.Stop()
+	pause.resume(false)
+	<-pause.done
+	if pause.record["watchdog"] == true || pause.record["resume_error"] != nil {
+		f.t.Fatal("pressure fixture worker continuation failed")
+	}
+
 	parsed := f.captureOperation("L4-recovered", req, op)
 	var job sandbox.Job
 	f.check(json.Unmarshal(op.Result, &job))
@@ -1092,24 +1269,45 @@ func (f *slFixture) l5() {
 	if counts["create"] != 1 || counts["start"] != 1 || counts["die"] != 1 {
 		f.t.Fatal("E50 unique actual lifecycle not proven", counts)
 	}
-	for _, label := range []string{"worker-original", "runner-original", "worker-successor", "runner-successor"} {
-		var signal map[string]any
-		f.check(slReadJSON(filepath.Join(dir, label+"-signal.json"), &signal))
-		expected := f.a.WorkerSHA
-		if strings.HasPrefix(label, "runner") {
-			expected = f.a.RunnerSHA
-		}
-		if slNum(signal["exit_code"]) != 0 || slNum(signal["pid"]) <= 0 || signal["exe_sha256"] != expected || signal["proc_start_ticks"] == "" {
-			f.t.Fatal("E50 signal/executable identity differs", label)
-		}
-		sent, e := time.Parse(time.RFC3339Nano, fmt.Sprint(signal["signal_sent_at"]))
+	signals := map[string]slSignalRecord{}
+	for _, spec := range []struct {
+		label, launchName, path, hash string
+		args                          []string
+	}{
+		{"worker-original", "lifecycle-original", f.a.WorkerBinary, f.a.WorkerSHA, []string{f.a.WorkerBinary, "-config", filepath.Join(f.a.ScopeRoot, "runtime", "sigterm-private", "worker.json"), "-id", "lifecycle-original"}},
+		{"runner-original", "runner-original", f.a.RunnerBinary, f.a.RunnerSHA, []string{f.a.RunnerBinary, "-config", f.a.RunnerConfig}},
+		{"worker-successor", "lifecycle-successor", f.a.WorkerBinary, f.a.WorkerSHA, []string{f.a.WorkerBinary, "-config", filepath.Join(f.a.ScopeRoot, "runtime", "sigterm-private", "worker.json"), "-id", "lifecycle-successor"}},
+		{"runner-successor", "runner-successor", f.a.RunnerBinary, f.a.RunnerSHA, []string{f.a.RunnerBinary, "-config", f.a.RunnerConfig}},
+	} {
+		launchRaw, e := slRead(filepath.Join(dir, spec.launchName+".log.identity.json"), 64<<10)
 		f.check(e)
-		exited, e := time.Parse(time.RFC3339Nano, fmt.Sprint(signal["exited_at"]))
+		signalRaw, e := slRead(filepath.Join(dir, spec.label+"-signal.json"), 64<<10)
 		f.check(e)
-		if !exited.After(sent) || exited.Sub(sent) > 8*time.Second {
-			f.t.Fatal("E50 bounded exit ordering differs")
-		}
+		signal, e := slAuditSignal(launchRaw, signalRaw, spec.path, spec.hash, spec.args)
+		f.check(e)
+		signals[spec.label] = signal
 	}
+	for _, pair := range []struct{ label, clock, summary string }{{"worker-original", "after-worker-sigterm", "worker_signal"}, {"runner-original", "after-runner-sigterm", "runner_signal"}} {
+		clockRaw, e := slRead(filepath.Join(dir, pair.clock+"-clock.json"), 1024)
+		f.check(e)
+		dockerRaw, e := slRead(filepath.Join(dir, pair.clock+"-docker.json"), 1<<20)
+		f.check(e)
+		f.check(slAuditAfterSignal(signals[pair.label], clockRaw, dockerRaw, cid, op.JobID))
+		f.check(slAuditSignalSummary(signals[pair.label], accepted[pair.summary]))
+	}
+	var cleanupCapture map[string]json.RawMessage
+	f.check(slReadJSON(filepath.Join(dir, "cleanup-released-postgres.json"), &cleanupCapture))
+	var cleanupRows []struct {
+		Tenant     domain.ID `json:"tenant_id"`
+		Run        domain.ID `json:"run_id"`
+		Phase      string    `json:"phase"`
+		ReleasedAt time.Time `json:"released_at"`
+	}
+	f.check(json.Unmarshal(cleanupCapture["workspace_cleanup"], &cleanupRows))
+	if len(cleanupRows) != 1 || cleanupRows[0].Tenant != op.Request.TenantID || cleanupRows[0].Run != op.Request.RunID || cleanupRows[0].Phase != "released" || cleanupRows[0].ReleasedAt.IsZero() || cleanupRows[0].ReleasedAt.Before(signals["worker-successor"].ExitedAt) || signals["runner-successor"].DBBefore.Before(cleanupRows[0].ReleasedAt) {
+		f.t.Fatal("successor exits not bound around actual released cleanup")
+	}
+	f.save("L5-signal-audit.json", signals)
 	var oldUntil, claimed time.Time
 	f.check(json.Unmarshal(accepted["old_lease_until"], &oldUntil))
 	f.check(json.Unmarshal(accepted["successor_claim_db_time"], &claimed))
@@ -1148,6 +1346,24 @@ func (f *slFixture) l5() {
 	if confirmations != 1 || allocations != 0 {
 		f.t.Fatal("E50 current effect/capacity authority differs")
 	}
+	rows, e := db.Pool.Query(f.ctx, `SELECT to_jsonb(t) FROM run_snapshots t WHERE tenant_id=$1 AND run_id=$2 AND input_event->>'kind'='claimed' ORDER BY version`, op.Request.TenantID, op.Request.RunID)
+	f.check(e)
+	var liveClaimRows []json.RawMessage
+	for rows.Next() {
+		var raw json.RawMessage
+		f.check(rows.Scan(&raw))
+		liveClaimRows = append(liveClaimRows, raw)
+	}
+	f.check(rows.Err())
+	rows.Close()
+	afterBoth, e := slRead(filepath.Join(dir, "after-both-signals-postgres.json"), 16<<20)
+	f.check(e)
+	afterAdoption, e := slRead(filepath.Join(dir, "after-adoption-postgres.json"), 16<<20)
+	f.check(e)
+	claimAudit, e := slAuditClaim(afterBoth, afterAdoption, liveClaimRows, op.Request, oldUntil, claimed)
+	f.check(e)
+	f.save("L5-live-claimed-snapshots.json", liveClaimRows)
+	f.save("L5-claim-audit.json", claimAudit)
 	// Worker role remains unchanged/restricted. Only the explicitly authorized
 	// fixture admin connection can issue test tokens in E50's proven schema.
 	apiURL, e := url.Parse(os.Getenv("FORGE_TEST_DATABASE_URL"))

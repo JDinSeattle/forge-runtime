@@ -19,6 +19,7 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
@@ -27,6 +28,7 @@ import (
 	"github.com/JDinSeattle/forge-runtime/internal/domain"
 	"github.com/JDinSeattle/forge-runtime/internal/runner"
 	"github.com/JDinSeattle/forge-runtime/internal/runnerclient"
+	flow "github.com/JDinSeattle/forge-runtime/internal/runtime"
 	"github.com/JDinSeattle/forge-runtime/internal/sandbox"
 	"golang.org/x/sys/unix"
 	_ "modernc.org/sqlite"
@@ -676,5 +678,362 @@ func TestStrictLogsDurableBindingOracle(t *testing.T) {
 				t.Fatal("altered durable authority accepted")
 			}
 		})
+	}
+}
+
+// A signal report is not a launch attestation. Check the separately captured
+// original launch identity, exact expected argv, process start ticks and all
+// available after-signal observations rather than trusting summary scalars.
+type slProcessIdentity struct {
+	PID        int64     `json:"pid"`
+	ExePath    string    `json:"exe_path"`
+	SHA        string    `json:"exe_sha256"`
+	Ticks      string    `json:"proc_start_ticks"`
+	ObservedAt time.Time `json:"observed_at"`
+	Args       []string  `json:"args"`
+}
+type slSignalRecord struct {
+	slProcessIdentity
+	SentAt   time.Time `json:"signal_sent_at"`
+	DBBefore time.Time `json:"db_before_signal"`
+	DBAfter  time.Time `json:"db_after_signal_return"`
+	ExitedAt time.Time `json:"exited_at"`
+	ExitCode *int      `json:"exit_code"`
+}
+
+func slNumericTicks(s string) bool {
+	if s == "" {
+		return false
+	}
+	for _, r := range s {
+		if r < '0' || r > '9' {
+			return false
+		}
+	}
+	n, e := strconv.ParseUint(s, 10, 64)
+	return e == nil && n > 0
+}
+func slAuditSignal(launchRaw, signalRaw []byte, path, hash string, args []string) (slSignalRecord, error) {
+	var launch slProcessIdentity
+	var signal slSignalRecord
+	if json.Unmarshal(launchRaw, &launch) != nil || json.Unmarshal(signalRaw, &signal) != nil {
+		return signal, fmt.Errorf("invalid process record")
+	}
+	for _, p := range []slProcessIdentity{launch, signal.slProcessIdentity} {
+		if p.PID <= 0 || p.PID > 1<<31-1 || !slNumericTicks(p.Ticks) || p.ExePath != path || p.SHA != hash || p.ObservedAt.IsZero() || !reflect.DeepEqual(p.Args, args) {
+			return signal, fmt.Errorf("missing or mismatched process identity")
+		}
+	}
+	if launch.PID != signal.PID || launch.Ticks != signal.Ticks || signal.ObservedAt.Before(launch.ObservedAt) || signal.SentAt.IsZero() || signal.DBBefore.IsZero() || signal.DBAfter.IsZero() || signal.ExitedAt.IsZero() || signal.DBBefore.Before(signal.ObservedAt) || signal.SentAt.Before(signal.DBBefore) || signal.DBAfter.Before(signal.SentAt) || signal.ExitedAt.Before(signal.DBAfter) || !signal.ExitedAt.After(signal.SentAt) || signal.ExitedAt.Sub(signal.SentAt) > 8*time.Second || signal.ExitCode == nil || *signal.ExitCode != 0 {
+		return signal, fmt.Errorf("process launch/signal/exit binding differs")
+	}
+	return signal, nil
+}
+func slAuditAfterSignal(signal slSignalRecord, clockRaw, dockerRaw []byte, cid, jobID string) error {
+	var clock struct {
+		ObservedAt time.Time `json:"observed_at"`
+	}
+	var docker []struct {
+		ID    string `json:"Id"`
+		Name  string
+		State struct{ Running bool }
+	}
+	if json.Unmarshal(clockRaw, &clock) != nil || json.Unmarshal(dockerRaw, &docker) != nil || clock.ObservedAt.IsZero() || clock.ObservedAt.Before(signal.ExitedAt) || len(docker) != 1 || docker[0].ID != cid || docker[0].Name != "/"+jobID || !docker[0].State.Running {
+		return fmt.Errorf("after-signal raw does not bind original running container")
+	}
+	return nil
+}
+func slAuditSignalSummary(signal slSignalRecord, raw []byte) error {
+	var summary sigtermBoundary
+	if json.Unmarshal(raw, &summary) != nil || !summary.SentAt.Equal(signal.SentAt) || !summary.DBBefore.Equal(signal.DBBefore) || !summary.DBAfter.Equal(signal.DBAfter) || !summary.ExitedAt.Equal(signal.ExitedAt) {
+		return fmt.Errorf("signal summary differs from exact signal record")
+	}
+	return nil
+}
+
+type slClaimSnapshot struct {
+	TenantID   domain.ID  `json:"tenant_id"`
+	RunID      domain.ID  `json:"run_id"`
+	Version    uint64     `json:"version"`
+	Body       flow.State `json:"body"`
+	InputState flow.State `json:"input_state"`
+	InputEvent flow.Event `json:"input_event"`
+}
+type slExitedRun struct {
+	TenantID domain.ID  `json:"tenant_id"`
+	ID       domain.ID  `json:"id"`
+	State    string     `json:"state"`
+	Version  uint64     `json:"version"`
+	Owner    string     `json:"lease_owner"`
+	Epoch    uint64     `json:"lease_epoch"`
+	Until    time.Time  `json:"lease_until"`
+	Snapshot flow.State `json:"snapshot"`
+}
+type slClaimAudit struct {
+	Version        uint64       `json:"version"`
+	OldLease       domain.Lease `json:"old_lease"`
+	SuccessorLease domain.Lease `json:"successor_lease"`
+	ClaimedAt      time.Time    `json:"claimed_at"`
+	LiveRowSHA     string       `json:"live_row_sha256"`
+}
+
+func slFirstSuccessor(rows []json.RawMessage) (slClaimSnapshot, json.RawMessage, error) {
+	var selected slClaimSnapshot
+	var original json.RawMessage
+	seen := map[uint64]bool{}
+	for _, raw := range rows {
+		var r slClaimSnapshot
+		if json.Unmarshal(raw, &r) != nil {
+			return selected, nil, fmt.Errorf("invalid claim snapshot")
+		}
+		if seen[r.Version] {
+			return selected, nil, fmt.Errorf("duplicate snapshot version")
+		}
+		seen[r.Version] = true
+		if r.InputEvent.Kind != flow.EventClaimed || r.InputEvent.Lease == nil || r.InputEvent.Lease.Owner != "lifecycle-successor-0" {
+			continue
+		}
+		if original == nil || r.Version < selected.Version {
+			selected, original = r, raw
+		}
+	}
+	if original == nil {
+		return selected, nil, fmt.Errorf("durable successor claim missing")
+	}
+	return selected, original, nil
+}
+func slAuditClaim(afterBoth, afterAdoption []byte, live []json.RawMessage, op runner.OperationRequest, summaryUntil, summaryClaim time.Time) (slClaimAudit, error) {
+	var out slClaimAudit
+	var before map[string]json.RawMessage
+	var adopted map[string]json.RawMessage
+	if json.Unmarshal(afterBoth, &before) != nil || json.Unmarshal(afterAdoption, &adopted) != nil {
+		return out, fmt.Errorf("invalid PG capture")
+	}
+	var runs []slExitedRun
+	var snapshots []json.RawMessage
+	if json.Unmarshal(before["runs"], &runs) != nil || len(runs) != 1 || json.Unmarshal(adopted["run_snapshots"], &snapshots) != nil {
+		return out, fmt.Errorf("missing exact PG run/snapshots")
+	}
+	old := runs[0]
+	if old.TenantID != op.TenantID || old.ID != op.RunID || old.State != "running" || old.Version == 0 || old.Owner != "lifecycle-original-0" || old.Epoch != op.Epoch || old.Until.IsZero() {
+		return out, fmt.Errorf("after-exit SQL lease identity differs")
+	}
+	historical, historicalRaw, e := slFirstSuccessor(snapshots)
+	if e != nil {
+		return out, e
+	}
+	current, currentRaw, e := slFirstSuccessor(live)
+	if e != nil {
+		return out, e
+	}
+	canonicalBefore, e := domain.CanonicalJSON(historicalRaw)
+	if e != nil {
+		return out, e
+	}
+	canonicalNow, e := domain.CanonicalJSON(currentRaw)
+	if e != nil {
+		return out, e
+	}
+	if !bytes.Equal(canonicalBefore, canonicalNow) {
+		return out, fmt.Errorf("historical claimed snapshot differs from live PG")
+	}
+	event := current.InputEvent
+	prior := current.InputState
+	next := current.Body
+	if historical.Version != current.Version || current.TenantID != op.TenantID || current.RunID != op.RunID || event.Lease == nil || event.At.IsZero() || event.Kind != flow.EventClaimed || event.Owner != "lifecycle-successor-0" || event.Epoch != op.Epoch+1 || event.Lease.Epoch != event.Epoch || event.Lease.Owner != event.Owner || event.Lease.Until.Sub(event.At) != 30*time.Second || event.At.Before(old.Until) || event.ExpectedVersion != old.Version || prior.Version != old.Version || current.Version != prior.Version+1 || next.Version != current.Version {
+		return out, fmt.Errorf("durable claim epoch/version/30-second lease boundary differs")
+	}
+	expectedOld := old.Snapshot
+	expectedOld.Lease = domain.Lease{Owner: old.Owner, Epoch: old.Epoch, Until: old.Until.UTC()}
+	prior.Lease.Until = prior.Lease.Until.UTC()
+	if !bytes.Equal(slJSON(expectedOld), slJSON(prior)) || prior.TenantID != op.TenantID || prior.RunID != op.RunID || next.TenantID != op.TenantID || next.RunID != op.RunID || next.Lease.Owner != event.Lease.Owner || next.Lease.Epoch != event.Lease.Epoch || !next.Lease.Until.Equal(event.Lease.Until) {
+		return out, fmt.Errorf("claimed input/body not bound to post-exit SQL authority")
+	}
+	if !summaryUntil.Equal(old.Until) || !summaryClaim.Equal(event.At) {
+		return out, fmt.Errorf("acceptance lease/claim summaries differ from durable PG")
+	}
+	out = slClaimAudit{Version: current.Version, OldLease: expectedOld.Lease, SuccessorLease: *event.Lease, ClaimedAt: event.At, LiveRowSHA: slSHA(canonicalNow)}
+	return out, nil
+}
+
+func TestStrictLogsSignalHistoryOracle(t *testing.T) {
+	now := time.Date(2026, 9, 12, 1, 2, 3, 0, time.UTC)
+	path := "/fixture/bin/forge-worker"
+	hash := strings.Repeat("a", 64)
+	args := []string{path, "-config", "/fixture/runtime/worker.json", "-id", "original"}
+	zero := 0
+	launch := slProcessIdentity{PID: 123, ExePath: path, SHA: hash, Ticks: "456", ObservedAt: now, Args: args}
+	signal := slSignalRecord{slProcessIdentity: launch, SentAt: now.Add(3 * time.Second), DBBefore: now.Add(2 * time.Second), DBAfter: now.Add(3500 * time.Millisecond), ExitedAt: now.Add(4 * time.Second), ExitCode: &zero}
+	signal.ObservedAt = now.Add(time.Second)
+	if _, e := slAuditSignal(slJSON(launch), slJSON(signal), path, hash, args); e != nil {
+		t.Fatal(e)
+	}
+	changes := map[string]func(map[string]any){"missing ticks": func(m map[string]any) { delete(m, "proc_start_ticks") }, "nonnumeric ticks": func(m map[string]any) { m["proc_start_ticks"] = "not-a-number" }, "wrong ticks": func(m map[string]any) { m["proc_start_ticks"] = "789" }, "numeric type ticks": func(m map[string]any) { m["proc_start_ticks"] = 456 }, "replacement PID": func(m map[string]any) { m["pid"] = 999 }, "fractional PID": func(m map[string]any) { m["pid"] = 123.5 }, "argv change": func(m map[string]any) { m["args"] = []string{path, "-config", "other"} }, "missing exit code": func(m map[string]any) { delete(m, "exit_code") }}
+	for name, change := range changes {
+		t.Run(name, func(t *testing.T) {
+			var bad map[string]any
+			if e := json.Unmarshal(slJSON(signal), &bad); e != nil {
+				t.Fatal(e)
+			}
+			change(bad)
+			if _, e := slAuditSignal(slJSON(launch), slJSON(bad), path, hash, args); e == nil {
+				t.Fatal("unbound signal accepted")
+			}
+		})
+	}
+	summary := sigtermBoundary{SentAt: signal.SentAt, DBBefore: signal.DBBefore, DBAfter: signal.DBAfter, ExitedAt: signal.ExitedAt}
+	if e := slAuditSignalSummary(signal, slJSON(summary)); e != nil {
+		t.Fatal(e)
+	}
+	summary.SentAt = summary.SentAt.Add(-time.Second)
+	if slAuditSignalSummary(signal, slJSON(summary)) == nil {
+		t.Fatal("signal summary substitution accepted")
+	}
+	docker := []any{map[string]any{"Id": "cid", "Name": "/job", "State": map[string]bool{"Running": true}}}
+	clock := map[string]any{"observed_at": now.Add(5 * time.Second)}
+	if e := slAuditAfterSignal(signal, slJSON(clock), slJSON(docker), "cid", "job"); e != nil {
+		t.Fatal(e)
+	}
+	clock["observed_at"] = now
+	if slAuditAfterSignal(signal, slJSON(clock), slJSON(docker), "cid", "job") == nil {
+		t.Fatal("observation before signal exit accepted")
+	}
+}
+func TestStrictLogsClaimHistoryOracle(t *testing.T) {
+	now := time.Date(2026, 9, 12, 1, 2, 3, 0, time.UTC)
+	until := now.Add(30 * time.Second)
+	at := until.Add(time.Second)
+	op := runner.OperationRequest{WorkspaceRequest: runner.WorkspaceRequest{TenantID: "tenant", RunID: "run", WorkspaceID: "run", Epoch: 2}, OperationID: "op"}
+	prior := flow.State{TenantID: "tenant", RunID: "run", Version: 5, Status: domain.StatusRunning, Lease: domain.Lease{Owner: "lifecycle-original-0", Epoch: 2, Until: until}}
+	stored := prior
+	stored.Lease.Until = now.Add(20 * time.Second) // Heartbeat updates SQL header independently.
+	old := slExitedRun{TenantID: "tenant", ID: "run", State: "running", Version: 5, Owner: prior.Lease.Owner, Epoch: 2, Until: until, Snapshot: stored}
+	next := prior
+	next.Version = 6
+	next.Lease = domain.Lease{Owner: "lifecycle-successor-0", Epoch: 3, Until: at.Add(30 * time.Second)}
+	snap := slClaimSnapshot{TenantID: "tenant", RunID: "run", Version: 6, Body: next, InputState: prior, InputEvent: flow.Event{Kind: flow.EventClaimed, ExpectedVersion: 5, Owner: next.Lease.Owner, Epoch: 3, At: at, Lease: &next.Lease}}
+	before := slJSON(map[string]any{"runs": []slExitedRun{old}})
+	adoption := slJSON(map[string]any{"run_snapshots": []slClaimSnapshot{snap}})
+	live := []json.RawMessage{slJSON(snap)}
+	if _, e := slAuditClaim(before, adoption, live, op, until, at); e != nil {
+		t.Fatal(e)
+	}
+	for _, name := range []string{"summary lease changed", "summary claim changed", "both summaries moved", "live claim changed", "historical claim changed", "prior epoch changed"} {
+		t.Run(name, func(t *testing.T) {
+			u, a := until, at
+			h := bytes.Clone(adoption)
+			l := append([]json.RawMessage{}, live...)
+			switch name {
+			case "summary lease changed":
+				u = u.Add(-time.Second)
+			case "summary claim changed":
+				a = a.Add(time.Second)
+			case "both summaries moved":
+				u = now.Add(-2 * time.Hour)
+				a = now.Add(-time.Hour)
+			case "live claim changed":
+				bad := snap
+				bad.InputEvent.At = at.Add(time.Second)
+				l = []json.RawMessage{slJSON(bad)}
+			case "historical claim changed":
+				bad := snap
+				bad.InputEvent.At = at.Add(time.Second)
+				h = slJSON(map[string]any{"run_snapshots": []slClaimSnapshot{bad}})
+			case "prior epoch changed":
+				bad := snap
+				bad.InputState.Lease.Epoch = 1
+				h = slJSON(map[string]any{"run_snapshots": []slClaimSnapshot{bad}})
+				l = []json.RawMessage{slJSON(bad)}
+			}
+			if _, e := slAuditClaim(before, h, l, op, u, a); e == nil {
+				t.Fatal("summary or durable claim substitution accepted")
+			}
+		})
+	}
+}
+
+func slBindProcess(launch, current slProcessIdentity) error {
+	if launch.PID <= 0 || current.PID != launch.PID || !slNumericTicks(launch.Ticks) || current.Ticks != launch.Ticks || launch.ExePath == "" || current.ExePath != launch.ExePath || len(launch.SHA) != 64 || current.SHA != launch.SHA || len(launch.Args) == 0 || !reflect.DeepEqual(current.Args, launch.Args) || launch.ObservedAt.IsZero() || current.ObservedAt.Before(launch.ObservedAt) {
+		return fmt.Errorf("process identity changed or incomplete")
+	}
+	return nil
+}
+
+func slPauseWindow(dbNow, until, sent, confirmed, continued time.Time, watchdog bool) error {
+	if dbNow.IsZero() || until.IsZero() || sent.IsZero() || confirmed.IsZero() || continued.IsZero() || until.Sub(dbNow) < 24*time.Second || sent.Before(dbNow) || confirmed.Before(sent) || confirmed.Sub(sent) > time.Second || continued.Before(confirmed) || !continued.Before(sent.Add(18*time.Second)) || !continued.Before(until.Add(-time.Second)) || watchdog {
+		return fmt.Errorf("paused worker exceeded confirmed short DB-lease window")
+	}
+	return nil
+}
+func TestStrictLogsPauseControlOracle(t *testing.T) {
+	now := time.Date(2026, 9, 12, 1, 2, 3, 0, time.UTC)
+	until := now.Add(30 * time.Second)
+	sent := now.Add(time.Second)
+	confirmed := sent.Add(25 * time.Millisecond)
+	continued := sent.Add(10 * time.Second)
+	if e := slPauseWindow(now, until, sent, confirmed, continued, false); e != nil {
+		t.Fatal(e)
+	}
+	if slPauseWindow(now, now.Add(23*time.Second), sent, confirmed, continued, false) == nil || slPauseWindow(now, until, sent, confirmed, sent.Add(18*time.Second), false) == nil || slPauseWindow(now, until, sent, confirmed, continued, true) == nil || slPauseWindow(now, until, sent, time.Time{}, continued, false) == nil {
+		t.Fatal("unsafe pause or watchdog timeout accepted")
+	}
+	original := slProcessIdentity{PID: 123, ExePath: "/fixture/worker", SHA: strings.Repeat("a", 64), Ticks: "987", Args: []string{"/fixture/worker"}, ObservedAt: now}
+	if e := slBindProcess(original, original); e != nil {
+		t.Fatal(e)
+	}
+	for _, name := range []string{"missing tick", "replacement PID", "new start", "changed executable", "changed arguments"} {
+		t.Run(name, func(t *testing.T) {
+			bad := original
+			switch name {
+			case "missing tick":
+				bad.Ticks = ""
+			case "replacement PID":
+				bad.PID++
+			case "new start":
+				bad.Ticks = "988"
+			case "changed executable":
+				bad.SHA = strings.Repeat("b", 64)
+			case "changed arguments":
+				bad.Args = []string{"other"}
+			}
+			if slBindProcess(original, bad) == nil {
+				t.Fatal("watchdog could target a different process")
+			}
+		})
+	}
+}
+
+// Caller holds the pause mutex across this decision AND the actual signal. A
+// watchdog that has already resumed the child must permanently close admission
+// to a delayed STOP, even if the initial goroutine wakes after the deadline.
+type slPauseGate struct{ stopped, resumed bool }
+
+func (g *slPauseGate) stop(now, deadline time.Time) error {
+	if g.resumed || g.stopped || deadline.IsZero() || !now.Before(deadline) {
+		return fmt.Errorf("late or duplicate worker stop rejected")
+	}
+	g.stopped = true
+	return nil
+}
+func (g *slPauseGate) resume() { g.resumed = true }
+func TestStrictLogsPauseSignalOrdering(t *testing.T) {
+	now := time.Now()
+	deadline := now.Add(18 * time.Second)
+	var alreadyContinued slPauseGate
+	alreadyContinued.resume()
+	if alreadyContinued.stop(now, deadline) == nil || alreadyContinued.stopped {
+		t.Fatal("watchdog CONT allowed a later STOP")
+	}
+	var expired slPauseGate
+	if expired.stop(deadline, deadline) == nil || expired.stopped {
+		t.Fatal("expired setup sent STOP")
+	}
+	var normal slPauseGate
+	if e := normal.stop(now, deadline); e != nil {
+		t.Fatal(e)
+	}
+	normal.resume()
+	if !normal.stopped || !normal.resumed || normal.stop(now, deadline) == nil {
+		t.Fatal("stop/resume order was not final")
 	}
 }

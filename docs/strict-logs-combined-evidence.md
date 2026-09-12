@@ -151,3 +151,44 @@ These package timings measure offline checks only. Final source identity is
 reported with the local fixture commit. Actual case durations, final resource counts,
 ENOSPC outcome, source/binary attestations and independent raw review remain
 **pending actual execution**. An offline PASS never changes those fields.
+
+## Review correction after the initial fixture freeze
+
+The initial `d494e85` freeze and its offline logs remain unchanged. Independent
+source review found two acceptance defects, with no actual combined run yet:
+
+- L5 previously accepted incomplete signal identity and trusted ordered summary
+  lease timestamps. The revised pure oracle binds each of four signal reports
+  to its separately recorded launch identity, exact PID/argv/executable/hash and
+  strictly numeric start ticks. Original signals also bind their after-signal
+  Docker/clock records; successor exits bracket the actual released cleanup.
+  The historical E50 claimed snapshot is matched to the live PG row. Its
+  `input_state` must equal the stopped-run snapshot with the **then-current SQL
+  lease header** applied, so a prior heartbeat renewal is retained. The 30-second
+  successor lease, epoch/version and both summary timestamps are recomputed from
+  these authorities. Existing E48 captures were used only to verify field shape;
+  they are not substituted for E50 evidence.
+- L4 previously allowed the live worker to inspect/reconcile while the fixture
+  was collecting full-filesystem evidence. It now identity-checks and SIGSTOPs
+  only its own worker, confirms the stopped OS state, and requires at least
+  24 seconds of real DB lease remaining. A context-independent 18-second
+  watchdog resumes only the same still-bound process; `defer` resumes it on a
+  failed assertion before process cleanup. Timeout always fails the case. The
+  original operation is inspected to terminal using the real same-epoch lease
+  before normal SIGCONT, then the production worker consumes that receipt. The
+  selected fixed volume is reverified and pressure FD, spool and checkout must
+  have the same device before the first pressure write.
+
+New offline negatives include missing/nonnumeric ticks, changed PID/argv,
+changed historical/live claimed rows and summary times, insufficient lease,
+missing stopped confirmation, watchdog timeout and replacement-process identity.
+This validates fixture guards only; actual pause duration, pressure/recovery and
+all host acceptance observations remain pending. New logs use the distinct
+`/tmp/forge-strict-logs-review-fix-*` prefix; the earlier freeze is not overwritten.
+
+At the correction freeze, ordinary and race offline runs each passed 53
+parent/subtest records with one opt-in skip; vet exited zero. Their logs are
+`/tmp/forge-strict-logs-review-fix-frozen-{offline,race,vet}.log`. The pause gate
+serializes actual STOP and CONT under one mutex: once watchdog recovery has
+occurred, a late STOP is rejected. No actual process signal was sent by these
+pure offline tests.
