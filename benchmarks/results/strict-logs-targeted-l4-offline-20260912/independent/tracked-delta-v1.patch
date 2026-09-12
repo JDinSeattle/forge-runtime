@@ -1,0 +1,487 @@
+diff --git a/docs/strict-logs-combined-evidence.md b/docs/strict-logs-combined-evidence.md
+index afc034f..ea458e1 100644
+--- a/docs/strict-logs-combined-evidence.md
++++ b/docs/strict-logs-combined-evidence.md
+@@ -1,11 +1,14 @@
+ # S12.9 combined fixed-volume log acceptance
+ 
+-Status on 2026-09-12: **the first actual combined attempt failed overall**.
+-L1, default limits and L5 passed with real Engine/Docker/fixed-volume spool/private-PG
+-evidence. L3-bytes stopped at its fourth operation because of an incorrect retained-stream
+-fairness oracle. Remaining byte-guard checks, L3-count and L4 were not reached.
+-The correction has source/offline review; retained-workspace cleanup and a new full
+-logs-02 attempt remain pending. S12.9 and the overall acceptance goal remain open.
++Status on 2026-09-12: **logs03 failed overall; five cases passed and L4 remains open**.
++The first run's incorrect stream-fairness oracle was fixed, its retained workspace
++was explicitly archived/released, and logs02 stopped before runner/worker launch
++on an already-owned fault filename. Logs03 used a unique filename and passed L1,
++default limits, independent byte/count limits, and L5. L4 timed out because its
++1 MiB pressure writer stopped with 430,080 bytes still available. The later
++read-only sample proves a valid 29,206-byte prefix marked `runner_shutdown`,
++followed by the original container's natural exit 0; this is not an ENOSPC pass.
++The original aggregate remains FAIL. S12.9 and the overall goal remain open.
+ The [first-failure archive](../benchmarks/results/strict-logs-first-failure-20260912/README.md)
+ preserves original raw, source identities and independent recomputation.
+ 
+@@ -67,7 +70,14 @@ reports. Private recovery settings stay in `runtime/*-private`.
+ 
+ ## Required cases and independent assertions
+ 
+-All six expanded case entries must pass to complete the five groups:
++All six expanded case entries must have actual passing evidence to complete the
++five groups. The original S12 implementation requirement does not require one
++successful invocation containing every group. The continuation therefore keeps
++the five logs03 passes at their original source revision and adds one complete
++targeted L4 after explicit recovery of the failed old L4. It never changes the
++original aggregate result, reruns the old operation, or substitutes a pressure-only
++probe for the full publication/cleanup/health loop. Any composite result must
++identify both source revisions and both immutable evidence manifests.
+ 
+ | Report entry | Actual workload | Required evidence |
+ |---|---|---|
+@@ -108,6 +118,17 @@ context and launcher deadline. Commands are finite; the largest flood demands
+ 1 MiB then sleeps for at most ten seconds, so a policy stop can be observed while
+ the task is still alive. The cancel program installs SIGTERM ignore before fork,
+ prints distinct parent/child ready markers, and has a 60-second natural bound.
++The corrected L4 emits an initial two-stream prefix, waits eight seconds, then
++emits at most 300 pairs of 4 KiB chunks with 50 ms pauses (23 seconds minimum
++natural duration). Pressure writes 1 MiB, then 4 KiB, then single bytes on the
++same exclusive FD until each stage returns ENOSPC; all stages must sync and the
++final filesystem must have zero available blocks. The spool is read before any
++pressure removal and must retain its original prefix below the byte-policy limit.
++A nonzero, non-OOM Docker exit before 20 seconds and before the immutable request
++deadline, while the actual worker remains paused and PG remains running, excludes
++natural completion, operation timeout, business cancellation and byte-limit stop.
++This strengthens the existing production-path oracle without changing runtime
++logging or kill policy. Metadata ENOSPC alone cannot satisfy it.
+ The ENOSPC program sleeps eight seconds for pressure setup and emits at most
+ 76,822 bytes over a bounded loop. No infinite output or host shell executes.
+ 
+diff --git a/scripts/faults/application/strict_logs_combined_test.go b/scripts/faults/application/strict_logs_combined_test.go
+index 28d361d..9310132 100644
+--- a/scripts/faults/application/strict_logs_combined_test.go
++++ b/scripts/faults/application/strict_logs_combined_test.go
+@@ -65,7 +65,7 @@ const slENOSPCProgram = `import os,time
+ os.write(1,b'SL_STDOUT\x00\xff');os.write(2,b'SL_STDERR\x00\xfe')
+ time.sleep(8)
+ for i in range(300):
+- os.write(1,b'X'*128);os.write(2,b'Y'*128);time.sleep(.05)`
++ os.write(1,b'X'*4096);os.write(2,b'Y'*4096);time.sleep(.05)`
+ 
+ type slFixture struct {
+ 	t         *testing.T
+@@ -890,27 +890,16 @@ func (f *slFixture) pressure(path string) func() {
+ 	}
+ 	var before unix.Statfs_t
+ 	f.check(unix.Fstatfs(n, &before))
+-	block := bytes.Repeat([]byte{0x5a}, 1<<20)
+-	written := int64(0)
+-	var writeErr error
+-	for written < 256<<20 {
+-		count, err := file.Write(block)
+-		written += int64(count)
+-		if err != nil {
+-			writeErr = err
+-			break
+-		}
+-	}
+-	if !errors.Is(writeErr, syscall.ENOSPC) {
+-		file.Close()
+-		f.t.Fatal("real fixed-volume ENOSPC not reached within frozen capacity", writeErr, written)
+-	}
+-	syncErr := file.Sync()
++	pressure, fillErr := slFillPressure(file, file.Sync, 256<<20)
+ 	f.check(unix.Fstat(n, &st))
+ 	var after unix.Statfs_t
+ 	f.check(unix.Fstatfs(n, &after))
+ 	f.check(file.Close())
+-	f.save("L4-pressure.json", map[string]any{"path": filepath.Join(dir, name), "device": st.Dev, "inode": st.Ino, "effective_uid": os.Geteuid(), "owner_uid": st.Uid, "written_bytes": written, "allocated_bytes": st.Blocks * 512, "errno": writeErr.Error(), "sync_error": fmt.Sprint(syncErr), "before": before, "after": after, "observed_at": time.Now().UTC()})
++	f.save("L4-pressure.json", map[string]any{"path": filepath.Join(dir, name), "device": st.Dev, "inode": st.Ino, "effective_uid": os.Geteuid(), "owner_uid": st.Uid, "written_bytes": pressure.Written, "allocated_bytes": st.Blocks * 512, "stages": pressure.Stages, "fill_error": fmt.Sprint(fillErr), "before": before, "after": after, "observed_at": time.Now().UTC()})
++	f.check(fillErr)
++	if after.Bavail != 0 {
++		f.t.Fatal("pressure left available filesystem blocks; retain evidence and pressure")
++	}
+ 	if st.Uid != uint32(os.Geteuid()) || st.Blocks*512 <= 0 || st.Blocks*512 > 256<<20 {
+ 		f.t.Fatal("pressure allocation/identity differs")
+ 	}
+@@ -1122,6 +1111,34 @@ func (f *slFixture) l4() {
+ 	inspect := f.daemon("inspect", cid)
+ 	f.check(slWrite(filepath.Join(f.dir, "L4-stopped-before-pressure-removal.json"), inspect))
+ 	f.check(slDockerOracle(inspect, cid, req, filepath.Dir(filepath.Dir(path)), false))
++	// Finish can itself fail to write metadata while full. An ENOSPC string
++	// alone therefore does not identify the failing sink. The same command is
++	// finite but needs at least 23 seconds to exit naturally; a non-OOM early
++	// stop, before its immutable deadline and while the only worker is paused,
++	// binds this observation to the production sink-failure kill branch.
++	f.check(slENOSPCStop(inspect, req, time.Now().UTC()))
++	fullSpool, e := slRead(path, int64(f.c.Logs.OperationBytes))
++	f.check(e)
++	initialSpool, e := slRead(filepath.Join(f.dir, "L4-before-pressure.spool"), int64(f.c.Logs.OperationBytes))
++	f.check(e)
++	fullFrames, e := slParseFrames(fullSpool, f.c.Logs, true)
++	f.check(e)
++	if !bytes.HasPrefix(fullSpool, initialSpool) || fullFrames.StreamBytes[0] == 0 || fullFrames.StreamBytes[1] == 0 || len(fullSpool) >= f.c.Logs.OperationBytes-f.c.Logs.EntryBytes {
++		f.t.Fatal("physical failure lost the original prefix or could be an operation-byte-limit stop")
++	}
++	f.check(slWrite(filepath.Join(f.dir, "L4-physical-full.spool"), fullSpool))
++	f.save("L4-physical-full-spool-oracle.json", fullFrames)
++	for _, suffix := range []string{".meta", ".meta.tmp"} {
++		if raw, e := slRead(path+suffix, 1<<20); e == nil {
++			f.check(slWrite(filepath.Join(f.dir, "L4-physical-full"+suffix), raw))
++		} else if !os.IsNotExist(e) {
++			f.check(e)
++		}
++	}
++	if f.ctx.Err() != nil || h.getRun().State.Status != domain.StatusRunning {
++		f.t.Fatal("external cancellation contaminated the physical spool failure")
++	}
++	f.save("L4-full-spool-stop-proof.json", map[string]any{"container_id": cid, "operation_id": req.OperationID, "natural_runtime_min_seconds": 23, "observed_before_request_deadline": true, "worker_paused": true, "same_run_still_running": true, "source_of_error": "SQLite ENOSPC plus early non-OOM Docker stop while no worker/fixture cancellation is possible; metadata alone is not the oracle"})
+ 	var count int
+ 	for _, r := range before.Tables["log_runs"] {
+ 		if r["tenant_id"] == string(req.TenantID) && r["run_id"] == string(req.RunID) {
+@@ -1485,6 +1502,17 @@ func TestStrictLogsCombinedAcceptance(t *testing.T) {
+ 	if os.Getenv("FORGE_RUN_STRICT_LOGS_COMBINED") != "1" {
+ 		t.Skip("operator opt-in: completed E50 dedicated fixed pool; actual runner/worker binaries, private PG, finite physical ENOSPC")
+ 	}
++	slRunLogsAcceptance(t, false)
++}
++
++func TestStrictLogsTargetedL4Acceptance(t *testing.T) {
++	if os.Getenv("FORGE_RUN_STRICT_LOGS_L4") != "1" {
++		t.Skip("operator opt-in: archived logs03 failure and completed explicit L4 recovery; only new L4 and health operation")
++	}
++	slRunLogsAcceptance(t, true)
++}
++
++func slRunLogsAcceptance(t *testing.T, targeted bool) {
+ 	path := os.Getenv("FORGE_STRICT_LOGS_ACCEPTANCE")
+ 	var a slAcceptance
+ 	var c slRunnerConfig
+@@ -1499,7 +1527,12 @@ func TestStrictLogsCombinedAcceptance(t *testing.T) {
+ 	}
+ 	execution := os.Getenv("FORGE_STRICT_LOGS_EXECUTION")
+ 	dir, private, err := slExecutionPaths(a, path, execution)
+-	if err != nil {
++	if targeted {
++		if path != filepath.Join(a.ScopeRoot, "acceptance-logs-l4-01.json") || execution != "" {
++			t.Fatal("targeted L4 requires its own explicit acceptance and no combined execution selector")
++		}
++		dir, private = filepath.Join(a.ScopeRoot, "evidence/logs-l4-01"), filepath.Join(a.ScopeRoot, "runtime/strict-logs-l4-private-01")
++	} else if err != nil {
+ 		t.Fatal(err)
+ 	}
+ 	unlock, err := lifecycleControlLock(a.ScopeRoot)
+@@ -1566,20 +1599,27 @@ func TestStrictLogsCombinedAcceptance(t *testing.T) {
+ 	f.check(e)
+ 	f.check(slIdle(j))
+ 	f.journalID = j.Identity
+-	if execution == "02" || execution == "03" {
++	if !targeted && (execution == "02" || execution == "03") {
+ 		cleanupInputs, err := slCleanupPrerequisite(a, c, j)
+ 		f.check(err)
+ 		for path, hash := range cleanupInputs {
+ 			f.inputs[path] = hash
+ 		}
+ 	}
+-	if execution == "03" {
++	if !targeted && execution == "03" {
+ 		priorInputs, err := slLogs02Prerequisite(a, c, j)
+ 		f.check(err)
+ 		for path, hash := range priorInputs {
+ 			f.inputs[path] = hash
+ 		}
+ 	}
++	if targeted {
++		priorInputs, err := slL4Prerequisite(a, c, j)
++		f.check(err)
++		for path, hash := range priorInputs {
++			f.inputs[path] = hash
++		}
++	}
+ 	var old struct {
+ 		Passed bool   `json:"passed"`
+ 		UUID   string `json:"journal_uuid"`
+@@ -1621,12 +1661,16 @@ func TestStrictLogsCombinedAcceptance(t *testing.T) {
+ 	clear(key)
+ 	f.objects, e = artifact.NewLocalStore(c.ArtifactRoot, 64<<20)
+ 	f.check(e)
+-	f.l5()
++	if !targeted {
++		f.l5()
++	}
+ 	f.setupPG()
+-	f.l1()
+-	f.quotaCase("L2-L3-default", "default", 32, true)
+-	f.quotaCase("L3-bytes", "bytes", 4, false)
+-	f.quotaCase("L3-count", "count", 2, false)
++	if !targeted {
++		f.l1()
++		f.quotaCase("L2-L3-default", "default", 32, true)
++		f.quotaCase("L3-bytes", "bytes", 4, false)
++		f.quotaCase("L3-count", "count", 2, false)
++	}
+ 	f.l4()
+ 	f.stopRunner()
+ 	final := f.snapshot("final-journal.json")
+@@ -1634,7 +1678,11 @@ func TestStrictLogsCombinedAcceptance(t *testing.T) {
+ 	for _, v := range c.VolumeSlots {
+ 		f.check(sandbox.VerifyVolume(ctx, v))
+ 	}
+-	if len(f.cases) != 6 {
++	wantCases := 6
++	if targeted {
++		wantCases = 1
++	}
++	if len(f.cases) != wantCases {
+ 		t.Fatal("all five groups including independent byte/count subcases required")
+ 	}
+ 	f.completed = true
+diff --git a/scripts/faults/sigterm/README.md b/scripts/faults/sigterm/README.md
+index 07a19d7..165d643 100644
+--- a/scripts/faults/sigterm/README.md
++++ b/scripts/faults/sigterm/README.md
+@@ -222,3 +222,36 @@ Existing manifests, tasks and actual test outcomes are never replaced.
+ 
+ These commands describe the reviewed continuation interface. Their presence
+ is not evidence that cleanup or the new full log execution has passed.
++
++## Explicit recovery and targeted L4
++
++The third actual sample passed L1, default limits, byte/count limits and L5, but
++its bulk pressure write left enough tail space for small spool writes. Its
++aggregate remains failed. After freezing the reviewed recovery and corrected
++fixture into one new versioned binary directory:
++
++```bash
++python3 -I scripts/faults/sigterm/run.py prepare-l4-recovery --revision FULL_REVISION
++python3 -I scripts/faults/sigterm/run.py launch --phase logs-recovery --attempt 02
++python3 -I scripts/faults/sigterm/run.py prepare-l4-targeted --revision FULL_REVISION
++python3 -I scripts/faults/sigterm/run.py launch --phase logs-l4 --attempt 02
++```
++
++Recovery selects only `run_DKT2OOLEVCKYXHW5NGNS7BKBHJ` through
++`acceptance-logs-03-recovery.json`, preserving its unknown log and original
++failed report before production cancellation/reconciliation/publication/release.
++Its actual evidence belongs to `evidence/logs-03-recovery`, with its own host
++record under `evidence/host-logs-recovery`. This command is distinct from normal
++failure cleanup and cannot silently retry a partially executed recovery.
++
++Only after the complete recovery report, the targeted preparation seals
++`acceptance-logs-l4-01.json` and `logs-l4-continuation.json`. The latter pins the
++failed and observed manifests, the completed recovery manifest, and new binary
++acceptance. The new L4 checks the unchanged recovered journal and live idle SQL
++authority, then uses a fresh private schema and new operation. Its output is
++`evidence/logs-l4-01`, host record `evidence/host-logs-l4-01`, and credentials stay
++under `runtime/strict-logs-l4-private-01`. All directories are exclusive; neither
++phase accepts `--logs-execution`, and the original six-case gate is unchanged.
++The targeted case includes real spool failure, retained prefix publication,
++HTTP retrieval, production cleanup and a real slot-health operation. These
++commands document preparation; they do not claim the actual recovery or L4 passed.
+diff --git a/scripts/faults/sigterm/run.py b/scripts/faults/sigterm/run.py
+index 04fad92..913487a 100644
+--- a/scripts/faults/sigterm/run.py
++++ b/scripts/faults/sigterm/run.py
+@@ -31,6 +31,8 @@ PHASES = {
+     "logs": ("TestStrictLogsCombinedAcceptance", "FORGE_RUN_STRICT_LOGS_COMBINED", "FORGE_STRICT_LOGS_ACCEPTANCE", 600),
+     "abort": ("TestAbortUnstartedLifecycle", "FORGE_ABORT_UNSTARTED_LIFECYCLE", "FORGE_WORKER_RUNNER_SIGTERM_ACCEPTANCE", 90),
+     "logs-cleanup": ("TestStrictLogsRetainedCleanup", "FORGE_RUN_STRICT_LOGS_CLEANUP", "FORGE_STRICT_LOGS_ACCEPTANCE", 180),
++    "logs-recovery": ("TestStrictLogsL4Recovery", "FORGE_RUN_STRICT_LOGS_L4_RECOVERY", "FORGE_STRICT_LOGS_ACCEPTANCE", 180),
++    "logs-l4": ("TestStrictLogsTargetedL4Acceptance", "FORGE_RUN_STRICT_LOGS_L4", "FORGE_STRICT_LOGS_ACCEPTANCE", 240),
+ }
+ 
+ 
+@@ -49,6 +51,10 @@ def manifest_name(phase, attempt, logs_execution="01"):
+         if attempt != "02" or logs_execution != "01":
+             raise ValueError("cleanup belongs only to the failed logs01 on SIGTERM02")
+         return "acceptance-logs-cleanup-01.json"
++    if phase in ("logs-recovery", "logs-l4"):
++        if attempt != "02" or logs_execution != "01":
++            raise ValueError("explicit L4 recovery/targeted case requires SIGTERM02 without a combined execution selector")
++        return "acceptance-logs-03-recovery.json" if phase == "logs-recovery" else "acceptance-logs-l4-01.json"
+     if logs_execution != "01":
+         if phase != "logs" or attempt != "02":
+             raise ValueError("later logs execution requires the completed SIGTERM02 source")
+@@ -166,6 +172,49 @@ def prepare_logs_third(revision):
+     return {"prepared": [str(target)], "executed": False}
+ 
+ 
++def prepare_l4(phase, revision):
++    if phase not in ("logs-recovery", "logs-l4") or not isinstance(revision, str) or not re.fullmatch(r"[a-f0-9]{40}", revision):
++        raise ValueError("explicit L4 phase and full reviewed source revision required")
++    base, old = inputs("logs", "02", "03")
++    failed_hash = "8781bba443e5a83da96cb077eb18223facfeee3469de0b23fce6c37529eef97c"
++    observed_hash = "7ace4cab71b3f4fbaba9f8ed58ae73dbfe202ab94d83bb4ecbe85bac6d8ab736"
++    if p.digest(base / "evidence/logs-03/manifest.json") != failed_hash or p.digest(base / "evidence/logs-03-retained-observation/manifest.json") != observed_hash:
++        raise ValueError("original failed L4 evidence changed")
++    failed = private_json(base / "evidence/logs-03/acceptance.json")
++    expected = {"L1", "L2-L3-default", "L3-bytes", "L3-count", "L5"}
++    if failed.get("passed") is not False or set(failed.get("cases", {})) != expected or any(v.get("passed") is not True for v in failed["cases"].values()):
++        raise ValueError("preserve original aggregate failure and its five actual passing cases")
++    evidence_leaf = "logs-03-recovery" if phase == "logs-recovery" else "logs-l4-01"
++    manifest = base / manifest_name(phase, "02")
++    excluded = [manifest, base / "evidence" / evidence_leaf, base / "evidence" / ("host-" + phase + ("-01" if phase == "logs-l4" else ""))]
++    if phase == "logs-l4":
++        excluded.extend([base / "logs-l4-continuation.json", base / "runtime/strict-logs-l4-private-01"])
++        completed_report("logs-recovery", base, "02")
++    if any(os.path.lexists(path) for path in excluded):
++        raise ValueError("explicit L4 preparation or retained evidence already exists")
++    binary_dir = p.directory(base / "bin" / revision, private=True)
++    updated = dict(old)
++    for label, filename in (("runner", "forge-runner"), ("worker", "forge-worker"), ("test", "application-faults.test")):
++        path = binary_dir / filename
++        st = path.lstat()
++        if not stat.S_ISREG(st.st_mode) or st.st_uid != os.getuid() or st.st_nlink != 1 or st.st_mode & 0o022 or not st.st_mode & stat.S_IXUSR:
++            raise ValueError("frozen owned executable required")
++        updated[label + "_binary"] = str(path)
++        updated[label + "_sha256"] = p.digest(path)
++    if updated == old:
++        raise ValueError("new L4 phase requires the reviewed corrected fixture")
++    p.save(manifest, updated)
++    prepared = [str(manifest)]
++    if phase == "logs-l4":
++        seal = base / "logs-l4-continuation.json"
++        p.save(seal, {"purpose": "strict-logs-targeted-l4-v1", "recovered_run_id": "run_DKT2OOLEVCKYXHW5NGNS7BKBHJ",
++                      "failed_manifest_sha256": failed_hash, "observation_manifest_sha256": observed_hash,
++                      "recovery_manifest_sha256": p.digest(base / "evidence/logs-03-recovery/manifest.json"),
++                      "acceptance_sha256": p.digest(manifest)})
++        prepared.append(str(seal))
++    return {"prepared": prepared, "executed": False, "scope": "one explicit recovery or one new complete L4; original five passing cases are not repeated"}
++
++
+ def credential():
+     path = p.REPO / "var/local/review-database.env"
+     p.directory(path.parent, private=True)
+@@ -212,7 +261,9 @@ def completed_report(phase, base, attempt="01", logs_execution="01"):
+     manifest_name(phase, attempt, logs_execution)
+     relative = {"sigterm": "evidence/sigterm-" + attempt + "/worker-runner-sigterm/acceptance.json",
+                 "logs": "evidence/logs-" + logs_execution + "/acceptance.json", "abort": "evidence/sigterm-01/abort-before-runner/report.json",
+-                "logs-cleanup": "evidence/logs-01-cleanup/report.json"}[phase]
++                "logs-cleanup": "evidence/logs-01-cleanup/report.json",
++                "logs-recovery": "evidence/logs-03-recovery/report.json",
++                "logs-l4": "evidence/logs-l4-01/acceptance.json"}[phase]
+     report = private_json(base / relative)
+     if not isinstance(report, dict) or report.get("passed") is not True:
+         raise ValueError("actual acceptance did not record a successful final report")
+@@ -220,6 +271,10 @@ def completed_report(phase, base, attempt="01", logs_execution="01"):
+         raise ValueError("abort must record nonterminal cancellation intent, not lifecycle success")
+     if phase == "logs-cleanup" and (report.get("released") is not True or report.get("snapshot_verified") is not True):
+         raise ValueError("cleanup requires a verified archived snapshot and released workspace")
++    if phase == "logs-recovery" and (report.get("run_id") != "run_DKT2OOLEVCKYXHW5NGNS7BKBHJ" or report.get("released") is not True or report.get("snapshot_verified") is not True or not report.get("input_sha256_before") or report.get("input_sha256_before") != report.get("input_sha256_after")):
++        raise ValueError("exact prior L4 recovery and unchanged input authority required")
++    if phase == "logs-l4" and (set(report.get("cases", {})) != {"L4"} or report["cases"]["L4"].get("passed") is not True):
++        raise ValueError("separate complete L4 result required")
+     if phase == "logs":
+         cases = report.get("cases")
+         expected = {"L1", "L2-L3-default", "L3-bytes", "L3-count", "L4", "L5"}
+@@ -273,6 +328,8 @@ def launch(phase, attempt="01", logs_execution="01"):
+         suffix += "-retry"
+     if phase == "logs" and logs_execution == "03":
+         suffix = "-03"
++    if phase in ("logs-recovery", "logs-l4"):
++        suffix = "-01" if phase == "logs-l4" else ""
+     out = base / "evidence" / ("host-" + phase + suffix)
+     p.directory(out.parent, private=True)
+     out.mkdir(mode=0o700)  # Exclusive: no automatic retry or evidence overwrite.
+@@ -318,16 +375,17 @@ def launch(phase, attempt="01", logs_execution="01"):
+ 
+ def main():
+     parser = argparse.ArgumentParser(description=__doc__)
+-    parser.add_argument("action", choices=("launch", "child", "prepare-continuation", "prepare-logs-continuation", "prepare-logs-third"))
++    parser.add_argument("action", choices=("launch", "child", "prepare-continuation", "prepare-logs-continuation", "prepare-logs-third", "prepare-l4-recovery", "prepare-l4-targeted"))
+     parser.add_argument("--phase", choices=PHASES)
+     parser.add_argument("--attempt", default="01", choices=("01", "02"))
+     parser.add_argument("--logs-execution", default="01", choices=("01", "02", "03"))
+     parser.add_argument("--revision")
+     args = parser.parse_args()
+-    if args.action in ("prepare-continuation", "prepare-logs-continuation", "prepare-logs-third"):
++    if args.action in ("prepare-continuation", "prepare-logs-continuation", "prepare-logs-third", "prepare-l4-recovery", "prepare-l4-targeted"):
+         if args.phase is not None or args.attempt != "01" or args.logs_execution != "01":
+             parser.error("preparation does not execute a phase")
+-        prepare = {"prepare-continuation": prepare_continuation, "prepare-logs-continuation": prepare_logs_continuation, "prepare-logs-third": prepare_logs_third}[args.action]
++        prepare = {"prepare-continuation": prepare_continuation, "prepare-logs-continuation": prepare_logs_continuation, "prepare-logs-third": prepare_logs_third,
++                   "prepare-l4-recovery": lambda revision: prepare_l4("logs-recovery", revision), "prepare-l4-targeted": lambda revision: prepare_l4("logs-l4", revision)}[args.action]
+         print(json.dumps(prepare(args.revision), sort_keys=True))
+         return 0
+     if args.phase is None or args.revision is not None:
+diff --git a/scripts/faults/sigterm/test_run.py b/scripts/faults/sigterm/test_run.py
+index e10a4c5..ff21898 100644
+--- a/scripts/faults/sigterm/test_run.py
++++ b/scripts/faults/sigterm/test_run.py
+@@ -33,7 +33,7 @@ class LaunchBoundaryTests(unittest.TestCase):
+         self.credential()
+         a = {"scope_root": str(self.repo), "test_binary": str(self.repo / "bin/application-faults.test")}
+         for phase in run.PHASES:
+-            argv, env = run.command(phase, a, "02" if phase == "logs-cleanup" else "01")
++            argv, env = run.command(phase, a, "02" if phase in ("logs-cleanup", "logs-recovery", "logs-l4") else "01")
+             self.assertNotIn(self.secret, repr(argv))
+             if phase == "logs-cleanup":
+                 self.assertNotIn("FORGE_TEST_DATABASE_URL", env)
+@@ -101,6 +101,68 @@ class LaunchBoundaryTests(unittest.TestCase):
+         with self.assertRaises(ValueError):
+             run.completed_report("logs-cleanup", self.repo, "02")
+ 
++    def test_l4_phases_cannot_be_confused_with_prior_combined_results(self):
++        self.credential()
++        a = {"scope_root": str(self.repo), "test_binary": str(self.repo / "application-faults.test")}
++        for phase, test, name in (("logs-recovery", "TestStrictLogsL4Recovery", "acceptance-logs-03-recovery.json"),
++                                  ("logs-l4", "TestStrictLogsTargetedL4Acceptance", "acceptance-logs-l4-01.json")):
++            argv, env = run.command(phase, a, "02")
++            self.assertIn("-test.run=^" + test + "$", argv)
++            self.assertEqual(env["FORGE_STRICT_LOGS_ACCEPTANCE"], str(self.repo / name))
++            self.assertNotIn("FORGE_STRICT_LOGS_EXECUTION", env)
++            for attempt, execution in (("01", "01"), ("02", "02"), ("02", "03")):
++                with self.assertRaises(ValueError):
++                    run.command(phase, a, attempt, execution)
++        evidence = self.repo / "evidence"
++        (evidence / "logs-l4-01").mkdir(mode=0o700, parents=True)
++        (evidence / "logs-03-recovery").mkdir(mode=0o700)
++        recovery = {"passed": True, "run_id": "run_DKT2OOLEVCKYXHW5NGNS7BKBHJ", "released": True, "snapshot_verified": True,
++                    "input_sha256_before": {"bound": "hash"}, "input_sha256_after": {"bound": "hash"}}
++        rp = evidence / "logs-03-recovery/report.json"
++        run.p.save(rp, recovery)
++        run.completed_report("logs-recovery", self.repo, "02")
++        for field in ("passed", "run_id", "released", "snapshot_verified", "input_sha256_after"):
++            changed = dict(recovery); changed.pop(field)
++            rp.write_text(run.json.dumps(changed))
++            with self.assertRaises(ValueError): run.completed_report("logs-recovery", self.repo, "02")
++        report = evidence / "logs-l4-01/acceptance.json"
++        for cases in ({"L4": {"passed": True}}, {"L5": {"passed": True}}, {"L4": {"passed": False}}, {"L4": {"passed": True}, "L1": {"passed": True}}):
++            report.write_text(run.json.dumps({"passed": True, "cases": cases})); report.chmod(0o600)
++            if cases == {"L4": {"passed": True}}: run.completed_report("logs-l4", self.repo, "02")
++            else:
++                with self.assertRaises(ValueError): run.completed_report("logs-l4", self.repo, "02")
++
++    def test_l4_preparation_is_exclusive_and_targeted_case_requires_completed_recovery(self):
++        base = self.repo / "scope"; base.mkdir(mode=0o700)
++        for leaf in ("evidence/logs-03", "evidence/logs-03-retained-observation", "runtime", "bin/" + "c"*40):
++            (base / leaf).mkdir(mode=0o700, parents=True, exist_ok=True)
++        names = ("forge-runner", "forge-worker", "application-faults.test")
++        for name in names:
++            p = base / "bin" / ("c"*40) / name; p.write_bytes(name.encode()); p.chmod(0o700)
++        run.p.save(base / "evidence/logs-03/acceptance.json", {"passed": False, "cases": {name: {"passed": True} for name in ("L1", "L2-L3-default", "L3-bytes", "L3-count", "L5")}})
++        original = {"scope_root": str(base), "runner_config": "unchanged", "test_binary": "old"}
++        digest = run.p.digest
++        def selected_digest(path):
++            if path == base / "evidence/logs-03/manifest.json": return "8781bba443e5a83da96cb077eb18223facfeee3469de0b23fce6c37529eef97c"
++            if path == base / "evidence/logs-03-retained-observation/manifest.json": return "7ace4cab71b3f4fbaba9f8ed58ae73dbfe202ab94d83bb4ecbe85bac6d8ab736"
++            return digest(path)
++        with patch.object(run, "inputs", return_value=(base, original)), patch.object(run.p, "digest", side_effect=selected_digest), patch.object(run, "credential") as credential:
++            with self.assertRaises(OSError): run.prepare_l4("logs-l4", "c"*40)
++            self.assertFalse((base / "acceptance-logs-l4-01.json").exists())
++            result = run.prepare_l4("logs-recovery", "c"*40)
++            self.assertFalse(result["executed"])
++            self.assertEqual(run.private_json(base / "acceptance-logs-03-recovery.json")["runner_config"], "unchanged")
++            with self.assertRaises(ValueError): run.prepare_l4("logs-recovery", "c"*40)
++            (base / "evidence/logs-03-recovery").mkdir(mode=0o700)
++            run.p.save(base / "evidence/logs-03-recovery/report.json", {"passed": True, "run_id": "run_DKT2OOLEVCKYXHW5NGNS7BKBHJ", "released": True, "snapshot_verified": True, "input_sha256_before": {"a":"b"}, "input_sha256_after": {"a":"b"}})
++            run.p.save(base / "evidence/logs-03-recovery/manifest.json", {"preserved":"hash"})
++            result = run.prepare_l4("logs-l4", "c"*40)
++            seal = run.private_json(base / "logs-l4-continuation.json")
++            self.assertEqual(seal["acceptance_sha256"], digest(base / "acceptance-logs-l4-01.json"))
++            self.assertEqual(seal["recovery_manifest_sha256"], digest(base / "evidence/logs-03-recovery/manifest.json"))
++            with self.assertRaises(ValueError): run.prepare_l4("logs-l4", "c"*40)
++            credential.assert_not_called()
++
+     def test_second_attempt_cannot_use_old_success_or_claim_terminal_abort(self):
+         case = self.repo / "evidence/sigterm-01/worker-runner-sigterm"
+         case.mkdir(mode=0o700, parents=True)

@@ -1,0 +1,15 @@
+..........................E........
+======================================================================
+ERROR: test_l4_preparation_is_exclusive_and_targeted_case_requires_completed_recovery (test_run.LaunchBoundaryTests.test_l4_preparation_is_exclusive_and_targeted_case_requires_completed_recovery)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/postedism/Desktop/mini claude code/forge-runtime/scripts/faults/sigterm/test_run.py", line 152, in test_l4_preparation_is_exclusive_and_targeted_case_requires_completed_recovery
+    result = run.prepare_l4("logs-recovery", "c"*40)
+  File "/home/postedism/Desktop/mini claude code/forge-runtime/scripts/faults/sigterm/run.py", line 194, in prepare_l4
+    raise ValueError("explicit L4 preparation or retained evidence already exists")
+ValueError: explicit L4 preparation or retained evidence already exists
+
+----------------------------------------------------------------------
+Ran 35 tests in 0.031s
+
+FAILED (errors=1)

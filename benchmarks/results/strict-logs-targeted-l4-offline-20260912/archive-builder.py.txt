@@ -1,0 +1,31 @@
+"""Evidence-only archive; no live services, database, credentials or model calls."""
+from pathlib import Path
+import hashlib,json,re,subprocess,datetime
+R=Path('/home/postedism/Desktop/mini claude code/forge-runtime')
+W=R/'var/local/feature-worktrees/progress'
+D=W/'benchmarks/results/strict-logs-targeted-l4-offline-20260912'
+T=Path('/tmp/forge-targeted-l4-independent-review')
+REV='1b4e0b482fe14aaf834da8e6968b15e4afab0d9a'
+D.mkdir(parents=True,exist_ok=False)
+sha=lambda b:hashlib.sha256(b).hexdigest()
+enc=lambda v:(json.dumps(v,indent=2,sort_keys=True)+'\n').encode()
+rows=[]
+def save(name,data,source,expected=None):
+ if expected is not None:assert sha(data)==expected,source
+ for pattern in [rb'(?:postgres(?:ql)?|https?)://[^\s/"<>]+:[^\s/@"<>]+@',rb'Bearer\s+[A-Za-z0-9._~-]{16,}',rb'-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----',rb'\bsk-[A-Za-z0-9_-]{20,}']:
+  assert re.search(pattern,data) is None,('credential-shaped content',source)
+ p=D/name;p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(data)
+ rows.append({'source':source,'source_sha256':sha(data),'archived_file':name,'archived_sha256':sha(data),'bytes':len(data),'projection':None})
+for original,name in [('/tmp/forge-targeted-l4-root-freeze.json','freeze-v1.json'),('/tmp/forge-targeted-l4-root-freeze-v2.json','freeze-v2.json'),('/tmp/forge-targeted-l4-python-author.log','author/python-first-failed.log'),('/tmp/forge-targeted-l4-python-author-02.log','author/python-corrected.log'),('/tmp/forge-targeted-l4-author-race.jsonl','author/race-initial.jsonl'),('/tmp/forge-targeted-l4-author-race-delta-02.jsonl','author/race-delta.jsonl'),('/tmp/forge-targeted-l4-author-vet.log','author/vet.log')]:
+ save(name,Path(original).read_bytes(),original)
+for original,name in [('review-v1.json','independent/review-v1.json'),('review-v2.json','independent/review-v2.json'),('delta-race-v2.jsonl','independent/delta-race-v2.jsonl'),('delta-python-v2.log','independent/delta-python-v2.log'),('tracked-delta.patch','independent/tracked-delta-v1.patch')]:
+ save(name,(T/original).read_bytes(),str(T/original))
+v1=json.loads((D/'freeze-v1.json').read_bytes());v2=json.loads((D/'freeze-v2.json').read_bytes());assert set(v1)==set(v2)
+for path,expected in v1.items():
+ rel=str(Path(path).relative_to(R));frozen=T/(rel.replace('/','__')+'.txt')
+ save('source-v1/'+rel+'.txt',frozen.read_bytes(),str(frozen),expected)
+for path,expected in v2.items():
+ rel=str(Path(path).relative_to(R));data=subprocess.check_output(['git','show',REV+':'+rel],cwd=R)
+ save('source-v2/'+rel+'.txt',data,'git:'+REV+':'+rel,expected)
+(D/'archive-manifest.json').write_bytes(enc({'version':1,'created_at':datetime.datetime.now(datetime.timezone.utc).isoformat(),'final_committed_revision':REV,'source_versions':2,'source_files_per_version':7,'files':rows,'projection_members':0,'credential_pattern_scan_passed':True,'scan_boundary':'Only review/test logs, frozen source and credential-free manifests selected. No runtime/private/key/env files were read or hashed. Pattern scan is finite; preserved source may mention credential variable names or placeholders without containing credentials.'}))
+print(json.dumps({'archive':str(D),'byte_identical_files':len(rows),'bytes':sum(x['bytes'] for x in rows),'committed_revision':REV}))

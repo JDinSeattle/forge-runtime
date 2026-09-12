@@ -1,0 +1,82 @@
+{
+  "closed_findings": [
+    {
+      "id": "namespace_binding",
+      "priority": "P2",
+      "resolution": "Recovery report explicitly binds tenant, schema and namespace OID852843. The first QueryRow inside the same repeatable-read/read-only transaction reads pg_catalog.pg_namespace and rejects changed OID before constructing or reading any business table.",
+      "validation": "Added report-field negative cases pass; SQL ordering/parameter/type reviewed statically. No actual schema replacement was performed."
+    },
+    {
+      "id": "pending_effect_ledger",
+      "priority": "P2",
+      "resolution": "Live exact-schema effects must all be succeeded/failed/cancelled. Quota reservations must be settled and request_slot_released; workspace cleanup rows must be released. These supplement the original run/counter/allocation checks.",
+      "validation": "Final SQL literals compile; domain effect status set and migration columns reviewed. No actual live SQL call was performed."
+    },
+    {
+      "id": "payload_documentation",
+      "priority": "P3",
+      "resolution": "Stale76822-byte and largest1MiB descriptions corrected to2457622 total ENOSPC payload and1MiB quota-overflow workload."
+    }
+  ],
+  "independent_validation": {
+    "environment": {
+      "GOCACHE": "shared local build cache",
+      "GOENV": "off",
+      "GOMAXPROCS": "2",
+      "GOPROXY": "off",
+      "GOSUMDB": "off",
+      "GOTMPDIR": "own progress worktree ignored temp",
+      "GOTOOLCHAIN": "local",
+      "TMPDIR": "/tmp"
+    },
+    "go_command": "go test -race -count=1 -run TestStrictLogs(Pressure|ENOSPCStop|L4Continuation) -json ./scripts/faults/application",
+    "go_exit_code": 0,
+    "go_test_counts": {
+      "pass": 8
+    },
+    "log_sha256": {
+      "delta-python-v2.log": "347b46f1fc6da51fac366b9b6e0988488634e074021d1fbbb34ae3d82456bcf9",
+      "delta-race-v2.jsonl": "a9c7ab5a83c5e88c85a356bb5d9692cfc857450bc9f0c1fc69f01b583753a8ef"
+    },
+    "python_cases": [
+      "LaunchBoundaryTests.test_l4_phases_cannot_be_confused_with_prior_combined_results",
+      "LaunchBoundaryTests.test_l4_preparation_is_exclusive_and_targeted_case_requires_completed_recovery"
+    ],
+    "python_exit_code": 0,
+    "python_passes": 2
+  },
+  "limits": [
+    "No exact live SQL assertion, volume pressure, Docker policy stop or production recovery was executed by reviewer. Actual L4 remains pending.",
+    "Recovery producer code was inspected at its then-current isolated-worktree WIP; final integration/build must bind the final producer source too.",
+    "The evidence interpretation assumes the dedicated fixture has no independent external container kill, signal or schema mutation actor. It does not claim cryptographic session attestation.",
+    "No universal timing guarantee:18s pause and12s failure-observation windows can fail on a slow host; watchdog/failure paths must preserve honest failure evidence."
+  ],
+  "positive_checks": [
+    "The failed1MiB pressure oracle is replaced by bounded same-FD1MiB/4096/1-byte ENOSPC stages, each Sync, then Bavail0. Partial writes are counted, nonENOSPC/short/sync/bound failures reject.",
+    "Actual spool bytes/optional full metadata are preserved before pressure removal. Valid two-stream initialprefix below operation-byte ceiling plus same-ID early nonzero/nonOOM stop, unchanged future command deadline, paused-worker and current running/context checks support the production spool-failure kill branch within this controlled fixture. Generic metadata ENOSPC alone is insufficient.",
+    "Same-process pause/resume watchdog remains18s and fails closed. No new uncontrolled pause or graceful runner shutdown can satisfy the physical failure path. Slow-host timeout remains a possible truthful failure.",
+    "The recovered old journal must exactly match the sealed final journal; all operations terminal, all workspaces/leases released, all operation_logs removed. Historical failed/observation/recovery manifests and before/after input hashes are revalidated.",
+    "Targeted manifest, output, private directory, opt-in and exact Test name are distinct. Legacy all-six completion gate is unchanged; targeted demands exactly L4 and still performs real publication/download/cleanup/four-slot verification/health loop.",
+    "Current recovery producer WIP report keys/final-journal/manifest contract match the consumer; this is source-contract review, not actual evidence attestation.",
+    "Launcher preparation only creates exclusive manifests/seal; private DB credentials remain out of argv/unit properties and no model credentials are used. Exact test-list and successful matching finalreport checks remain intact."
+  ],
+  "reviewed_at": "2026-09-12T19:01:53.924132+00:00",
+  "scope": "Independent read-only source review and bounded offline regression execution. No live database, Docker, worker/runner process, credentials, model, cleanup or main-source writes. This does not claim actual recovery or targeted L4 acceptance.",
+  "source_freeze_sha256": "5a700a8bd75418e3e6e61c47b868d69a27063c9175aa7e6ec0dfa5403a4bf8ee",
+  "source_hashes_before_after_match": true,
+  "source_sha256": {
+    "/home/postedism/Desktop/mini claude code/forge-runtime/docs/strict-logs-combined-evidence.md": "81e3a6ec93a76db01f003531f8cba6921dc6f2e359224c7939380201ffdece49",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/scripts/faults/application/strict_logs_combined_test.go": "ff2ec3811dd4ba28e6ec3109f353e601ccb25a76407614ecd8ace391614141eb",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/scripts/faults/application/strict_logs_l4_continuation_test.go": "6ca5cc5cf76836a20af6d7e6a59fa0b95f3d34ab3e3176a2d24b104957dc56c0",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/scripts/faults/application/strict_logs_pressure_test.go": "d6525a137eea97b6a9df7a24592d535bd028bafc8b60f4962e068424f6697800",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/scripts/faults/sigterm/README.md": "165d6896b420f9602ce92f3d76028556a407ad34940513ad6c10b2b48158dd6e",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/scripts/faults/sigterm/run.py": "bd58a1e3df4e29851bbc43af37bcf6818d3705a8faaba0354b9171901ca3ba89",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/scripts/faults/sigterm/test_run.py": "c8454c09dae9512832b80a5d0a1bb57999e675bca22731f2991319ffcc10383a"
+  },
+  "supersedes_review": {
+    "original_report_preserved": true,
+    "path": "review-v1.json",
+    "sha256": "71b7cd22a01e966c5acdb70555feb09478fc6f3b7d85275f53b2c989e2df6ecf"
+  },
+  "verdict": "PASS: no remaining P1/P2 in the seven-file root delta, within the stated source/offline scope."
+}

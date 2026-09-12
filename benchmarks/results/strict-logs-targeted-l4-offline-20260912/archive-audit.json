@@ -1,0 +1,30 @@
+{
+  "actual_recovery_or_L4_execution": false,
+  "archive_verified": true,
+  "author_corrected_python_passes": 35,
+  "author_delta_race": {
+    "pass": 1
+  },
+  "author_full_race": {
+    "pass": 104,
+    "skip": 4
+  },
+  "byte_identical_preserved_files": 26,
+  "checks": 76,
+  "final_committed_revision": "1b4e0b482fe14aaf834da8e6968b15e4afab0d9a",
+  "independent_delta_race": {
+    "pass": 8
+  },
+  "independent_python_passes": 2,
+  "independent_review_p2_after": 0,
+  "independent_review_p2_before": 2,
+  "limitations": [
+    "The initial Python error predates freeze v1. Its raw stack/result is preserved; an exact pre-fix source snapshot was not available and was not reconstructed.",
+    "Author logs are retained results associated with the author's reported revisions, not independent clean-build attestations. Author delta tested the guard before the final effect SQL literal broadened to all nonterminal statuses. Independent v2 compilation includes that final literal; no live SQL was exercised.",
+    "The empty vet log alone cannot establish its exit status; exit0 was reported by the author.",
+    "Recovery producer was then WIP in another worktree and is outside this seven-file freeze. Final combined build must also bind its eventual frozen source.",
+    "This verifier reads archive files only. It does not rerun suites, touch volumes/services/databases/credentials or call paid models, and does not close actual L4 acceptance."
+  ],
+  "original_python_failure_preserved": true,
+  "source_files_per_version": 7
+}

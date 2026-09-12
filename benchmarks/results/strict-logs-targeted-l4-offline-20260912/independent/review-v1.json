@@ -1,0 +1,51 @@
+{
+  "author_logs_not_independent_execution": {
+    "hashes": {
+      "/tmp/forge-targeted-l4-author-race.jsonl": "32ae1507f8e191a82f7a3a6afbf1774783896f56e728c1f4637558ba9878f1cc",
+      "/tmp/forge-targeted-l4-python-author-02.log": "dfa0e2ca80778f13fc806ad32602b73d1a4fdd9552a1561d4f0493540c394b4d"
+    },
+    "python": "35 tests reported passing; log retained",
+    "race_test_counts": {
+      "pass": 104,
+      "skip": 4
+    }
+  },
+  "findings": [
+    {
+      "file": "scripts/faults/application/strict_logs_l4_continuation_test.go",
+      "finding": "Live SQL authority is checked only by schema name, not the historical namespace OID. The completed recovery producer supplies schema/tenant/schema_oid=852843, but the consumer does not decode or verify them. A same-name replacement schema with a cancelled original-ID row and zero queried counters can satisfy the live guard while the immutable old recovery archive remains unchanged.",
+      "location": "slL4RecoveryReport / slL4Prerequisite immediately before exact-schema table queries",
+      "priority": "P2",
+      "proof_boundary": "Static control-flow counterexample; no replacement schema was created or live database queried.",
+      "required_delta": "Bind exact recovery report schema/tenant/OID and query pg_namespace OID before table reads in the same read-only transaction."
+    },
+    {
+      "file": "scripts/faults/application/strict_logs_l4_continuation_test.go",
+      "finding": "Live idle checks omit unsettled effects. An inserted/changed planned, in_flight or unknown effect does not change any currently queried run state or resource/model-reservation counter. This can admit new work despite an unclosed old effect ledger.",
+      "location": "queries list",
+      "priority": "P2",
+      "proof_boundary": "Static query coverage counterexample; no ledger rows were modified.",
+      "required_delta": "Require zero exact-schema effects outside succeeded/failed/cancelled, preserving failed receipts as terminal."
+    },
+    {
+      "file": "docs/strict-logs-combined-evidence.md",
+      "finding": "Old 76822-byte ENOSPC-program statement remains immediately after the new 4096-byte-per-stream program description. New planned payload is 2457622 bytes.",
+      "priority": "P3"
+    }
+  ],
+  "remaining": [
+    "Freeze and review bounded fixes, then independently run only affected offline regressions/compile.",
+    "No actual recovered or targeted L4 result exists in this review; old failed evidence is not relabeled."
+  ],
+  "reviewed_at": "2026-09-12T18:59:56.211322+00:00",
+  "reviewed_positive": [
+    "1MiB\u21924096\u21921B writer accounts partial writes and each ENOSPC stage, fails other errors/short writes/bound exhaustion, and requires Sync and final Bavail0 on the same FD.",
+    "Raw spool prefix is retained below operation limit, original command and container are bound through slDockerOracle, early nonzero/non-OOM stop precedes immutable deadline, and pause/context/running-state checks exclude declared alternative fixture stop branches.",
+    "Pause watchdog remains identity-bound and failure closed; final pause.check occurs before pressure removal. The finite18s window can still fail on a slow host, without yielding a false pass.",
+    "Targeted phase uses new paths/opt-in/Test name and only L4; legacy combined gate still requires all6 cases, and historical logs03 aggregate remains false.",
+    "Recovery producer report/final-journal/input map field names match the consumer; source reviewed provisionally until producer final freeze/integration."
+  ],
+  "scope": "Read-only seven-file frozen source delta and original evidence. No host/PG/Docker/process/credential/model action. No production writes.",
+  "source_freeze_sha256": "9ec87c9a57559134ea9a0d762f3f00f28e5b85f00ebfbbb5e4fadbbd53f90724",
+  "verdict": "P2 revisions required before acceptance"
+}
