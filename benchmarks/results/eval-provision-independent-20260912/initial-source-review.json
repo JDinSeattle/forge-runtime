@@ -1,0 +1,32 @@
+{
+  "reviewed_revision": "9ea66ba5095c75bd3084cd5440beb63ba0a666d6",
+  "reviewer": "root independent of provision author",
+  "reviewed_at": "2026-09-12T05:10:48.876357+00:00",
+  "passed": true,
+  "findings": [],
+  "source_sha256": {
+    "scripts/evaluation/provision/README.md": "1e2cf8a78fa7d7518c15853abf57af34e6c513865476b8683529a0fce1a13cc4",
+    "scripts/evaluation/provision/database.go": "0eeeccfe1c5756fe5deaf2d344baf7beb3cfde8b7208793bc6401801d8d0d838",
+    "scripts/evaluation/provision/main.go": "3b1ac96881f1a6a1c6e56b6686424cd0fd5b2d14577c79352e382bbc614a6e59",
+    "scripts/evaluation/provision/provision_test.go": "a07805941bfe174044674aa7d03bd52948413499103e5142bc3184c282941273",
+    "scripts/evaluation/provision/validate.go": "de7179494fcb3a0fba12c6d77010a95c09f04a52013f3c6aa63daf507bfac300"
+  },
+  "race_log": "/tmp/forge-eval-provision-independent-race.log",
+  "race_log_sha256": "83529f2c224b2f513a3ad1bdb7c96418bbd9057e4527ca75c9d4e15febff67e9",
+  "passing_test_entries": 35,
+  "checks": [
+    "Explicit password-bearing 127.0.0.1:32773/forge administrator URL; rejects arbitrary URL parameters, PGSERVICE and PGOPTIONS; no credential in argv/public descriptors",
+    "One random new schema and three validated quoted role names; staged durable recovery before database mutation; no drop/reset/retry or original shared service action",
+    "Fixed requested DeepSeek alias, 2M microUSD total and four 500K allocations, single model/worker, exact conservative quote, no fallback",
+    "Original journal/key/object/root/volume configuration retained; no runtime or provider key read during provisioning",
+    "No schema ownership or create/inherit/replication for API/worker/audit; explicit worker BYPASSRLS; precise table grants, migration/function OIDs and live role probes",
+    "Audit exported DSN only sslmode=disable, role read-only default; collector must set pg_catalog and fully qualify exact schema",
+    "No model/Engine/service/Docker call in provisioner; private files exclusive 0600 under new0700 output and fsynced; error outputs redact underlying DB error text",
+    "Input file bytes equal frozen commit and unchanged during independent race run"
+  ],
+  "limitations": [
+    "Offline/source approval only. Actual PostgreSQL migrations, ACL probes and authentication have not been executed.",
+    "This provisioner is not a durable lifetime budget service or launch validator; candidate corpus commands, actual source bytes, mounted pool UUID/quiescence, loaded process configurations, deadline and single fixed batch must be separately verified by the launcher/collector before paid submission.",
+    "Do not restart or regenerate another batch after unknown paid submission."
+  ]
+}

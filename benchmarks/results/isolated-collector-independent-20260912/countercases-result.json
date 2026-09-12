@@ -1,0 +1,33 @@
+{
+  "commit": "41d6f5184157ee8048647336536205cfefe4cc5f",
+  "tests": 6,
+  "passed": true,
+  "observations": [
+    {
+      "case": "actual_go_submit_type_serialization",
+      "samples": 9,
+      "all_equal": true,
+      "scope": "Local Go bridge only; no CLI or HTTP invocation."
+    },
+    {
+      "case": "complete_case_to_project_and_cli_receipt",
+      "positive_verified": true,
+      "wrong_get_project_rejected": true,
+      "wrong_sql_project_rejected": true,
+      "both_wrong_projects_rejected": true,
+      "changed_bodyhash_response_key_rejected": true,
+      "scope": "Synthetic API/SQL/artifacts, no spawned process or socket."
+    },
+    {
+      "case": "original_batch_envelope_substitution",
+      "rejected": true,
+      "error": "saved batch envelope differs from the frozen authorization"
+    },
+    {
+      "case": "original_wrong_project_fixture",
+      "rejected": true,
+      "error": "case requires its exact sealed source/profile",
+      "limit": "Legacy fixture omits newly required sealed source and CLI receipt; next test supplies both to exercise project binding."
+    }
+  ]
+}

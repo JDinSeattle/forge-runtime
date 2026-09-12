@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "reviewed_tip": "41d6f5184157ee8048647336536205cfefe4cc5f",
+  "reviewed_previous": "28abdcafb67e2048b7de333949bd20addbb9cfc1",
+  "checkout": "/tmp/forge-collector-review-41d6f51",
+  "scope": "Independent frozen-source collector delta and offline counterexample review. No database, provider, key, service, Docker or paid invocation. Local Go serialization bridge and bounded helper tests only.",
+  "source_files": 42,
+  "all_source_matches_git": true,
+  "source_unchanged": true,
+  "clean_checkout": true,
+  "tests": {
+    "author": {
+      "passed": 30,
+      "log": "/tmp/forge-collector-delta-independent/author-tests.log"
+    },
+    "independent": {
+      "passed": 6,
+      "log": "/tmp/forge-collector-delta-independent/countercases.log",
+      "go_submit_serialization_samples": 9
+    }
+  },
+  "resolved_prior_findings": [
+    {
+      "id": "collector-batch-envelope",
+      "status": "fixed",
+      "evidence": "Exact original changed cap/allocation/corpus/task-order input rejected by validate_batch; budget numbers emitted from validated registration."
+    },
+    {
+      "id": "collector-task-run-binding",
+      "status": "fixed",
+      "evidence": "Exact old incomplete fixture rejected at sealed-source gate. Independent complete positive fixture then wrong GET project, wrong SQL project and both wrong projects rejected; changed CLI body hash/response run/key rejected. Real api.Submit byte bridge matches all four corpus tasks plus five escape/control/Unicode/large-string variants."
+    }
+  ],
+  "findings": [
+    {
+      "severity": "P2",
+      "id": "provision-client-env-collector-format",
+      "component": "provisioner9ea66ba -> collector41d6f51 integration",
+      "status": "confirmed; parent authorized provisioner-only correction",
+      "evidence": "/tmp/forge-collector-delta-independent/client-env-contract.json",
+      "description": "Provisioner uses shell-quoted client.env values. Collector deliberately reads a plain three-variable file and treats single quotes literally. Quoted tenant fails incomplete client environment before CLI or audit; same synthetic plain values pass. Preserve shell quoting of api/worker/audit DSNs; validate and emit plain safe API/tenant/token values only."
+    }
+  ],
+  "accepted_boundaries": [
+    "Exact deployment purpose, selected deepseek-v4-flash request alias, $2 and four $0.50 allocations; separate fixed eval-01 output, candidate/corpus/registration hashes and pinned CLI binary.",
+    "No automatic new batch or resubmission: --execute uses exclusive directory; --collect uses saved intents/IDs and stops at missing/unknown run; audit/CLI error stops further submissions.",
+    "Explicit private schema/OID/current+session audit role and read-only/no-DML/nonowner proof; SQL business relations qualified with psql identifier variables; minimal environment excludes inherited provider/PG routing variables.",
+    "Missing/duplicate/orphan reservations and wrong credential group/pricing fail auditing; unknown reserves remain exposure, invoice remains unverified.",
+    "Native response artifacts are downloaded and SHA256-checked; request model remains an alias. Collector does not turn native model observations into a pinned-server-version claim or extract a new top-level returned-model summary.",
+    "Receipt request bytes match current generated Submit struct and actual CLI scope/hash algorithm for tested fixed-corpus inputs. --submit-json is a local serialization test bridge, not a request validator or dispatch path."
+  ],
+  "limits": [
+    "No actual PostgreSQL ACL/RLS/schema-OID/transaction test was run; audit SQL is source-reviewed and subprocess fixtures are mocked. Prior schema-USAGE hypothesis is not independently confirmed as a defect.",
+    "Local signed-off descriptors and file hashes do not attest live worker configuration or process identity; launcher still must enforce actual version/config/authority and quiescence gates.",
+    "Fixed directory and four caps are one collector batch policy, not a perpetual authorization or provider invoice limit. No paid evidence.",
+    "This delta review does not implement the larger design wish list (cross-schema global inventory, lifecycle cleanup or deployment launcher)."
+  ]
+}

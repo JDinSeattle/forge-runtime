@@ -1,0 +1,59 @@
+{
+  "passed": true,
+  "source_revision": "0410b9e80badd5e8a7c81d1e518e1e47f16da2a1",
+  "scope": "merged evaluation helper tests only, no PG/paid/service/Engine; unrelated uncommitted log-continuation test edits exist",
+  "passing_tests": 30,
+  "source_sha256": {
+    "scripts/evaluation/test_evaluation.py": "f75bfcb9e35cf0d746c16251490b10702e907a14e8b5979164706918b066a1b0",
+    "scripts/evaluation/test_deployment.py": "bd0e8d7d9a9a2fbcbe1feb4b0d0f6a2e65a86f282e11e3f0fb10750774a16a6a",
+    "scripts/evaluation/audit_scope.sql": "7da573ce3f6bacdab08337f263785eda4f131a1a4ce26ea8aaecbc3f7eb08261",
+    "scripts/evaluation/deployment.template.json": "6359b45d56c44f087db491286c7623f22a31c576fbf2ad8603e09d3ebdd7cbad",
+    "scripts/evaluation/audit.sql": "b43b5bb995c049d0dcc8a7207264278d454760b91a27124eff67753287a199a2",
+    "scripts/evaluation/prepare.py": "0de049228420017610fbc77efa30653db679154048ff192c94e6563027e4dedb",
+    "scripts/evaluation/evaluate.py": "69e00ca8ee0a27ce4986562bf46caf093ae56ec8807b4b5aa2002b43fc25557f",
+    "scripts/evaluation/hash-sources.go": "d4058d23b203b5161cd13825981e71475cf87111f1c004ffccbb50d9d267c41a",
+    "scripts/evaluation/deployment.py": "957febc5f185c50f64b45cf99639439cfed0e82f220bbeba0aa3ce0c7b6ffa77",
+    "scripts/evaluation/oracle.py": "70a9458c5eedea1769cb8d5189a52cc62b8db4a3beb9c51615dc991eeede2b3a",
+    "scripts/evaluation/common.py": "a2e91d57cb1601b3c86eeb8433d79e387086860fba5b607b50710a224dcd5076",
+    "scripts/evaluation/registration.template.json": "a40bff1a844e7ba6565bac3432a3f9c837aef07d37d7f0137f706e9f9414be34",
+    "scripts/evaluation/test_collection_binding.py": "33826bde0e43f8f074f6fb2b61840494106293fec794a88ecc6f0b54c94e98b4"
+  },
+  "files": {
+    "first-environment-failure.log": {
+      "source": "/tmp/forge-collector-main-integrated-python.log",
+      "sha256": "b4d023c521a56ba513cff6f22c815475f17676cc7412891c5fe547b268f668c9",
+      "bytes": 10141
+    },
+    "second-explicit-cache-pass.log": {
+      "source": "/tmp/forge-collector-main-integrated-python-v2.log",
+      "sha256": "cc1f2b467566c4c81b1fb21b3182c07b56139fcbafa818be2d896f3a4947075f",
+      "bytes": 4877
+    }
+  },
+  "first_attempt": "Three Go bridge tests failed because the default cache path was read-only in the sandbox; no source change was made.",
+  "second_attempt": "Explicit already-writable project Go cache/temp and Go1.26.8 path; all 30 tests passed.",
+  "command": [
+    "python3",
+    "-I",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "scripts/evaluation",
+    "-p",
+    "test_*.py",
+    "-v"
+  ],
+  "environment_overrides": {
+    "GOPROXY": "off",
+    "GOSUMDB": "off",
+    "GOENV": "off",
+    "GOTOOLCHAIN": "local",
+    "GOCACHE": "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/go-build-cache",
+    "GOTMPDIR": "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/integration-go-tmp",
+    "TMPDIR": "/tmp",
+    "GOPATH": "/home/postedism/go",
+    "GOMODCACHE": "/home/postedism/go/pkg/mod",
+    "PATH": "/home/postedism/.local/share/mise/installs/go/1.26.8/bin:/usr/bin:/bin"
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "passed": true,
+  "reviewer": "root independent of provision author",
+  "reviewed_tip": "4d2d880b77534cfd59524ae03717e67a3c873aba",
+  "original_review": "initial-source-review.json",
+  "original_integration_finding": "client-format-failure.json",
+  "resolved": "Plain client values are validated against exact numeric-loopback origin and safe tenant/base32 token alphabets before writing; API/worker/audit DSNs keep separate shell-quoted contract. No collector relaxation or new DB privilege.",
+  "test_entries": 51,
+  "source_sha256": {
+    "scripts/evaluation/provision/README.md": "34e9b8273d14e8386ad62cf6cc3ae16cb932dd19552bff29e746b63ceb3f396e",
+    "scripts/evaluation/provision/database.go": "99d2f72d1e28c70335d5b6d838528944fc827cd366de44f9f47d4079156aa57f",
+    "scripts/evaluation/provision/main.go": "3b1ac96881f1a6a1c6e56b6686424cd0fd5b2d14577c79352e382bbc614a6e59",
+    "scripts/evaluation/provision/provision_test.go": "841638d006dc1803ec3a200c69b09b06102acdfe23a10628a49484bf200feb70",
+    "scripts/evaluation/provision/validate.go": "a137b8fcb22429dbdb9b0dc0e4511664bdf18309103e262f7536bd755e881ed5"
+  },
+  "files": {
+    "initial-source-review.json": {
+      "source": "/tmp/forge-eval-provision-independent-review.json",
+      "sha256": "3926285cd20c4f17781662fa1a824f8850dd9fe8a0f30499c01a29b400314a90",
+      "bytes": 2721
+    },
+    "initial-race.log": {
+      "source": "/tmp/forge-eval-provision-independent-race.log",
+      "sha256": "83529f2c224b2f513a3ad1bdb7c96418bbd9057e4527ca75c9d4e15febff67e9",
+      "bytes": 32824
+    },
+    "client-delta-race.log": {
+      "source": "/tmp/forge-provision-client-delta-root-race.log",
+      "sha256": "4a65c43f6fa0ad37383e9eed44a13c17d00431fdd506c8f43a88a29b39d339dc",
+      "bytes": 48251
+    },
+    "client-format-failure.json": {
+      "source": "/tmp/forge-collector-delta-independent/client-env-contract.json",
+      "sha256": "f23ff7c6b00e2dd36fe36113d830caf5e375d62df40bb782bc5a56e488f883ac",
+      "bytes": 139
+    }
+  },
+  "scope": "Source review plus merged offline race tests only. Original 35-test source review did not detect the subsequently reproduced client.env integration defect; failure is retained separately and the reviewed delta fixes it. Actual PG and paid execution have not occurred.",
+  "remaining_checks": [
+    "actual new-schema migrations/ACL/RLS/function/token probes",
+    "launcher must verify corpus commands, source bytes, live process configuration, journal/volume identity and single $2 batch before execute"
+  ]
+}
