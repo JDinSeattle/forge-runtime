@@ -61,6 +61,17 @@ source snapshot, a fresh signing key and configuration, then writes
 ownership markers or a listening socket. It refuses an existing partial
 runtime so that uncertain state cannot be reset by rerunning setup.
 
+For ordinary users, `losetup` can report null backing inode/device fields.
+Configuration still requires the live `/sys/dev/block/<device>` backing path,
+zero offset, the fixed 256 MiB size limit and sector count, and read-write mode.
+The exact backing image is separately checked through no-follow file
+descriptors for its recorded device/inode, private ownership, full allocation
+and ext4 UUID. Missing sysfs evidence or any explicit `losetup` identity
+mismatch is rejected. Root-owned mount-state, exact mount ID/options, empty
+slots and filesystem capacity remain required; copied privileged mount helpers
+are unchanged. Configuration observations record which identity fields
+`losetup` exposed and the checked sysfs values.
+
 The runner uses its production Docker backend, the pinned Python image and
 default strict framed-log limits: 16 KiB entries, 512 KiB per operation,
 16 MiB cumulative per run, 32 process operations and 64 KiB previews. Separate

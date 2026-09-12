@@ -8,6 +8,7 @@ import importlib.util
 import json
 import os
 from pathlib import Path
+import re
 import stat
 import sys
 
@@ -22,6 +23,7 @@ def load_module(name, path):
 
 
 p = load_module("lifecycle_prepare", Path(__file__).with_name("prepare.py"))
+SYS_BLOCK = Path("/sys/dev/block")
 SOURCE = "def clamp(v, lo, hi):\n    return v\n"
 TARGET = ["python", "-I", "-B", "-c", "import runpy; a=runpy.run_path('/workspace/app.py'); assert a['clamp'](5,0,3)==3"]
 REGRESSION = ["python", "-I", "-B", "-c", "import runpy; a=runpy.run_path('/workspace/app.py'); assert a['clamp'](2,0,3)==2"]
@@ -59,6 +61,53 @@ def runner_config(base, descriptor, slots):
     }
 
 
+def loop_integer(value):
+    # Do not coerce null, bool, floats or malformed kernel/tool output to an
+    # apparently valid offset, length or inode.
+    if type(value) is int and value >= 0:
+        return value
+    if isinstance(value, str) and re.fullmatch(r"0|[1-9][0-9]*", value):
+        return int(value)
+    raise ValueError("missing or malformed loop integer evidence")
+
+
+def verify_live_loop(row, slot, volume):
+    """Require live sysfs proof after build_slots/check_images pin the image.
+
+    Unprivileged losetup can omit BACK-INO/BACK-MAJ:MIN. Sysfs supplies the
+    exact backing path and geometry; the caller independently verifies that
+    path's image FD, device/inode, ext4 UUID, allocation and protection. Any
+    identity losetup *does* supply must also agree, never override this proof.
+    The privileged provisioning helper's verify_loop remains unchanged.
+    """
+    device = volume["device"]
+    match = re.fullmatch(r"7:(0|[1-9][0-9]*)", device)
+    if not match or row.get("maj:min") != device or row.get("name") != "/dev/loop" + match[1]:
+        raise ValueError("live loop name/device does not match the recorded slot")
+    expected_dev = f"{os.major(slot['device'])}:{os.minor(slot['device'])}"
+    if row.get("back-ino") is not None and loop_integer(row["back-ino"]) != slot["inode"]:
+        raise ValueError("reported loop backing inode does not match the image")
+    if row.get("back-maj:min") is not None and row["back-maj:min"] != expected_dev:
+        raise ValueError("reported loop backing device does not match the image")
+    if (loop_integer(row.get("offset")) != 0 or loop_integer(row.get("sizelimit")) != p.IMAGE_BYTES
+            or type(row.get("ro")) not in (bool, int) or row["ro"] != 0):
+        raise ValueError("reported loop offset/size/read-write mode does not match the image")
+    sysbase = SYS_BLOCK / device
+    backing = (sysbase / "loop/backing_file").read_text(encoding="utf-8").removesuffix("\n")
+    if backing != volume["image_path"]:
+        raise ValueError("live sysfs loop backing path does not match the pinned image")
+    observed = {"backing_file": backing}
+    for name, want in (("loop/offset", 0), ("loop/sizelimit", p.IMAGE_BYTES),
+                       ("size", p.IMAGE_BYTES // 512), ("ro", 0)):
+        value = loop_integer((sysbase / name).read_text(encoding="ascii").removesuffix("\n"))
+        if value != want:
+            raise ValueError("live sysfs loop " + name + " does not match the fixed writable image")
+        observed[name] = value
+    observed["losetup_backing_inode_available"] = row.get("back-ino") is not None
+    observed["losetup_backing_device_available"] = row.get("back-maj:min") is not None
+    return observed
+
+
 def actual_slots(base, descriptor, config_module):
     common = config_module.common
     pool = base / "pool-root"
@@ -89,7 +138,7 @@ def actual_slots(base, descriptor, config_module):
                 matches = [r for r in rows if r.get("maj:min") == volume["device"]]
                 if len(matches) != 1:
                     raise ValueError("single recorded loop association required")
-                common.verify_loop(matches[0], slot)
+                loop = verify_live_loop(matches[0], slot, volume)
                 common.verify_mount(mount, matches[0])
                 if set(os.listdir(expected_path)) - {"lost+found"}:
                     raise ValueError("initial fixture pool is not empty; retain existing ownership and data")
@@ -97,11 +146,14 @@ def actual_slots(base, descriptor, config_module):
                 if f"{os.major(st.st_dev)}:{os.minor(st.st_dev)}" != volume["device"]:
                     raise ValueError("mounted filesystem changed while inspecting")
                 fs = os.statvfs(expected_path)
-                device_bytes = int(Path("/sys/dev/block", volume["device"], "size").read_text().strip()) * 512
+                device_bytes = loop["size"] * 512
                 if device_bytes != p.IMAGE_BYTES or not 0 < fs.f_blocks * fs.f_frsize <= device_bytes or not 0 < fs.f_files <= 65536:
                     raise ValueError("actual filesystem/device capacity does not match the fixed slot")
-                observations.append({"slot_id": volume["id"], "mount": mount, "device_bytes": device_bytes,
+                observations.append({"slot_id": volume["id"], "mount": mount, "loop": loop, "device_bytes": device_bytes,
                                      "filesystem_bytes": fs.f_blocks * fs.f_frsize, "inodes": fs.f_files})
+            # Recheck the no-follow image FDs after reading all live loop/mount
+            # evidence, still under the original provisioning lock.
+            config_module.check_images(tree, manifest)
     return slots, observations
 
 
