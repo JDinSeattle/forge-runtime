@@ -1,0 +1,57 @@
+{
+  "base_revision": "a4e056758d44acbe68726771823bc2fa41786069",
+  "results": [
+    {
+      "name": "ordinary",
+      "command": [
+        "go",
+        "test",
+        "-count=1",
+        "-json",
+        "./scripts/faults/application",
+        "-run",
+        "^TestStrictLogsL4Recovery"
+      ],
+      "exit_code": 0,
+      "seconds": 2.3178356169955805
+    },
+    {
+      "name": "race",
+      "command": [
+        "go",
+        "test",
+        "-race",
+        "-count=1",
+        "-json",
+        "./scripts/faults/application",
+        "-run",
+        "^TestStrictLogsL4Recovery"
+      ],
+      "exit_code": 0,
+      "seconds": 9.080069790012203
+    },
+    {
+      "name": "vet",
+      "command": [
+        "go",
+        "vet",
+        "./scripts/faults/application"
+      ],
+      "exit_code": 0,
+      "seconds": 0.31543453002814204
+    }
+  ],
+  "source_sha256_before": {
+    "scripts/faults/application/strict_logs_l4_recovery_helpers_test.go": "4f2a8584fff40205b9f63939a600300dc8e37d9724c4b9a290aec134e827d6fa",
+    "scripts/faults/application/strict_logs_l4_recovery_offline_test.go": "79c9dea72f92384c8a0451ca60802d2d1d8e26576ba2423e3328aff4c4fd22c6",
+    "scripts/faults/application/strict_logs_l4_recovery_test.go": "fd2ee2b88070f767fdb455996f8fb82d684474886d826333920a795611e972af"
+  },
+  "source_sha256_after": {
+    "scripts/faults/application/strict_logs_l4_recovery_helpers_test.go": "4f2a8584fff40205b9f63939a600300dc8e37d9724c4b9a290aec134e827d6fa",
+    "scripts/faults/application/strict_logs_l4_recovery_offline_test.go": "79c9dea72f92384c8a0451ca60802d2d1d8e26576ba2423e3328aff4c4fd22c6",
+    "scripts/faults/application/strict_logs_l4_recovery_test.go": "fd2ee2b88070f767fdb455996f8fb82d684474886d826333920a795611e972af"
+  },
+  "source_unchanged": true,
+  "saved_observation_inputs": 610,
+  "scope": "Local filesystem negative tests and immutable saved nonsecret evidence only. Actual recovery opt-in is skipped. No live PG, SQLite, Docker, signing key, mount, service or pressure-file access."
+}

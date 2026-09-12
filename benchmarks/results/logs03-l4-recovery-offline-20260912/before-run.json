@@ -1,0 +1,18 @@
+{
+  "command": [
+    "go",
+    "test",
+    "-count=1",
+    "-v",
+    "./scripts/faults/application",
+    "-run",
+    "^TestStrictLogsL4RecoverySavedInputs$"
+  ],
+  "exit_code": 1,
+  "sources": {
+    "scripts/faults/application/strict_logs_l4_recovery_helpers_test.go": "1dca14755097b549694079b10763a6e787f2714e46ba4fdbf957a81d1c837446",
+    "scripts/faults/application/strict_logs_l4_recovery_test.go": "9934a75c74fe2c4fc8d825bd426ed3f2b12ea39a65cc91c7f9b245225ca6eb52",
+    "scripts/faults/application/strict_logs_l4_recovery_offline_test.go": "d48b083637067d59817d72735f11b28a9aa773465b1e27223cf4d3591ffe07a6"
+  },
+  "scope": "saved nonsecret files only; no live PG, journal, Docker, or pressure access"
+}

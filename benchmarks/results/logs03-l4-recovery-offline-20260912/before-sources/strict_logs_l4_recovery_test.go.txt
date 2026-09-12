@@ -1,0 +1,552 @@
+//go:build linux
+
+package applicationfaults
+
+// Operator opt-in only. This is recovery of failed evidence, not a passing L4
+// acceptance. No SQL state writes, new model/provider, worker loop or Start RPC.
+import (
+	"bytes"
+	"context"
+	"debug/buildinfo"
+	"encoding/json"
+	"fmt"
+	"net/url"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"reflect"
+	"strconv"
+	"strings"
+	"testing"
+	"time"
+
+	"github.com/JDinSeattle/forge-runtime/internal/application"
+	"github.com/JDinSeattle/forge-runtime/internal/artifact"
+	"github.com/JDinSeattle/forge-runtime/internal/configuration"
+	"github.com/JDinSeattle/forge-runtime/internal/domain"
+	"github.com/JDinSeattle/forge-runtime/internal/persistence"
+	"github.com/JDinSeattle/forge-runtime/internal/quota"
+	"github.com/JDinSeattle/forge-runtime/internal/runner"
+	flow "github.com/JDinSeattle/forge-runtime/internal/runtime"
+	"github.com/JDinSeattle/forge-runtime/internal/sandbox"
+	"github.com/jackc/pgx/v5/pgxpool"
+	"golang.org/x/sys/unix"
+)
+
+func slL4NoProcesses(c slRunnerConfig, worker string) error {
+	dirs, e := os.ReadDir("/proc")
+	if e != nil {
+		return e
+	}
+	for _, d := range dirs {
+		if _, e = strconv.Atoi(d.Name()); e != nil {
+			continue
+		}
+		raw, e := os.ReadFile(filepath.Join("/proc", d.Name(), "cmdline"))
+		if os.IsNotExist(e) {
+			continue
+		}
+		if e != nil {
+			return fmt.Errorf("cannot establish process absence")
+		}
+		for _, arg := range bytes.Split(raw, []byte{0}) {
+			if string(arg) == c.RootDir || string(arg) == c.JournalPath || string(arg) == worker || string(arg) == c.Server.UnixSocket || string(arg) == c.SigningKeyFile || string(arg) == filepath.Join(filepath.Dir(c.RootDir), "runner.json") {
+				return fmt.Errorf("original fixture process still present: pid %s", d.Name())
+			}
+		}
+	}
+	if _, e = os.Lstat(c.Server.UnixSocket); !os.IsNotExist(e) {
+		return fmt.Errorf("original UDS still present; no automatic removal")
+	}
+	return nil
+}
+func slL4Docker(ctx context.Context, c slRunnerConfig, args ...string) ([]byte, error) {
+	if len(args) == 0 || args[0] != "inspect" && args[0] != "ps" {
+		return nil, domain.ErrForbidden
+	}
+	child, end := context.WithTimeout(ctx, 5*time.Second)
+	defer end()
+	binary := c.DockerBinary
+	if binary == "" {
+		binary = "/usr/bin/docker"
+	}
+	cmd := exec.CommandContext(child, binary, append([]string{"--host", c.DockerHost}, args...)...)
+	cmd.Env = []string{"PATH=/usr/bin:/bin", "LC_ALL=C", "XDG_RUNTIME_DIR=/run/user/1000"}
+	var stderr bytes.Buffer
+	cmd.Stderr = &stderr
+	b, e := cmd.Output()
+	if e != nil {
+		return nil, fmt.Errorf("bounded read-only Docker %s failed", args[0])
+	}
+	if len(b) > 2<<20 {
+		return nil, domain.ErrInvalid
+	}
+	return b, nil
+}
+func slL4InitialRun(r persistence.Run, want flow.State) error {
+	if r.ID != slL4Run || r.TenantID != slL4Tenant || r.RunnerID != "application-fault-runner" || r.State.Status != domain.StatusRunning || r.State.Version != 9 || r.State.Lease.Epoch != 2 || r.State.Lease.Owner != "sl-L4-0" || r.State.PendingEffect == nil || r.State.PendingEffect.ID != slL4Op || r.State.PendingEffect.ArgsHash != "ef77c8bf901c5eb227484966ea93b183018290a713d4f2b3dc8d41e77f090af1" {
+		return fmt.Errorf("original run binding differs")
+	}
+	x, e := domain.CanonicalJSON(slJSON(r.State))
+	if e != nil {
+		return e
+	}
+	y, e := domain.CanonicalJSON(slJSON(want))
+	if e != nil || !bytes.Equal(x, y) {
+		return fmt.Errorf("original snapshot changed since retained observation")
+	}
+	return nil
+}
+func slL4Terminal(r, before persistence.Run) error {
+	if r.ID != before.ID || r.TenantID != before.TenantID || r.State.Status != domain.StatusCancelled || r.State.PendingEffect == nil || r.State.PendingEffect.ID != slL4Op || r.State.PendingEffect.Status != flow.EffectFailed || r.State.PendingEffect.ReceiptRef == "" || r.State.PendingEffect.DispatchEpoch != 2 || len(r.State.RemainingEffects) != 0 || r.State.Lease.Epoch <= 2 || r.State.Verification == domain.VerificationVerified || !r.State.Limits.Deadline.Equal(before.State.Limits.Deadline) || r.State.Cost != before.State.Cost || r.State.ModelRounds != before.State.ModelRounds || r.State.ToolCalls != before.State.ToolCalls || r.State.WorkspaceRevision != before.State.WorkspaceRevision {
+		return fmt.Errorf("cancel result changed execution/budget/verification contract")
+	}
+	return nil
+}
+
+func TestStrictLogsL4Recovery(t *testing.T) {
+	if os.Getenv("FORGE_RUN_STRICT_LOGS_L4_RECOVERY") != "1" {
+		t.Skip("operator-only retained L4 recovery; requires independent review and explicit dedicated fixture")
+	}
+	path := os.Getenv("FORGE_STRICT_LOGS_ACCEPTANCE")
+	var a slAcceptance
+	var c slRunnerConfig
+	check := func(e error) {
+		t.Helper()
+		if e != nil {
+			t.Fatal(e)
+		}
+	}
+	check(slReadJSON(path, &a))
+	check(slReadJSON(a.RunnerConfig, &c))
+	check(slValidateContract(a, c))
+	if path != filepath.Join(a.ScopeRoot, "acceptance-logs-03-recovery.json") || a.EvidenceDir != filepath.Join(a.ScopeRoot, "evidence", "sigterm-02") {
+		t.Fatal("explicit original attempt02 recovery manifest required")
+	}
+	uid, e := os.ReadFile("/proc/self/uid_map")
+	check(e)
+	gid, e := os.ReadFile("/proc/self/gid_map")
+	check(e)
+	if os.Geteuid() != 0 || !slMapping(uid) || !slMapping(gid) {
+		t.Fatal("ordinary-owner full rootless mapping required; host root refused")
+	}
+	self, e := os.Executable()
+	check(e)
+	if self != a.TestBinary {
+		t.Fatal("declared frozen test binary required")
+	}
+	unlock, e := lifecycleControlLock(a.ScopeRoot)
+	check(e)
+	defer unlock()
+	ctx, end := context.WithTimeout(context.Background(), 3*time.Minute)
+	defer end()
+	inputs := map[string]string{}
+	old := filepath.Join(a.ScopeRoot, "evidence", "logs-03")
+	observation := filepath.Join(a.ScopeRoot, "evidence", "logs-03-retained-observation")
+	check(slCleanupManifest(old, slL4FailedSHA, inputs))
+	check(slCleanupManifest(observation, slL4ObservationSHA, inputs))
+	_, e = slCleanupHashFile(a.RunnerConfig, inputs, slL4ConfigSHA)
+	check(e)
+	raw, e := slCleanupHashFile(filepath.Join(a.ScopeRoot, "acceptance-logs-03.json"), inputs, slL4AcceptanceSHA)
+	check(e)
+	var prior slAcceptance
+	check(json.Unmarshal(raw, &prior))
+	same := a
+	same.RunnerBinary = prior.RunnerBinary
+	same.RunnerSHA = prior.RunnerSHA
+	same.WorkerBinary = prior.WorkerBinary
+	same.WorkerSHA = prior.WorkerSHA
+	same.TestBinary = prior.TestBinary
+	same.TestSHA = prior.TestSHA
+	if same != prior {
+		t.Fatal("recovery changes original authority beyond frozen binaries")
+	}
+	_, e = slCleanupHashFile(path, inputs, "")
+	check(e)
+	for _, x := range []struct{ p, h, pkg string }{{a.TestBinary, a.TestSHA, ""}, {a.RunnerBinary, a.RunnerSHA, "github.com/JDinSeattle/forge-runtime/cmd/forge-runner"}, {a.WorkerBinary, a.WorkerSHA, "github.com/JDinSeattle/forge-runtime/cmd/forge-worker"}} {
+		_, e = slCleanupHashFile(x.p, inputs, x.h)
+		check(e)
+		bi, e := buildinfo.ReadFile(x.p)
+		check(e)
+		if x.pkg != "" && bi.Path != x.pkg {
+			t.Fatal("binary package mismatch")
+		}
+	}
+	private := filepath.Join(a.ScopeRoot, "runtime", "strict-logs-private-03")
+	workerPath := filepath.Join(private, "L4-worker.json")
+	check(slL4NoProcesses(c, workerPath))
+	// Original worker config has no DSN. Its canonical hash is in the immutable
+	// failed fixture descriptor; no raw credential file enters the hash manifest.
+	var fixture struct {
+		Tenant    domain.ID `json:"tenant"`
+		RunID     domain.ID `json:"run_id"`
+		Target    domain.ID `json:"target_operation"`
+		WorkerSHA string    `json:"worker_config_sha256"`
+	}
+	check(slReadJSON(filepath.Join(old, "L4", "fixture.json"), &fixture))
+	var worker configuration.Config
+	check(slReadJSON(workerPath, &worker))
+	if fixture.Tenant != slL4Tenant || fixture.RunID != slL4Run || fixture.Target != slL4Op || slSHA(slJSON(worker)) != fixture.WorkerSHA || worker.ArtifactRoot != c.ArtifactRoot || worker.SigningKeyFile != c.SigningKeyFile || worker.RunnerID != "application-fault-runner" || worker.Runner.UnixSocket != c.Server.UnixSocket {
+		t.Fatal("original worker fixture binding differs")
+	}
+	var secret struct {
+		Schema string `json:"schema"`
+		DSN    string `json:"worker_dsn"`
+	}
+	check(slReadJSON(filepath.Join(private, "database.json"), &secret))
+	cfg, e := pgxpool.ParseConfig(secret.DSN)
+	if e != nil {
+		t.Fatal("private database config invalid")
+	}
+	if secret.Schema != slL4Schema || cfg.ConnConfig.Host != "127.0.0.1" || cfg.ConnConfig.Port != 32773 || cfg.ConnConfig.Database != "forge" || cfg.ConnConfig.RuntimeParams["search_path"] != slL4Schema {
+		t.Fatal("private database route differs")
+	}
+	u, e := url.Parse(secret.DSN)
+	check(e)
+	if u.Scheme != "postgres" && u.Scheme != "postgresql" || u.Host != "127.0.0.1:32773" || u.Path != "/forge" || u.Fragment != "" {
+		t.Fatal("explicit single private URL required")
+	}
+	for k, v := range u.Query() {
+		if len(v) != 1 || k != "sslmode" && k != "search_path" || k == "sslmode" && v[0] != "disable" || k == "search_path" && v[0] != slL4Schema {
+			t.Fatal("extra private database routing refused")
+		}
+	}
+	var role struct {
+		Schema     string `json:"schema"`
+		WorkerRole string `json:"worker_role"`
+	}
+	check(slReadJSON(filepath.Join(old, "private-schema.json"), &role))
+	if role.Schema != slL4Schema || role.WorkerRole != cfg.ConnConfig.User {
+		t.Fatal("original restricted role differs")
+	}
+	db, e := persistence.Open(ctx, secret.DSN)
+	secret.DSN = ""
+	if e != nil {
+		t.Fatal("private database unavailable; original state retained")
+	}
+	defer db.Close()
+	check(db.CheckWorkerRole(ctx))
+	pgBefore, e := slL4PG(ctx, db)
+	check(e)
+	var others []struct {
+		ID    domain.ID `json:"id"`
+		State string    `json:"state"`
+	}
+	check(json.Unmarshal(pgBefore["runs"], &others))
+	if len(others) != 2 {
+		t.Fatal("original two-run schema changed")
+	}
+	for _, r := range others {
+		if r.ID != slL4Run && (r.ID != "run_FSOSGYSAML5QZCYDZOP3TER3JI" || r.State != "completed") {
+			t.Fatal("unexpected other run")
+		}
+	}
+	var obs struct {
+		Runs []struct {
+			ID       string     `json:"id"`
+			Snapshot flow.State `json:"snapshot"`
+		} `json:"runs"`
+	}
+	check(slReadJSON(filepath.Join(observation, "postgres.json"), &obs))
+	var want flow.State
+	for _, r := range obs.Runs {
+		if r.ID == slL4Run {
+			want = r.Snapshot
+		}
+	}
+	before, e := db.GetRun(ctx, slL4Tenant, slL4Run)
+	check(e)
+	check(slL4InitialRun(before, want))
+	var now time.Time
+	var peers, active, reserved, allocations, attempts, effects, cleanups int
+	check(db.Pool.QueryRow(ctx, `SELECT clock_timestamp(),(SELECT count(*) FROM pg_stat_activity WHERE usename=current_user AND pid<>pg_backend_pid()),(SELECT coalesce(sum(active_count),0) FROM tenant_runtime),(SELECT reserved_slots FROM runners WHERE id='application-fault-runner'),(SELECT count(*) FROM runner_allocations WHERE state<>'released'),(SELECT count(*) FROM model_attempts),(SELECT count(*) FROM effects),(SELECT count(*) FROM workspace_cleanup)`).Scan(&now, &peers, &active, &reserved, &allocations, &attempts, &effects, &cleanups))
+	if peers != 0 || active != 1 || reserved != 1 || allocations != 1 || attempts != 4 || effects != 8 || cleanups != 0 || !now.After(before.State.Lease.Until) || !now.After(before.State.Limits.Deadline) {
+		t.Fatal("retained PG counters/lease/deadline differ")
+	}
+	var requests, reservations int
+	var committedTokens, committedMoney, reservedTokens, reservedMoney int64
+	check(db.Pool.QueryRow(ctx, `SELECT active_requests,committed_tokens,committed_microusd,reserved_tokens,reserved_microusd,(SELECT count(*) FROM quota_reservations WHERE status<>'settled') FROM provider_quotas WHERE credential_group='application-faults-fake'`).Scan(&requests, &committedTokens, &committedMoney, &reservedTokens, &reservedMoney, &reservations))
+	if requests != 0 || reservations != 0 || committedTokens != 570 || committedMoney != 570 || reservedTokens != 0 || reservedMoney != 0 {
+		t.Fatal("original synthetic fees/reservations differ")
+	}
+	var pinned slJournal
+	check(slReadJSON(filepath.Join(observation, "journal.json"), &pinned))
+	j, e := slJournalSnapshot(ctx, c.JournalPath)
+	check(e)
+	if !slL4JournalEqual(pinned, j) || j.Identity != slCleanupUUID || j.Version != 5 {
+		t.Fatal("journal changed since retained observation")
+	}
+	row, e := slRow(j, "operations", "id", slL4Op)
+	check(e)
+	var req runner.OperationRequest
+	check(json.Unmarshal([]byte(fmt.Sprint(row["request_json"])), &req))
+	if row["status"] != "unknown" || row["error"] != "log_capture_incomplete" || req.OperationID != slL4Op || req.TenantID != slL4Tenant || req.RunID != slL4Run || req.Epoch != 2 || !req.Deadline.Equal(before.State.Limits.Deadline) {
+		t.Fatal("original unknown effect differs")
+	}
+	workspace := filepath.Join(c.VolumeSlots[0].MountPath, "workspace-"+slL4Run)
+	for _, v := range c.VolumeSlots {
+		check(sandbox.VerifyVolume(ctx, v))
+		ownerPath := filepath.Join(v.MountPath, ".forge-pool.owner")
+		owner, e := slCleanupHashFile(ownerPath, inputs, "")
+		check(e)
+		if string(owner) != c.JournalPath+"\n" {
+			t.Fatal("pool owner differs; no rebind")
+		}
+		fd, e := unix.Open(filepath.Join(v.MountPath, ".forge-pool.lock"), unix.O_RDWR|unix.O_CLOEXEC|unix.O_NOFOLLOW, 0)
+		check(e)
+		e = unix.Flock(fd, unix.LOCK_EX|unix.LOCK_NB)
+		if e != nil {
+			unix.Close(fd)
+			t.Fatal("pool is managed by another process")
+		}
+		unix.Flock(fd, unix.LOCK_UN)
+		unix.Close(fd)
+	}
+	check(slCleanupVolumes(ctx, c, j))
+	docker, e := slL4Docker(ctx, c, "inspect", slL4Container)
+	check(e)
+	check(slDockerOracle(docker, slL4Container, req, workspace, false))
+	var dc []struct {
+		State struct {
+			ExitCode   int
+			OOMKilled  bool
+			Pid        int
+			FinishedAt time.Time
+		}
+	}
+	check(json.Unmarshal(docker, &dc))
+	if len(dc) != 1 || dc[0].State.ExitCode != 0 || dc[0].State.OOMKilled || dc[0].State.Pid != 0 || dc[0].State.FinishedAt.IsZero() {
+		t.Fatal("original container is not confirmed exited0")
+	}
+	for _, suffix := range []string{".spool", ".spool.meta"} {
+		arch, e := slRead(filepath.Join(observation, slL4Op+suffix), 2<<20)
+		check(e)
+		live, e := slRead(filepath.Join(workspace, "logs", slL4Op+suffix), 2<<20)
+		check(e)
+		if !bytes.Equal(arch, live) {
+			t.Fatal("retained capture prefix/metadata changed")
+		}
+	}
+	out := filepath.Join(a.ScopeRoot, "evidence", "logs-03-recovery")
+	check(os.Mkdir(out, 0700))
+	check(slCleanupSyncDirectory(filepath.Dir(out)))
+	phase := "preflight"
+	passed := false
+	afterInputs := map[string]string{}
+	var cleanup persistence.WorkspaceCleanup
+	f := &slFixture{t: t, ctx: ctx, a: a, c: c, dir: out, configs: map[string]string{"default": a.RunnerConfig}, journalID: j.Identity}
+	// Failure exits preserve all generated files. Re-execution refuses this output
+	// directory: an operator must inspect the recorded phase before any next step.
+	defer func() {
+		if t.Failed() {
+			passed = false
+		}
+		for p, h := range inputs {
+			b, e := slRead(p, 128<<20)
+			if e == nil {
+				afterInputs[p] = slSHA(b)
+			}
+			if afterInputs[p] != h {
+				passed = false
+				t.Errorf("immutable input changed: %s", p)
+			}
+		}
+		if !passed {
+			failureCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+			defer cancel()
+			if state, err := slJournalSnapshot(failureCtx, c.JournalPath); err == nil {
+				_ = slSave(filepath.Join(out, "failure-journal.json"), state)
+			}
+			if pg, err := slL4PG(failureCtx, db); err == nil {
+				_ = slSave(filepath.Join(out, "failure-postgres.json"), pg)
+			}
+		}
+		if err := slSave(filepath.Join(out, "report.json"), map[string]any{"passed": passed, "phase": phase, "run_id": slL4Run, "tenant_id": slL4Tenant, "schema": slL4Schema, "schema_oid": 852843, "journal_uuid": j.Identity, "released": passed && cleanup.Phase == "released", "snapshot_verified": passed, "input_sha256_before": inputs, "input_sha256_after": afterInputs, "ended_at": time.Now().UTC(), "scope": "Explicit recovery of the failed logs03 L4 fixture; not a passing ENOSPC/policy-termination acceptance. Original incomplete log and failed evidence retained. No model, worker loop or new execution RPC."}); err != nil {
+			t.Error(err)
+		}
+		if err := slCleanupMakeManifest(out); err != nil {
+			t.Error(err)
+		}
+	}()
+	defer func() {
+		if f.ownRunner != nil {
+			f.stopRunner()
+		}
+	}()
+	f.save("acceptance-input.json", a)
+	f.save("postgres-before.json", pgBefore)
+	f.save("journal-before.json", j)
+	check(slWrite(filepath.Join(out, "docker-before.json"), docker))
+	f.save("preflight.json", map[string]any{"observed_db_time": now, "original_run": before, "old_lease_expired": true, "original_deadline_expired": true, "other_worker_connections": peers, "input_sha256": inputs})
+	// Fully archive all 228,589,568 synthetic bytes, verify decompression, fsync
+	// and revalidate the inode immediately before unlink. No workspace data is
+	// discarded to make space and no daemon/container mutation is used here.
+	phase = "archive_pressure"
+	wantFile := slL4FileIdentity{Device: 1802, Inode: 26, Bytes: slL4PressureSize, UID: 0}
+	archivePath := filepath.Join(out, "pressure.gz")
+	arch, e := slL4ArchivePressure(workspace, "strict-logs-enospc-pressure", archivePath, wantFile)
+	check(e)
+	f.save("pressure-archive.json", arch)
+	check(slL4NoProcesses(c, workerPath))
+	again, e := slL4Docker(ctx, c, "inspect", slL4Container)
+	check(e)
+	if !bytes.Equal(again, docker) {
+		var x, y any
+		check(json.Unmarshal(again, &x))
+		check(json.Unmarshal(docker, &y))
+		if !reflect.DeepEqual(x, y) {
+			t.Fatal("container changed during archival")
+		}
+	}
+	phase = "remove_archived_pressure"
+	f.save("pressure-delete-intent.json", arch)
+	check(slL4RemovePressure(workspace, "strict-logs-enospc-pressure", archivePath, arch))
+	f.save("pressure-deleted.json", map[string]any{"removed_at": time.Now().UTC(), "archive": arch})
+	phase = "start_recovery_runner"
+	f.startRunner("default", "")
+	key, e := slRead(c.SigningKeyFile, 4096)
+	check(e)
+	signer, e := runner.NewSigner(key)
+	clear(key)
+	check(e)
+	// The production runner config's omitted limit normalizes to 64 MiB.
+	objects, e := artifact.NewLocalStore(c.ArtifactRoot, 64<<20)
+	check(e)
+	defer objects.Close()
+	guard := &slL4StopOnly{service: f.client}
+	d := &application.Driver{Store: db, Quota: quota.New(db.Pool), Runner: guard, RunnerID: "application-fault-runner", Signer: signer, Artifacts: objects, LeaseDuration: 30 * time.Second}
+	phase = "cancel_original_run"
+	cancelled, e := db.Cancel(ctx, persistence.Identity{TenantID: slL4Tenant, PrincipalID: "fixture-operator", Role: "admin"}, slL4Run)
+	check(e)
+	if cancelled.State.Status != domain.StatusCancelRequested || !cancelled.State.Limits.Deadline.Equal(before.State.Limits.Deadline) {
+		t.Fatal("production cancel result differs")
+	}
+	f.save("cancel-requested.json", cancelled)
+	phase = "claim_stop_only"
+	claimed, e := db.ClaimOnRunner(ctx, "sl-L4-explicit-recovery", 30*time.Second, "application-fault-runner")
+	check(e)
+	if claimed.ID != slL4Run || claimed.TenantID != slL4Tenant || claimed.State.Lease.Epoch <= 2 || claimed.State.Status != domain.StatusCancelRequested {
+		t.Fatal("claim returned unexpected work")
+	}
+	f.save("claimed.json", claimed)
+	phase = "drive_stop_reconcile"
+	check(d.Drive(ctx, claimed))
+	terminal, e := db.GetRun(ctx, slL4Tenant, slL4Run)
+	check(e)
+	check(slL4Terminal(terminal, before))
+	f.save("terminal.json", terminal)
+	settled, e := slJournalSnapshot(ctx, c.JournalPath)
+	check(e)
+	check(slL4ProtectedJournal(j, settled))
+	f.save("settled-journal.json", settled)
+	opRow, e := slRow(settled, "operations", "id", slL4Op)
+	check(e)
+	var opReq runner.OperationRequest
+	check(json.Unmarshal([]byte(fmt.Sprint(opRow["request_json"])), &opReq))
+	if opRow["status"] != "failed" || !reflect.DeepEqual(opReq, req) {
+		t.Fatal("original operation was replayed or capture gap masked")
+	}
+	var receipt artifact.Ref
+	check(json.Unmarshal([]byte(fmt.Sprint(opRow["receipt_json"])), &receipt))
+	receiptBytes, e := slL4Object(c, receipt, "operation_receipt")
+	check(e)
+	if slSHA(receiptBytes) != receipt.SHA256 || int64(len(receiptBytes)) != receipt.Size {
+		t.Fatal("receipt bytes differ")
+	}
+	var durable runner.Operation
+	check(json.Unmarshal(receiptBytes, &durable))
+	if !reflect.DeepEqual(durable.Request, req) || durable.Status != runner.Failed || durable.AfterRevision != 1 {
+		t.Fatal("durable receipt operation binding changed")
+	}
+	var job sandbox.Job
+	check(json.Unmarshal(durable.Result, &job))
+	if job.Log == nil || job.Log.Complete || job.Log.Reason != "runner_shutdown" || job.Log.TerminationRequested || job.Log.Artifact.SHA256 != "090d01e19fd1c6e57ff07b95b1a983b273ccd268688ae640af59497a9010fc32" {
+		t.Fatal("original log capture gap changed")
+	}
+	phase = "snapshot_publish_release"
+	cleanup, e = d.CleanupWorkspace(ctx, slL4Tenant, slL4Run, "sl-L4-explicit-cleanup", 0)
+	check(e)
+	if cleanup.Phase != "released" || cleanup.SnapshotRef == "" {
+		t.Fatal("production cleanup incomplete")
+	}
+	f.save("cleanup.json", cleanup)
+	arts, e := db.ListArtifacts(ctx, slL4Tenant, slL4Run, "", 1000)
+	check(e)
+	f.save("artifacts.json", arts)
+	check(os.Mkdir(filepath.Join(out, "artifacts"), 0700))
+	logCount, snapshotCount := 0, 0
+	var snapshotRef artifact.Ref
+	for _, ref := range arts {
+		if ref.TenantID != slL4Tenant || ref.RunID != slL4Run || ref.State != "ready" || ref.ObjectKey != slL4Tenant+"/"+slL4Run+"/"+ref.SHA256 {
+			t.Fatal("artifact binding differs")
+		}
+		b, e := slRead(filepath.Join(c.ArtifactRoot, ref.ObjectKey), 64<<20)
+		check(e)
+		if slSHA(b) != ref.SHA256 || int64(len(b)) != ref.ByteSize {
+			t.Fatal("READY artifact bytes differ")
+		}
+		check(slWrite(filepath.Join(out, "artifacts", string(ref.ID)+".bytes"), b))
+		if ref.ObjectKey == job.Log.Artifact.ObjectKey {
+			if ref.Kind != "operation_log" {
+				t.Fatal("log kind differs")
+			}
+			logCount++
+		}
+		if string(ref.ID) == cleanup.SnapshotRef {
+			if ref.Kind != "workspace_snapshot" {
+				t.Fatal("snapshot kind differs")
+			}
+			check(slL4Snapshot(b, cleanup.RunnerEpoch))
+			snapshotRef = artifact.Ref{TenantID: ref.TenantID, RunID: ref.RunID, Kind: ref.Kind, ObjectKey: ref.ObjectKey, SHA256: ref.SHA256, Size: ref.ByteSize}
+			snapshotCount++
+		}
+	}
+	if logCount != 1 || snapshotCount != 1 {
+		t.Fatal("single READY original log/code snapshot missing")
+	}
+	pgAfter, e := slL4PG(ctx, db)
+	check(e)
+	check(slL4PGUnchanged(pgBefore, pgAfter))
+	f.save("postgres-after.json", pgAfter)
+	check(db.Pool.QueryRow(ctx, `SELECT (SELECT coalesce(sum(active_count),0) FROM tenant_runtime),(SELECT reserved_slots FROM runners WHERE id='application-fault-runner'),(SELECT count(*) FROM runner_allocations WHERE state<>'released'),(SELECT count(*) FROM model_attempts),(SELECT count(*) FROM effects),(SELECT count(*) FROM workspace_cleanup WHERE phase='released')`).Scan(&active, &reserved, &allocations, &attempts, &effects, &cleanups))
+	if active != 0 || reserved != 0 || allocations != 0 || attempts != 4 || effects != 8 || cleanups != 1 {
+		t.Fatal("capacity/fee/effect closure differs")
+	}
+	var joined, confirmations, unsettled int
+	check(db.Pool.QueryRow(ctx, `SELECT (SELECT count(*) FROM effects e JOIN artifacts a ON a.tenant_id=e.tenant_id AND a.id=e.receipt_ref WHERE e.tenant_id=$1 AND e.run_id=$2 AND e.operation_id=$3 AND e.epoch=2 AND e.status='failed' AND a.kind='operation_receipt' AND a.state='ready'),(SELECT count(*) FROM run_snapshots WHERE tenant_id=$1 AND run_id=$2 AND input_event->>'kind'='reconciled' AND input_event->'receipt'->>'effect_id'=$3),(SELECT count(*) FROM effects WHERE status NOT IN ('planned','skipped','succeeded','failed','cancelled'))`, slL4Tenant, slL4Run, slL4Op).Scan(&joined, &confirmations, &unsettled))
+	if joined != 1 || confirmations != 1 || unsettled != 0 {
+		t.Fatal("single original effect/receipt reconciliation missing")
+	}
+	f.save("closure-oracle.json", map[string]any{"tenant_active": active, "runner_reserved": reserved, "unreleased_allocations": allocations, "model_attempts": attempts, "effects": effects, "released_cleanup": cleanups, "joined_original_epoch2_failed_receipt": joined, "durable_reconciled_confirmations": confirmations, "unsettled_effects": unsettled, "synthetic_committed_tokens_before": committedTokens, "synthetic_committed_microusd_before": committedMoney, "protected_model_attempts_and_quotas_unchanged": true})
+	f.save("control-rpc-calls.json", guard.Calls)
+	f.stopRunner()
+	final, e := slJournalSnapshot(ctx, c.JournalPath)
+	check(e)
+	check(slIdle(final))
+	check(slL4ProtectedJournal(j, final))
+	check(slReservation(final, slL4Tenant, slL4Run, c.Logs, 2))
+	check(slVerifyPins(final, receipt, job.Log.Artifact, snapshotRef))
+	removed := 0
+	for _, lr := range final.Tables["operation_logs"] {
+		if lr["operation_id"] == slL4Op || lr["operation_id"] == slL4Run+"_0_initial_target" {
+			if lr["cleanup_state"] != "removed" {
+				t.Fatal("owned container removal unconfirmed")
+			}
+			ids, e := slL4Docker(ctx, c, "ps", "--all", "--no-trunc", "--filter", "id="+fmt.Sprint(lr["container_id"]), "--format", "{{.ID}}")
+			check(e)
+			if strings.TrimSpace(string(ids)) != "" {
+				t.Fatal("original container remains")
+			}
+			removed++
+		}
+	}
+	if removed != 2 {
+		t.Fatal("both original process-operation containers require removal proof")
+	}
+	if _, e = os.Lstat(workspace); !os.IsNotExist(e) {
+		t.Fatal("released workspace directory remains")
+	}
+	f.save("final-journal.json", final)
+	phase = "released"
+	passed = true
+}
