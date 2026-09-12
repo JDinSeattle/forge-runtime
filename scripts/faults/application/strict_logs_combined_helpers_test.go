@@ -513,6 +513,65 @@ func slVerifyPins(j slJournal, refs ...artifact.Ref) error {
 	return nil
 }
 
+// Call after slValidateLog has bound frames, counts, exact loss and receipt.
+// A bounded multiplexed prefix has no cross-stream fairness guarantee. Both
+// streams must still have been observed, including bytes discarded at the cap.
+func slOverflowDrain(status runner.Status, job sandbox.Job, parsed slFrames) error {
+	s := job.Log
+	if s == nil || status == runner.Succeeded || !s.Complete || !s.Truncated || s.Reason != "output_limit" || !s.TerminationRequested || !s.TerminationObserved || sandbox.VerificationLogValid(job) || s.StdoutSeen == 0 || s.StderrSeen == 0 || parsed.Bytes < 512<<10-32 {
+		return fmt.Errorf("actual default overflow/continued drain not proven")
+	}
+	return nil
+}
+
+func TestStrictLogsOverflowAllowsOneRetainedStream(t *testing.T) {
+	policy, _ := (sandbox.LogPolicy{}).Normalize()
+	req := runner.OperationRequest{WorkspaceRequest: runner.WorkspaceRequest{TenantID: "tenant", RunID: "run", WorkspaceID: "run", Epoch: 1}, OperationID: "op", Kind: "run_command"}
+	for _, stream := range []byte{1, 2} {
+		var raw []byte
+		for seq := 0; seq < 32; seq++ {
+			data := bytes.Repeat([]byte{'x'}, policy.EntryBytes-32)
+			h := make([]byte, 32)
+			copy(h, "FLG1")
+			h[4] = stream
+			binary.BigEndian.PutUint64(h[8:16], uint64(seq))
+			binary.BigEndian.PutUint32(h[16:20], uint32(len(data)))
+			binary.BigEndian.PutUint32(h[20:24], crc32.ChecksumIEEE(data))
+			raw = append(raw, append(h, data...)...)
+		}
+		parsed, err := slParseFrames(raw, policy, false)
+		if err != nil || parsed.StreamBytes[2-int(stream)] != 0 {
+			t.Fatal("expected a valid one-stream prefix", err)
+		}
+		s := sandbox.LogSummary{SchemaVersion: 1, Policy: policy, OperationID: req.OperationID, BindingHash: slBinding(req), StdoutSeen: 524299, StderrSeen: 524299, RetainedBytes: int64(len(raw)), RetainedPayload: parsed.Payload, Records: parsed.Records, Complete: true, DroppedKnown: true, DroppedBytes: 1048598 - uint64(parsed.Payload), Truncated: true, Reason: "output_limit", TerminationRequested: true, TerminationObserved: true, Artifact: artifact.Ref{TenantID: "tenant", RunID: "run", Kind: "operation_log", ObjectKey: "key", SHA256: slSHA(raw), Size: int64(len(raw))}}
+		job := sandbox.Job{StrictLogs: true, Log: &s, ExitCode: 137}
+		op := runner.Operation{Request: req, Status: runner.Failed, Result: slJSON(job)}
+		if _, err = slValidateLog(op, req, raw, nil); err != nil {
+			t.Fatal(err)
+		}
+		if err = slOverflowDrain(op.Status, job, parsed); err != nil {
+			t.Fatal("multiplexing order confused with missing drainage", err)
+		}
+		for _, mutate := range []func(*sandbox.LogSummary){
+			func(s *sandbox.LogSummary) { s.StdoutSeen = 0 },
+			func(s *sandbox.LogSummary) { s.StderrSeen = 0 },
+			func(s *sandbox.LogSummary) { s.TerminationObserved = false },
+			func(s *sandbox.LogSummary) { s.Complete = false },
+		} {
+			bad := s
+			mutate(&bad)
+			copyJob := job
+			copyJob.Log = &bad
+			if slOverflowDrain(op.Status, copyJob, parsed) == nil {
+				t.Fatal("missing drainage/stop evidence accepted")
+			}
+		}
+		if slOverflowDrain(runner.Succeeded, job, parsed) == nil {
+			t.Fatal("overflow accepted as successful verification")
+		}
+	}
+}
+
 func TestStrictLogsOfflineOracle(t *testing.T) {
 	p, _ := (sandbox.LogPolicy{}).Normalize()
 	frame := func(seq uint64, stream byte, data []byte) []byte {

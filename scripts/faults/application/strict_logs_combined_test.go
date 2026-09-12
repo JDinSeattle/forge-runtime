@@ -47,7 +47,8 @@ const slCompleteProgram = `import os
 os.write(1,b'SL_STDOUT\x00\xff'+bytes(range(256))*128)
 os.write(2,b'SL_STDERR\x00\xfe'+bytes(range(255,-1,-1))*128)`
 
-// Finite alternating writes guarantee both markers precede the policy bound.
+// The finite program emits both markers before flooding. Docker multiplexing
+// may fill the retained prefix from either stream; seen counters prove drainage.
 // Demand is 1 MiB; a real policy kill can prevent some of it being emitted.
 const slOverflowProgram = `import os,time
 os.write(1,b'SL_STDOUT\x00\xff');os.write(2,b'SL_STDERR\x00\xfe')
@@ -759,9 +760,7 @@ func (f *slFixture) quotaCase(label, phase string, count int, includeCancel bool
 				f.t.Fatal("business cancel confused with policy/gap")
 			}
 		} else {
-			if op.Status == runner.Succeeded || !job.Log.Complete || !job.Log.Truncated || job.Log.Reason != "output_limit" || !job.Log.TerminationRequested || !job.Log.TerminationObserved || sandbox.VerificationLogValid(job) || parsed.StreamBytes[0] == 0 || parsed.StreamBytes[1] == 0 || parsed.Bytes < 512<<10-32 {
-				f.t.Fatal("actual default overflow/continued drain not proven", job.Log)
-			}
+			f.check(slOverflowDrain(op.Status, job, parsed))
 		}
 		w.Revision = op.AfterRevision
 		total += parsed.Bytes
