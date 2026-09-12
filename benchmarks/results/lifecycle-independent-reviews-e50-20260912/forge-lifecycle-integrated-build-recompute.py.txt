@@ -1,0 +1,86 @@
+#!/usr/bin/env python3
+"""Read-only audit of retained build output. Never execute an acceptance binary."""
+import datetime,hashlib,json,os,stat,subprocess
+from pathlib import Path
+ROOT=Path('/home/postedism/Desktop/mini claude code/forge-runtime')
+RAW=ROOT/'benchmarks/results/lifecycle-integrated-build-e50-20260912'
+BASE=ROOT/'var/lifecycle-rehearsals/lr20260912_a'
+OUT=Path('/tmp/forge-lifecycle-integrated-build-independent-review.json')
+assert not OUT.exists()
+sha=lambda raw:hashlib.sha256(raw).hexdigest()
+def read(path):
+ st=path.lstat()
+ assert stat.S_ISREG(st.st_mode) and st.st_nlink==1, str(path)
+ return path.read_bytes()
+def js(path):return json.loads(read(path))
+def git(*args):return subprocess.check_output(['git',*args],cwd=ROOT)
+manifest=js(RAW/'manifest.json')
+paths=[]
+for row in manifest['files']:
+ name=row['path'];rel=Path(name)
+ assert not rel.is_absolute() and '..' not in rel.parts and name!='manifest.json'
+ raw=read(RAW/rel)
+ assert len(raw)==row['bytes'] and sha(raw)==row['sha256'],name
+ paths.append(name)
+assert len(paths)==len(set(paths))
+assert set(paths)=={str(p.relative_to(RAW)) for p in RAW.rglob('*') if p.is_file() and p.name!='manifest.json'}
+identity=js(RAW/'identity.json');revision=identity['revision']
+assert git('rev-parse',revision+'^{tree}').decode().strip()==identity['tree']
+before=js(RAW/'source-before.json');after=js(RAW/'source-after.json')
+assert before==after and read(RAW/'source-before.json')==read(RAW/'source-after.json')
+tree=git('ls-tree','-r','-z',revision)
+blobs={}
+for entry in tree.split(b'\0'):
+ if not entry:continue
+ meta,name=entry.split(b'\t',1);mode,kind,oid=meta.split();name=name.decode()
+ if name.startswith('benchmarks/results/'):continue
+ assert kind==b'blob' and mode in (b'100644',b'100755'),name
+ blobs[name]=oid.decode()
+assert set(blobs)==set(before) and len(blobs)==416
+current_diffs=[]
+for name,oid in blobs.items():
+ raw=git('cat-file','blob',oid)
+ assert {'bytes':len(raw),'sha256':sha(raw)}==before[name],name
+ path=ROOT/name
+ if not path.exists() or sha(read(path))!=before[name]['sha256']:current_diffs.append(name)
+result=js(RAW/'result.json')
+assert result['build_passed'] is True and result['actual_acceptance_executed'] is False
+assert result['source_files']==416 and result['source_unchanged'] is True
+go=Path(identity['go_path']);assert sha(read(go))==identity['go_sha256']
+env={'PATH':'/usr/bin:/bin','LC_ALL':'C','GOPROXY':'off','GOSUMDB':'off','GOENV':'off','GOTOOLCHAIN':'local'}
+assert subprocess.check_output([str(go),'version'],env=env,text=True,timeout=10).strip()==identity['go_version']
+expected={'runner':('forge-runner','github.com/JDinSeattle/forge-runtime/cmd/forge-runner'), 'worker':('forge-worker','github.com/JDinSeattle/forge-runtime/cmd/forge-worker'), 'test':('application-faults.test','github.com/JDinSeattle/forge-runtime/scripts/faults/application.test')}
+records=js(RAW/'build-results.json');assert len(records)==3 and {r['label'] for r in records}==set(expected)
+bins=[]
+for record in records:
+ label=record['label'];filename,package=expected[label];binary=BASE/'bin'/filename
+ assert record['exit_code']==0 and record['binary']==str(binary)
+ raw=read(binary);st=binary.lstat()
+ assert sha(raw)==record['binary_sha256'] and len(raw)==record['binary_bytes']
+ assert stat.S_IMODE(st.st_mode)==0o700 and st.st_uid==1000
+ assert record['argv'][0]==str(go) and record['argv'][record['argv'].index('-o')+1]==str(binary)
+ actual=subprocess.check_output([str(go),'version','-m',str(binary)],env=env,timeout=10)
+ assert actual==read(RAW/(label+'-buildinfo.txt')),label
+ settings={};actual_package=None
+ for line in actual.decode().splitlines()[1:]:
+  parts=line.strip().split(None,1)
+  if len(parts)==2 and parts[0]=='path':actual_package=parts[1]
+  if len(parts)==2 and parts[0]=='build':
+   key,_,value=parts[1].partition('=');settings[key]=value
+ assert actual_package==package
+ if label!='test':assert settings.get('vcs.revision')==revision and settings.get('vcs.modified')=='false'
+ bins.append({'label':label,'path':str(binary),'sha256':sha(raw),'bytes':len(raw),'mode':'0700','package':actual_package,'actual_buildinfo_matches_archive':True,'vcs_revision':settings.get('vcs.revision'),'vcs_modified':settings.get('vcs.modified')})
+listing=read(RAW/'test-list.log').decode().splitlines()
+assert len(listing)==2 and set(listing)=={'TestRealWorkerRunnerSIGTERM','TestStrictLogsCombinedAcceptance'}
+builder=read(RAW/'build.py.txt');prior=js(Path('/tmp/forge-lifecycle-build-review-v2.json'))
+assert sha(builder)==prior['reviewed_source']['sha256']
+assert not os.path.lexists(BASE/'runtime') and not os.path.lexists(BASE/'acceptance.json')
+slots=[BASE/'pool-root/var/workspace-storage/mounts'/('slot-%03d'%i) for i in range(1,5)]
+# /proc mountinfo is an observation of this review process's mount namespace only.
+unescape=lambda s:s.replace('\\040',' ').replace('\\011','\t').replace('\\134','\\')
+mountpoints={unescape(line.split()[4]) for line in Path('/proc/self/mountinfo').read_text().splitlines()}
+visible_mounts=[str(p) for p in slots if str(p) in mountpoints]
+assert not visible_mounts
+report={'reviewed_at':datetime.datetime.now(datetime.timezone.utc).isoformat(),'passed':True,'scope':'Read-only recomputation of existing build files, Git objects, binary bytes and embedded metadata. No rebuild, test execution, service, PG, Docker, mount or private-key read.', 'revision':revision,'tree':identity['tree'],'manifest_records':len(paths),'all_manifest_files_exact':True,'source_files':len(blobs),'recorded_before_after_identical':True,'all_recorded_sources_match_revision_blobs':True,'current_checkout_source_differences':current_diffs,'go':identity,'binaries':bins,'recorded_test_entries':listing,'test_entries_reexecuted':False,'builder_matches_independently_reviewed_v2_sha256':sha(builder),'preparation_state':{'runtime_absent':True,'acceptance_descriptor_absent':True,'new_slots_mounted_in_review_namespace':visible_mounts},'nonfatal_build_log_notes':'Runner and worker build logs retain read-only module stat-cache write warnings; each build command returned zero and its current output bytes/buildinfo match the archive. These warnings were not removed.', 'limits':['This verifies retained source/build/binary consistency, not an independently rebuilt reproducibility result.','The test executable has no embedded VCS revision; its identity is bound by the exact binary SHA, reviewed build command and recorded frozen source interval.','The saved two-entry test enumeration was checked without rerunning the executable. It establishes entry presence, not case success.','Go modules used the existing local cache with network-disabled settings recorded by the reviewed builder; this audit did not re-fetch dependencies.','Mount absence is current namespace visibility only. Actual fixed-volume/PG/Docker/signal cases remain unexecuted.'], 'evidence_sha256':{name:sha(read(RAW/name)) for name in paths+['manifest.json']},'prior_build_review':{'path':'/tmp/forge-lifecycle-build-review-v2.json','sha256':sha(read(Path('/tmp/forge-lifecycle-build-review-v2.json')))}}
+OUT.write_text(json.dumps(report,indent=2)+'\n')
+print(json.dumps({'report':str(OUT),'report_sha256':sha(read(OUT)),'passed':True,'manifest_records':len(paths),'source_files':len(blobs),'current_differences':current_diffs,'binary_count':len(bins)},indent=2))
