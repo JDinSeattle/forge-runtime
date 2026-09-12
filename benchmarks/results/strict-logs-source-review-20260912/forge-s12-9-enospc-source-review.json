@@ -1,0 +1,49 @@
+{
+  "reviewed_at": "2026-09-12T01:43:02.074699+00:00",
+  "commit": "65a00f6d91db14fc90b8d027fb43f00313c1d7e9",
+  "scope": "read-only source review of L4 ENOSPC and directly called helpers; no test, PostgreSQL, Docker, mount, process or service execution",
+  "source_sha256": {
+    "scripts/faults/application/strict_logs_combined_test.go": "df7d92567f8c38324a28fc87fd318ab6a4a26e5741e9c390119a1848e11b7bc4",
+    "scripts/faults/application/strict_logs_combined_helpers_test.go": "3f4c7b89f7b1a6470822a16388702ba4e690359d8912d3c163dda176d098562a",
+    "internal/runner/log_capture.go": "3b7c93353804d757d5bece4531363045c521a5f9c52f561b45214f574d1cfdcc",
+    "internal/runner/engine.go": "0075fb5540cf700dea321910b807b241e99e1fc33118f832cf757cad33b733c4",
+    "internal/runner/log_publication.go": "81e9f4cbd72970bd7dc22b7b0879ae709c91df4c3436b765bd3e549930e38ef0",
+    "internal/application/driver.go": "c04892e9797c67bb6edf893a0324db7a7cf916a54d7eeb5d41d76539961a0c6e",
+    "internal/persistence/execution.go": "7ef154ad6987ff4bb7408146519defb3efcdbffbf5c5be515751ee7ef7123e96"
+  },
+  "verdict": "P2 fixture timing race; no P1 found; no guaranteed deterministic production API mismatch established",
+  "findings": [
+    {
+      "priority": "P2",
+      "id": "L4-worker-advances-under-pressure",
+      "file": "scripts/faults/application/strict_logs_combined_test.go",
+      "lines": [
+        921,
+        1001
+      ],
+      "title": "The live worker can advance past the failed operation before physical pressure is removed",
+      "evidence": [
+        "l4 starts the actual worker, approves the original command, then leaves that worker running throughout pressure creation, SQLite observation, PostgreSQL capture and Docker inspection.",
+        "application.Driver.operation inspects every 100ms. Once its local runner execution ends, Engine.InspectOperation may reconcile the stopped job and publish an incomplete bounded log prefix as a terminal failed receipt, even while the separate pressure file remains.",
+        "The scripted next model round is an immediately executable apply_patch. It may encounter ENOSPC before releasePressure(), after which finishDriver still requires completed. Alternatively a yielded/reclaimed worker can adopt at a newer workspace epoch while f.settle(req) continues using the original request epoch and fails fenced.",
+        "The test-only comment that it reads SQLite rather than Inspect does not prevent the real worker from calling Inspect. No coordination barrier currently orders all application advancement after pressure removal."
+      ],
+      "impact": "A valid conservative runner outcome can make this acceptance test fail nondeterministically; this is not a demonstrated production data-loss bug or proof that every actual run will fail.",
+      "suggested_fix": "Add a bounded explicit fixture coordination point that prevents the live worker from executing the dependent repair until pressure removal and original-operation receipt observation are complete, while preserving the original operation identity. A separately approved next tool can provide such a gate. Do not weaken production fencing or force synthetic lease expiry."
+    }
+  ],
+  "checked_contracts": {
+    "physical_target": "pressure(filepath.Dir(spool)) resolves to workspace-<id>/strict-logs-enospc-pressure, outside the task checkout and logs directory. spoolPath binds tenant/run/workspace to the persisted slot. All four actual volume identities are verified in fixture and production runner preflight.",
+    "bounded_allocation": "O_CREAT|O_EXCL|O_NOFOLLOW mode0600; writes at most256MiB and requires actual ENOSPC; records device/inode/statfs/allocated bytes. Before deletion verifies inode,device,link count,owner.",
+    "retention": "No deferred pressure deletion. Explicit removal follows exact original container ID/label/mount oracle with running=false, original log reservation unchanged and released=0. Failure finalize stops only fixture-owned processes and leaves pressure/unknown workspace/SQL records.",
+    "restore": "After removal, Inspect uses the same operation ID. The production reader allows a checksum-validated prefix with absent metadata and explicitly incomplete capture, then publication and cleanup can proceed. This is subject to the live-worker ordering race above.",
+    "publication": "captureOperation compares durable request/status/job/result/receipt, opens hash/length-checked pinned log and receipt artifacts, compares actual disk prefix, and checks original container identity. L4 waits for PG READY then uses the administrator-scoped fixture Store for authenticated HTTP checks.",
+    "cleanup": "finishDriver requires completed then invokes production CleanupWorkspace, requiring sealed snapshot before release; volume identities are rechecked and a fresh actual health operation proves slot reuse.",
+    "non_blocking_hardening": "pressure records st_dev but does not itself explicitly compare it against the selected slot/checkout immediately before writing. Existing path derivation, initial no-symlink spool read and volume preflights establish the intended scope under an unchanged trusted fixture. Rechecking the selected VolumeSpec and comparing open fd st_dev to slot/checkout would make the physical pressure boundary more directly reviewable."
+  },
+  "not_claimed": [
+    "No real ENOSPC or lifecycle result observed by this review",
+    "No guaranteed repeatable failure proved without execution",
+    "No source change or new feature implemented"
+  ]
+}

@@ -1,0 +1,129 @@
+{
+  "reviewed_at": "2026-09-12T01:45:16.203755+00:00",
+  "revision": 1,
+  "verdict": "Two P2 fixture/evidence defects require correction before combined acceptance. No P1 found. No production change reviewed as defective by this report.",
+  "scope": "Independent read-only source review of frozen S12.9 combined fixture and direct helpers; targeted ordinary/race/vet offline only. No PG, Docker, mounts, sockets, systemd, service stop/start or paid provider execution.",
+  "head_during_offline": "65a00f6d91db14fc90b8d027fb43f00313c1d7e9",
+  "source_sha256": {
+    "scripts/faults/application/strict_logs_combined_test.go": "df7d92567f8c38324a28fc87fd318ab6a4a26e5741e9c390119a1848e11b7bc4",
+    "scripts/faults/application/strict_logs_combined_helpers_test.go": "3f4c7b89f7b1a6470822a16388702ba4e690359d8912d3c163dda176d098562a",
+    "scripts/faults/application/worker_runner_sigterm_test.go": "1e8467244cea41421beb60db7fa64bbde3656cd2652a630834b19f698ebc455f",
+    "scripts/faults/application/worker_runner_sigterm_helpers_test.go": "b67d3280edeb44e8811ffb3ac891eebf7d70498d4f1649ed3b9028ee2516da73",
+    "docs/strict-logs-combined-evidence.md": "f5ab20546471ff654dd74c25b1b8f07c1b67c4a07bbb41fd9d3da92dc3a14724"
+  },
+  "source_unchanged_through_offline": true,
+  "findings": [
+    {
+      "id": "S12.9-L5-P2",
+      "priority": "P2",
+      "file": "scripts/faults/application/strict_logs_combined_test.go",
+      "lines": [
+        1094,
+        1120
+      ],
+      "title": "L5 does not bind signal identity and lease summaries to the original process/SQL authorities",
+      "confirmed": "The exact frozen signal and temporal guard expressions, plus source-extracted slNum, were executed offline. Removing proc_start_ticks, replacing it with a nonnumeric string, changing PID to another positive integer or a fractional number, and replacing lease summary times with unrelated ordered historical times all passed those guards.",
+      "mechanism": "Absent map fields are nil; nil != empty string. slNum truncates JSON float64. L5 only checks a positive PID and expected executable hash, without joining launch identity PID/ticks/argv/path. Its natural-expiry check compares accepted old_lease_until and successor_claim_db_time without deriving them from original PG snapshots or the live first successor claim.",
+      "impact": "The independent L5 verifier can accept corrupted summary/identity evidence while claiming exact original process signals and natural lease expiry. This does not show that the E50 producer actually fabricated any evidence.",
+      "reproduction": "/tmp/forge-s12-9-l5-before-repro.py; retained exact expressions, source copies and stdout under /tmp/forge-s12-9-l5-before. This is guard-only reproduction, not a complete L5/PG execution.",
+      "fix": "Join all four signal records to their original launch identities with strict PID/ticks types, argv/path/hash and clock ordering; derive lease and first successor claim from original SQL snapshots and compare the exact relevant live durable row; add missing/type/PID/summary-tamper negative tests.",
+      "status": "Author correction requested by root; not included in this frozen-source report."
+    },
+    {
+      "id": "S12.9-L4-P2",
+      "priority": "P2",
+      "file": "scripts/faults/application/strict_logs_combined_test.go",
+      "lines": [
+        921,
+        1004
+      ],
+      "title": "The real worker can advance the failed run while the workspace remains physically full",
+      "confirmed": "Read-only control-flow review, also independently reported by Carson in the linked ENOSPC report. No actual timing run or deterministic reproduced host failure is claimed.",
+      "mechanism": "L4 leaves its actual worker active from approval through pressure, SQLite observation, h.capture and Docker inspection. The worker may Inspect/reconcile a failed receipt and execute the scripted apply_patch while pressure still exists, or yield/reclaim at a new epoch. The fixture then uses the original request epoch and requires completed repair. Avoiding Inspect in the test goroutine does not prevent the worker from inspecting.",
+      "impact": "A conservative legitimate runner outcome may fail the acceptance nondeterministically, consume the scripted repair while full or fence same-ID inspection. It is a fixture ordering flaw, not demonstrated production data loss.",
+      "fix": "Add an observable bounded coordination/approval boundary for the fixture worker, restore pressure only after the exact writer is stopped, and resume the same operation with the authority appropriate to its actual current epoch. Preserve ordinary lease/fencing semantics and unresolved state.",
+      "status": "Author correction requested by root; not included in this frozen-source report."
+    }
+  ],
+  "checked_boundaries": {
+    "preflight": "Fixed dedicated lr20260912_a scope, all four identities and owner markers, exact self/runner/worker hashes and runner packages, same UUID v5 idle journal, no live UDS, fixed real backend/profile/source, default limits, byte/count variants differing only in one field. No original demonstration pool rebinding path found.",
+    "L1": "Actual forge-worker Driver submits/approves the exact command. Scoped ten-second after_receipt_before_commit window independently observes nonterminal SQLite, two durable pins and zero PG rows. Exact stdout/stderr bytes, valid disk/object/receipt identities, eventual PG READY, authenticated actual TCP handler download/list and cross-tenant 404, then completed repair and production cleanup.",
+    "L2_L3": "Actual typed RPC 32 default, four byte-guard and two count-guard operations; finite overflow, separate business cancellation, full frame/metadata/receipt oracles, exact lifetime reservation and bounded actual spool sums; new-ID ErrCapacity before any journal/container admission; same-ID unchanged receipt and no duplicate create/start; release removes operation container/spool state without refunding reservations; same-journal reopen is checked after release.",
+    "L4": "Physical filler is an exclusive no-follow owned file under the assigned workspace trusted parent outside checkout/logs; actual ENOSPC and allocated blocks required within 256 MiB; inode/device/owner checked before deletion; no deferred deletion on failure; exact original container must be stopped first; no premature lease release/refund; current worker ordering defect remains above.",
+    "L5_other": "Original binary/acceptance equality, real settled non-success gap operation, unchanged shutdown/adoption spool, independent framing/meta/log authenticity, raw exact original container create/start/die counts, current same-UUID SQLite request/status/result/receipt/pins/reservation and terminal PG confirmation/capacity, plus new HTTP download. These do not repair the identity/lease-join defect above.",
+    "failure": "Only fixture-owned children stopped. Unknown operations, workspace/pressure, journal, IDs and private schemas retained; no business cancel or original Docker/service cleanup in the combined fixture finalizer. The exclusive logs-01 output cannot be silently reset. Successful aggregate additionally requires six cases, idle/released final journal, unchanged inputs and own-child shutdown.",
+    "secrets": "Capabilities removed from retained operation requests; keys and private DSNs kept under private runtime, not raw reports. HTTP uses the fixture administrator Store and real auth/tenant middleware; this is explicitly not proof of the deployment API DB role.",
+    "documentation": "Current doc explicitly marks combined real execution pending, separates direct quota RPC from Driver/PG publication, and identifies sequential observations and unchanged-input hash limitations."
+  },
+  "offline_verification": [
+    {
+      "name": "ordinary",
+      "argv": [
+        "go",
+        "test",
+        "./scripts/faults/application",
+        "-run",
+        "^TestStrictLogs",
+        "-count=1",
+        "-timeout=45s",
+        "-json"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 1.0659070549882017,
+      "test_records": {
+        "pass": 30,
+        "fail": 0,
+        "skip": 1
+      }
+    },
+    {
+      "name": "race",
+      "argv": [
+        "go",
+        "test",
+        "-race",
+        "./scripts/faults/application",
+        "-run",
+        "^TestStrictLogs",
+        "-count=1",
+        "-timeout=45s",
+        "-json"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 2.3699048570124432,
+      "test_records": {
+        "pass": 30,
+        "fail": 0,
+        "skip": 1
+      }
+    },
+    {
+      "name": "vet",
+      "argv": [
+        "go",
+        "vet",
+        "./scripts/faults/application"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.1659147110185586,
+      "test_records": {
+        "pass": 0,
+        "fail": 0,
+        "skip": 0
+      }
+    }
+  ],
+  "supporting_reports": {
+    "/tmp/forge-s12-9-offline-review/report.json": "16cc38b4463a2626a56f3875a73c7732e897a6ebdeefbecdde8fd343137d741a",
+    "/tmp/forge-s12-9-l5-before/report.json": "c42062359d9fcb6b8b61fd5ec46f345153e99dd251f1a7b2ab3d216055e83baa",
+    "/tmp/forge-s12-9-enospc-source-review.json": "dc98fe3e69ff21014d0e5cd9c14ce16a81a61c6e7e938fabe50277a4bcf1d108",
+    "/tmp/forge-lifecycle-build-review-v2.json": "983cad6ab369c37a1501d68e14f9780f2e4e9ad0d5f2644cbaa120b00333d29e"
+  },
+  "limits": [
+    "All six actual cases remain pending. Offline PASS cannot promote S12.9 or E50/E44 deployment acceptance.",
+    "Only own subordinate UID/GID mapping shape is checked; equality with the live Docker daemon map is not independently established.",
+    "Cross-system records are sequential observations, not an atomic PG/SQLite/Docker snapshot.",
+    "L4 pressure device identity is recorded and derived from verified slot paths; immediate open-FD versus selected-slot device comparison would be useful hardening, not a separately demonstrated defect under the fixed unchanged fixture.",
+    "Build helper v2 has a separate passing mock/delta review. No actual new-scope compiler build or host action was performed by this review."
+  ]
+}

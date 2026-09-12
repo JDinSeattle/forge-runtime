@@ -1,0 +1,77 @@
+{
+  "scope": "offline only; opt-ins cleared; no PG, Docker, sockets, mounts, services or model calls",
+  "head": "65a00f6d91db14fc90b8d027fb43f00313c1d7e9",
+  "source_before": {
+    "scripts/faults/application/strict_logs_combined_test.go": "df7d92567f8c38324a28fc87fd318ab6a4a26e5741e9c390119a1848e11b7bc4",
+    "scripts/faults/application/strict_logs_combined_helpers_test.go": "3f4c7b89f7b1a6470822a16388702ba4e690359d8912d3c163dda176d098562a",
+    "scripts/faults/application/worker_runner_sigterm_test.go": "1e8467244cea41421beb60db7fa64bbde3656cd2652a630834b19f698ebc455f",
+    "scripts/faults/application/worker_runner_sigterm_helpers_test.go": "b67d3280edeb44e8811ffb3ac891eebf7d70498d4f1649ed3b9028ee2516da73",
+    "docs/strict-logs-combined-evidence.md": "f5ab20546471ff654dd74c25b1b8f07c1b67c4a07bbb41fd9d3da92dc3a14724"
+  },
+  "source_after": {
+    "scripts/faults/application/strict_logs_combined_test.go": "df7d92567f8c38324a28fc87fd318ab6a4a26e5741e9c390119a1848e11b7bc4",
+    "scripts/faults/application/strict_logs_combined_helpers_test.go": "3f4c7b89f7b1a6470822a16388702ba4e690359d8912d3c163dda176d098562a",
+    "scripts/faults/application/worker_runner_sigterm_test.go": "1e8467244cea41421beb60db7fa64bbde3656cd2652a630834b19f698ebc455f",
+    "scripts/faults/application/worker_runner_sigterm_helpers_test.go": "b67d3280edeb44e8811ffb3ac891eebf7d70498d4f1649ed3b9028ee2516da73",
+    "docs/strict-logs-combined-evidence.md": "f5ab20546471ff654dd74c25b1b8f07c1b67c4a07bbb41fd9d3da92dc3a14724"
+  },
+  "source_unchanged": true,
+  "commands": [
+    {
+      "name": "ordinary",
+      "argv": [
+        "go",
+        "test",
+        "./scripts/faults/application",
+        "-run",
+        "^TestStrictLogs",
+        "-count=1",
+        "-timeout=45s",
+        "-json"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 1.0659070549882017,
+      "test_records": {
+        "pass": 30,
+        "fail": 0,
+        "skip": 1
+      }
+    },
+    {
+      "name": "race",
+      "argv": [
+        "go",
+        "test",
+        "-race",
+        "./scripts/faults/application",
+        "-run",
+        "^TestStrictLogs",
+        "-count=1",
+        "-timeout=45s",
+        "-json"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 2.3699048570124432,
+      "test_records": {
+        "pass": 30,
+        "fail": 0,
+        "skip": 1
+      }
+    },
+    {
+      "name": "vet",
+      "argv": [
+        "go",
+        "vet",
+        "./scripts/faults/application"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.1659147110185586,
+      "test_records": {
+        "pass": 0,
+        "fail": 0,
+        "skip": 0
+      }
+    }
+  ]
+}

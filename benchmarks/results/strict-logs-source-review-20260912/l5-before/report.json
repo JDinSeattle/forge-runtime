@@ -1,0 +1,20 @@
+{
+  "scope": "guard-only source-expression extraction; not a full L5 run and no PG, Docker, mount, socket, service, provider or live evidence mutation",
+  "source_sha256": "df7d92567f8c38324a28fc87fd318ab6a4a26e5741e9c390119a1848e11b7bc4",
+  "helpers_sha256": "3f4c7b89f7b1a6470822a16388702ba4e690359d8912d3c163dda176d098562a",
+  "exact_extracted_expressions": {
+    "signal": "slNum(signal[\"exit_code\"]) != 0 || slNum(signal[\"pid\"]) <= 0 || signal[\"exe_sha256\"] != expected || signal[\"proc_start_ticks\"] == \"\"",
+    "exit_order": "!exited.After(sent) || exited.Sub(sent) > 8*time.Second",
+    "lease": "claimed.Before(oldUntil)"
+  },
+  "results": {
+    "fractional_pid_accepted": true,
+    "missing_ticks_accepted": true,
+    "nonnumeric_ticks_accepted": true,
+    "positive": true,
+    "replaced_positive_pid_accepted": true,
+    "unbound_historical_summary_times_accepted": true
+  },
+  "finding": "P2: evidence guards accept absent/invalid launch identity and unbound historical summary times",
+  "go_exit": 0
+}
