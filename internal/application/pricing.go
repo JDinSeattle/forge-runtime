@@ -44,7 +44,7 @@ func (p attemptPricing) validate() error {
 	if p.SchemaVersion != 1 || p.Model == "" || p.PriceVersion == "" || p.CredentialGroup == "" || p.ContextTokens <= 0 || p.MaxOutputTokens <= 0 || p.ContextTokens > math.MaxInt64-p.MaxOutputTokens || p.RequestTimeout <= 0 || p.InputPrice < 0 || p.OutputPrice < 0 {
 		return domain.ErrInvalid
 	}
-	if p.Provider != "fake" && p.Provider != "openai" && p.Provider != "anthropic" {
+	if p.Provider != "fake" && p.Provider != "openai" && p.Provider != "anthropic" && p.Provider != "deepseek" {
 		return domain.ErrInvalid
 	}
 	if p.Provider != "fake" && !p.ExactPricing && (p.InputPrice == 0 || p.OutputPrice == 0) {
@@ -134,8 +134,8 @@ func (p attemptPricing) priceUsage(u provider.Usage) (quota.Settlement, bool, er
 	switch p.Provider {
 	case "fake":
 		terms = append(terms, pricedTokens{input, p.InputPrice})
-	case "openai":
-		// OpenAI input_tokens already includes cached_tokens. Subtract cache reads
+	case "openai", "deepseek":
+		// Responses input_tokens already includes cached_tokens. Subtract cache reads
 		// from base input rather than charging them a second time.
 		if !u.CacheRead.Known {
 			return quota.Settlement{}, false, nil

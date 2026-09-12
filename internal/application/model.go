@@ -267,7 +267,7 @@ func (d *Driver) callModel(ctx context.Context, r persistence.Run) (flow.Event, 
 		observation.CacheWriteTokens = telemetry.TokenCount{Value: turn.Usage.CacheWrite.Value, Known: turn.Usage.CacheWrite.Known}
 	}
 	if turn.Usage.Final && streamErr == nil {
-		if a.Provider == "openai" || a.Provider == "fake" {
+		if a.Provider == "openai" || a.Provider == "deepseek" || a.Provider == "fake" {
 			observation.SemanticInput = observation.InputTokens
 		}
 		if a.Provider == "anthropic" && observation.InputTokens.Known && observation.CacheReadTokens.Known && observation.CacheWriteTokens.Known {

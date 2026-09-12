@@ -1,0 +1,98 @@
+=== RUN   TestDeepSeekResponsesIdentityAndStatelessContinuation
+--- PASS: TestDeepSeekResponsesIdentityAndStatelessContinuation (0.00s)
+=== RUN   TestDeepSeekStreamRejectsPartialAndAmbiguousTurns
+=== RUN   TestDeepSeekStreamRejectsPartialAndAmbiguousTurns/eof_before_final
+=== RUN   TestDeepSeekStreamRejectsPartialAndAmbiguousTurns/missing_sequence
+=== RUN   TestDeepSeekStreamRejectsPartialAndAmbiguousTurns/duplicate_sequence
+=== RUN   TestDeepSeekStreamRejectsPartialAndAmbiguousTurns/fractional_sequence
+=== RUN   TestDeepSeekStreamRejectsPartialAndAmbiguousTurns/missing_created_id
+=== RUN   TestDeepSeekStreamRejectsPartialAndAmbiguousTurns/missing_created
+=== RUN   TestDeepSeekStreamRejectsPartialAndAmbiguousTurns/duplicate_created
+=== RUN   TestDeepSeekStreamRejectsPartialAndAmbiguousTurns/final_wrong_response
+=== RUN   TestDeepSeekStreamRejectsPartialAndAmbiguousTurns/final_wrong_tool
+=== RUN   TestDeepSeekStreamRejectsPartialAndAmbiguousTurns/final_missing_model
+=== RUN   TestDeepSeekStreamRejectsPartialAndAmbiguousTurns/final_wrong_text
+=== RUN   TestDeepSeekStreamRejectsPartialAndAmbiguousTurns/cache_larger_than_input
+=== RUN   TestDeepSeekStreamRejectsPartialAndAmbiguousTurns/unsupported_custom
+=== RUN   TestDeepSeekStreamRejectsPartialAndAmbiguousTurns/event_after_complete
+--- PASS: TestDeepSeekStreamRejectsPartialAndAmbiguousTurns (0.00s)
+    --- PASS: TestDeepSeekStreamRejectsPartialAndAmbiguousTurns/eof_before_final (0.00s)
+    --- PASS: TestDeepSeekStreamRejectsPartialAndAmbiguousTurns/missing_sequence (0.00s)
+    --- PASS: TestDeepSeekStreamRejectsPartialAndAmbiguousTurns/duplicate_sequence (0.00s)
+    --- PASS: TestDeepSeekStreamRejectsPartialAndAmbiguousTurns/fractional_sequence (0.00s)
+    --- PASS: TestDeepSeekStreamRejectsPartialAndAmbiguousTurns/missing_created_id (0.00s)
+    --- PASS: TestDeepSeekStreamRejectsPartialAndAmbiguousTurns/missing_created (0.00s)
+    --- PASS: TestDeepSeekStreamRejectsPartialAndAmbiguousTurns/duplicate_created (0.00s)
+    --- PASS: TestDeepSeekStreamRejectsPartialAndAmbiguousTurns/final_wrong_response (0.00s)
+    --- PASS: TestDeepSeekStreamRejectsPartialAndAmbiguousTurns/final_wrong_tool (0.00s)
+    --- PASS: TestDeepSeekStreamRejectsPartialAndAmbiguousTurns/final_missing_model (0.00s)
+    --- PASS: TestDeepSeekStreamRejectsPartialAndAmbiguousTurns/final_wrong_text (0.00s)
+    --- PASS: TestDeepSeekStreamRejectsPartialAndAmbiguousTurns/cache_larger_than_input (0.00s)
+    --- PASS: TestDeepSeekStreamRejectsPartialAndAmbiguousTurns/unsupported_custom (0.00s)
+    --- PASS: TestDeepSeekStreamRejectsPartialAndAmbiguousTurns/event_after_complete (0.00s)
+=== RUN   TestDeepSeekIncompleteUsageRemainsLowerBound
+=== RUN   TestDeepSeekIncompleteUsageRemainsLowerBound/response.incomplete
+=== RUN   TestDeepSeekIncompleteUsageRemainsLowerBound/response.failed
+=== RUN   TestDeepSeekIncompleteUsageRemainsLowerBound/usage
+=== RUN   TestDeepSeekIncompleteUsageRemainsLowerBound/cached_tokens
+--- PASS: TestDeepSeekIncompleteUsageRemainsLowerBound (0.00s)
+    --- PASS: TestDeepSeekIncompleteUsageRemainsLowerBound/response.incomplete (0.00s)
+    --- PASS: TestDeepSeekIncompleteUsageRemainsLowerBound/response.failed (0.00s)
+    --- PASS: TestDeepSeekIncompleteUsageRemainsLowerBound/usage (0.00s)
+    --- PASS: TestDeepSeekIncompleteUsageRemainsLowerBound/cached_tokens (0.00s)
+=== RUN   TestDeepSeekNoHiddenRetriesDeadlineOrConsumerLeak
+=== RUN   TestDeepSeekNoHiddenRetriesDeadlineOrConsumerLeak/401
+=== RUN   TestDeepSeekNoHiddenRetriesDeadlineOrConsumerLeak/429
+=== RUN   TestDeepSeekNoHiddenRetriesDeadlineOrConsumerLeak/500
+--- PASS: TestDeepSeekNoHiddenRetriesDeadlineOrConsumerLeak (0.01s)
+    --- PASS: TestDeepSeekNoHiddenRetriesDeadlineOrConsumerLeak/401 (0.00s)
+    --- PASS: TestDeepSeekNoHiddenRetriesDeadlineOrConsumerLeak/429 (0.00s)
+    --- PASS: TestDeepSeekNoHiddenRetriesDeadlineOrConsumerLeak/500 (0.00s)
+=== RUN   TestResponsesSharedAssemblyPreservesOpenAIContract
+--- PASS: TestResponsesSharedAssemblyPreservesOpenAIContract (0.00s)
+PASS
+ok  	github.com/JDinSeattle/forge-runtime/internal/provider	0.023s
+=== RUN   TestDeepSeekRequiresOwnCredentialAndRegistry
+--- PASS: TestDeepSeekRequiresOwnCredentialAndRegistry (0.00s)
+=== RUN   TestLoadOperatorTextBatchPolicy
+=== RUN   TestLoadOperatorTextBatchPolicy/omitted_defaults
+=== RUN   TestLoadOperatorTextBatchPolicy/explicit
+=== RUN   TestLoadOperatorTextBatchPolicy/interval_rejected
+=== RUN   TestLoadOperatorTextBatchPolicy/byte_ceiling_rejected
+--- PASS: TestLoadOperatorTextBatchPolicy (0.00s)
+    --- PASS: TestLoadOperatorTextBatchPolicy/omitted_defaults (0.00s)
+    --- PASS: TestLoadOperatorTextBatchPolicy/explicit (0.00s)
+    --- PASS: TestLoadOperatorTextBatchPolicy/interval_rejected (0.00s)
+    --- PASS: TestLoadOperatorTextBatchPolicy/byte_ceiling_rejected (0.00s)
+PASS
+ok  	github.com/JDinSeattle/forge-runtime/internal/configuration	0.008s
+=== RUN   TestProviderSpecificPricing
+=== RUN   TestProviderSpecificPricing/deepseek_Responses_cached_input_is_inclusive
+=== RUN   TestProviderSpecificPricing/openai_cached_input_is_inclusive
+=== RUN   TestProviderSpecificPricing/anthropic_cache_input_is_additive
+=== RUN   TestProviderSpecificPricing/measured_zero
+=== RUN   TestProviderSpecificPricing/cache_cannot_exceed_inclusive_input
+=== RUN   TestProviderSpecificPricing/input_output_overflow
+=== RUN   TestProviderSpecificPricing/additive_cache_overflow
+=== RUN   TestProviderSpecificPricing/negative_measured_cache
+--- PASS: TestProviderSpecificPricing (0.00s)
+    --- PASS: TestProviderSpecificPricing/deepseek_Responses_cached_input_is_inclusive (0.00s)
+    --- PASS: TestProviderSpecificPricing/openai_cached_input_is_inclusive (0.00s)
+    --- PASS: TestProviderSpecificPricing/anthropic_cache_input_is_additive (0.00s)
+    --- PASS: TestProviderSpecificPricing/measured_zero (0.00s)
+    --- PASS: TestProviderSpecificPricing/cache_cannot_exceed_inclusive_input (0.00s)
+    --- PASS: TestProviderSpecificPricing/input_output_overflow (0.00s)
+    --- PASS: TestProviderSpecificPricing/additive_cache_overflow (0.00s)
+    --- PASS: TestProviderSpecificPricing/negative_measured_cache (0.00s)
+=== RUN   TestPricingReserveBoundsAndRounding
+--- PASS: TestPricingReserveBoundsAndRounding (0.00s)
+=== RUN   TestDeepSeekPeakBoundAndUnknownUsage
+--- PASS: TestDeepSeekPeakBoundAndUnknownUsage (0.00s)
+PASS
+ok  	github.com/JDinSeattle/forge-runtime/internal/application	0.009s
+=== RUN   TestPinnedGenAIUsageKnownAndUnknown
+--- PASS: TestPinnedGenAIUsageKnownAndUnknown (0.00s)
+=== RUN   TestUntrustedDimensionsCollapseAndEndIsConcurrentSafe
+--- PASS: TestUntrustedDimensionsCollapseAndEndIsConcurrentSafe (0.00s)
+PASS
+ok  	github.com/JDinSeattle/forge-runtime/internal/telemetry	0.003s

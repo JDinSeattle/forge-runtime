@@ -23,7 +23,7 @@ def validate_registration(r):
     allowed = {"provider", "model_id", "config_id", "total_budget_microusd", "task_budgets_microusd", "max_model_rounds", "max_tool_calls", "max_runtime_seconds", "capabilities", "model_spec", "price_sources", "capability_sources"}
     if not isinstance(r, dict) or set(r) != allowed:
         raise ValueError("registration must contain only the documented fields, never credentials")
-    if r.get("provider") not in ("openai", "anthropic") or not isinstance(r.get("model_id"), str) or not r["model_id"].strip() or not common.valid_id(r.get("config_id")):
+    if r.get("provider") not in ("openai", "anthropic", "deepseek") or not isinstance(r.get("model_id"), str) or not r["model_id"].strip() or not common.valid_id(r.get("config_id")):
         raise ValueError("explicit supported native provider/model/config IDs required; fake is forbidden")
     if not positive(r.get("total_budget_microusd")) or set(r.get("task_budgets_microusd", {})) != set(common.CASES):
         raise ValueError("an explicit total and allocation for every fixed task are required")

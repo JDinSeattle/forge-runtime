@@ -1,0 +1,48 @@
+{
+  "scope": "Operator-readable field snapshot from official documentation, not an API response or model evaluation",
+  "checked_date_utc": "2026-09-12",
+  "pricing_retrieved_at_utc": "2026-09-12T04:00:44Z",
+  "responses_successfully_read_before_utc": "2026-09-12T03:51:39Z",
+  "sources": {
+    "pricing": "https://api-docs.deepseek.com/quick_start/pricing/",
+    "responses": "https://api-docs.deepseek.com/guides/responses_api/",
+    "tools": "https://api-docs.deepseek.com/guides/tool_calls/",
+    "thinking": "https://api-docs.deepseek.com/guides/thinking_mode/",
+    "usage": "https://api-docs.deepseek.com/quick_start/token_usage/",
+    "cache": "https://api-docs.deepseek.com/guides/kv_cache/"
+  },
+  "model": {
+    "requested_alias": "deepseek-v4-flash",
+    "current_recommended_id": "deepseek-flash",
+    "documented_alias_target": "DeepSeek-V4.1-Flash",
+    "alias_is_immutable_version": false,
+    "documented_context": "1M",
+    "documented_max_output": "384K"
+  },
+  "price_usd_per_million_tokens": {
+    "peak": {"input_cache_miss": "0.30", "input_cache_hit": "0.006", "output": "1.20"},
+    "off_peak": {"input_cache_miss": "0.15", "input_cache_hit": "0.003", "output": "0.60"},
+    "peak_utc": "Monday-Friday 01:00-04:00 and 06:00-10:00",
+    "implementation_quote": "conservative peak bound; exact_pricing=false"
+  },
+  "responses": {
+    "endpoint": "https://api.deepseek.com/responses",
+    "stateless": true,
+    "previous_response_id_supported": false,
+    "completion_events": ["response.completed", "response.incomplete", "response.failed"],
+    "done_marker": false,
+    "monotonically_increasing_sequence_number": true,
+    "function_tools_supported": true,
+    "input_tokens_include_cache_read": true,
+    "cache_read_counter": "usage.input_tokens_details.cached_tokens",
+    "output_tokens_include_reasoning": true,
+    "reasoning_counter": "usage.output_tokens_details.reasoning_tokens"
+  },
+  "implementation_subset": {
+    "reasoning_effort": "none",
+    "native_function_tools_only": true,
+    "local_native_history": true,
+    "paid_requests_performed": 0,
+    "endpoint_live_verified": false
+  }
+}

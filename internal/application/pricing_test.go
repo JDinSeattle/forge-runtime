@@ -29,6 +29,7 @@ func TestProviderSpecificPricing(t *testing.T) {
 		known   bool
 		err     error
 	}{
+		{"deepseek Responses cached input is inclusive", pricingFixture("deepseek"), usage(100, 50, 40, 0), 150, 170, true, nil},
 		{"openai cached input is inclusive", pricingFixture("openai"), usage(100, 50, 40, 0), 150, 170, true, nil},
 		{"anthropic cache input is additive", pricingFixture("anthropic"), usage(100, 50, 40, 20), 210, 235, true, nil},
 		{"measured zero", pricingFixture("openai"), usage(0, 0, 0, 0), 0, 0, true, nil},
@@ -114,5 +115,30 @@ func TestModelFailureCircuitClassification(t *testing.T) {
 				t.Fatalf("outcome=%s retry=%v", outcome, retry)
 			}
 		})
+	}
+}
+
+func TestDeepSeekPeakBoundAndUnknownUsage(t *testing.T) {
+	spec := ModelSpec{CredentialGroup: "deepseek-eval", PriceVersion: "deepseek-flash-peak-20260912", ExactPricing: false, InputPrice: 300000, OutputPrice: 1200000, CacheReadPrice: money(6000), ContextTokens: 32768, MaxOutputTokens: 8192, RequestTimeout: time.Minute}
+	p, err := freezePricing("deepseek", "deepseek-v4-flash", spec)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if reserved, err := p.reserveCost(); err != nil || reserved != 19661 {
+		t.Fatalf("reserve %d %v", reserved, err)
+	}
+	// Peak/off-peak billing time is not proven by a local dispatch clock. Even a
+	// measured complete usage is not an invoice at this conservative peak quote.
+	if _, known, err := p.priceUsage(usage(100, 50, 40, 0)); err != nil || known {
+		t.Fatal("peak ceiling treated as exact billing")
+	}
+	p.ExactPricing = true // hypothetical immutable, applicable quote: arithmetic only
+	for _, u := range []provider.Usage{{}, {Final: true, Input: measured(100), Output: measured(50)}, {Input: measured(100), Output: measured(50), CacheRead: measured(40)}} {
+		if _, known, err := p.priceUsage(u); err != nil || known {
+			t.Fatal("unknown/partial counter treated as free")
+		}
+	}
+	if _, known, err := p.priceUsage(usage(1, 1, 2, 0)); err == nil || known {
+		t.Fatal("impossible inclusive cache accepted")
 	}
 }

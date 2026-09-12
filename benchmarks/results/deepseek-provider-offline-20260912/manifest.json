@@ -1,0 +1,101 @@
+{
+  "scope": "offline HTTP RoundTripper, pricing, configuration, telemetry and evaluation registration only",
+  "base_commit": "a49efa80bf959f5e1e19d1e3e542e2d63c5af390",
+  "source_sha256": {
+    "internal/application/model.go": "2562bc353e59f5d09d014377fe50980fc32724fe63fec56c0586da65cc5ab542",
+    "internal/application/pricing.go": "91e683a26c4a590d862654d494a8092ad59320b3a04083dea92e5ccdcaba1401",
+    "internal/application/pricing_test.go": "04184a31bc6637d1d5e649cd40871253cb811f8f48842a30ac7ffbb691fd18de",
+    "internal/configuration/config.go": "7299ccb12fc7dce8e61df7281e261cf0a9317b559058d16201f8268e00b24c60",
+    "internal/configuration/deepseek_test.go": "762ff5d0e42f7e3710b960f35c8aec83af8d3cb50ae4555483455e08ea9f55c3",
+    "internal/provider/openai.go": "2bf36ad51a9a9128bf9542391e693cff24b18bd7c9ee07b0b8ae061b53b5eef3",
+    "internal/provider/types.go": "ba6da9a9aca6a72b3968da85153553ce990be743a825d9de472fc04874ce3314",
+    "internal/provider/deepseek.go": "b82e2987a9be4dc6d13801441851b5d151040d7f780a5953efcbc8e3f88c5e73",
+    "internal/provider/deepseek_test.go": "46c40882b15e8ebfc7f4580559eeeae3daa05f0bbdb4cbd2320128dd1bd5fa6d",
+    "internal/telemetry/hooks.go": "c8e32cdc46c8d317558ea9e7d61063bd224fab6341532a2f975e4bcad99a0a3a",
+    "scripts/evaluation/prepare.py": "0de049228420017610fbc77efa30653db679154048ff192c94e6563027e4dedb",
+    "scripts/evaluation/test_evaluation.py": "e750d9026663c2eb5691cdae1c5cd2fcbe78cd480cd64a04c96ba2cbc7da89bd",
+    "docs/deepseek-provider.md": "16eed5af63cb8524f375f8d20bd647e6948ab5e632b9755b44b50ffd3c643b72",
+    "docs/sources/deepseek-20260912.json": "ada0069247ef7603254dc48437700dcafdc0193e4dd287cea2003e9ce4e4f138",
+    "go.mod": "61a96a6dbfdc546edcc7abab472adc49313db486443c47f2272ad75cdae21682",
+    "go.sum": "fb95568a8246ed4b2759494d6384e27a57e330b722154046b8160357ed1c7718"
+  },
+  "logs": {
+    "first-offline.log": {
+      "sha256": "8e543f96fbd52d2c6b0db796c49c54e3f62f72a6da84f8f935fc7ff4d8a84fc8",
+      "meaning": "FAILED: initial fixture limit did not trigger"
+    },
+    "second-offline.log": {
+      "sha256": "e131731d46c1b7691190d7682094b10b2e4368f9be332274cdc3d9bddecb5108",
+      "meaning": "intermediate ordinary PASS, before final review guard"
+    },
+    "final-race.log": {
+      "sha256": "8ddc73f288bd3baaf49223d3bf24a700ad5e1be6edc4d378308df1e97c89ae79",
+      "meaning": "FAILED compilation: temporary missing created-response field"
+    },
+    "frozen-offline.log": {
+      "sha256": "311ecda7399144682fb334e231f0fede5e40a5b739d940e01928a21c0c396c1d",
+      "meaning": "intermediate 45 PASS, before item-status review"
+    },
+    "frozen-race.log": {
+      "sha256": "b84eac4907b495aa8a023e5a9d93719215ce970e2eec58bfd1df7b196f9a7284",
+      "meaning": "intermediate 45 PASS, before item-status review"
+    },
+    "frozen-vet.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "meaning": "intermediate vet PASS"
+    },
+    "reviewed-offline.log": {
+      "sha256": "8fa17ced9be8fec01fec55b818a2a79daf9ffc2dd00b5e0ac0dba84d91584046",
+      "meaning": "final ordinary PASS: 56"
+    },
+    "reviewed-race.log": {
+      "sha256": "2d4a17a518db309ea0a7d401e219ba526b7f05bb9930f1e008b51223600276b1",
+      "meaning": "final race PASS: 56"
+    },
+    "reviewed-vet.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "meaning": "final affected-package vet PASS"
+    },
+    "evaluation-offline.log": {
+      "sha256": "62d2ed78c64558b3d126beb24dff3cd215d10545ae8f7fb54273bc6af467a59c",
+      "meaning": "16 Python offline PASS"
+    }
+  },
+  "final_go_pass_records": 56,
+  "final_go_fail_records": 0,
+  "python_tests_passed": 16,
+  "test_selection": "^(TestDeepSeek|TestResponsesSharedAssembly|TestProviderSpecificPricing|TestPricingReserveBoundsAndRounding|TestLoadOperatorTextBatchPolicy|TestUntrustedDimensionsCollapse|TestPinnedGenAIUsageKnown)",
+  "go_packages": [
+    "./internal/provider",
+    "./internal/configuration",
+    "./internal/application",
+    "./internal/telemetry"
+  ],
+  "go_commands": [
+    "go test <packages> -run <test_selection> -count=1 -v",
+    "go test -race <packages> -run <test_selection> -count=1 -v",
+    "go vet <packages>"
+  ],
+  "python_command": "python3 -B -m unittest discover -s scripts/evaluation -p test_evaluation.py -v",
+  "go_version": "go version go1.26.8 linux/amd64",
+  "environment": {
+    "GOPROXY": "off",
+    "GOSUMDB": "off",
+    "GOENV": "off",
+    "GOTOOLCHAIN": "local",
+    "GOMAXPROCS": "2",
+    "TMPDIR": "/tmp",
+    "GOCACHE": "shared existing local build cache",
+    "GOTMPDIR": "isolated worktree/var/tmpgo"
+  },
+  "network_calls_performed": 0,
+  "real_credentials_created_or_read": false,
+  "service_changes": false,
+  "paid_evaluation_performed": false,
+  "limitations": [
+    "No live DeepSeek endpoint/PG/model-quality/invoice verification",
+    "No full repository or independent clean-build attestation",
+    "Documentation names may route to a different model version later; no pinned0731 claim",
+    "OpenAI/Anthropic historical live fixtures not rerun here; existing wire fixture tested through in-memory Responses transport"
+  ]
+}

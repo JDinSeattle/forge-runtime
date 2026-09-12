@@ -14,17 +14,21 @@ import (
 	"github.com/openai/openai-go/v3/shared"
 )
 
-type OpenAI struct {
-	client   openai.Client
+type OpenAI struct{ *responsesAdapter }
+
+// responsesAdapter shares assembly, never credential or provider identity.
+type responsesAdapter struct {
+	service  responses.ResponseService
+	name     string
 	registry Registry
 	limits   Limits
 }
 
 func NewOpenAI(registry Registry, limits Limits, options ...option.RequestOption) *OpenAI {
 	options = append(options, option.WithMaxRetries(0), option.WithMiddleware(boundResponse(limits.normalized().MaxNativeBytes)))
-	return &OpenAI{client: openai.NewClient(options...), registry: cloneRegistry(registry), limits: limits.normalized()}
+	return &OpenAI{&responsesAdapter{service: openai.NewClient(options...).Responses, name: "openai", registry: cloneRegistry(registry), limits: limits.normalized()}}
 }
-func (p *OpenAI) Capabilities(ctx context.Context, model string) (Capabilities, error) {
+func (p *responsesAdapter) Capabilities(ctx context.Context, model string) (Capabilities, error) {
 	return p.registry.Lookup(ctx, model)
 }
 
@@ -52,12 +56,12 @@ type openAIResponse struct {
 	} `json:"usage"`
 }
 
-func (p *OpenAI) Stream(ctx context.Context, req ModelRequest, emit func(ModelEvent) error) (ModelTurn, error) {
+func (p *responsesAdapter) Stream(ctx context.Context, req ModelRequest, emit func(ModelEvent) error) (ModelTurn, error) {
 	caps, err := p.Capabilities(ctx, req.ModelID)
 	if err != nil {
 		return ModelTurn{}, err
 	}
-	if err = validateRequest(req, caps, "openai"); err != nil {
+	if err = validateRequest(req, caps, p.name); err != nil {
 		return ModelTurn{}, err
 	}
 	if !req.Deadline.IsZero() {
@@ -77,12 +81,13 @@ func (p *OpenAI) Stream(ctx context.Context, req ModelRequest, emit func(ModelEv
 		return a.fail(err)
 	}
 	var response *http.Response
-	stream := p.client.Responses.NewStreaming(ctx, params, option.WithMaxRetries(0), option.WithResponseInto(&response), option.WithHeader("X-Client-Request-Id", req.AttemptID))
+	stream := p.service.NewStreaming(ctx, params, option.WithMaxRetries(0), option.WithResponseInto(&response), option.WithHeader("X-Client-Request-Id", req.AttemptID))
 	defer stream.Close()
 	itemCalls := map[string]string{}
 	var finalRaw json.RawMessage
 	var responseID string
 	completed := false
+	var deepseek deepSeekStream
 	for stream.Next() {
 		e := stream.Current()
 		if err = a.recordNative(e.RawJSON()); err != nil {
@@ -90,6 +95,11 @@ func (p *OpenAI) Stream(ctx context.Context, req ModelRequest, emit func(ModelEv
 		}
 		if completed {
 			return a.fail(&Error{Kind: ErrProtocol, Detail: "event after response completion"})
+		}
+		if p.name == "deepseek" {
+			if err = deepseek.check(e.RawJSON(), e.Type); err != nil {
+				return a.fail(err)
+			}
 		}
 		switch e.Type {
 		case "response.created":
@@ -137,6 +147,11 @@ func (p *OpenAI) Stream(ctx context.Context, req ModelRequest, emit func(ModelEv
 				break
 			}
 			responseID = final.ID
+			if p.name == "deepseek" {
+				if err = deepseekFinal(finalRaw, a.text.String()); err != nil {
+					break
+				}
+			}
 			count := 0
 			seen := map[string]bool{}
 			for _, raw := range final.Output {
@@ -167,6 +182,12 @@ func (p *OpenAI) Stream(ctx context.Context, req ModelRequest, emit func(ModelEv
 			a.usage = Usage{Input: token(final.Usage.Input), Output: token(final.Usage.Output), CacheRead: token(final.Usage.Details.Cache)}
 			completed = err == nil
 		case "response.failed", "response.incomplete", "error":
+			if p.name == "deepseek" {
+				var partial openAIResponse
+				if json.Unmarshal([]byte(e.Response.RawJSON()), &partial) == nil {
+					a.usage = Usage{Input: token(partial.Usage.Input), Output: token(partial.Usage.Output), CacheRead: token(partial.Usage.Details.Cache)}
+				}
+			}
 			err = &Error{Kind: ErrInterrupted, Detail: "provider did not complete response"}
 		}
 		if err != nil {
@@ -190,15 +211,30 @@ func (p *OpenAI) Stream(ctx context.Context, req ModelRequest, emit func(ModelEv
 	if response != nil {
 		requestID = response.Header.Get("x-request-id")
 	}
-	turn, err := a.finish("completed", &NativeState{Provider: "openai", ResponseID: responseID, Raw: raw}, requestID)
+	turn, err := a.finish("completed", &NativeState{Provider: p.name, ResponseID: responseID, Raw: raw}, requestID)
 	if err != nil {
 		return a.fail(err)
+	}
+	if p.name == "deepseek" {
+		var final struct {
+			Model string `json:"model"`
+		}
+		_ = json.Unmarshal(finalRaw, &final)
+		turn.ProviderModel = final.Model
 	}
 	return turn, nil
 }
 
-func (p *OpenAI) params(req ModelRequest) (responses.ResponseNewParams, []json.RawMessage, error) {
-	params := responses.ResponseNewParams{Model: shared.ResponsesModel(req.ModelID), MaxOutputTokens: openai.Int(req.MaxOutputTokens), Store: openai.Bool(false), Include: []responses.ResponseIncludable{"reasoning.encrypted_content"}}
+func (p *responsesAdapter) params(req ModelRequest) (responses.ResponseNewParams, []json.RawMessage, error) {
+	params := responses.ResponseNewParams{Model: shared.ResponsesModel(req.ModelID), MaxOutputTokens: openai.Int(req.MaxOutputTokens)}
+	if p.name == "deepseek" {
+		// Stateless portable compaction cannot retain every past thinking item.
+		// Explicit non-thinking mode is the supported initial adapter contract.
+		params.Reasoning = shared.ReasoningParam{Effort: "none"}
+	} else {
+		params.Store = openai.Bool(false)
+		params.Include = []responses.ResponseIncludable{"reasoning.encrypted_content"}
+	}
 	input := []json.RawMessage{}
 	if req.NativeState != nil {
 		if len(req.NativeState.Raw) > p.limits.MaxNativeBytes {
@@ -207,7 +243,10 @@ func (p *OpenAI) params(req ModelRequest) (responses.ResponseNewParams, []json.R
 		var state openAIState
 		var response openAIResponse
 		if json.Unmarshal(req.NativeState.Raw, &state) != nil || json.Unmarshal(state.Response, &response) != nil || response.ID == "" || response.ID != req.NativeState.ResponseID {
-			return params, nil, &Error{Kind: ErrInvalidRequest, Detail: "invalid OpenAI native state"}
+			return params, nil, &Error{Kind: ErrInvalidRequest, Detail: "invalid Responses native state"}
+		}
+		if p.name == "deepseek" && response.Status != "completed" {
+			return params, nil, &Error{Kind: ErrInvalidRequest, Detail: "native state is not a completed response"}
 		}
 		input = append(input, state.Input...)
 		input = append(input, response.Output...)

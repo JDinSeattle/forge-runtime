@@ -49,7 +49,7 @@ func outcomeLabel(value Outcome) string {
 }
 func providerLabel(value string) string {
 	switch value {
-	case "openai", "anthropic", "fake":
+	case "openai", "anthropic", "deepseek", "fake":
 		return value
 	default:
 		return "other"

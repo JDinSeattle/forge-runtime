@@ -1,0 +1,53 @@
+=== RUN   TestDeepSeekResponsesIdentityAndStatelessContinuation
+--- PASS: TestDeepSeekResponsesIdentityAndStatelessContinuation (0.00s)
+=== RUN   TestDeepSeekStreamRejectsPartialAndAmbiguousTurns
+=== RUN   TestDeepSeekStreamRejectsPartialAndAmbiguousTurns/eof_before_final
+=== RUN   TestDeepSeekStreamRejectsPartialAndAmbiguousTurns/missing_sequence
+=== RUN   TestDeepSeekStreamRejectsPartialAndAmbiguousTurns/duplicate_sequence
+=== RUN   TestDeepSeekStreamRejectsPartialAndAmbiguousTurns/fractional_sequence
+=== RUN   TestDeepSeekStreamRejectsPartialAndAmbiguousTurns/missing_created
+=== RUN   TestDeepSeekStreamRejectsPartialAndAmbiguousTurns/duplicate_created
+=== RUN   TestDeepSeekStreamRejectsPartialAndAmbiguousTurns/final_wrong_response
+=== RUN   TestDeepSeekStreamRejectsPartialAndAmbiguousTurns/final_wrong_tool
+=== RUN   TestDeepSeekStreamRejectsPartialAndAmbiguousTurns/final_missing_model
+=== RUN   TestDeepSeekStreamRejectsPartialAndAmbiguousTurns/final_wrong_text
+=== RUN   TestDeepSeekStreamRejectsPartialAndAmbiguousTurns/cache_larger_than_input
+=== RUN   TestDeepSeekStreamRejectsPartialAndAmbiguousTurns/unsupported_custom
+=== RUN   TestDeepSeekStreamRejectsPartialAndAmbiguousTurns/event_after_complete
+--- PASS: TestDeepSeekStreamRejectsPartialAndAmbiguousTurns (0.01s)
+    --- PASS: TestDeepSeekStreamRejectsPartialAndAmbiguousTurns/eof_before_final (0.00s)
+    --- PASS: TestDeepSeekStreamRejectsPartialAndAmbiguousTurns/missing_sequence (0.00s)
+    --- PASS: TestDeepSeekStreamRejectsPartialAndAmbiguousTurns/duplicate_sequence (0.00s)
+    --- PASS: TestDeepSeekStreamRejectsPartialAndAmbiguousTurns/fractional_sequence (0.00s)
+    --- PASS: TestDeepSeekStreamRejectsPartialAndAmbiguousTurns/missing_created (0.00s)
+    --- PASS: TestDeepSeekStreamRejectsPartialAndAmbiguousTurns/duplicate_created (0.00s)
+    --- PASS: TestDeepSeekStreamRejectsPartialAndAmbiguousTurns/final_wrong_response (0.00s)
+    --- PASS: TestDeepSeekStreamRejectsPartialAndAmbiguousTurns/final_wrong_tool (0.00s)
+    --- PASS: TestDeepSeekStreamRejectsPartialAndAmbiguousTurns/final_missing_model (0.00s)
+    --- PASS: TestDeepSeekStreamRejectsPartialAndAmbiguousTurns/final_wrong_text (0.00s)
+    --- PASS: TestDeepSeekStreamRejectsPartialAndAmbiguousTurns/cache_larger_than_input (0.00s)
+    --- PASS: TestDeepSeekStreamRejectsPartialAndAmbiguousTurns/unsupported_custom (0.00s)
+    --- PASS: TestDeepSeekStreamRejectsPartialAndAmbiguousTurns/event_after_complete (0.00s)
+=== RUN   TestDeepSeekIncompleteUsageRemainsLowerBound
+=== RUN   TestDeepSeekIncompleteUsageRemainsLowerBound/response.incomplete
+=== RUN   TestDeepSeekIncompleteUsageRemainsLowerBound/response.failed
+=== RUN   TestDeepSeekIncompleteUsageRemainsLowerBound/usage
+=== RUN   TestDeepSeekIncompleteUsageRemainsLowerBound/cached_tokens
+--- PASS: TestDeepSeekIncompleteUsageRemainsLowerBound (0.00s)
+    --- PASS: TestDeepSeekIncompleteUsageRemainsLowerBound/response.incomplete (0.00s)
+    --- PASS: TestDeepSeekIncompleteUsageRemainsLowerBound/response.failed (0.00s)
+    --- PASS: TestDeepSeekIncompleteUsageRemainsLowerBound/usage (0.00s)
+    --- PASS: TestDeepSeekIncompleteUsageRemainsLowerBound/cached_tokens (0.00s)
+=== RUN   TestDeepSeekNoHiddenRetriesDeadlineOrConsumerLeak
+=== RUN   TestDeepSeekNoHiddenRetriesDeadlineOrConsumerLeak/401
+=== RUN   TestDeepSeekNoHiddenRetriesDeadlineOrConsumerLeak/429
+=== RUN   TestDeepSeekNoHiddenRetriesDeadlineOrConsumerLeak/500
+=== NAME  TestDeepSeekNoHiddenRetriesDeadlineOrConsumerLeak
+    deepseek_test.go:248: error=<nil>; want kind stream_limit
+--- FAIL: TestDeepSeekNoHiddenRetriesDeadlineOrConsumerLeak (0.01s)
+    --- PASS: TestDeepSeekNoHiddenRetriesDeadlineOrConsumerLeak/401 (0.00s)
+    --- PASS: TestDeepSeekNoHiddenRetriesDeadlineOrConsumerLeak/429 (0.00s)
+    --- PASS: TestDeepSeekNoHiddenRetriesDeadlineOrConsumerLeak/500 (0.00s)
+FAIL
+FAIL	github.com/JDinSeattle/forge-runtime/internal/provider	0.025s
+FAIL

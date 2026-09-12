@@ -37,6 +37,41 @@ def registration():
 
 
 class EvaluationTests(unittest.TestCase):
+    def test_deepseek_registration_preserves_identity_and_budget(self):
+        r = registration()
+        r.update(provider="deepseek", model_id="deepseek-v4-flash", config_id="deepseek_flash_evalv2", total_budget_microusd=2000000,
+                 task_budgets_microusd={case: 500000 for case in common.CASES}, max_model_rounds=20, max_tool_calls=64, max_runtime_seconds=600)
+        r["capabilities"].update(context_window=1000000, max_output_tokens=384000)
+        r["model_spec"].update(credential_group="deepseek-flash-evalv2", price_version="deepseek-flash-peak-20260912",
+                               exact_pricing=False, input_price=300000, output_price=1200000, cache_read_price=6000,
+                               context_tokens=32768, max_output_tokens=8192, request_timeout_ns=60000000000)
+        r["price_sources"] = ["https://api-docs.deepseek.com/quick_start/pricing/"]
+        r["capability_sources"] = ["https://api-docs.deepseek.com/guides/responses_api/"]
+        self.assertEqual(prepare.validate_registration(copy.deepcopy(r)), r)
+        self.assertEqual((32768 * 300000 + 8192 * 1200000 + 999999) // 1000000, 19661)
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            for filename, value in (("registration.json", r), ("platform.json", {"worker_id": "fixture"}), ("runner.json", {})):
+                common.save_json(root / filename, value)
+            hashes = {case: "a" * 64 for case in common.CASES}
+            with patch.object(prepare.common, "local_output", return_value=json.dumps(hashes)), contextlib.redirect_stdout(io.StringIO()):
+                prepare.main(["--registration", str(root / "registration.json"), "--platform-template", str(root / "platform.json"),
+                              "--runner-template", str(root / "runner.json"), "--python-image", "fixture@sha256:" + "b" * 64,
+                              "--go-image", "fixture@sha256:" + "c" * 64, "--output", str(root / "candidate")])
+            platform = json.loads((root / "candidate/platform.json").read_text())
+            self.assertEqual(set(platform["providers"]), {"deepseek"})
+            self.assertEqual(platform["models"]["deepseek/deepseek-v4-flash"], r["model_spec"])
+            self.assertEqual(platform["configs"][r["config_id"]]["provider"], "deepseek")
+            self.assertEqual(json.loads((root / "candidate/registration.json").read_text()), r)
+        bad = copy.deepcopy(r)
+        bad["task_budgets_microusd"][common.CASES[0]] += 1
+        with self.assertRaises(ValueError):
+            prepare.validate_registration(bad)
+        bad = copy.deepcopy(r)
+        bad["model_spec"]["input_price"] = 0
+        with self.assertRaises(ValueError):
+            prepare.validate_registration(bad)
+
     def test_go_cache_inherits_explicit_configuration_or_go_default(self):
         with patch.dict(os.environ, {}, clear=True):
             self.assertNotIn("GOCACHE", common.go_environment())

@@ -97,6 +97,9 @@ func Load(path string) (Config, error) {
 			}
 		}
 	}
+	if err := c.checkDeepSeekCredentialGroup(); err != nil {
+		return c, err
+	}
 	return c, nil
 }
 
@@ -129,6 +132,9 @@ func (c Config) Signer() (*runner.Signer, error) {
 }
 
 func (c Config) BuildProviders() (map[string]provider.Provider, error) {
+	if err := c.checkDeepSeekCredentialGroup(); err != nil {
+		return nil, err
+	}
 	result := map[string]provider.Provider{}
 	for name, registry := range c.Providers {
 		switch name {
@@ -137,6 +143,12 @@ func (c Config) BuildProviders() (map[string]provider.Provider, error) {
 				return nil, errors.New("OPENAI_API_KEY required for configured provider")
 			}
 			result[name] = provider.NewOpenAI(registry, provider.Limits{})
+		case "deepseek":
+			p, err := provider.NewDeepSeek(registry, provider.Limits{}, os.Getenv("DEEPSEEK_API_KEY"))
+			if err != nil {
+				return nil, err
+			}
+			result[name] = p
 		case "anthropic":
 			if strings.TrimSpace(os.Getenv("ANTHROPIC_API_KEY")) == "" {
 				return nil, errors.New("ANTHROPIC_API_KEY required for configured provider")
@@ -151,4 +163,20 @@ func (c Config) BuildProviders() (map[string]provider.Provider, error) {
 		}
 	}
 	return result, nil
+}
+
+// Credential-group quotas are global across providers. DeepSeek must not borrow
+// another vendor's request slots, budget, or circuit-breaker identity.
+func (c Config) checkDeepSeekCredentialGroup() error {
+	for key, spec := range c.Models {
+		if !strings.HasPrefix(key, "deepseek/") {
+			continue
+		}
+		for other, candidate := range c.Models {
+			if !strings.HasPrefix(other, "deepseek/") && spec.CredentialGroup == candidate.CredentialGroup {
+				return errors.New("DeepSeek requires a separate credential group")
+			}
+		}
+	}
+	return nil
 }

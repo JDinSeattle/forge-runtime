@@ -108,15 +108,17 @@ type Usage struct {
 }
 
 type ModelTurn struct {
-	RunID             string       `json:"run_id"`
-	StepID            string       `json:"step_id"`
-	AttemptID         string       `json:"attempt_id"`
-	Text              string       `json:"text"`
-	ToolCalls         []ToolCall   `json:"tool_calls,omitempty"`
-	Usage             Usage        `json:"usage"`
-	FinishReason      string       `json:"finish_reason"`
-	NativeState       *NativeState `json:"native_state,omitempty"`
-	ProviderRequestID string       `json:"provider_request_id,omitempty"`
+	RunID        string       `json:"run_id"`
+	StepID       string       `json:"step_id"`
+	AttemptID    string       `json:"attempt_id"`
+	Text         string       `json:"text"`
+	ToolCalls    []ToolCall   `json:"tool_calls,omitempty"`
+	Usage        Usage        `json:"usage"`
+	FinishReason string       `json:"finish_reason"`
+	NativeState  *NativeState `json:"native_state,omitempty"`
+	// ProviderModel is the server-reported model, distinct from the requested alias.
+	ProviderModel     string `json:"provider_model,omitempty"`
+	ProviderRequestID string `json:"provider_request_id,omitempty"`
 }
 
 type EventType string
