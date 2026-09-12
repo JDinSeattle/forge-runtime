@@ -2,6 +2,7 @@ import importlib.util
 import os
 from pathlib import Path
 import tempfile
+from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
@@ -94,6 +95,13 @@ class LaunchBoundaryTests(unittest.TestCase):
         # This tests launch boundaries with a recording process, not systemd,
         # RootlessKit, Docker, mount verification, or a successful acceptance.
         self.credential()
+        credential = run.credential()
+        # Simulate the launcher's fixed host UID without changing the shared
+        # os module used to validate real temporary-file ownership. CI may run
+        # as a different UID; credential validation is covered separately.
+        host_os = SimpleNamespace(**vars(os))
+        host_os.getuid = lambda: 1000
+        host_os.geteuid = lambda: 1000
         base = self.repo / "scope"
         base.mkdir(mode=0o700)
         (base / "evidence").mkdir(mode=0o700)
@@ -106,7 +114,8 @@ class LaunchBoundaryTests(unittest.TestCase):
             def wait(self, timeout):
                 return 1  # Retain a failure; never automatically retry it.
 
-        with patch.object(run.os, "getuid", return_value=1000), patch.object(run.os, "geteuid", return_value=1000), \
+        with patch.object(run, "os", host_os), \
+             patch.object(run, "credential", return_value=credential), \
              patch.object(run, "inputs", return_value=(base, {})), \
              patch.object(run, "unit_state", return_value={"LoadState": "not-found"}), \
              patch.object(run.p, "digest", return_value="a" * 64), \
