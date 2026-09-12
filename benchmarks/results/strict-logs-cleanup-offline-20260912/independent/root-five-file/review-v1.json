@@ -1,0 +1,75 @@
+{
+  "checks": [
+    "SIGTERM source attempt02 preserves original logs01 meaning; execution02 selects exact acceptance-logs-02.json, logs02 output, strict-logs-private-02 and unique host-logs-02-retry.",
+    "Cleanup only accepts attempt02/default log selector, excludes credential() in both launch/command paths and sends no database or model credential to its child.",
+    "Historical Go binding compares prior acceptance-input to original sealed manifest, preserves every shared authority field, independently hashes original runner/worker/test bytes and uses historical executable paths/hashes/argv for all four signals. Current logs executable identity is recorded separately.",
+    "Both Go phases are intended to share the existing nonblocking control lock; the combined test holds it through cleanup/finalization and checks idle journal before the new cleanup prerequisite. Cleanup implementation is outside this five-file delta.",
+    "New combined output mkdir and private schema settings are exclusive; original failed evidence cannot be overwritten by selecting the later execution.",
+    "Successful launcher result requires exact test name and successful phase-specific final report, with all six log cases or verified snapshot/released cleanup flags.",
+    "All five reviewed source hashes match the original freeze at start and end."
+  ],
+  "known_incomplete_dependency": "slCleanupPrerequisite is called by the Go delta and not yet defined on observed main; compile/runtime claims intentionally pending. No stub was used.",
+  "limitations": [
+    "No Go integration compile yet; recheck once the separate cleanup helper is merged.",
+    "Source review and mock counters cannot prove actual Stop/Snapshot/Release, kernel storage, process death, historical live PG or full combined log execution.",
+    "Original logs01 remains failed and no cleanup/new execution outcome is implied."
+  ],
+  "observed_main_revision": "49c2899739e08a1e126cbff549052ab913dfa0ba",
+  "offline_tests": {
+    "existing_python": {
+      "log": "/tmp/forge-root-logs-continuation-independent-python.log",
+      "methods": 33,
+      "passed": true
+    },
+    "independent_countercases": {
+      "counts": {
+        "credential_free_cleanup_environments": 1,
+        "incomplete_cleanup_reports_rejected": 18,
+        "incomplete_logs_reports_rejected": 24,
+        "invalid_selectors_rejected_before_credentials": 143,
+        "valid_reports_accepted": 2,
+        "valid_selectors": 7
+      },
+      "passed": true,
+      "scope": "pure Python selector/report checks and mocked credential boundary; no runtime/config/credential file access or subprocess execution"
+    }
+  },
+  "remaining_p1_p2": [],
+  "retained_evidence": {
+    "/tmp/forge-root-logs-continuation-countercases.json": {
+      "bytes": 440,
+      "sha256": "8aef6d3d03c46afc4b132bab9e5dcf5242a51c8698a2d0b3f99696e10aafadc8"
+    },
+    "/tmp/forge-root-logs-continuation-countercases.py": {
+      "bytes": 3854,
+      "sha256": "d5241d685b97d78dd7c46035b1b7d5dfde9400eef7dc6be2891140324ee36af6"
+    },
+    "/tmp/forge-root-logs-continuation-freeze.json": {
+      "bytes": 582,
+      "sha256": "ce387031bfad8d91151113746c78930e91acd52032797032b7362d512c18263d"
+    },
+    "/tmp/forge-root-logs-continuation-independent-python.log": {
+      "bytes": 5311,
+      "sha256": "41ad9c8725b59fb7aaea64cb762bfe0069e1627f4239fac3f6ba5273355ba7de"
+    },
+    "/tmp/forge-root-logs-go-delta.patch": {
+      "bytes": 6917,
+      "sha256": "1c8369e7e4befc6b1812c8ee940866802e8e15821eaa6978a2d00666a707fbe5"
+    },
+    "/tmp/forge-root-logs-run-delta.patch": {
+      "bytes": 12252,
+      "sha256": "31ef0487fddc373d94c1bf867e415be9d3f9ae6f91a12a0b47eaf258d5630d77"
+    }
+  },
+  "reviewed_at": "2026-09-12T05:21:18.947468+00:00",
+  "scope": "Independent bounded read-only review of root five-file logs continuation delta; source and offline Python only. No runtime/private configuration, credential or key reads; no live PG/Docker/process/service/volume/provider calls.",
+  "source_freeze_unchanged": true,
+  "source_sha256": {
+    "scripts/faults/application/strict_logs_combined_test.go": "7072eade94ea355cdf2916683da742711f9a52183ee98fa3abe22b45301fd20a",
+    "scripts/faults/application/strict_logs_continuation_test.go": "71fe0289a361da4a13ea12bc6037e383aae845fd8764956be97b14367d944a52",
+    "scripts/faults/sigterm/README.md": "688fc686b092daa5f12b198c4f5f7cde8f74123e4663969375e1a4ef063a3106",
+    "scripts/faults/sigterm/run.py": "52b73680337d066347070c8df826a693c8187439a34b12a5fa3a98889d48d69e",
+    "scripts/faults/sigterm/test_run.py": "0de0c98d6508f1a00c58da9f9d98addd131ceba66053ae788cc7663f8516f5b1"
+  },
+  "status": "static_and_python_pass; Go integration compile pending slCleanupPrerequisite implementation"
+}

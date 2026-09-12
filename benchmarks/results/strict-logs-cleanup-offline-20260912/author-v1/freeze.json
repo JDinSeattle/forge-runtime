@@ -1,0 +1,90 @@
+{
+  "commit": "2480e840530b3fdfc4c8d288b461d17ce2d7f725",
+  "base": "dd0c25394c5c2c42f7164eb5fe343c7fc204a270",
+  "worktree": "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/feature-worktrees/log-cleanup",
+  "branch": "feature/strict-logs-retained-cleanup",
+  "status": "",
+  "owned_sources_sha256": {
+    "scripts/faults/application/strict_logs_cleanup_test.go": "f35504f035ba7c51e0888507209d954d3ac5cb6524cb2ee5426c3cfd1461c079",
+    "scripts/faults/application/strict_logs_cleanup_helpers_test.go": "141adde3fa06353bfb229e71c98d211c3fef3e16e06d69a08a49f87ac9c58eb8",
+    "docs/strict-logs-retained-cleanup.md": "82882bc3d0a8e3b74a11a555cc0c660713ac436444ed3454dd4d38d2af794701"
+  },
+  "artifacts_root": "/tmp/forge-strict-logs-cleanup-freeze",
+  "artifacts": {
+    "forge-strict-cleanup-compile-01.log": {
+      "sha256": "e2542495d175214c8cc655e8b528caa596f8b60588376f42f27a1b39dae1a814",
+      "pass_entries": 0,
+      "skip_entries": 1,
+      "fail_entries": 0
+    },
+    "forge-strict-cleanup-offline-01.log": {
+      "sha256": "1c876744451089409cdb393598561a37425567b27ef0434f422ba857323939af",
+      "pass_entries": 36,
+      "skip_entries": 2,
+      "fail_entries": 0
+    },
+    "forge-strict-cleanup-race-02.log": {
+      "sha256": "df0bd53d3a14e343093a17ec9bd6edf4827a842440cd28a490a365720f33ced8",
+      "pass_entries": 36,
+      "skip_entries": 2,
+      "fail_entries": 0
+    },
+    "forge-strict-cleanup-retained-readonly-01.log": {
+      "sha256": "aff9769f1d4ee1437f64ace15d2b334f5814d0ef1752ce7eff68ec3a440cfe7f",
+      "pass_entries": 0,
+      "skip_entries": 0,
+      "fail_entries": 1
+    },
+    "forge-strict-cleanup-retained-readonly-02.log": {
+      "sha256": "2a69217efc8590951d055abd5ac74298eefbaa43806633ada247b3011b5b2b30",
+      "pass_entries": 1,
+      "skip_entries": 0,
+      "fail_entries": 0
+    },
+    "forge-strict-cleanup-ordinary-final.log": {
+      "sha256": "bb3a58a4d9cb96a7874657120c0a1cad87b899fa3172432d0ae89da2b2a3b63b",
+      "pass_entries": 36,
+      "skip_entries": 2,
+      "fail_entries": 0
+    },
+    "forge-strict-cleanup-race-final.log": {
+      "sha256": "04acec6c0c92ea5c82a27ef1eb07f74cca29652fb17bf753298f0e63627e9d4c",
+      "pass_entries": 36,
+      "skip_entries": 2,
+      "fail_entries": 0
+    },
+    "forge-strict-cleanup-vet-final.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "pass_entries": 0,
+      "skip_entries": 0,
+      "fail_entries": 0
+    },
+    "forge-strict-cleanup-retained-readonly-final.log": {
+      "sha256": "999ec7a369e64c896c751538d1b419514babc807653ea10ab55b08702ed65e05",
+      "pass_entries": 1,
+      "skip_entries": 0,
+      "fail_entries": 0
+    },
+    "forge-strict-cleanup-offline.py": {
+      "sha256": "35fca56d2b86095d1d3f460ece82d726b9a408b0bfadb99b881371ac98dfbccb"
+    }
+  },
+  "final_results": {
+    "ordinary": "36 pass entries / 2 explicit skips; 0.186s",
+    "race": "36 pass entries / 2 explicit skips; 1.243s",
+    "vet": "exit 0",
+    "retained_files_readonly": "1 pass; 535 immutable paths; 0.509s; no SQLite/socket/key/process actions"
+  },
+  "preserved_failure": {
+    "file": "forge-strict-cleanup-retained-readonly-01.log",
+    "reason": "Initial count guard incorrectly expected 9 original input paths; actual immutable failed acceptance contains 8. Corrected guard to 8; old raw unchanged."
+  },
+  "pending": "Actual cleanup has not run. No Stop/Seal/Release, worker, PostgreSQL, Docker, mount, service or paid model actions performed. New logs full execution remains separate.",
+  "interfaces": {
+    "optin": "FORGE_RUN_STRICT_LOGS_CLEANUP=1",
+    "manifest": "scope/acceptance-logs-cleanup-01.json via FORGE_STRICT_LOGS_ACCEPTANCE",
+    "test": "TestStrictLogsRetainedCleanup",
+    "prerequisite": "slCleanupPrerequisite(slAcceptance, slRunnerConfig, slJournal) (map[string]string,error)",
+    "result": "scope/evidence/logs-01-cleanup/report.json plus complete manifest; failures retained in invocation-* and no successful manifest"
+  }
+}

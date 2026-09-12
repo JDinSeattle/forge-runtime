@@ -1,0 +1,88 @@
+=== RUN   TestStrictLogsCleanupJournalBoundaries
+=== RUN   TestStrictLogsCleanupJournalBoundaries/original
+=== RUN   TestStrictLogsCleanupJournalBoundaries/stop
+=== RUN   TestStrictLogsCleanupJournalBoundaries/partial-container-remove
+=== RUN   TestStrictLogsCleanupJournalBoundaries/workspace-released-storage-pending
+=== RUN   TestStrictLogsCleanupJournalBoundaries/released
+=== RUN   TestStrictLogsCleanupJournalBoundaries/uuid
+=== RUN   TestStrictLogsCleanupJournalBoundaries/epoch
+=== RUN   TestStrictLogsCleanupJournalBoundaries/receipt
+=== RUN   TestStrictLogsCleanupJournalBoundaries/other_workspace
+=== RUN   TestStrictLogsCleanupJournalBoundaries/version
+=== RUN   TestStrictLogsCleanupJournalBoundaries/result
+=== RUN   TestStrictLogsCleanupJournalBoundaries/other_volume
+=== RUN   TestStrictLogsCleanupJournalBoundaries/budget_refund
+=== RUN   TestStrictLogsCleanupJournalBoundaries/log_policy
+=== RUN   TestStrictLogsCleanupJournalBoundaries/artifact_scope
+=== RUN   TestStrictLogsCleanupJournalBoundaries/revision
+=== RUN   TestStrictLogsCleanupJournalBoundaries/request
+=== RUN   TestStrictLogsCleanupJournalBoundaries/volume_identity
+=== RUN   TestStrictLogsCleanupJournalBoundaries/container_identity
+=== RUN   TestStrictLogsCleanupJournalBoundaries/cleanup_state
+=== RUN   TestStrictLogsCleanupJournalBoundaries/unknown
+=== RUN   TestStrictLogsCleanupJournalBoundaries/extra_operation
+--- PASS: TestStrictLogsCleanupJournalBoundaries (0.02s)
+    --- PASS: TestStrictLogsCleanupJournalBoundaries/original (0.00s)
+    --- PASS: TestStrictLogsCleanupJournalBoundaries/stop (0.00s)
+    --- PASS: TestStrictLogsCleanupJournalBoundaries/partial-container-remove (0.00s)
+    --- PASS: TestStrictLogsCleanupJournalBoundaries/workspace-released-storage-pending (0.00s)
+    --- PASS: TestStrictLogsCleanupJournalBoundaries/released (0.00s)
+    --- PASS: TestStrictLogsCleanupJournalBoundaries/uuid (0.00s)
+    --- PASS: TestStrictLogsCleanupJournalBoundaries/epoch (0.00s)
+    --- PASS: TestStrictLogsCleanupJournalBoundaries/receipt (0.00s)
+    --- PASS: TestStrictLogsCleanupJournalBoundaries/other_workspace (0.00s)
+    --- PASS: TestStrictLogsCleanupJournalBoundaries/version (0.00s)
+    --- PASS: TestStrictLogsCleanupJournalBoundaries/result (0.00s)
+    --- PASS: TestStrictLogsCleanupJournalBoundaries/other_volume (0.00s)
+    --- PASS: TestStrictLogsCleanupJournalBoundaries/budget_refund (0.00s)
+    --- PASS: TestStrictLogsCleanupJournalBoundaries/log_policy (0.00s)
+    --- PASS: TestStrictLogsCleanupJournalBoundaries/artifact_scope (0.00s)
+    --- PASS: TestStrictLogsCleanupJournalBoundaries/revision (0.00s)
+    --- PASS: TestStrictLogsCleanupJournalBoundaries/request (0.00s)
+    --- PASS: TestStrictLogsCleanupJournalBoundaries/volume_identity (0.00s)
+    --- PASS: TestStrictLogsCleanupJournalBoundaries/container_identity (0.00s)
+    --- PASS: TestStrictLogsCleanupJournalBoundaries/cleanup_state (0.00s)
+    --- PASS: TestStrictLogsCleanupJournalBoundaries/unknown (0.00s)
+    --- PASS: TestStrictLogsCleanupJournalBoundaries/extra_operation (0.00s)
+=== RUN   TestStrictLogsCleanupSnapshotProof
+=== RUN   TestStrictLogsCleanupSnapshotProof/other_run
+=== RUN   TestStrictLogsCleanupSnapshotProof/other_kind
+=== RUN   TestStrictLogsCleanupSnapshotProof/digest
+=== RUN   TestStrictLogsCleanupSnapshotProof/length
+=== RUN   TestStrictLogsCleanupSnapshotProof/epoch
+=== RUN   TestStrictLogsCleanupSnapshotProof/released
+=== RUN   TestStrictLogsCleanupSnapshotProof/changed_code
+=== RUN   TestStrictLogsCleanupSnapshotProof/revision
+=== RUN   TestStrictLogsCleanupSnapshotProof/still_active
+--- PASS: TestStrictLogsCleanupSnapshotProof (0.00s)
+    --- PASS: TestStrictLogsCleanupSnapshotProof/other_run (0.00s)
+    --- PASS: TestStrictLogsCleanupSnapshotProof/other_kind (0.00s)
+    --- PASS: TestStrictLogsCleanupSnapshotProof/digest (0.00s)
+    --- PASS: TestStrictLogsCleanupSnapshotProof/length (0.00s)
+    --- PASS: TestStrictLogsCleanupSnapshotProof/epoch (0.00s)
+    --- PASS: TestStrictLogsCleanupSnapshotProof/released (0.00s)
+    --- PASS: TestStrictLogsCleanupSnapshotProof/changed_code (0.00s)
+    --- PASS: TestStrictLogsCleanupSnapshotProof/revision (0.00s)
+    --- PASS: TestStrictLogsCleanupSnapshotProof/still_active (0.00s)
+=== RUN   TestStrictLogsCleanupMinimalGrant
+--- PASS: TestStrictLogsCleanupMinimalGrant (0.00s)
+=== RUN   TestStrictLogsCleanupImmutableStagesAndManifest
+--- PASS: TestStrictLogsCleanupImmutableStagesAndManifest (0.02s)
+=== RUN   TestStrictLogsCleanupArchiveRequiresBytesAndPins
+--- PASS: TestStrictLogsCleanupArchiveRequiresBytesAndPins (0.06s)
+=== RUN   TestStrictLogsCleanupArchivedInputs
+    strict_logs_cleanup_helpers_test.go:312: optional retained-file verification
+--- SKIP: TestStrictLogsCleanupArchivedInputs (0.00s)
+=== RUN   TestStrictLogsCleanupDirectoryDurabilityBeforeExecution
+=== RUN   TestStrictLogsCleanupDirectoryDurabilityBeforeExecution/cleanup-parent
+=== RUN   TestStrictLogsCleanupDirectoryDurabilityBeforeExecution/invocation-parent
+=== RUN   TestStrictLogsCleanupDirectoryDurabilityBeforeExecution/none
+--- PASS: TestStrictLogsCleanupDirectoryDurabilityBeforeExecution (0.02s)
+    --- PASS: TestStrictLogsCleanupDirectoryDurabilityBeforeExecution/cleanup-parent (0.00s)
+    --- PASS: TestStrictLogsCleanupDirectoryDurabilityBeforeExecution/invocation-parent (0.01s)
+    --- PASS: TestStrictLogsCleanupDirectoryDurabilityBeforeExecution/none (0.01s)
+=== RUN   TestStrictLogsRetainedCleanup
+    strict_logs_cleanup_test.go:657: explicit retained-fixture cleanup; no default host actions
+--- SKIP: TestStrictLogsRetainedCleanup (0.00s)
+PASS
+ok  	github.com/JDinSeattle/forge-runtime/scripts/faults/application	0.135s

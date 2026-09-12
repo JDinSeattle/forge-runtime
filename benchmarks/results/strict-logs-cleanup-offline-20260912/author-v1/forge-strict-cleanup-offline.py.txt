@@ -1,0 +1,14 @@
+import os,subprocess,pathlib,sys
+w=pathlib.Path('/home/postedism/Desktop/mini claude code/forge-runtime/var/local/feature-worktrees/log-cleanup')
+env={k:v for k,v in os.environ.items() if not k.startswith(('FORGE_','OTEL_')) and not k.endswith('_API_KEY')}
+env.update(GOCACHE='/home/postedism/Desktop/mini claude code/forge-runtime/var/local/go-build-cache',GOPROXY='off',GOSUMDB='off',GOENV='off',GOTOOLCHAIN='local',GOMAXPROCS='2',TMPDIR='/tmp',GOTMPDIR=str(w/'var/local/cleanup-gotmp'))
+mode=sys.argv[1];prefix=sys.argv[2]
+if mode=='readonly':
+ env['FORGE_STRICT_LOGS_READONLY_SCOPE']='/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a'
+ argv=['go','test','./scripts/faults/application','-run','^TestStrictLogsCleanupArchivedInputs$','-count=1','-v']
+elif mode=='vet':argv=['go','vet','./scripts/faults/application']
+else:
+ argv=['go','test','./scripts/faults/application','-run','^TestStrictLogs(Cleanup|RetainedCleanup)','-count=1','-v']
+ if mode=='race':argv.insert(2,'-race')
+p=subprocess.run(argv,cwd=w,env=env,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=90)
+pathlib.Path(prefix).write_bytes(p.stdout);print(p.stdout.decode());raise SystemExit(p.returncode)

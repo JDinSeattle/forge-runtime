@@ -1,0 +1,47 @@
+#!/usr/bin/env python3
+"""Offline selector/report/env checks against the real frozen Python implementation."""
+import importlib.util,json,pathlib,itertools,os
+from unittest.mock import patch
+P=pathlib.Path('/home/postedism/Desktop/mini claude code/forge-runtime/scripts/faults/sigterm/run.py')
+spec=importlib.util.spec_from_file_location('review_run',P);r=importlib.util.module_from_spec(spec);spec.loader.exec_module(r)
+valid={('sigterm','01','01'):'acceptance.json',('sigterm','02','01'):'acceptance-02.json',('logs','01','01'):'acceptance.json',('logs','02','01'):'acceptance-02.json',('logs','02','02'):'acceptance-logs-02.json',('abort','01','01'):'acceptance-abort-01.json',('logs-cleanup','02','01'):'acceptance-logs-cleanup-01.json'}
+counts={'valid_selectors':0,'invalid_selectors_rejected_before_credentials':0,'incomplete_cleanup_reports_rejected':0,'incomplete_logs_reports_rejected':0,'valid_reports_accepted':0,'credential_free_cleanup_environments':0}
+a={'scope_root':'/isolated-scope','test_binary':'/isolated-scope/bin/test'}
+for v in itertools.product(['sigterm','logs','abort','logs-cleanup','invalid',None],['01','02','03','',None],['01','02','03','',None]):
+ if v in valid:
+  assert r.manifest_name(*v)==valid[v];counts['valid_selectors']+=1;continue
+ with patch.object(r,'credential',side_effect=AssertionError('credential read before selector validation')):
+  try:r.command(v[0],a,v[1],v[2])
+  except ValueError:counts['invalid_selectors_rejected_before_credentials']+=1
+  else:raise AssertionError(('invalid selector accepted',v))
+with patch.object(r,'credential',side_effect=AssertionError('cleanup credential read')),patch.dict(os.environ,{'UNRELATED_PARENT_ENV':'must-not-inherit'},clear=True):
+ argv,env=r.command('logs-cleanup',a,'02')
+ assert set(env)=={'PATH','LC_ALL','TMPDIR','HOME','XDG_RUNTIME_DIR','FORGE_METRICS_LISTEN','FORGE_RUN_STRICT_LOGS_CLEANUP','FORGE_STRICT_LOGS_ACCEPTANCE'}
+ assert env['FORGE_STRICT_LOGS_ACCEPTANCE']=='/isolated-scope/acceptance-logs-cleanup-01.json'
+ assert argv[1]=='-test.run=^TestStrictLogsRetainedCleanup$'
+ counts['credential_free_cleanup_environments']+=1
+base=pathlib.Path('/isolated-scope');complete={'passed':True,'released':True,'snapshot_verified':True}
+for field in complete:
+ for x in [None,False,0,1,'true','']:
+  j=dict(complete);j[field]=x
+  with patch.object(r,'private_json',return_value=j) as load:
+   try:r.completed_report('logs-cleanup',base,'02')
+   except ValueError:counts['incomplete_cleanup_reports_rejected']+=1
+   else:raise AssertionError(('invalid cleanup report accepted',field,x))
+   assert load.call_args.args[0]==base/'evidence/logs-01-cleanup/report.json'
+with patch.object(r,'private_json',return_value=complete):r.completed_report('logs-cleanup',base,'02');counts['valid_reports_accepted']+=1
+cases={k:{'passed':True} for k in ['L1','L2-L3-default','L3-bytes','L3-count','L4','L5']}
+for k in cases:
+ for mode in ['missing','false','numeric','summary-only']:
+  j=json.loads(json.dumps(cases))
+  if mode=='missing':del j[k]
+  elif mode=='false':j[k]['passed']=False
+  elif mode=='numeric':j[k]['passed']=1
+  else:j[k]={'verified':True}
+  with patch.object(r,'private_json',return_value={'passed':True,'cases':j}) as load:
+   try:r.completed_report('logs',base,'02','02')
+   except ValueError:counts['incomplete_logs_reports_rejected']+=1
+   else:raise AssertionError(('incomplete cases accepted',k,mode))
+   assert load.call_args.args[0]==base/'evidence/logs-02/acceptance.json'
+with patch.object(r,'private_json',return_value={'passed':True,'cases':cases}):r.completed_report('logs',base,'02','02');counts['valid_reports_accepted']+=1
+print(json.dumps({'passed':True,'scope':'pure Python selector/report checks and mocked credential boundary; no runtime/config/credential file access or subprocess execution','counts':counts},indent=2,sort_keys=True))

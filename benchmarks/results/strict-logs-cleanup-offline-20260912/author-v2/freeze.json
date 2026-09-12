@@ -1,0 +1,40 @@
+{
+  "commit": "307bf0b8ebde4c7ffb7300904c21798a55bc79c3",
+  "parent": "2480e840530b3fdfc4c8d288b461d17ce2d7f725",
+  "base": "dd0c25394c5c2c42f7164eb5fe343c7fc204a270",
+  "branch": "feature/strict-logs-retained-cleanup",
+  "worktree": "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/feature-worktrees/log-cleanup",
+  "status": "",
+  "source_sha256": {
+    "scripts/faults/application/strict_logs_cleanup_test.go": "b4d0c4cf91509cc98c5bc82a7276ebf941981bd1b937534eb93f02e6416a9c0e",
+    "scripts/faults/application/strict_logs_cleanup_helpers_test.go": "43e15ae7903225c8247b80c375d10217fde7ab0fd0c7a4dd34cc9a5b64595b76",
+    "docs/strict-logs-retained-cleanup.md": "a6e55d289676742ede490e230a373c7ed9646375b525e48961a1de030546a703"
+  },
+  "artifact_root": "/tmp/forge-strict-logs-cleanup-freeze-v2",
+  "logs": {
+    "forge-strict-cleanup-ordinary-v2.log": {
+      "sha256": "98d05ad42607f5b23718aa6588f9360ec175c284b870f10b0a5123899620c871",
+      "pass_entries": 40,
+      "skip_entries": 2,
+      "fail_entries": 0
+    },
+    "forge-strict-cleanup-race-v2.log": {
+      "sha256": "bd105dc2e5a851ffba1247aa3d015a6b08fdec95c2c81313892cc54e30dbf66d",
+      "pass_entries": 40,
+      "skip_entries": 2,
+      "fail_entries": 0
+    },
+    "forge-strict-cleanup-vet-v2.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "pass_entries": 0,
+      "skip_entries": 0,
+      "fail_entries": 0
+    }
+  },
+  "v1_preserved_report": "/tmp/forge-strict-logs-cleanup-freeze.json",
+  "v1_preserved_artifact_root": "/tmp/forge-strict-logs-cleanup-freeze",
+  "delta": "Explicit parent fsync for cleanup directory and invocation directory before key loading, runner startup or RPC. Both injected sync failures return no executable invocation. Existing files retained.",
+  "results": "ordinary 40 PASS / 2 SKIP (0.135s), race 40 PASS / 2 SKIP (1.268s), vet exit 0",
+  "read_only_retained_evidence": "v1 reader and authority logic unchanged; final readonly PASS 535 immutable paths in /tmp/forge-strict-logs-cleanup-freeze/forge-strict-cleanup-retained-readonly-final.log",
+  "actual_execution": "Not run; no real Stop/Seal/Release, SQLite open, PG, Docker, service, mount or key read."
+}
