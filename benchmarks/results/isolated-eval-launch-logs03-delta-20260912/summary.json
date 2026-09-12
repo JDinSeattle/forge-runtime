@@ -1,0 +1,35 @@
+{
+  "base_commit": "de29684e4f1e86892422da06aa5722725c94ded7",
+  "scope": "small logs03 and retained logs02 fail-closed launcher delta; no host/PG/provider execution",
+  "changed_sources": {
+    "scripts/evaluation/isolated_checks.py": "1737bb6933db1e8dceca8b3182f69ed22afa85a475ddd3c52133b9e761565c0b",
+    "scripts/evaluation/isolated_state.py": "4b4d659db862e84ad5f5b155ad309a07c4acf53a48d3812742e185b4dfdea614",
+    "scripts/evaluation/test_isolated.py": "0870bbf7ab43670d857f8308bcee3d4161ea105b19e11acec5dc4dac6a6dc7d2",
+    "scripts/evaluation/ISOLATED.md": "cb5f95df17a4fbdc362d1343dc1404aa9b245e6c66ed4ad4f3e87520e9f7287f"
+  },
+  "python_tests": 58,
+  "launcher_tests": 28,
+  "existing_collector_tests": 30,
+  "source_unchanged_during_final_tests": true,
+  "retained_material_identities": 577,
+  "retained_second_schema": "appfault_strictlogs_ggl4ub23utvo6qnlzlkgroms5n",
+  "retained_second_run": "run_VZZ7CZCKDG65KNL3BW7ZH7F2O4",
+  "retained_status": "queued/version1/epoch0; full original snapshot/history, no cancel or worker routing",
+  "future_success_gate": "final fixed logs03 all six cases passed, same original journalUUID and five prior schema checks",
+  "first_all_suite_failure": "three existing go-run bridge tests used default read-only sandbox GOCACHE because this author invocation omitted the explicit shared cache; unchanged source passed with explicit approved offline environment",
+  "build_script": {
+    "path": "/tmp/forge-prepare-isolated-eval-build.py",
+    "sha256": "01c55705a00b5869ecfc2c09c973009cd757e9211137d9822a21b3d15f2592ee",
+    "validation": "AST parse only; no clone/build/candidate invocation",
+    "fixed": [
+      "source-only owned/singlelink/no-world-write exact Git blob allows original0664",
+      "helper intent takes already Git-verified source hash",
+      "original exact UDS preserved",
+      "only new corpus0755/0644 and existing Git executable0755; final sync preserves exception"
+    ]
+  },
+  "go_source_changed": false,
+  "paid_calls": 0,
+  "key_or_dsn_read": false,
+  "actual_pg_or_docker_or_service": false
+}

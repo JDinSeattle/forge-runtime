@@ -1,0 +1,44 @@
+{
+  "argv": [
+    "python3",
+    "-I",
+    "-B",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "scripts/evaluation",
+    "-p",
+    "test_*.py",
+    "-v"
+  ],
+  "environment": {
+    "PATH": "/home/postedism/.codex/tmp/arg0/codex-arg0diSDpN:/home/postedism/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/override:/home/postedism/.local/share/mise/installs/buf/latest/buf/bin:/home/postedism/.local/share/mise/installs/delta/latest/delta-0.19.2-x86_64-unknown-linux-musl:/home/postedism/.local/share/mise/installs/go/1.26.8/bin:/home/postedism/.local/share/mise/installs/golangci-lint/latest/golangci-lint-2.13.2-linux-amd64:/home/postedism/.local/share/mise/installs/grpcurl/latest:/home/postedism/.local/share/mise/installs/java/temurin-21/bin:/home/postedism/.local/share/mise/installs/just/latest:/home/postedism/.local/share/mise/installs/lazygit/latest:/home/postedism/.local/share/mise/installs/maven/3.9/apache-maven-3.9.16/bin:/home/postedism/.local/share/mise/installs/neovim/latest/bin:/home/postedism/.local/share/mise/installs/node/24/bin:/home/postedism/.local/share/mise/installs/npm-pnpm/latest/node_modules/.bin:/home/postedism/.local/share/mise/installs/watchexec/latest/.mise-bins:/home/postedism/.local/share/mise/installs/yq/latest:/home/postedism/.local/share/mise/installs/protoc/latest/bin:/home/postedism/.local/share/mise/installs/kubectl/latest:/home/postedism/.local/share/mise/installs/helm/latest/linux-amd64:/home/postedism/.local/share/mise/installs/kind/latest:/home/postedism/.local/share/mise/installs/k9s/latest:/home/postedism/.local/share/mise/installs/opentofu/latest:/home/postedism/.local/share/mise/installs/actionlint/latest:/home/postedism/.local/share/mise/installs/hadolint/latest:/home/postedism/.local/share/mise/installs/trivy/latest:/home/postedism/.local/share/mise/installs/k6/latest/k6-v2.2.0-linux-amd64:/home/postedism/.local/share/mise/installs/bazelisk/latest:/home/postedism/.local/share/mise/installs/chezmoi/latest:/home/postedism/.local/share/mise/shims:/usr/local/cuda-13.2/bin:/home/postedism/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin:/home/postedism/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/fallback:/usr/lib/chatgpt/resources",
+    "HOME": "/home/postedism",
+    "LANG": "C.UTF-8",
+    "GOCACHE": "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/go-build-cache",
+    "GOTMPDIR": "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/feature-worktrees/logs/var/local/eval-launch-gotmp",
+    "TMPDIR": "/tmp",
+    "GOPROXY": "off",
+    "GOSUMDB": "off",
+    "GOENV": "off",
+    "GOTOOLCHAIN": "local"
+  },
+  "cwd": "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/feature-worktrees/logs",
+  "elapsed_seconds": 2.614677906036377,
+  "exit_code": 0,
+  "source_before": {
+    "scripts/evaluation/isolated_checks.py": "1737bb6933db1e8dceca8b3182f69ed22afa85a475ddd3c52133b9e761565c0b",
+    "scripts/evaluation/isolated_state.py": "4b4d659db862e84ad5f5b155ad309a07c4acf53a48d3812742e185b4dfdea614",
+    "scripts/evaluation/test_isolated.py": "0870bbf7ab43670d857f8308bcee3d4161ea105b19e11acec5dc4dac6a6dc7d2",
+    "scripts/evaluation/ISOLATED.md": "cb5f95df17a4fbdc362d1343dc1404aa9b245e6c66ed4ad4f3e87520e9f7287f"
+  },
+  "source_after": {
+    "scripts/evaluation/isolated_checks.py": "1737bb6933db1e8dceca8b3182f69ed22afa85a475ddd3c52133b9e761565c0b",
+    "scripts/evaluation/isolated_state.py": "4b4d659db862e84ad5f5b155ad309a07c4acf53a48d3812742e185b4dfdea614",
+    "scripts/evaluation/test_isolated.py": "0870bbf7ab43670d857f8308bcee3d4161ea105b19e11acec5dc4dac6a6dc7d2",
+    "scripts/evaluation/ISOLATED.md": "cb5f95df17a4fbdc362d1343dc1404aa9b245e6c66ed4ad4f3e87520e9f7287f"
+  },
+  "source_unchanged": true,
+  "previous_failure": "python-final omitted explicit shared GOCACHE and three existing go-run bridge tests hit sandbox read-only default cache; log preserved"
+}
