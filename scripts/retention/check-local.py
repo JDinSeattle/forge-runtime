@@ -40,7 +40,7 @@ def main():
     refs = {ref['object_key']:ref for ref in json.loads(raw)}
     ready_count = len(refs)
     with sqlite3.connect('file:'+runner['journal_path']+'?mode=ro',uri=True) as journal:
-        if journal.execute('PRAGMA user_version').fetchone()[0] != 4:
+        if journal.execute('PRAGMA user_version').fetchone()[0] not in (4, 5):
             raise ValueError('upgrade/restart all publishers before this rehearsal')
         for row in journal.execute('SELECT receipt_json FROM operations UNION ALL SELECT ref_json FROM runner_artifacts'):
             ref = json.loads(row[0])
