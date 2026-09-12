@@ -1,0 +1,21 @@
+{
+  "scope": "Provisioner-only client.env format correction; no real PG, credential or provider execution.",
+  "base_commit": "9ea66ba5095c75bd3084cd5440beb63ba0a666d6",
+  "fixed": "Validated plain literal API URL, tenant ID and generated-token alphabet. DSN environment files retain existing shell quoting.",
+  "before": "Original9ea66ba shell-quoted client.env rejected by frozen collector41d6f51; synthetic repro and original independent review preserved.",
+  "after": "Actual Go clientEnvironment helper output accepted by frozen collector41d6f51 through independent race overlay; no CLI subprocess invoked.",
+  "tests": {
+    "test": {
+      "passed_entries": 51,
+      "top_level_passed": 9,
+      "failed_entries": 0
+    },
+    "race": {
+      "passed_entries": 51,
+      "top_level_passed": 9,
+      "failed_entries": 0
+    }
+  },
+  "vet_exit": 0,
+  "source_unchanged": true
+}

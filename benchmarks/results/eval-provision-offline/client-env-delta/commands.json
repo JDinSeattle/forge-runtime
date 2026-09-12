@@ -1,0 +1,52 @@
+{
+  "environment_keys": [
+    "GOCACHE",
+    "GOENV",
+    "GOPROXY",
+    "GOSUMDB",
+    "GOTMPDIR",
+    "GOTOOLCHAIN",
+    "HOME",
+    "LANG",
+    "PATH",
+    "TMPDIR"
+  ],
+  "cwd": "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/feature-worktrees/logs",
+  "commands": [
+    {
+      "name": "test",
+      "command": [
+        "go",
+        "test",
+        "-count=1",
+        "-json",
+        "./scripts/evaluation/provision"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 1.11614990234375
+    },
+    {
+      "name": "race",
+      "command": [
+        "go",
+        "test",
+        "-race",
+        "-count=1",
+        "-json",
+        "./scripts/evaluation/provision"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 2.619065999984741
+    },
+    {
+      "name": "vet",
+      "command": [
+        "go",
+        "vet",
+        "./scripts/evaluation/provision"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.21420025825500488
+    }
+  ]
+}

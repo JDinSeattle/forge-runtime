@@ -1,0 +1,9 @@
+package main
+import ("os"; "strings"; "testing")
+func TestIndependentProvisionCollectorBridge(t *testing.T) {
+ raw, err := clientEnvironment("http://127.0.0.1:19097", "eval_fixture", "frg_"+strings.Repeat("A",52))
+ if err != nil { t.Fatal(err) }
+ f, err := os.OpenFile("/tmp/forge-provision-client-delta/synthetic-client.env", os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0600)
+ if err != nil { t.Fatal(err) }
+ if _,err=f.Write(raw);err!=nil { t.Fatal(err) };if err=f.Close();err!=nil { t.Fatal(err) }
+}

@@ -1,0 +1,21 @@
+{
+  "go_command": [
+    "go",
+    "test",
+    "-race",
+    "-count=1",
+    "-overlay",
+    "/tmp/forge-provision-client-delta/overlay.json",
+    "./scripts/evaluation/provision",
+    "-run",
+    "^TestIndependentProvisionCollectorBridge$",
+    "-v"
+  ],
+  "go_exit_code": 0,
+  "go_source_sha256": "682b401719e156c2570e72438aeb0828edfad6cf4e2d7311794a627e711bf447",
+  "collector_commit": "41d6f5184157ee8048647336536205cfefe4cc5f",
+  "collector_evaluate_sha256": "69e00ca8ee0a27ce4986562bf46caf093ae56ec8807b4b5aa2002b43fc25557f",
+  "actual_provisioner_helper_output_accepted_by_frozen_collector": true,
+  "synthetic_only": true,
+  "no_process_or_db_call_by_collector": true
+}
