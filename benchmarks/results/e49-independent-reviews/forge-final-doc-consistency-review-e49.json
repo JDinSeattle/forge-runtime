@@ -1,0 +1,102 @@
+{
+  "P1_P2_findings": [],
+  "actual_nomount_cases": [
+    {
+      "binary_sha256": "ffc7f39dcf5852e41049a422020abc75ddbdd49cfe34ac9997385071149763f6",
+      "cases_passed": 4,
+      "flood_dropped": 183009280,
+      "flood_retained_payload": 524288,
+      "flood_stderr": 90210304,
+      "flood_stdout": 93323264,
+      "path": "log-capture-nomount-e44-20260912/run"
+    },
+    {
+      "binary_sha256": "cddbb85476269d7f46a4527c17d33e0762baac433b5ac03e22ae752a03f0b1d3",
+      "cases_passed": 4,
+      "flood_dropped": 78938112,
+      "flood_retained_payload": 524288,
+      "flood_stderr": 38404096,
+      "flood_stdout": 41058304,
+      "path": "clean-clone-e49-20260912/capture"
+    }
+  ],
+  "boundaries_correctly_preserved": [
+    "E49 563 ordinary/race belongs to 0c796c7; later 568 ordinary plus separate four-case Docker invocation belongs to clean clone 12126e4",
+    "E48 actual worker processes/SIGTERM/PG/gRPC/SQLite use recording backend, not command child process or Docker; original assertion FAIL remains FAIL",
+    "E44 capture-stage Docker observations use bounded memory sink, not physical spool/disk-quota/Engine acceptance; refused shared-volume/stop-services action remains unexecuted",
+    "No paid provider evaluation, deployment of new runner, shared-volume acceptance, paired restoration or complete mandatory goal is claimed",
+    "Author no-mount executable and later main clean-clone executable retain distinct identities; race suite counts are not borrowed across builds"
+  ],
+  "clean_clone": {
+    "actual_nomount_cases": 4,
+    "clean_before_and_after_reported": true,
+    "commit": "12126e480d41dd303790e3f9d93d560788866106",
+    "full_race_not_claimed_for_later_clone": true,
+    "ordinary_skips": 32,
+    "ordinary_test_passes": 568,
+    "source_inputs": 319
+  },
+  "documents_sha256": {
+    "README.md": "3105cf8b89f19ec265f2d118dfc9a1c7b1878975e3472e4e1fb6350f9b508f40",
+    "docs/evidence.md": "9528c38510248b8b051be27d0e398c4a4e62262cccc418ee09205d282a4a1363",
+    "docs/implementation-map.md": "53ded26cd469f4ed55f8a5794592c536ffd6e2740ea0b1469912ae2df9f1995f",
+    "docs/integration-checks-e49-20260912.md": "944c6eb6e4825907de3e65fae1b6d43ab772b0effadc3c7b5f896ab0352b38a8",
+    "docs/log-capture-nomount-evidence.md": "d6e1894c21e6ed974b111e718dfab7aca44f74a4995b2eed6cd69de16a13459d",
+    "docs/log-limits-evidence.md": "5aab98df2603ab909e534f417e0eab9e940699705a3b0165bc89865b45b4e9ea",
+    "docs/open-acceptance.md": "a135450a425124bf987549da0c2af208dd62acc2a87b0b23749df61c58f91039",
+    "docs/worker-sigterm-evidence.md": "67c426061fba1c994eb0b92d700ba3287024e881b0f1a51063e228431eefe4e5"
+  },
+  "mandatory_rows": 127,
+  "mandatory_status_counts": {
+    "I": 5,
+    "U": 1,
+    "V": 121
+  },
+  "mutations": "Only this /tmp report written; repository, raw evidence, services and database untouched",
+  "new_document_links_exist": true,
+  "optional_X_rows": 13,
+  "raw_manifests": {
+    "clean-clone-e49-20260912": {
+      "manifest_files_verified": 41,
+      "manifest_sha256": "30f966cfd8edb2dd918559d0b79e7adb8e26586103383441c17a7d7801803c98"
+    },
+    "integration-e49-20260912T002550Z": {
+      "manifest_files_verified": 38,
+      "manifest_sha256": "37d180a6ebd245749c1c4a8e5d86484b43deb06f7859fa89646a530288873bcb"
+    },
+    "log-capture-nomount-e44-20260912": {
+      "manifest_files_verified": 22,
+      "manifest_sha256": "2823a7dc196a720819c57f77007a5d077443db0dbca7e65ae7c882d56372a044"
+    },
+    "worker-sigterm-e48-integrated-20260912": {
+      "manifest_files_verified": 81,
+      "manifest_sha256": "a6224eead58f146467d9a6fcfbbf5eda2e05cab9eb2351fbcb2a7e170a24fe10"
+    }
+  },
+  "recomputed_test_entries": {
+    "clean-clone-e49-20260912/test.log": {
+      "pass": 568,
+      "skip": 32
+    },
+    "integration-e49-20260912T002550Z/race.log": {
+      "pass": 563,
+      "skip": 31
+    },
+    "integration-e49-20260912T002550Z/test.log": {
+      "pass": 563,
+      "skip": 31
+    }
+  },
+  "remaining_rows": {
+    "P07": "U",
+    "S12.9": "I",
+    "S16.4": "I",
+    "S16.6": "I",
+    "S17.5": "I",
+    "S20.6": "I"
+  },
+  "result": "PASS; no material unsupported completion or deployment claims found",
+  "reviewed_at": "2026-09-12T00:45:46.079007+00:00",
+  "reviewer": "observability_sqlc",
+  "scope": "Read-only consistency review of E44/E48/E49 additions, key raw figures and remaining states in the eight named documents; historical unrelated evidence not re-audited"
+}
