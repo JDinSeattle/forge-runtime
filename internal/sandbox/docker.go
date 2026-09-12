@@ -191,7 +191,7 @@ func (d *Docker) Inspect(ctx context.Context, id string) (Job, error) {
 	r := rows[0]
 	job := Job{ID: id, ContainerID: r.ID, ContainerName: r.Name, StrictLogs: r.HostConfig.LogConfig.Type == "none", Running: r.State.Running, ExitCode: r.State.ExitCode, Started: r.State.StartedAt != "" && !strings.HasPrefix(r.State.StartedAt, "0001-"), Error: r.State.Error}
 	if !job.Running && !job.StrictLogs {
-		logs, err := d.run(ctx, "logs", id)
+		logs, err := d.runOutput(ctx, true, "logs", id)
 		if err != nil {
 			return Job{}, err
 		}
@@ -247,7 +247,19 @@ func (d *Docker) CancelNeverDispatched(ctx context.Context, id string) (Job, err
 	return job, nil
 }
 
+// run returns only protocol stdout. CLI diagnostics are not JSON/container IDs.
 func (d *Docker) run(ctx context.Context, args ...string) ([]byte, error) {
+	return d.runOutput(ctx, false, args...)
+}
+
+// combineLogs is used only for legacy `docker logs`: that command routes the
+// actual container stderr through CLI stderr. It cannot distinguish those bytes
+// from CLI warnings, so preserve its existing bounded combined-output semantics.
+// Strict logging uses the separate daemon attach protocol and never this path.
+func (d *Docker) runOutput(ctx context.Context, combineLogs bool, args ...string) ([]byte, error) {
+	if len(args) == 0 {
+		return nil, domain.ErrInvalid
+	}
 	timeout := d.CommandTimeout
 	if timeout <= 0 {
 		timeout = 15 * time.Second
@@ -266,21 +278,40 @@ func (d *Docker) run(ctx context.Context, args ...string) ([]byte, error) {
 	if limit <= 0 {
 		limit = 1 << 20
 	}
-	buf := &boundedBuffer{max: limit + 1}
-	cmd.Stdout, cmd.Stderr = buf, buf
+	// One extra byte preserves legacy truncation detection, without integer wrap
+	// for an extreme operator-supplied limit. Diagnostic memory is independently
+	// bounded: total retained bytes <= captureLimit + min(captureLimit, 64 KiB).
+	captureLimit := limit
+	if captureLimit < int(^uint(0)>>1) {
+		captureLimit++
+	}
+	stdout := &boundedBuffer{max: captureLimit}
+	stderr := &boundedBuffer{max: min(captureLimit, 64<<10)}
+	cmd.Stdout, cmd.Stderr = stdout, stderr
+	if combineLogs {
+		cmd.Stderr = stdout
+	}
 	err := cmd.Run()
 	if err != nil {
-		return nil, fmt.Errorf("docker %s: %w: %s", args[0], err, buf.Bytes())
+		if combineLogs {
+			return nil, fmt.Errorf("docker %s: %w: output: %s", args[0], err, stdout.Bytes())
+		}
+		return nil, fmt.Errorf("docker %s: %w: stdout: %s; stderr: %s", args[0], err, stdout.Bytes(), stderr.Bytes())
 	}
-	return buf.Bytes(), nil
+	return stdout.Bytes(), nil
 }
 
 // Write always consumes all bytes, even after truncation, so command output
 // cannot block a subprocess on a full pipe or grow host memory without bound.
 type boundedBuffer struct {
-	bytes.Buffer
-	max int
+	// Composition prevents bytes.Buffer.ReadFrom from bypassing our bounded
+	// Write when os/exec drains a pipe with io.Copy.
+	buffer bytes.Buffer
+	max    int
 }
+
+func (b *boundedBuffer) Len() int      { return b.buffer.Len() }
+func (b *boundedBuffer) Bytes() []byte { return b.buffer.Bytes() }
 
 func (b *boundedBuffer) Write(p []byte) (int, error) {
 	n := len(p)
@@ -289,7 +320,7 @@ func (b *boundedBuffer) Write(p []byte) (int, error) {
 		if left > n {
 			left = n
 		}
-		_, _ = b.Buffer.Write(p[:left])
+		_, _ = b.buffer.Write(p[:left])
 	}
 	return n, nil
 }
