@@ -1,0 +1,50 @@
+[
+  {
+    "argv": [
+      "/home/postedism/.local/share/mise/installs/go/1.26.8/bin/go",
+      "build",
+      "-buildvcs=true",
+      "-o",
+      "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/bin/forge-runner",
+      "./cmd/forge-runner"
+    ],
+    "binary": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/bin/forge-runner",
+    "binary_bytes": 30727937,
+    "binary_sha256": "d10fe509adfcdee44f129e6aa39f25c794bb21bcc8602ad6e0fe478203ef14fd",
+    "elapsed_seconds": 0.7655123920412734,
+    "exit_code": 0,
+    "label": "runner"
+  },
+  {
+    "argv": [
+      "/home/postedism/.local/share/mise/installs/go/1.26.8/bin/go",
+      "build",
+      "-buildvcs=true",
+      "-o",
+      "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/bin/forge-worker",
+      "./cmd/forge-worker"
+    ],
+    "binary": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/bin/forge-worker",
+    "binary_bytes": 83406368,
+    "binary_sha256": "de9c7fac40c1eb4d9df2830f44f6c8c916d5225951b7a61e5f581550ede26b5e",
+    "elapsed_seconds": 1.516265089972876,
+    "exit_code": 0,
+    "label": "worker"
+  },
+  {
+    "argv": [
+      "/home/postedism/.local/share/mise/installs/go/1.26.8/bin/go",
+      "test",
+      "-c",
+      "-o",
+      "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/bin/application-faults.test",
+      "./scripts/faults/application"
+    ],
+    "binary": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/bin/application-faults.test",
+    "binary_bytes": 87669097,
+    "binary_sha256": "ed4a8de874f25a8a7f595fefff6d4631305270464752bc9a9a0fbec734dcde94",
+    "elapsed_seconds": 1.767017196980305,
+    "exit_code": 0,
+    "label": "test"
+  }
+]

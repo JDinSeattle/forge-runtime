@@ -1,0 +1,141 @@
+"""Build the three declared acceptance executables once from a clean revision."""
+import hashlib
+import importlib.util
+import json
+import os
+from pathlib import Path
+import shutil
+import stat
+import subprocess
+import sys
+import time
+
+REPO = Path('/home/postedism/Desktop/mini claude code/forge-runtime')
+BASE = REPO / 'var/lifecycle-rehearsals/lr20260912_a'
+OUT = REPO / 'var/local/lifecycle-integrated-build-e50-20260912'
+ARCHIVE = REPO / 'benchmarks/results/lifecycle-integrated-build-e50-20260912'
+sys.dont_write_bytecode = True
+
+
+def load(name, path):
+    spec = importlib.util.spec_from_file_location(name, path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def digest(path):
+    info = path.lstat()
+    if not stat.S_ISREG(info.st_mode):
+        raise ValueError('regular source/binary required')
+    h = hashlib.sha256()
+    with path.open('rb') as stream:
+        while data := stream.read(1 << 20):
+            h.update(data)
+    return h.hexdigest()
+
+
+def git(*args):
+    return subprocess.check_output(['git', *args], cwd=REPO)
+
+
+def save(name, value):
+    (OUT / name).write_text(json.dumps(value, indent=2, sort_keys=True) + '\n')
+
+
+def snapshot(revision):
+    paths = [path for path in git('ls-files', '-z').decode().split('\0') if path and not path.startswith('benchmarks/results/')]
+    result = {name: {'bytes': (REPO / name).stat().st_size, 'sha256': digest(REPO / name)} for name in paths}
+    for name, identity in result.items():
+        if hashlib.sha256(git('show', revision + ':' + name)).hexdigest() != identity['sha256']:
+            raise ValueError('source differs from frozen revision: ' + name)
+    return result
+
+
+def main():
+    if Path.cwd() != REPO or os.getuid() != 1000:
+        raise ValueError('ordinary owner in the reviewed main checkout required')
+    if git('status', '--porcelain').strip():
+        raise ValueError('freeze and commit reviewed source before building')
+    if os.path.lexists(OUT) or os.path.lexists(ARCHIVE):
+        raise ValueError('retain the previous build attempt without overwriting it')
+    prep = load('lifecycle_preparation', REPO / 'scripts/faults/sigterm/prepare.py')
+    prepared, _ = prep.read_preparation('lr20260912_a')
+    if prepared != BASE:
+        raise ValueError('unexpected preparation scope')
+    prep.directory(BASE / 'bin', private=True)
+    prep.directory(OUT.parent, private=True)
+    prep.directory(ARCHIVE.parent)
+    if os.path.lexists(BASE / 'runtime') or os.path.lexists(BASE / 'acceptance.json'):
+        raise ValueError('fresh prepared but unconfigured scope required')
+    bounded = load('lifecycle_bounded_build', REPO / 'tests/review/run_api_lifecycle.py')
+    revision = git('rev-parse', 'HEAD').decode().strip()
+    tree = git('rev-parse', 'HEAD^{tree}').decode().strip()
+    commands = [('runner', ['build', '-buildvcs=true', '-o', str(BASE / 'bin/forge-runner'), './cmd/forge-runner']),
+                ('worker', ['build', '-buildvcs=true', '-o', str(BASE / 'bin/forge-worker'), './cmd/forge-worker']),
+                ('test', ['test', '-c', '-o', str(BASE / 'bin/application-faults.test'), './scripts/faults/application'])]
+    if any(os.path.lexists(args[args.index('-o') + 1]) for _, args in commands):
+        raise ValueError('never overwrite an earlier acceptance executable')
+    go = shutil.which('go')
+    if go is None:
+        raise ValueError('local Go executable required')
+    go = str(Path(go).resolve())
+    env = {'PATH': os.environ['PATH'], 'LC_ALL': 'C', 'TMPDIR': '/tmp', 'GOPROXY': 'off', 'GOSUMDB': 'off', 'GOENV': 'off', 'GOTOOLCHAIN': 'local',
+           'GOCACHE': str(REPO / 'var/local/go-build-cache'), 'GOTMPDIR': str(REPO / 'var/local/integration-go-tmp'),
+           'GOMODCACHE': '/home/postedism/go/pkg/mod', 'GOPATH': '/home/postedism/go'}
+    OUT.mkdir(mode=0o700)
+    (OUT / 'build.py.txt').write_bytes(Path(__file__).read_bytes())
+    before = snapshot(revision)
+    save('source-before.json', before)
+    save('identity.json', {'revision': revision, 'tree': tree,
+                           'go_path': go, 'go_sha256': digest(Path(go)), 'go_version': subprocess.check_output([go, 'version'], env=env, text=True).strip(),
+                           'source_scope': 'all tracked non-evidence files, checked against Git blobs; module versions fixed by go.sum', 'network_disabled_for_go': True})
+    results = []
+    for label, args in commands:
+        start = time.monotonic()
+        with (OUT / (label + '-build.log')).open('xb') as log:
+            code = bounded.execute_bounded([go, *args], REPO, env, log, 300)
+        record = {'label': label, 'argv': [go, *args], 'exit_code': code, 'elapsed_seconds': time.monotonic() - start}
+        results.append(record)
+        save('build-results.json', results)
+        if code:
+            raise ValueError('build failed; retain all preceding output and artifacts')
+        path = Path(args[args.index('-o') + 1])
+        path.chmod(0o700)
+        record.update(binary=str(path), binary_bytes=path.stat().st_size, binary_sha256=digest(path))
+        info = subprocess.check_output([go, 'version', '-m', str(path)], env=env, text=True)
+        (OUT / (label + '-buildinfo.txt')).write_text(info)
+        if label != 'test':
+            settings = {}
+            for line in info.splitlines():
+                fields = line.strip().split(None, 1)
+                if len(fields) == 2 and fields[0] == 'build':
+                    key, _, value = fields[1].partition('=')
+                    settings[key] = value
+            if settings.get('vcs.revision') != revision or settings.get('vcs.modified') != 'false':
+                raise ValueError('production executable does not identify the clean frozen revision')
+    save('build-results.json', results)
+    binary = str(BASE / 'bin/application-faults.test')
+    listing = subprocess.run([binary, '-test.list=^(TestRealWorkerRunnerSIGTERM|TestStrictLogsCombinedAcceptance)$'], capture_output=True, text=True, timeout=15,
+                             env={'PATH': '/usr/local/bin:/usr/bin:/bin', 'LC_ALL': 'C'})
+    (OUT / 'test-list.log').write_text(listing.stdout + listing.stderr)
+    if listing.returncode or set(listing.stdout.splitlines()) != {'TestRealWorkerRunnerSIGTERM', 'TestStrictLogsCombinedAcceptance'}:
+        raise ValueError('both actual acceptance entry points must exist in the same binary')
+    after = snapshot(revision)
+    save('source-after.json', after)
+    if before != after:
+        raise ValueError('source changed while building')
+    if git('rev-parse', 'HEAD').decode().strip() != revision or git('rev-parse', 'HEAD^{tree}').decode().strip() != tree:
+        raise ValueError('revision moved during build')
+    if git('status', '--porcelain').strip():
+        raise ValueError('checkout changed during build')
+    save('result.json', {'build_passed': True, 'actual_acceptance_executed': False, 'source_files': len(before), 'source_unchanged': True,
+                         'scope': 'build and test enumeration only; no PostgreSQL/Docker/workspace execution'})
+    files = [{'path': str(path.relative_to(OUT)), 'bytes': path.stat().st_size, 'sha256': digest(path)} for path in sorted(OUT.iterdir()) if path.is_file()]
+    save('manifest.json', {'files': files})
+    shutil.copytree(OUT, ARCHIVE)
+    print(json.dumps({'build_passed': True, 'source_files': len(before), 'archive': str(ARCHIVE), 'binary_count': 3}))
+
+
+if __name__ == '__main__':
+    main()
