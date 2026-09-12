@@ -147,7 +147,7 @@ class EvaluationTests(unittest.TestCase):
         for r, serialized in zip(registrations, actual, strict=True):
             self.assertEqual(serialized, r["model_spec"])
             quote = dict(serialized, schema_version=1, provider=r["provider"], model=r["model_id"])
-            ledger = {"run": {"config_snapshot": {"provider": r["provider"], "model": r["model_id"]}}, "attempts": [{"attempt_id": "synthetic", "step_seq": 1, "attempt": 1, "provider": r["provider"], "model_id": r["model_id"], "pricing": quote, "status": "prepared", "error_code": None, "request_id": None, "usage": None, "response_persisted_at": None}], "reservations": []}
+            ledger = {"run": {"config_snapshot": {"provider": r["provider"], "model": r["model_id"]}}, "attempts": [{"attempt_id": "synthetic", "step_seq": 1, "attempt": 1, "provider": r["provider"], "model_id": r["model_id"], "pricing": quote, "status": "prepared", "error_code": None, "request_id": None, "usage": None, "response_persisted_at": None}], "reservations": [{"id": "synthetic", "credential_group": r["model_spec"]["credential_group"], "status": "reserved", "actual_microusd": None, "microusd": 1, "dispatched_at": None}]}
             self.assertEqual(evaluate.summarize_ledger(ledger, r)["attempts"][0]["pricing"], quote)
         self.assertNotIn("cache_read_price", actual[0])
         self.assertEqual(actual[1]["cache_read_price"], 0)
@@ -231,7 +231,7 @@ class EvaluationTests(unittest.TestCase):
         base = {"step_seq": 1, "attempt": 1, "provider": r["provider"], "model_id": r["model_id"], "pricing": quote, "error_code": None, "request_id": None, "usage": None, "response_persisted_at": None}
         first = dict(base, attempt_id="known", status="completed")
         second = dict(base, attempt_id="unknown", attempt=2, status="failed", error_code="timeout")
-        ledger = {"run": {"config_snapshot": {"provider": r["provider"], "model": r["model_id"]}}, "attempts": [first, second], "reservations": [{"id": "known", "status": "settled", "actual_microusd": 17, "microusd": 30, "dispatched_at": "2026-09-11T00:00:00Z"}, {"id": "unknown", "status": "unknown", "actual_microusd": None, "microusd": 90, "dispatched_at": "2026-09-11T00:00:00Z"}]}
+        ledger = {"run": {"config_snapshot": {"provider": r["provider"], "model": r["model_id"]}}, "attempts": [first, second], "reservations": [{"id": "known", "credential_group": "unit_test", "status": "settled", "actual_microusd": 17, "microusd": 30, "dispatched_at": "2026-09-11T00:00:00Z"}, {"id": "unknown", "credential_group": "unit_test", "status": "unknown", "actual_microusd": None, "microusd": 90, "dispatched_at": "2026-09-11T00:00:00Z"}]}
         result = evaluate.summarize_ledger(ledger, r)
         self.assertEqual(result["known_ledger_cost_microusd"], 17)
         self.assertEqual(result["unknown_or_unsettled_reserved_microusd"], 90)

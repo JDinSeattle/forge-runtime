@@ -21,6 +21,9 @@ spec.loader.exec_module(common)
 spec = importlib.util.spec_from_file_location("eval_prepare", HERE / "prepare.py")
 prepare = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(prepare)
+spec = importlib.util.spec_from_file_location("eval_deployment", HERE / "deployment.py")
+deployment = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(deployment)
 TERMINAL = {"completed", "failed", "cancelled", "budget_exhausted"}
 BLOCKED = {"waiting_approval", "needs_reconciliation"}
 
@@ -50,33 +53,52 @@ def load_bundle(directory):
     return manifest, seal, registration, platform
 
 
-def audit_environment():
+def audit_environment(binding=None):
     raw = os.environ.get("FORGE_EVAL_AUDIT_DSN", "")
     u = urlsplit(raw)
     if u.scheme not in ("postgres", "postgresql") or u.hostname != "127.0.0.1" or u.path != "/forge" or u.query not in ("", "sslmode=disable"):
         raise ValueError("FORGE_EVAL_AUDIT_DSN must explicitly select the loopback /forge application database")
-    return dict(os.environ, PGHOST=u.hostname, PGPORT=str(u.port or 5432), PGDATABASE="forge", PGUSER=unquote(u.username or ""), PGPASSWORD=unquote(u.password or ""), PGSSLMODE="disable", PGOPTIONS="-c default_transaction_read_only=on -c search_path=public")
+    if binding and (u.fragment or not u.username or not u.password):
+        raise ValueError("audit DSN requires explicit credentials without a fragment")
+    if binding:
+        expected = binding["descriptor"]["database"]
+        if u.port != expected["port"] or unquote(u.username) != expected["audit_role"]:
+            raise ValueError("audit DSN differs from pinned deployment")
+    return dict(deployment.subprocess_environment(), PGCONNECT_TIMEOUT="5", PGHOST=u.hostname, PGPORT=str(u.port or 5432), PGDATABASE="forge", PGUSER=unquote(u.username or ""), PGPASSWORD=unquote(u.password or ""), PGSSLMODE="disable", PGOPTIONS="-c default_transaction_read_only=on -c search_path=pg_catalog")
 
 
-def audit_run(tenant, run_id, directory):
+def audit_run(tenant, run_id, directory, binding=None):
     if not common.valid_id(tenant) or not common.valid_id(run_id):
         raise ValueError("invalid audit identity")
-    result = subprocess.run(["psql", "-X", "-qAt", "-v", "ON_ERROR_STOP=1", "-v", "tenant=" + tenant, "-v", "run=" + run_id], input=(HERE / "audit.sql").read_text(), env=audit_environment(), stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=20)
+    if binding and tenant != binding["descriptor"]["tenant"]:
+        raise ValueError("audit tenant differs from deployment")
+    schema = binding["descriptor"]["database"]["schema"] if binding else "public"
+    query = (HERE / "audit.sql").read_text().replace("__AUDIT_SCOPE__", (HERE / "audit_scope.sql").read_text().strip())
+    result = subprocess.run(["psql", "-X", "-qAt", "-v", "ON_ERROR_STOP=1", "-v", "schema=" + schema, "-v", "tenant=" + tenant, "-v", "run=" + run_id], input=query, env=audit_environment(binding), stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=20)
     (directory / "audit.stderr").write_text(result.stderr)
     if result.returncode:
         raise RuntimeError("read-only ledger audit failed; no further task is submitted")
     result = json.loads(result.stdout)
     if not isinstance(result.get("run"), dict) or result["run"].get("id") != run_id or result["run"].get("tenant_id") != tenant:
         raise ValueError("audit role/database cannot see the exact evaluation run")
+    if binding:
+        deployment.check_scope(result.get("scope"), binding)
     common.save_json(directory / "ledger.json", result, replace=True)
     return result
 
 
-def audit_preflight():
-    query = "SELECT bool_and(has_table_privilege(current_user,t,'SELECT')) FROM (VALUES ('runs'),('model_attempts'),('quota_reservations'),('artifacts'),('run_events')) required(t);"
-    result = subprocess.run(["psql", "-X", "-qAt", "-v", "ON_ERROR_STOP=1"], input=query, env=audit_environment(), stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=20)
-    if result.returncode or result.stdout.strip() != "t":
+def audit_preflight(binding=None):
+    schema = binding["descriptor"]["database"]["schema"] if binding else "public"
+    query = "BEGIN TRANSACTION READ ONLY;\n" + (HERE / "audit_scope.sql").read_text() + ";\nROLLBACK;"
+    result = subprocess.run(["psql", "-X", "-qAt", "-v", "ON_ERROR_STOP=1", "-v", "schema=" + schema], input=query, env=audit_environment(binding), stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=20)
+    if result.returncode:
         raise ValueError("read-only audit connection/SELECT permissions failed before any run submission")
+    scope = json.loads(result.stdout)
+    if binding:
+        deployment.check_scope(scope, binding)
+    elif scope.get("select_allowed") is not True:
+        raise ValueError("legacy public audit SELECT permissions failed")
+    return scope
 
 
 def summarize_ledger(ledger, registration):
@@ -85,12 +107,20 @@ def summarize_ledger(ledger, registration):
     if config["provider"] != registration["provider"] or config["model"] != registration["model_id"]:
         raise ValueError("server accepted a different provider/model configuration")
     reservations = {row["id"]: row for row in ledger["reservations"]}
+    if len(reservations) != len(ledger["reservations"]):
+        raise ValueError("duplicate reservation identity")
     attempts = []
     known_cost = unknown_cost = 0
     for row in ledger["attempts"]:
         if row["provider"] != registration["provider"] or row["model_id"] != registration["model_id"] or row["pricing"] != expected_quote:
             raise ValueError("attempt provider/model or immutable pricing differs from operator-approved inputs")
         reservation = reservations.pop(row["attempt_id"], None)
+        if reservation is None:
+            raise ValueError("model attempt has no matching reservation; exposure is unknown")
+        if reservation.get("credential_group") != registration["model_spec"]["credential_group"] or reservation.get("status") not in {"reserved", "unknown", "settled"} or type(reservation.get("microusd")) is not int or reservation["microusd"] < 0:
+            raise ValueError("reservation identity/status/exposure is invalid")
+        if reservation["status"] == "settled" and (type(reservation.get("actual_microusd")) is not int or reservation["actual_microusd"] < 0):
+            raise ValueError("settled reservation is missing definitive cost")
         charged = None
         unknown = False
         if reservation:
@@ -107,8 +137,11 @@ def summarize_ledger(ledger, registration):
 
 
 class CLI:
-    def __init__(self, client_env, output):
-        env = dict(os.environ)
+    def __init__(self, client_env, output, binding=None):
+        env = deployment.subprocess_environment() if binding else dict(os.environ)
+        self.binding = binding
+        if binding:
+            deployment.private_file(client_env)
         entries = {}
         for line in client_env.read_text().splitlines():
             key, value = line.split("=", 1)
@@ -120,11 +153,18 @@ class CLI:
         u = urlsplit(entries["FORGE_API_URL"])
         if u.scheme != "http" or u.hostname != "127.0.0.1":
             raise ValueError("evaluation harness requires the explicitly configured local API")
+        if binding and (entries["FORGE_TENANT"] != binding["descriptor"]["tenant"] or entries["FORGE_API_URL"] != binding["descriptor"]["api_url"]):
+            raise ValueError("CLI tenant/API differs from deployment")
         env.update(entries)
         self.env, self.tenant = env, entries["FORGE_TENANT"]
-        self.command = [str(common.REPO / "bin/forge"), "--state-dir", str(output / "cli-receipts")]
+        self.command = [binding["descriptor"]["cli"]["path"] if binding else str(common.REPO / "bin/forge"), "--state-dir", str(output / "cli-receipts")]
+
+    def check_binary(self):
+        if self.binding:
+            deployment.validate(self.binding["descriptor"])
 
     def call(self, *args):
+        self.check_binary()
         result = subprocess.run(self.command + list(args), env=self.env, cwd=common.REPO, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=30)
         if result.returncode:
             raise RuntimeError("CLI operation failed or result unknown: " + args[0] + " " + args[1])
@@ -138,6 +178,7 @@ def collect_task(cli, case, directory, registration, wait_seconds):
         raise ValueError("invalid submitted run identity")
     started = time.monotonic()
     with (directory / "events.jsonl").open("ab") as events, (directory / "watch.stderr").open("ab") as diagnostics:
+        cli.check_binary()
         watch = subprocess.Popen(cli.command + ["run", "watch", run_id], env=cli.env, cwd=common.REPO, stdout=events, stderr=diagnostics)
         try:
             while True:
@@ -181,7 +222,7 @@ def collect_task(cli, case, directory, registration, wait_seconds):
             baseline = json.loads(path.read_text())
         if artifact["kind"] == "verification_report" and artifact["id"] == run["state"].get("verification_report_ref"):
             verification = json.loads(path.read_text())
-    ledger = audit_run(cli.tenant, run_id, directory)
+    ledger = audit_run(cli.tenant, run_id, directory, cli.binding)
     billing = summarize_ledger(ledger, registration)
     limit = registration["task_budgets_microusd"][case]
     violation = ledger["run"]["config_snapshot"]["max_cost_microusd"] != limit or billing["conservative_ledger_exposure_microusd"] > limit
@@ -214,6 +255,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--bundle", required=True)
     parser.add_argument("--client-env")
+    parser.add_argument("--deployment", help="private descriptor for one exact-schema isolated batch; omitted means legacy public audit")
     parser.add_argument("--output", required=True)
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--execute", action="store_true", help="explicitly submit up to four real-provider runs within preallocated caps")
@@ -221,25 +263,26 @@ def main():
     args = parser.parse_args()
     bundle, output = Path(args.bundle).absolute(), Path(args.output).absolute()
     manifest, seal, registration, platform = load_bundle(bundle)
+    binding = deployment.load(Path(args.deployment), bundle, output, seal, registration) if args.deployment else None
     if not args.execute and not args.collect:
-        print(json.dumps({"validated_only": True, "corpus_sha256": manifest["sha256"], "provider": registration["provider"], "model_id": registration["model_id"], "total_budget_microusd": registration["total_budget_microusd"], "task_budgets_microusd": registration["task_budgets_microusd"], "no_network_or_provider_call": True}, indent=2))
+        print(json.dumps({"validated_only": True, "corpus_sha256": manifest["sha256"], "provider": registration["provider"], "model_id": registration["model_id"], "total_budget_microusd": registration["total_budget_microusd"], "task_budgets_microusd": registration["task_budgets_microusd"], "no_network_or_provider_call": True, "audit_mode": "isolated" if binding else "legacy-public", **({"deployment_binding": binding} if binding else {})}, indent=2))
         return
     if not args.client_env:
         raise ValueError("--client-env is required for CLI operations")
-    audit_environment()  # Fail before any acceptance if audit credentials are absent.
+    audit_environment(binding)  # Fail before any acceptance if audit credentials are absent.
     if output.resolve() != output:
         raise ValueError("evidence output cannot contain symlinks")
     os.umask(0o077)
     if args.execute:
         output.mkdir(mode=0o700)
-        common.save_json(output / "batch.json", {"created_at": timestamp(), "corpus_sha256": manifest["sha256"], "seal": seal, "registration": registration, "task_order": list(common.CASES), "allocated_total_microusd": sum(registration["task_budgets_microusd"].values()), "total_budget_microusd": registration["total_budget_microusd"]})
+        common.save_json(output / "batch.json", {"created_at": timestamp(), "corpus_sha256": manifest["sha256"], "seal": seal, "registration": registration, "task_order": list(common.CASES), "allocated_total_microusd": sum(registration["task_budgets_microusd"].values()), "total_budget_microusd": registration["total_budget_microusd"], **({"deployment_binding": binding} if binding else {})})
     batch = json.loads((output / "batch.json").read_text())
-    if batch["seal"] != seal or batch["registration"] != registration:
+    if batch["seal"] != seal or batch["registration"] != registration or batch.get("deployment_binding") != binding:
         raise ValueError("collect must use the exact original corpus/model/prices/budget")
-    cli = CLI(Path(args.client_env), output)
-    audit_preflight()
+    cli = CLI(Path(args.client_env), output, binding)
+    audit_preflight(binding)
     committed = {case: registration["task_budgets_microusd"][case] for case in common.CASES if (output / case / "submission-intent.json").is_file()}
-    report = {"scope": "real-provider CLI and trusted-grader evaluation; finite held-out-from-demo corpus, no training-contamination claim", "started_at": batch["created_at"], "collected_at": timestamp(), "corpus_sha256": manifest["sha256"], "provider": registration["provider"], "model_id": registration["model_id"], "total_budget_microusd": batch["total_budget_microusd"], "allocated_total_microusd": batch["allocated_total_microusd"], "submitted_or_unconfirmed_task_allocations": committed, "tasks": [], "complete": False}
+    report = {"scope": "real-provider CLI and trusted-grader evaluation; finite held-out-from-demo corpus, no training-contamination claim", "started_at": batch["created_at"], "collected_at": timestamp(), "corpus_sha256": manifest["sha256"], "provider": registration["provider"], "model_id": registration["model_id"], "total_budget_microusd": batch["total_budget_microusd"], "allocated_total_microusd": batch["allocated_total_microusd"], "submitted_or_unconfirmed_task_allocations": committed, "tasks": [], "complete": False, "audit_mode": "isolated" if binding else "legacy-public", **({"deployment_binding": binding} if binding else {})}
     try:
         for case in common.CASES:
             directory = output / case
