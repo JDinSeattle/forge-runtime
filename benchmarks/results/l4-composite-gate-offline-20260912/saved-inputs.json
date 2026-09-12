@@ -1,0 +1,26 @@
+{
+  "scope": "read-only original nonsecret archives and actual saved L1 receipt; no DB/daemon/model calls",
+  "manifest_members": {
+    "logs-03": 602,
+    "logs-03-retained-observation": 6,
+    "logs-03-lease-observation": 3
+  },
+  "old_input_hashes_checked": 595,
+  "old_aggregate_passed": false,
+  "old_cases": [
+    "L1",
+    "L2-L3-default",
+    "L3-bytes",
+    "L3-count",
+    "L5"
+  ],
+  "L1_original_receipt_binding_passed": true,
+  "runner_build_info": {
+    "package": "github.com/JDinSeattle/forge-runtime/cmd/forge-runner",
+    "vcs.revision": "bdff9b1b511ae1c38327b8441ac973bb4db262e2",
+    "vcs.modified": "false",
+    "GOOS": "linux",
+    "GOARCH": "amd64"
+  },
+  "composite_actual_gate": "closed: new recovery/targeted output not consumed or manufactured"
+}

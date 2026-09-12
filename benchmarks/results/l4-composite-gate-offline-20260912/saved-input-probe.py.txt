@@ -1,0 +1,17 @@
+import importlib.util,json,sys
+from pathlib import Path
+here=Path(sys.argv[1])/'scripts/evaluation'
+def load(n):
+ s=importlib.util.spec_from_file_location(n,here/(n+'.py'));m=importlib.util.module_from_spec(s);s.loader.exec_module(m);return m
+c=load('isolated_checks');m=load('isolated_composite')
+scope=Path('/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a')
+allowed=c.historical_inputs(scope);counts={}
+for name,sha,n in [('logs-03',m.FAILED_SHA,602),('logs-03-retained-observation',m.OBS_SHA,6),('logs-03-lease-observation',m.LEASE_SHA,3)]:
+ got=m.archive(c,scope/'evidence'/name,pinned=sha,count=n);counts[name]=len(got)-1;allowed.update(got)
+a=c.read_json(scope/'evidence/logs-03/acceptance.json');b=m.closed_inputs(c,scope,a,allowed)
+op=m.operation(c,scope/'evidence/logs-03','L1-complete',success=True)
+p=scope/'evidence/logs-03/preflight.json'
+f=c.read_json(p,(1<<20) if '--before-bound' in sys.argv else 16<<20)
+binary=Path(f['acceptance']['runner_binary']);bi=m.binary_build(c,binary,m.REVISION)
+r={'scope':'read-only original nonsecret archives and actual saved L1 receipt; no DB/daemon/model calls','manifest_members':counts,'old_input_hashes_checked':len(b),'old_aggregate_passed':a['passed'],'old_cases':sorted(a['cases']),'L1_original_receipt_binding_passed':True,'runner_build_info':bi,'composite_actual_gate':'closed: new recovery/targeted output not consumed or manufactured'}
+print(json.dumps(r,indent=2))

@@ -1,0 +1,78 @@
+{
+  "base": "1b4e0b482fe14aaf834da8e6968b15e4afab0d9a",
+  "commands": [
+    {
+      "argv": [
+        "python3",
+        "-I",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "scripts/evaluation",
+        "-p",
+        "test_*.py",
+        "-v"
+      ],
+      "exit_code": 0,
+      "output": "tests.log",
+      "seconds": 2.618788957595825
+    },
+    {
+      "argv": [
+        "python3",
+        "-I",
+        "-B",
+        "/tmp/forge-composite-saved-input-probe.py",
+        "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/feature-worktrees/logs"
+      ],
+      "exit_code": 0,
+      "output": "saved-inputs.json",
+      "seconds": 1.015784502029419
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit_code": 0,
+      "output": "diff-check.log",
+      "seconds": 0.016907691955566406
+    }
+  ],
+  "environment": {
+    "GOCACHE": "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/go-build-cache",
+    "GOENV": "off",
+    "GOPROXY": "off",
+    "GOSUMDB": "off",
+    "GOTMPDIR": "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/feature-worktrees/logs/var/local/l4-recovery-gotmp",
+    "GOTOOLCHAIN": "local",
+    "HOME": "/home/postedism",
+    "LANG": "C.UTF-8",
+    "PATH": "/home/postedism/.local/share/mise/installs/go/1.26.8/bin:/usr/bin:/bin",
+    "TMPDIR": "/tmp"
+  },
+  "passed": true,
+  "preliminary_records": {
+    "preliminary-cache-selection-failure.log": "Unfrozen full-suite invocation omitted authorized writable GOCACHE: 3 existing Go bridge tests hit read-only default cache. Re-run uses explicit offline cache; no code workaround.",
+    "probe-explicit-1mib-rejection.log": "Standalone read-only probe used default 1 MiB for known original preflight containing journal; consumer already uses 16 MiB. Probe has explicit before/after parameter; this is not a production guard relaxation."
+  },
+  "production_compatibility": {
+    "changed_files": [],
+    "current_base": "1b4e0b482fe14aaf834da8e6968b15e4afab0d9a",
+    "original": "bdff9b1b511ae1c38327b8441ac973bb4db262e2",
+    "paths": [
+      "internal/",
+      "cmd/",
+      "db/",
+      "proto/",
+      "go.mod",
+      "go.sum"
+    ]
+  },
+  "scope": "Offline consumer validation only. Temporary SQLite and synthetic records; retained nonsecret original files are only read. No live PG/daemon/mount/service/key/provider call or original pool mutation. Actual recovery/targeted output is not fabricated or accepted.",
+  "source_unchanged": true,
+  "test_count": 76
+}

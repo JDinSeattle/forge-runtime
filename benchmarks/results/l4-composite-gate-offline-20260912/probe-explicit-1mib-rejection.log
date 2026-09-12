@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/tmp/forge-composite-saved-input-probe.py", line 14, in <module>
+    f=c.read_json(p,(1<<20) if '--before-bound' in sys.argv else 16<<20)
+  File "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/feature-worktrees/logs/scripts/evaluation/isolated_checks.py", line 32, in read_json
+    def read_json(path,limit=1<<20):return json.loads(private(path,limit).read_bytes(),object_pairs_hook=deployment.pairs)
+                                                      ~~~~~~~^^^^^^^^^^^^
+  File "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/feature-worktrees/logs/scripts/evaluation/isolated_checks.py", line 24, in private
+    if not stat.S_ISREG(s.st_mode) or s.st_nlink!=1 or s.st_uid!=os.getuid() or s.st_mode&0o077 or s.st_size>limit:raise ValueError('private owned single-link file required')
+                                                                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: private owned single-link file required
