@@ -1,0 +1,164 @@
+#!/usr/bin/env python3
+"""Offline, read-only recomputation of the frozen author no-mount E44 run."""
+import base64
+import datetime
+import hashlib
+import json
+from pathlib import Path
+import re
+import subprocess
+
+ROOT = Path('/home/postedism/Desktop/mini claude code/forge-runtime')
+RAW = ROOT / 'benchmarks/results/clean-clone-e49-20260912'
+OUT = Path('/tmp/forge-clean-clone-e49-independent-review.json')
+checks = []
+result = {'scope': 'offline independent recomputation of retained author-worktree execution; no Docker, socket, service, database, mount or provider operations', 'raw': str(RAW), 'passed': False, 'checks': checks}
+
+def read(p):
+    return json.loads(p.read_text())
+
+def sha(p):
+    return hashlib.sha256(p.read_bytes()).hexdigest()
+
+def check(condition, label):
+    if not condition:
+        raise AssertionError(label)
+    checks.append(label)
+
+def ns(value):
+    m = re.fullmatch(r'(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})(?:\.(\d{1,9}))?Z', value)
+    assert m, value
+    d = datetime.datetime.fromisoformat(m[1]).replace(tzinfo=datetime.timezone.utc)
+    return int(d.timestamp()) * 10**9 + int((m[2] or '').ljust(9, '0'))
+
+def main():
+    manifest = read(RAW / 'manifest.json')
+    for name, digest in manifest.items():
+        check(sha(RAW / name) == digest, 'manifest ' + name)
+    result['manifest_files_verified'] = len(manifest)
+    identity, state = read(RAW / 'identity.json'), read(RAW / 'final-state.json')
+    clone, commit = Path(identity['clone']), identity['commit']
+    check(commit == '12126e480d41dd303790e3f9d93d560788866106', 'exact integrated commit')
+    check(identity['clean_before'] and state == {'all_passed': True, 'clean_after': True, 'source_inputs': 319, 'source_unchanged': True, 'status': ''}, 'retained clean-before and clean-after/source result')
+    before, after = read(RAW / 'source-before.json'), read(RAW / 'source-after.json')
+    check(before == after and len(before) == 319, '319 retained source inputs unchanged')
+    queries = ''.join(commit+':'+path+'\n' for path in before).encode()
+    raw = subprocess.run(['git','cat-file','--batch'], cwd=clone, input=queries, capture_output=True, check=True).stdout
+    offset = 0
+    for path, expected in before.items():
+        end = raw.index(b'\n', offset)
+        fields = raw[offset:end].split()
+        check(len(fields) == 3 and fields[1] == b'blob', 'exact git blob exists ' + path)
+        size = int(fields[2]); data = raw[end+1:end+1+size]
+        check(len(data) == size and raw[end+1+size:end+2+size] == b'\n', 'git batch framing ' + path)
+        offset = end+2+size
+        check(hashlib.sha256(data).hexdigest() == expected == sha(clone/path), 'commit blob, retained source and current clone match ' + path)
+    check(offset == len(raw), 'all queried git blobs consumed')
+    git_head = subprocess.check_output(['git','rev-parse','HEAD'], cwd=clone, text=True).strip()
+    git_status = subprocess.check_output(['git','status','--porcelain'], cwd=clone, text=True)
+    check(git_head == commit and git_status == '', 'clone still clean at same commit (read-only git checks)')
+    rows = read(RAW / 'results.json')
+    expected_commands = [('build', ['go','build']), ('capture-build', ['go','test','-race','-c']), ('capture', None), ('test', ['go','test','-json','-count=1','./...']), ('generated',['make','check-generated'])]
+    check([r['name'] for r in rows] == [n for n,_ in expected_commands] and all(r['exit_code'] == 0 for r in rows), 'all five exact retained execution stages succeeded')
+    for row,(name,start) in zip(rows,expected_commands):
+        if start:
+            check(row['argv'][:len(start)] == start, name + ' command contract')
+    records = []
+    for line in (RAW/'test.log').read_text().splitlines():
+        try: records.append(json.loads(line))
+        except ValueError: pass
+    counts = {a:sum(bool(r.get('Test')) and r.get('Action') == a for r in records) for a in ('pass','fail','skip')}
+    check(counts == rows[3]['tests'] == {'pass':568,'fail':0,'skip':32} and not any(r.get('Action') == 'fail' for r in records), 'recomputed ordinary test counts and no package failure')
+    report = read(RAW / 'capture/report.json')
+    binary_hashes = read(RAW/'binaries.json')
+    binary = Path(report['binary']); directory = binary.parent
+    check(set(binary_hashes) == {'forge','forge-api','forge-worker','forge-runner','forge-admin','sandbox.test'}, 'six exact compiled binaries')
+    for name,expected in binary_hashes.items():
+        check(sha(directory/name) == expected, 'read-only executable hash ' + name)
+    check(binary.name == 'sandbox.test' and report['binary_sha256'] == binary_hashes['sandbox.test'] and rows[2]['argv'] == [str(binary),'-test.run=^TestNoMountCapturedDockerAcceptance$','-test.v','-test.count=1','-test.timeout=90s'], 'capture process hash, build hash and actual command agree')
+    check('build\t-race=true' in (RAW/'sandbox.test-build-info.log').read_text(), 'retained actual capture binary build info has race enabled')
+    for name in ('forge','forge-admin','forge-api','forge-worker','forge-runner'):
+        info=(RAW/(name+'-build-info.log')).read_text()
+        check('vcs.revision='+commit in info and 'vcs.modified=false' in info, 'production binary build info clean revision ' + name)
+    fixture_source=(clone/'internal/sandbox/logs_nomount_integration_test.go').read_text()
+    check('err = d.RemoveOwned(cleanupCtx, name, facts.ID)' in fixture_source and 'errors.Is(err, ErrJobNotFound)' in fixture_source and 'if !item.CleanupConfirmed {' in fixture_source, 'commit-verified fixture cleanup checks immutable owned ID and post-removal not-found')
+    result['identity'] = identity
+    result['ordinary_tests'] = counts
+    result['binary_hashes'] = binary_hashes
+    result['source_inputs_matching_git_commit'] = len(before)
+    check(report['passed'] and [c['name'] for c in report['cases']] == ['binary', 'flood', 'cancel', 'detach'], 'four exact passed cases')
+    check(report['in_memory_payload_cap'] == 524288 and report['preview_cap'] == 65536, 'raw payload and preview caps')
+    pinned = 'python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36'
+    policy = dict(entry_bytes=16384, operation_bytes=524288, run_bytes=16777216, max_operations=32, preview_bytes=65536)
+    host = {'ReadonlyRootfs': True, 'Privileged': False, 'NetworkMode': 'none', 'Memory': 268435456, 'MemorySwap': 268435456, 'NanoCpus': 1000000000, 'PidsLimit': 64, 'CapDrop': ['ALL'], 'SecurityOpt': ['no-new-privileges'], 'Binds': None, 'Tmpfs': None, 'LogConfig': {'Type': 'none'}}
+    output_cases = []
+    ids = set()
+    for c in report['cases']:
+        name, job_name = c['name'], c['job_name']
+        check(c == read(RAW / ('capture/' + job_name + '.json')), name + ' standalone case equals aggregate raw')
+        check(job_name == report['fixture'] + '-' + name and re.fullmatch('[0-9a-f]{64}', c['container_id']) is not None and c['container_id'] not in ids, name + ' unique full immutable container identity')
+        ids.add(c['container_id'])
+        labels = {'forge.runtime': '1', 'forge.operation_id': job_name, 'forge.e44_fixture': report['fixture']}
+        check(c['expected_labels'] == labels and c['image'] == pinned, name + ' exact ownership labels and immutable pinned image')
+        expected_args = ['create', '--pull=never', '--name', job_name, '--label', 'forge.runtime=1', '--label', 'forge.operation_id='+job_name, '--label', 'forge.e44_fixture='+report['fixture'], '--read-only', '--network', 'none', '--cap-drop', 'ALL', '--security-opt', 'no-new-privileges', '--user', '1000:1000', '--pids-limit', '64', '--memory', '268435456', '--memory-swap', '268435456', '--cpus', '1', '--log-driver', 'none', '--init', pinned] + c['command']
+        check(c['create_args'] == expected_args and c['command'][:4] == ['python', '-B', '-u', '-c'], name + ' exact safe create arguments, no mount')
+        for key in ('created_facts', 'return_facts', 'stopped_facts'):
+            f = c[key]
+            check(f['ID'] == c['container_id'] and f['Name'] == '/'+job_name and f['Image'] == pinned.split('@')[1], name + ' ' + key + ' exact immutable identity')
+            check(f['Config'] == {'Image': pinned, 'User': '1000:1000', 'Labels': labels, 'Volumes': None, 'Tty': False} and f['HostConfig'] == host and f['Mounts'] == [] and f['LogPath'] == '', name + ' ' + key + ' actual security constraints')
+            check(not f['State']['OOMKilled'], name + ' ' + key + ' not OOM killed')
+        initial, returned, stopped = (c[k]['State'] for k in ('created_facts', 'return_facts', 'stopped_facts'))
+        zero = '0001-01-01T00:00:00Z'
+        check(initial == {'Running': False, 'Pid': 0, 'ExitCode': 0, 'StartedAt': zero, 'FinishedAt': zero, 'OOMKilled': False}, name + ' inspect proves created but unstarted')
+        check(ns(report['started_at']) <= ns(c['create_begin']) < ns(c['create_acknowledged']) < ns(c['attach_acknowledged_before_start']) < ns(returned['StartedAt']) < ns(c['stage_returned']) <= ns(report['finished_at']) and c['start_count'] == 1, name + ' acknowledged attach hook precedes unique Docker start')
+        check(stopped['StartedAt'] == returned['StartedAt'] and not stopped['Running'] and stopped['Pid'] == 0 and c['cleanup_confirmed'] and not c.get('cleanup_error') and c['passed'], name + ' original process stopped and fixture post-remove not-found assertion passed')
+        job, log = c['job'], c['job']['log']
+        check(job['strict_logs'] and log['schema_version'] == 1 and log['policy'] == policy and log['operation_id'] == job_name and log['binding_hash'] == '', name + ' strict capture summary binding and policy')
+        streams = {s: (RAW / ('capture/'+job_name+'-'+s+'.bin')).read_bytes() for s in ('stdout', 'stderr')}
+        for s, data in streams.items():
+            check(len(data) == c['retained_stream_bytes'][s] and hashlib.sha256(data).hexdigest() == c['stream_sha256'][s], name + ' exact retained ' + s + ' length/hash')
+            check(log[s+'_seen'] >= len(data), name + ' ' + s + ' observed count covers retained bytes')
+        retained = sum(map(len, streams.values()))
+        seen = log['stdout_seen'] + log['stderr_seen']
+        preview = base64.b64decode(job['output'], validate=True)
+        check(retained == log['retained_bytes'] == log['retained_payload'] and retained <= 524288 and len(preview) <= 65536, name + ' raw memory and preview limits')
+        check(log['artifact'] == {'tenant_id':'','run_id':'','kind':'','object_key':'','sha256':'','size':0}, name + ' zero artifact confirms this is not spool/artifact publication evidence')
+        if name != 'detach':
+            check(not c.get('error') and log['complete'] and log['dropped_known'] and log['dropped_bytes'] == seen-retained and not returned['Running'] and returned['Pid'] == 0 and ns(returned['FinishedAt']) < ns(c['stage_returned']), name + ' completed capture exact counters and process exit')
+            check(job['id'] == job_name and job['container_name'] == '/'+job_name and job['container_id'] == c['container_id'] and job['started'] and not job['running'] and job['exit_code'] == returned['ExitCode'], name + ' successful returned job exact identity/process fields')
+        if name == 'binary':
+            check(streams == {'stdout':b'out\0', 'stderr':b'err\xff'} and preview == b'out\0err\xff' and seen == 8 and log['records'] == 2 and not log['truncated'] and not job['truncated'] and returned['ExitCode'] == 0, 'binary first/early bytes include exact NUL and non-UTF8 output')
+        elif name == 'flood':
+            check(all(data == b'x'*len(data) for data in streams.values()) and preview == b'x'*65536 and retained == 524288 and seen > retained and log['records'] == 32 and log['reason'] == 'output_limit' and log['termination_requested'] and log['termination_observed'] and log['truncated'] and job['truncated'] and returned['ExitCode'] == stopped['ExitCode'] == 137, 'flood retains exact bounded bytes and policy termination is observed, not OOM')
+        elif name == 'cancel':
+            check(c['markers_observed'] and job['interrupted'] and len(streams['stdout']) > 0 and streams['stdout'] == b'parent-out\n'*(len(streams['stdout'])//11) and streams['stderr'] == b'child-err\n'*(len(streams['stderr'])//10) and sorted(preview.splitlines()) == sorted((streams['stdout']+streams['stderr']).splitlines()) and seen == retained and log['records'] > 0 and not log['truncated'] and not job['truncated'] and returned['ExitCode'] == stopped['ExitCode'] == 137, 'normal cancel captures observed parent/child markers and interrupts process')
+            check(ns(returned['StartedAt']) < ns(c['control_requested']) < ns(returned['FinishedAt']) < ns(c['stage_returned']), 'normal cancellation ordering')
+        else:
+            check(c['error'] == 'log_capture_incomplete' and not log['complete'] and not log['dropped_known'] and log['reason'] == 'runner_shutdown' and log['truncated'] and log['dropped_bytes'] == 0 and c['markers_observed'] and c['detach_observed_running'] and c['natural_exit_observed'], 'detach correctly records incomplete capture and unknown drop count')
+            check(returned['Running'] and returned['Pid'] > 0 and returned['FinishedAt'] == zero and stopped['ExitCode'] == 0 and ns(returned['StartedAt']) < ns(c['control_requested']) <= ns(c['stage_returned']) < ns(stopped['FinishedAt']) < ns(report['finished_at']), 'detach returns before same original process natural successful exit')
+            check(streams == {'stdout': b'parent-out\n', 'stderr': b'child-err\n'} and sorted(preview.splitlines()) == [b'child-err', b'parent-out'] and seen == retained == 21 and log['records'] == 2, 'detach retained markers and preview are exact; later output is not claimed captured')
+        if name != 'flood':
+            check(not log['termination_requested'] and not log['termination_observed'], name + ' not output-policy termination')
+        if name in ('binary', 'flood'):
+            check(c['control_requested'] == zero, name + ' no business cancel/detach requested')
+        output_cases.append({'name':name,'container_id':c['container_id'],'stdout_seen':log['stdout_seen'],'stderr_seen':log['stderr_seen'],'retained_payload':retained,'preview_bytes':len(preview),'dropped_known':log['dropped_known'],'dropped_bytes':log['dropped_bytes'] if log['dropped_known'] else None,'complete':log['complete'],'returned_running':returned['Running'],'final_exit':stopped['ExitCode'],'attach_precedes_start':True,'cleanup_assertion_confirmed':True})
+    result['cases'] = output_cases
+    result['duration_seconds'] = (ns(report['finished_at'])-ns(report['started_at']))/1e9
+    result['limitations'] = [
+        'Actual no-mount Docker capture uses the race-enabled binary compiled from this exact clean commit, but fixture creates the containers and supplies a bounded in-memory raw sink. This does not exercise Docker.Start admission, fixed-volume/framed disk spool, cumulative run quota, runner Engine/SQLite restart or artifact publication.',
+        'Flood dropped-byte arithmetic uses observed capture counters; discarded bytes themselves are not retained for hashing. Detach incomplete capture retains unknown missing volume.',
+        'Cleanup is the source-verified test assertion of owned exact-ID removal followed by ErrJobNotFound plus retained stopped facts; this offline review did not repeat live Docker inspection.',
+        'Ordinary all-package tests ran in this clean-clone batch. Capture binary has -race; this batch does not contain an all-package race invocation. Existing local Go caches and private fixture PostgreSQL were used, so it is not a fresh-machine/offline dependency-install result.'
+    ]
+    result['p1_p2_findings'] = []
+    result['passed'] = True
+
+try:
+    main()
+except Exception as e:
+    result['error'] = type(e).__name__ + ': ' + str(e)
+    raise
+finally:
+    result['review_script_sha256'] = sha(Path(__file__))
+    OUT.write_text(json.dumps(result, indent=2, sort_keys=True)+'\n')
+    print(json.dumps({'passed':result['passed'],'report':str(OUT),'checks':len(checks),'error':result.get('error')}))

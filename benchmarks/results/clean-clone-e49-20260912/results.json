@@ -1,0 +1,66 @@
+[
+  {
+    "argv": [
+      "go",
+      "build",
+      "-o",
+      "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/clean-clone-e49-binaries/",
+      "./cmd/..."
+    ],
+    "elapsed_seconds": 2.9689476510393433,
+    "exit_code": 0,
+    "name": "build"
+  },
+  {
+    "argv": [
+      "go",
+      "test",
+      "-race",
+      "-c",
+      "-o",
+      "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/clean-clone-e49-binaries/sandbox.test",
+      "./internal/sandbox"
+    ],
+    "elapsed_seconds": 0.765076532959938,
+    "exit_code": 0,
+    "name": "capture-build"
+  },
+  {
+    "argv": [
+      "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/clean-clone-e49-binaries/sandbox.test",
+      "-test.run=^TestNoMountCapturedDockerAcceptance$",
+      "-test.v",
+      "-test.count=1",
+      "-test.timeout=90s"
+    ],
+    "elapsed_seconds": 8.030323035025503,
+    "exit_code": 0,
+    "name": "capture"
+  },
+  {
+    "argv": [
+      "go",
+      "test",
+      "-json",
+      "-count=1",
+      "./..."
+    ],
+    "elapsed_seconds": 91.26903817203129,
+    "exit_code": 0,
+    "name": "test",
+    "tests": {
+      "fail": 0,
+      "pass": 568,
+      "skip": 32
+    }
+  },
+  {
+    "argv": [
+      "make",
+      "check-generated"
+    ],
+    "elapsed_seconds": 0.6654035330284387,
+    "exit_code": 0,
+    "name": "generated"
+  }
+]

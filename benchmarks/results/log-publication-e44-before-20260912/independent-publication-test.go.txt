@@ -1,0 +1,72 @@
+package application
+
+import (
+ "context"
+ "crypto/sha256"
+ "encoding/hex"
+ "encoding/json"
+ "io"
+ "strings"
+ "testing"
+ "time"
+
+ "github.com/JDinSeattle/forge-runtime/internal/artifact"
+ "github.com/JDinSeattle/forge-runtime/internal/domain"
+ "github.com/JDinSeattle/forge-runtime/internal/persistence"
+ "github.com/JDinSeattle/forge-runtime/internal/runner"
+ "github.com/JDinSeattle/forge-runtime/internal/sandbox"
+)
+
+func independentLogObject(t *testing.T,d *Driver,tenant,run domain.ID,kind,body string) artifact.Ref {
+ t.Helper(); ref,err:=d.Artifacts.Put(context.Background(),tenant,run,kind,strings.NewReader(body));if err!=nil {t.Fatal(err)};return ref
+}
+func independentLogOperation(t *testing.T,d *Driver,r persistence.Run,logRef artifact.Ref) runner.Operation {
+ t.Helper();args:=json.RawMessage(`{"command":["fixture"]}`);sum:=sha256.Sum256(args)
+ req:=runner.OperationRequest{WorkspaceRequest:runner.WorkspaceRequest{TenantID:r.TenantID,RunID:r.ID,WorkspaceID:r.ID,Epoch:1},OperationID:"independent-log-operation",ExpectedRevision:1,Kind:"run_command",Args:args,ArgsHash:hex.EncodeToString(sum[:]),PolicyVersion:"policy-1",Deadline:time.Now().Add(time.Minute).UTC()}
+ reqRaw,_:=json.Marshal(req);binding:=sha256.Sum256(reqRaw);p,_:=(sandbox.LogPolicy{}).Normalize()
+ // Contents are an opaque retained-log artifact for this application-only
+ // publication test; no claim that a container or log parser ran here.
+ job:=sandbox.Job{ID:"fixture-job",Started:true,StrictLogs:true,Output:[]byte("preview"),Log:&sandbox.LogSummary{SchemaVersion:1,Policy:p,OperationID:req.OperationID,BindingHash:hex.EncodeToString(binding[:]),Complete:true,DroppedKnown:true,Artifact:logRef}}
+ result,_:=json.Marshal(job);o:=runner.Operation{Request:req,Status:runner.Succeeded,JobID:job.ID,BeforeHash:strings.Repeat("a",64),AfterHash:strings.Repeat("a",64),AfterRevision:1,Result:result}
+ raw,err:=json.Marshal(o);if err!=nil {t.Fatal(err)}
+ o.Receipt=independentLogObject(t,d,r.TenantID,r.ID,"operation_receipt",string(raw));return o
+}
+func independentArtifactID(ref artifact.Ref) domain.ID {h:=sha256.Sum256([]byte(string(ref.TenantID)+":"+string(ref.RunID)+":"+ref.Kind+":"+ref.SHA256));return domain.ID("artifact_"+hex.EncodeToString(h[:]))}
+
+func TestIndependentLogPublicationVisibleAndIdempotent(t *testing.T) {
+ d,r,p,_:=repairSetup(t);ctx:=context.Background();body:="complete retained operation output beyond RPC preview"
+ logRef:=independentLogObject(t,d,r.TenantID,r.ID,"operation_log",body);op:=independentLogOperation(t,d,r,logRef)
+ first,err:=d.receipt(ctx,op);if err!=nil {t.Fatal(err)};again,err:=d.receipt(ctx,op);if err!=nil||first.Ref!=again.Ref {t.Fatalf("receipt replay changed: %v",err)}
+ list,err:=d.Store.ListArtifacts(ctx,r.TenantID,r.ID,"",1000);if err!=nil {t.Fatal(err)};var logs,receipts int
+ for _,a:=range list {if a.Kind=="operation_log" {logs++;if a.ObjectKey!=logRef.ObjectKey {t.Fatal("wrong log object")}};if a.Kind=="operation_receipt" {receipts++}}
+ if logs!=1||receipts!=1 {t.Fatalf("retained logs absent or duplicated in PostgreSQL READY: logs=%d receipts=%d",logs,receipts)}
+ got,err:=d.Store.GetArtifact(ctx,r.TenantID,independentArtifactID(logRef));if err!=nil {t.Fatal(err)}
+ if got.RunID!=r.ID||got.Kind!="operation_log"||got.ByteSize!=int64(len(body))||got.SHA256!=logRef.SHA256 {t.Fatalf("wrong downloadable metadata: %+v",got)}
+ reader,err:=d.Artifacts.Open(ctx,r.TenantID,r.ID,logRef);if err!=nil {t.Fatal(err)};raw,err:=io.ReadAll(reader);reader.Close();if err!=nil||string(raw)!=body {t.Fatalf("log bytes unreadable: %v",err)}
+ if p.calls.Load()!=0 {t.Fatal("publication unexpectedly invoked provider")}
+}
+
+func TestIndependentLogPublicationRejectsInvalidReference(t *testing.T) {
+ for _,scenario:=range []string{"foreign_run","wrong_kind","wrong_sha","wrong_size"} {t.Run(scenario,func(t *testing.T){
+  d,r,p,_:=repairSetup(t);ctx:=context.Background();ref:=independentLogObject(t,d,r.TenantID,r.ID,"operation_log","original")
+  switch scenario {
+  case "foreign_run": other,_,err:=d.Store.Submit(ctx,persistence.SubmitRequest{TenantID:r.TenantID,PrincipalID:r.PrincipalID,ProjectID:r.ProjectID,Task:"other log fixture",BaseCommit:r.BaseCommit,Config:r.Config},"independent-foreign-log");if err!=nil {t.Fatal(err)};ref=independentLogObject(t,d,r.TenantID,other.ID,"operation_log","foreign")
+  case "wrong_kind": ref=independentLogObject(t,d,r.TenantID,r.ID,"model_response","wrong kind")
+  case "wrong_sha": ref.SHA256=strings.Repeat("f",64)
+  case "wrong_size": ref.Size++
+  }
+  op:=independentLogOperation(t,d,r,ref)
+  if _,err:=d.receipt(ctx,op);err==nil {t.Fatalf("receipt with %s log ref accepted for settlement",scenario)}
+  var n int;if err:=d.Store.Pool.QueryRow(ctx,"SELECT count(*) FROM artifacts").Scan(&n);err!=nil {t.Fatal(err)};if n!=0 {t.Fatalf("invalid log ref published %d artifact rows",n)}
+  if p.calls.Load()!=0 {t.Fatal("provider invoked")}
+ })}
+}
+
+func TestIndependentLogPublicationDoesNotTrustRPCOnlyReference(t *testing.T) {
+ d,r,_,_:=repairSetup(t);ctx:=context.Background();original:=independentLogObject(t,d,r.TenantID,r.ID,"operation_log","trusted original")
+ op:=independentLogOperation(t,d,r,original);replacement:=independentLogObject(t,d,r.TenantID,r.ID,"operation_log","untrusted RPC replacement")
+ var job sandbox.Job;if err:=json.Unmarshal(op.Result,&job);err!=nil {t.Fatal(err)};job.Log.Artifact=replacement;op.Result,_=json.Marshal(job)
+ _,err:=d.receipt(ctx,op)
+ var n int;if e:=d.Store.Pool.QueryRow(ctx,"SELECT count(*) FROM artifacts WHERE object_key=$1",replacement.ObjectKey).Scan(&n);e!=nil {t.Fatal(e)};if n!=0 {t.Fatal("unverified RPC log reference published")}
+ if err==nil {got,e:=d.Store.GetArtifact(ctx,r.TenantID,independentArtifactID(original));if e!=nil||got.ObjectKey!=original.ObjectKey {t.Fatalf("accepted receipt but did not publish its authenticated original log: %v",e)}}
+}

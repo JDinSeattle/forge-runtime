@@ -1,0 +1,124 @@
+{
+  "accepted_submit": {
+    "Status": 202,
+    "run_id": "run_4MRPLJRLCHVHE3E3LQQXUUKNDL",
+    "reused": false
+  },
+  "api_binary_sha256": "afe1d42b6d96c560c654aecda7c3f2bb867c6737377d1daabb3d9675646db544",
+  "api_database_role": "review_http_rjwxbu5egldrnv6alqi4m6rs5o",
+  "first_exit_observed_at": "2026-09-12T00:39:36.93145342Z",
+  "first_log": "2026/09/12 00:39:36 INFO API listening address=127.0.0.1:43165\n",
+  "first_pid": 3518066,
+  "inflight_submit_observed_waiting_for_project_lock": true,
+  "listener_refusal_observed_at": "2026-09-12T00:39:36.898627861Z",
+  "project_lock_released_at": "2026-09-12T00:39:36.903877548Z",
+  "project_run_count": 2,
+  "run_run_4MRPLJRLCHVHE3E3LQQXUUKNDL": {
+    "tenant_id": "review_tenant",
+    "id": "run_4MRPLJRLCHVHE3E3LQQXUUKNDL",
+    "project_id": "project_25JOJQBZLTH3OW4BER5C5WI6XS",
+    "principal_id": "review_principal",
+    "task": "accepted before SIGTERM",
+    "base_commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "runner_id": "",
+    "state": {
+      "schema_version": 2,
+      "run_id": "run_4MRPLJRLCHVHE3E3LQQXUUKNDL",
+      "tenant_id": "review_tenant",
+      "version": 1,
+      "status": "queued",
+      "stage": "initialize",
+      "lease": {
+        "owner": "",
+        "epoch": 0,
+        "until": "0001-01-01T00:00:00Z"
+      },
+      "step_seq": 0,
+      "workspace_revision": 0,
+      "verification_status": "unverified",
+      "verification_revision": 0,
+      "model_rounds": 0,
+      "tool_calls": 0,
+      "cost_microusd": 0,
+      "limits": {
+        "max_no_progress_batches": 3,
+        "max_model_rounds": 2,
+        "max_tool_calls": 3,
+        "max_cost_microusd": 1000000,
+        "deadline": "2026-09-12T00:41:36.883595Z"
+      }
+    },
+    "config": {
+      "provider": "fake",
+      "model": "fixture",
+      "max_model_rounds": 2,
+      "max_tool_calls": 3,
+      "max_cost_microusd": 1000000,
+      "max_runtime_seconds": 120,
+      "max_no_progress_batches": 3
+    },
+    "created_at": "2026-09-11T17:39:36.90493-07:00",
+    "covered_seq": 1
+  },
+  "run_run_PYHYY7VSMNUJ7BB7DOORCJZW26": {
+    "tenant_id": "review_tenant",
+    "id": "run_PYHYY7VSMNUJ7BB7DOORCJZW26",
+    "project_id": "project_25JOJQBZLTH3OW4BER5C5WI6XS",
+    "principal_id": "review_principal",
+    "task": "test control-plane lease authority",
+    "base_commit": "fixed-fixture-base",
+    "runner_id": "",
+    "state": {
+      "schema_version": 2,
+      "run_id": "run_PYHYY7VSMNUJ7BB7DOORCJZW26",
+      "tenant_id": "review_tenant",
+      "version": 1,
+      "status": "queued",
+      "stage": "initialize",
+      "lease": {
+        "owner": "",
+        "epoch": 0,
+        "until": "0001-01-01T00:00:00Z"
+      },
+      "step_seq": 0,
+      "workspace_revision": 0,
+      "verification_status": "unverified",
+      "verification_revision": 0,
+      "model_rounds": 0,
+      "tool_calls": 0,
+      "cost_microusd": 0,
+      "limits": {
+        "max_no_progress_batches": 3,
+        "max_model_rounds": 2,
+        "max_tool_calls": 3,
+        "max_cost_microusd": 1000000,
+        "deadline": "2026-09-11T17:41:36.712071-07:00"
+      }
+    },
+    "config": {
+      "provider": "fake",
+      "model": "fixture",
+      "max_model_rounds": 2,
+      "max_tool_calls": 3,
+      "max_cost_microusd": 1000000,
+      "max_runtime_seconds": 120,
+      "max_no_progress_batches": 3
+    },
+    "created_at": "2026-09-11T17:39:36.723406-07:00",
+    "covered_seq": 1
+  },
+  "schema": "review_7zzwqmlryfuawvj2dfs4htduok",
+  "scope": "actual API process, TCP HTTP/SSE, SIGTERM, isolated PostgreSQL schema; no worker/runner/model",
+  "sigterm_at": "2026-09-12T00:39:36.893074843Z",
+  "sse_clean_eof_observed_at": "2026-09-12T00:39:36.898633472Z",
+  "sse_initial_frame": "id: 1\nevent: run.created\ndata: {\"run_id\":\"run_PYHYY7VSMNUJ7BB7DOORCJZW26\",\"seq\":1,\"type\":\"run.created\",\"schema_version\":1,\"payload\":{\"lease\":{\"epoch\":0,\"owner\":\"\",\"until\":\"0001-01-01T00:00:00Z\"},\"stage\":\"initialize\",\"limits\":{\"deadline\":\"2026-09-11T17:41:36.712071-07:00\",\"max_tool_calls\":3,\"max_model_rounds\":2,\"max_cost_microusd\":1000000,\"max_no_progress_batches\":3},\"run_id\":\"run_PYHYY7VSMNUJ7BB7DOORCJZW26\",\"status\":\"queued\",\"version\":1,\"step_seq\":0,\"tenant_id\":\"review_tenant\",\"tool_calls\":0,\"model_rounds\":0,\"cost_microusd\":0,\"schema_version\":2,\"workspace_revision\":0,\"verification_status\":\"unverified\",\"verification_revision\":0},\"created_at\":\"2026-09-12T00:39:36.736384Z\"}\n\n",
+  "successor_exit_observed_at": "2026-09-12T00:39:37.009696329Z",
+  "successor_log": "2026/09/12 00:39:36 INFO API listening address=127.0.0.1:43165\n",
+  "successor_pid": 3518099,
+  "successor_submit": {
+    "Status": 202,
+    "run_id": "run_4MRPLJRLCHVHE3E3LQQXUUKNDL",
+    "reused": true
+  },
+  "test_failed": false
+}

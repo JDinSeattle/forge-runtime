@@ -1,0 +1,18 @@
+=== RUN   TestIndependentLogPublicationVisibleAndIdempotent
+--- PASS: TestIndependentLogPublicationVisibleAndIdempotent (0.59s)
+=== RUN   TestIndependentLogPublicationRejectsInvalidReference
+=== RUN   TestIndependentLogPublicationRejectsInvalidReference/foreign_run
+=== RUN   TestIndependentLogPublicationRejectsInvalidReference/wrong_kind
+=== RUN   TestIndependentLogPublicationRejectsInvalidReference/wrong_sha
+=== RUN   TestIndependentLogPublicationRejectsInvalidReference/wrong_size
+--- PASS: TestIndependentLogPublicationRejectsInvalidReference (2.23s)
+    --- PASS: TestIndependentLogPublicationRejectsInvalidReference/foreign_run (0.60s)
+    --- PASS: TestIndependentLogPublicationRejectsInvalidReference/wrong_kind (0.53s)
+    --- PASS: TestIndependentLogPublicationRejectsInvalidReference/wrong_sha (0.44s)
+    --- PASS: TestIndependentLogPublicationRejectsInvalidReference/wrong_size (0.67s)
+=== RUN   TestIndependentLogPublicationDoesNotTrustRPCOnlyReference
+--- PASS: TestIndependentLogPublicationDoesNotTrustRPCOnlyReference (0.59s)
+=== RUN   TestIndependentStrictReceiptCannotDowngradeToLegacyRPC
+--- PASS: TestIndependentStrictReceiptCannotDowngradeToLegacyRPC (0.14s)
+PASS
+ok  	github.com/JDinSeattle/forge-runtime/internal/application	4.584s

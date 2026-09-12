@@ -1,0 +1,42 @@
+{
+  "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/feature-worktrees/logs/internal/sandbox/logs_nomount_integration_test.go",
+  "sha256": "804fc65f6347fd31ab94a68614f6bd546709d7d2c162f2421c2bf43e77e74149",
+  "review_scope": "independent read-only source review plus bounded memory-sink/AST offline test; no Docker calls executed by reviewer",
+  "authorized_surface": "4 fresh fixture-owned no-mount containers only; output files in newly created explicit directory",
+  "no_existing_state_touched": [
+    "no Docker.Start admission",
+    "no Engine or SQLite/PG",
+    "no pool or mounted workspace path",
+    "no config/key/environment file reads",
+    "no systemd or existing service operations"
+  ],
+  "container_security": [
+    "exact pinned Python image, --pull=never",
+    "read-only root, no network, non-root 1000:1000",
+    "256MiB memory+swap, 1CPU,64PIDs,cap-drop ALL,no-new-privileges",
+    "no HostConfig Binds/Tmpfs, no image declared Volumes, Mounts must be empty before start",
+    "none log driver and empty daemon log path"
+  ],
+  "cleanup": [
+    "defer installed before create",
+    "lost-create response resolves only exact random name+fixture labels+image",
+    "after full ID known all lookup/removal binds it, exact name and labels",
+    "only identified owned fixture may be cancelled; rm requires stopped/PID0 and production RemoveOwned confirms none driver",
+    "cleanup failure persists exact plan and prevents passed report"
+  ],
+  "assertions": [
+    "pre-start attach acknowledgement hook before daemon StartedAt",
+    "exact early stdout out-NUL and stderr err-0xff",
+    "flood cumulative 512KiB raw-payload/64KiB preview, both streams, policy kill observed then EOF/complete, not valid verification",
+    "normal cancel requires Interrupted=true and no output-policy termination flag",
+    "detach returns ErrCaptureGap/runner_shutdown, incomplete/dropped unknown and still-running same container; observes same original natural exit without new start or attach",
+    "retained stream bytes and SHA256 persisted for offline recomputation"
+  ],
+  "limits": [
+    "custom memory sink counts raw payload; it does not validate runner framing or spool disk durability/quota",
+    "finite Python programs are fixture workloads; this review does not prove execution until actual raw is available",
+    "does not exercise Docker.Start profile/volume admission nor Engine SIGTERM/SQLite recovery"
+  ],
+  "offline_log": "/tmp/forge-e44-nomount-independent-offline.log",
+  "p1_p2_findings": []
+}

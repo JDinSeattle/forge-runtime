@@ -1,0 +1,20 @@
+import pathlib,json,hashlib,subprocess,os,shlex
+root=pathlib.Path('/home/postedism/Desktop/mini claude code/forge-runtime');repo=root/'var/local/feature-worktrees/logs';out=root/'benchmarks/results/log-publication-e44-final-20260912'
+(out/'launcher.py.txt').write_bytes(pathlib.Path(__file__).read_bytes())
+overlay=json.loads(pathlib.Path('/tmp/forge-e44-log-publication-after-v2-overlay.json').read_text())
+overlay['Replace'].update(json.loads(pathlib.Path('/tmp/forge-e44-stripped-log-metadata-overlay.json').read_text())['Replace'])
+for name in ['internal/application/driver.go','internal/application/log_artifacts.go']:overlay['Replace'][str(repo/name)]=str(repo/name)
+for k,v in overlay['Replace'].copy().items():
+ dst=out/(pathlib.Path(v).name+'.txt');dst.write_bytes(pathlib.Path(v).read_bytes());overlay['Replace'][k]=str(dst)
+(out/'overlay.json').write_text(json.dumps(overlay,indent=2)+'\n')
+env={k:v for k,v in os.environ.items() if not k.startswith(('FORGE_','OTEL_'))}
+for line in (root/'var/local/review-database.env').read_text().splitlines():
+ k,s,v=line.removeprefix('export ').strip().partition('=')
+ if s and k=='FORGE_REVIEW_DATABASE_URL':env['FORGE_TEST_DATABASE_URL']=shlex.split(v)[0]
+assert env.get('FORGE_TEST_DATABASE_URL')
+env.update(GOCACHE=str(root/'var/local/go-build-cache'),GOTMPDIR=str(root/'var/local/integration-go-tmp'),TMPDIR='/tmp',GOPROXY='off',GOSUMDB='off',GOENV='off',GOTOOLCHAIN='local')
+cmd=['go','test','-race','-count=1','-v','-timeout=90s','-overlay',str(out/'overlay.json'),'./internal/application','-run=^TestIndependent(LogPublication|StrictReceiptCannotDowngradeToLegacyRPC)']
+with (out/'execution.log').open('xb') as log:p=subprocess.run(cmd,cwd=repo,env=env,stdout=log,stderr=subprocess.STDOUT,timeout=110)
+(out/'result.json').write_text(json.dumps({'exit_code':p.returncode,'scope':'current receipt-first classification and PG log publication; real private PG/FS, no process or provider','verified_log_artifact_sha256':hashlib.sha256((out/'log_artifacts.go.txt').read_bytes()).hexdigest()},indent=2)+'\n')
+(out/'manifest.json').write_text(json.dumps({x.name:hashlib.sha256(x.read_bytes()).hexdigest() for x in sorted(out.iterdir()) if x.name!='manifest.json'},indent=2)+'\n')
+print(json.dumps({'exit_code':p.returncode,'evidence':str(out)}));raise SystemExit(p.returncode)

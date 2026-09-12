@@ -29,7 +29,7 @@ Raw evidence is in
 `benchmarks/results/worker-sigterm-e48-integrated-20260912/`. Independent review
 recomputed the observations below from the phase captures, RPC records, archived
 receipt bytes and a read-only connection to the closed, private SQLite journal.
-It verified all 81 files named by the raw manifest. No demonstration service was stopped or
+It verified all 81 files named by the raw manifest. The [independent report](../benchmarks/results/e49-independent-reviews/forge-e48-integrated-independent-review.json) and [read-only audit script](../benchmarks/results/e49-independent-reviews/forge-e48-integrated-independent-review.py.txt) are retained. No demonstration service was stopped or
 shared workspace used by this recording acceptance.
 
 | Observation | Actual result |

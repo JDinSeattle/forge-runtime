@@ -51,4 +51,46 @@ env FORGE_E44_NOMOUNT_DOCKER_HOST=unix:///run/user/1000/forge-runtime-docker.soc
   -test.v -test.count=1 -test.timeout=90s
 ```
 
-At this source freeze, no actual result from this new fixture has been supplied to the author. Its host result remains pending; the earlier shared-volume authorization question and all physical spool/Engine integration boundaries remain unchanged.
+Root executed the frozen binary on 2026-09-12 UTC. All four cases passed in
+6.002 seconds and all four exact owned containers were confirmed removed.
+[Actual report](../benchmarks/results/log-capture-nomount-e44-20260912/run/report.json),
+[execution log](../benchmarks/results/log-capture-nomount-e44-20260912/execution.log)
+and [manifest](../benchmarks/results/log-capture-nomount-e44-20260912/manifest.json)
+retain the observation, separate from the author build/offline records.
+The launcher verifies the exact binary and source hashes before execution and
+confirms unchanged source inputs and binary afterward.
+
+The binary case retained exactly four bytes from each stream. The flood observed
+93,323,264 stdout bytes and 90,210,304 stderr bytes, retained 524,288 raw bytes,
+and recorded 183,009,280 dropped bytes after draining to EOF. It exited 137 with
+`output_limit`, observed policy termination and an explicitly truncated result.
+Business cancellation retained 63 bytes and marked interruption without policy
+termination. Detach retained a 21-byte prefix, marked the total dropped output
+unknown, observed the original container still running, and then observed that
+same container naturally exit zero. No replacement Start or second attach was
+used to fill the gap.
+
+These are actual production capture-stage observations using the recording
+memory sink described above. The shared-volume authorization question and all
+physical spool/Engine integration boundaries remain unchanged.
+
+## Integrated clean-clone repeat
+
+A second execution builds the race-instrumented test binary from the clean main
+checkout `12126e480d41dd303790e3f9d93d560788866106`. Its SHA-256 is
+`cddbb85476269d7f46a4527c17d33e0762baac433b5ac03e22ae752a03f0b1d3`.
+[The separate report](../benchmarks/results/clean-clone-e49-20260912/capture/report.json)
+records all four cases passing in 6.850 seconds, with all owned containers
+removed. The command's wall time including race-runtime/process exit is
+8.030 seconds. Binary streams remain exactly four bytes each. This flood
+observes 41,058,304 stdout bytes and 38,404,096 stderr bytes; 524,288 retained
+raw bytes and 78,938,112 dropped bytes agree. Cancellation completes without
+a policy-stop flag; detach preserves the original running container and later
+observes its natural zero exit, with missing output remaining unknown.
+
+The author build differs from this main build in one linked domain source
+file, which adds an unrelated context-watermark sentinel. The first observation
+is not relabeled as an execution of this main binary. The [clean-clone checks](integration-checks-e49-20260912.md#clean-clone-continuation)
+also pass 568 ordinary test entries and generation with 319 unchanged inputs
+and an empty Git status. Neither Docker observation exercises physical spool
+I/O, full production workspace admission or a runner OS signal.

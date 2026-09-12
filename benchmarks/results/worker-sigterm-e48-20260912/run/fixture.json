@@ -1,0 +1,131 @@
+{
+  "backend": "recording TestBackend, no process or container",
+  "main_run": "run_OT6VFIVN6UN2AZRITQJGUAGAGQ",
+  "provider": "deterministic ScriptedProvider indexed by durable step",
+  "schema": "appfault_sigterm_ahu6eqlbkao5yi4egpuojpewim",
+  "scripts": [
+    {
+      "Chunks": [
+        {
+          "Kind": "tool_start",
+          "CallID": "running",
+          "Name": "run_command",
+          "Delta": ""
+        },
+        {
+          "Kind": "tool_delta",
+          "CallID": "running",
+          "Name": "",
+          "Delta": "{\"command\":[\"python\",\"-I\",\"-B\",\"-c\",\"import os,time\\nwith open('sigterm-counter.txt','a') as f:\\n f.write('1\\\\n');f.flush();os.fsync(f.fileno())\\nprint('SIGTERM_OPERATION_RUNNING',flush=True)\\ntime.sleep(12)\\nprint('SIGTERM_OPERATION_FINISHED',flush=True)\"]}"
+        },
+        {
+          "Kind": "tool_end",
+          "CallID": "running",
+          "Name": "",
+          "Delta": ""
+        }
+      ],
+      "Usage": {
+        "final": false,
+        "input": {
+          "value": 100,
+          "known": true
+        },
+        "output": {
+          "value": 50,
+          "known": true
+        },
+        "cache_read": {
+          "value": 0,
+          "known": false
+        },
+        "cache_write": {
+          "value": 0,
+          "known": false
+        }
+      },
+      "FinishReason": "tool_calls",
+      "Failure": null
+    },
+    {
+      "Chunks": [
+        {
+          "Kind": "tool_start",
+          "CallID": "repair",
+          "Name": "apply_patch",
+          "Delta": ""
+        },
+        {
+          "Kind": "tool_delta",
+          "CallID": "repair",
+          "Name": "",
+          "Delta": "{\"files\":[{\"path\":\"app.py\",\"expected_sha256\":\"2e58f21315d06188eee52f946b4274062668be4a188f1795b966e795d529f674\",\"content\":\"def clamp(v, lo, hi):\\n    return max(lo, min(v, hi))\\n\"}]}"
+        },
+        {
+          "Kind": "tool_end",
+          "CallID": "repair",
+          "Name": "",
+          "Delta": ""
+        }
+      ],
+      "Usage": {
+        "final": false,
+        "input": {
+          "value": 100,
+          "known": true
+        },
+        "output": {
+          "value": 50,
+          "known": true
+        },
+        "cache_read": {
+          "value": 0,
+          "known": false
+        },
+        "cache_write": {
+          "value": 0,
+          "known": false
+        }
+      },
+      "FinishReason": "tool_calls",
+      "Failure": null
+    },
+    {
+      "Chunks": [
+        {
+          "Kind": "text",
+          "CallID": "",
+          "Name": "",
+          "Delta": "Deterministic fixture repair ready for verification."
+        }
+      ],
+      "Usage": {
+        "final": false,
+        "input": {
+          "value": 100,
+          "known": true
+        },
+        "output": {
+          "value": 20,
+          "known": true
+        },
+        "cache_read": {
+          "value": 0,
+          "known": false
+        },
+        "cache_write": {
+          "value": 0,
+          "known": false
+        }
+      },
+      "FinishReason": "stop",
+      "Failure": null
+    }
+  ],
+  "source_hash": "8b0fc272ee30b0c4aa6f0b1d286033c5b1519ff2d6f019e3c962c45dc4123357",
+  "target_operation": "run_OT6VFIVN6UN2AZRITQJGUAGAGQ_step_1_op_0",
+  "tenant": "sigterm-kr6lwxeu2cjqtzskzz5zj4hqqq",
+  "worker_config": "/tmp/forge-worker-signal-3595258846/worker.json",
+  "worker_default_lease_seconds": 30,
+  "worker_role": "appfault_worker_ogmexbploklt7r6nfss7bh5dnc"
+}

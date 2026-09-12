@@ -1,0 +1,255 @@
+{
+  "name": "detach",
+  "job_name": "forge-e44-nomount-44113062cc40accf-detach",
+  "container_id": "bf5218f72ce1e0761e13b1c4e05b48c6d56ba72b2a21b5b2f4e149a494f87f48",
+  "expected_labels": {
+    "forge.e44_fixture": "forge-e44-nomount-44113062cc40accf",
+    "forge.operation_id": "forge-e44-nomount-44113062cc40accf-detach",
+    "forge.runtime": "1"
+  },
+  "image": "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+  "command": [
+    "python",
+    "-B",
+    "-u",
+    "-c",
+    "import os,sys,subprocess,time\nchild_code=\"import os,time\\nfor _ in range(100): os.write(2,b'child-err\\\\n'); time.sleep(.02)\\n\"\nchild=subprocess.Popen([sys.executable,'-B','-u','-c',child_code])\nend=time.monotonic()+3.5\nwhile time.monotonic()\u003cend: os.write(1,b'parent-out\\n'); time.sleep(.02)\nchild.wait(timeout=.2)\n"
+  ],
+  "create_args": [
+    "create",
+    "--pull=never",
+    "--name",
+    "forge-e44-nomount-44113062cc40accf-detach",
+    "--label",
+    "forge.runtime=1",
+    "--label",
+    "forge.operation_id=forge-e44-nomount-44113062cc40accf-detach",
+    "--label",
+    "forge.e44_fixture=forge-e44-nomount-44113062cc40accf",
+    "--read-only",
+    "--network",
+    "none",
+    "--cap-drop",
+    "ALL",
+    "--security-opt",
+    "no-new-privileges",
+    "--user",
+    "1000:1000",
+    "--pids-limit",
+    "64",
+    "--memory",
+    "268435456",
+    "--memory-swap",
+    "268435456",
+    "--cpus",
+    "1",
+    "--log-driver",
+    "none",
+    "--init",
+    "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+    "python",
+    "-B",
+    "-u",
+    "-c",
+    "import os,sys,subprocess,time\nchild_code=\"import os,time\\nfor _ in range(100): os.write(2,b'child-err\\\\n'); time.sleep(.02)\\n\"\nchild=subprocess.Popen([sys.executable,'-B','-u','-c',child_code])\nend=time.monotonic()+3.5\nwhile time.monotonic()\u003cend: os.write(1,b'parent-out\\n'); time.sleep(.02)\nchild.wait(timeout=.2)\n"
+  ],
+  "create_begin": "2026-09-12T00:34:23.656583515Z",
+  "create_acknowledged": "2026-09-12T00:34:23.768810676Z",
+  "attach_acknowledged_before_start": "2026-09-12T00:34:23.798819543Z",
+  "start_count": 1,
+  "control_requested": "2026-09-12T00:34:24.024270531Z",
+  "stage_returned": "2026-09-12T00:34:24.024315952Z",
+  "created_facts": {
+    "ID": "bf5218f72ce1e0761e13b1c4e05b48c6d56ba72b2a21b5b2f4e149a494f87f48",
+    "Name": "/forge-e44-nomount-44113062cc40accf-detach",
+    "Image": "sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+    "LogPath": "",
+    "Mounts": [],
+    "Config": {
+      "Image": "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+      "User": "1000:1000",
+      "Labels": {
+        "forge.e44_fixture": "forge-e44-nomount-44113062cc40accf",
+        "forge.operation_id": "forge-e44-nomount-44113062cc40accf-detach",
+        "forge.runtime": "1"
+      },
+      "Volumes": null,
+      "Tty": false
+    },
+    "HostConfig": {
+      "ReadonlyRootfs": true,
+      "NetworkMode": "none",
+      "Memory": 268435456,
+      "MemorySwap": 268435456,
+      "NanoCpus": 1000000000,
+      "PidsLimit": 64,
+      "CapDrop": [
+        "ALL"
+      ],
+      "SecurityOpt": [
+        "no-new-privileges"
+      ],
+      "Binds": null,
+      "Tmpfs": null,
+      "Privileged": false,
+      "LogConfig": {
+        "Type": "none"
+      }
+    },
+    "State": {
+      "Running": false,
+      "Pid": 0,
+      "ExitCode": 0,
+      "StartedAt": "0001-01-01T00:00:00Z",
+      "FinishedAt": "0001-01-01T00:00:00Z",
+      "OOMKilled": false
+    }
+  },
+  "return_facts": {
+    "ID": "bf5218f72ce1e0761e13b1c4e05b48c6d56ba72b2a21b5b2f4e149a494f87f48",
+    "Name": "/forge-e44-nomount-44113062cc40accf-detach",
+    "Image": "sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+    "LogPath": "",
+    "Mounts": [],
+    "Config": {
+      "Image": "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+      "User": "1000:1000",
+      "Labels": {
+        "forge.e44_fixture": "forge-e44-nomount-44113062cc40accf",
+        "forge.operation_id": "forge-e44-nomount-44113062cc40accf-detach",
+        "forge.runtime": "1"
+      },
+      "Volumes": null,
+      "Tty": false
+    },
+    "HostConfig": {
+      "ReadonlyRootfs": true,
+      "NetworkMode": "none",
+      "Memory": 268435456,
+      "MemorySwap": 268435456,
+      "NanoCpus": 1000000000,
+      "PidsLimit": 64,
+      "CapDrop": [
+        "ALL"
+      ],
+      "SecurityOpt": [
+        "no-new-privileges"
+      ],
+      "Binds": null,
+      "Tmpfs": null,
+      "Privileged": false,
+      "LogConfig": {
+        "Type": "none"
+      }
+    },
+    "State": {
+      "Running": true,
+      "Pid": 3464554,
+      "ExitCode": 0,
+      "StartedAt": "2026-09-12T00:34:23.84948884Z",
+      "FinishedAt": "0001-01-01T00:00:00Z",
+      "OOMKilled": false
+    }
+  },
+  "stopped_facts": {
+    "ID": "bf5218f72ce1e0761e13b1c4e05b48c6d56ba72b2a21b5b2f4e149a494f87f48",
+    "Name": "/forge-e44-nomount-44113062cc40accf-detach",
+    "Image": "sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+    "LogPath": "",
+    "Mounts": [],
+    "Config": {
+      "Image": "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+      "User": "1000:1000",
+      "Labels": {
+        "forge.e44_fixture": "forge-e44-nomount-44113062cc40accf",
+        "forge.operation_id": "forge-e44-nomount-44113062cc40accf-detach",
+        "forge.runtime": "1"
+      },
+      "Volumes": null,
+      "Tty": false
+    },
+    "HostConfig": {
+      "ReadonlyRootfs": true,
+      "NetworkMode": "none",
+      "Memory": 268435456,
+      "MemorySwap": 268435456,
+      "NanoCpus": 1000000000,
+      "PidsLimit": 64,
+      "CapDrop": [
+        "ALL"
+      ],
+      "SecurityOpt": [
+        "no-new-privileges"
+      ],
+      "Binds": null,
+      "Tmpfs": null,
+      "Privileged": false,
+      "LogConfig": {
+        "Type": "none"
+      }
+    },
+    "State": {
+      "Running": false,
+      "Pid": 0,
+      "ExitCode": 0,
+      "StartedAt": "2026-09-12T00:34:23.84948884Z",
+      "FinishedAt": "2026-09-12T00:34:27.531342087Z",
+      "OOMKilled": false
+    }
+  },
+  "job": {
+    "strict_logs": true,
+    "log": {
+      "schema_version": 1,
+      "policy": {
+        "entry_bytes": 16384,
+        "operation_bytes": 524288,
+        "run_bytes": 16777216,
+        "max_operations": 32,
+        "preview_bytes": 65536
+      },
+      "operation_id": "forge-e44-nomount-44113062cc40accf-detach",
+      "binding_hash": "",
+      "stdout_seen": 11,
+      "stderr_seen": 10,
+      "retained_bytes": 21,
+      "retained_payload": 21,
+      "records": 2,
+      "complete": false,
+      "dropped_known": false,
+      "dropped_bytes": 0,
+      "truncated": true,
+      "reason": "runner_shutdown",
+      "termination_requested": false,
+      "termination_observed": false,
+      "artifact": {
+        "tenant_id": "",
+        "run_id": "",
+        "kind": "",
+        "object_key": "",
+        "sha256": "",
+        "size": 0
+      }
+    },
+    "id": "",
+    "running": false,
+    "exit_code": 0,
+    "started": false,
+    "output": "cGFyZW50LW91dApjaGlsZC1lcnIK",
+    "truncated": true
+  },
+  "error": "log_capture_incomplete",
+  "stream_sha256": {
+    "stderr": "910cd979aaac2612f5fa931daf07267c56b967ae33ee00271c78fde53e978d33",
+    "stdout": "12fcb55a3511654a45dfca313790e61795ba3c0a994276b5f4bc450c5ae1a809"
+  },
+  "retained_stream_bytes": {
+    "stderr": 10,
+    "stdout": 11
+  },
+  "markers_observed": true,
+  "detach_observed_running": true,
+  "natural_exit_observed": true,
+  "cleanup_confirmed": true,
+  "passed": true
+}

@@ -1,0 +1,18 @@
+=== RUN   TestIndependentLogPublicationVisibleAndIdempotent
+    e44_independent_log_publication_test.go:39: untrusted_evidence
+--- FAIL: TestIndependentLogPublicationVisibleAndIdempotent (0.56s)
+=== RUN   TestIndependentLogPublicationRejectsInvalidReference
+=== RUN   TestIndependentLogPublicationRejectsInvalidReference/foreign_run
+=== RUN   TestIndependentLogPublicationRejectsInvalidReference/wrong_kind
+=== RUN   TestIndependentLogPublicationRejectsInvalidReference/wrong_sha
+=== RUN   TestIndependentLogPublicationRejectsInvalidReference/wrong_size
+--- PASS: TestIndependentLogPublicationRejectsInvalidReference (2.10s)
+    --- PASS: TestIndependentLogPublicationRejectsInvalidReference/foreign_run (0.61s)
+    --- PASS: TestIndependentLogPublicationRejectsInvalidReference/wrong_kind (0.53s)
+    --- PASS: TestIndependentLogPublicationRejectsInvalidReference/wrong_sha (0.43s)
+    --- PASS: TestIndependentLogPublicationRejectsInvalidReference/wrong_size (0.53s)
+=== RUN   TestIndependentLogPublicationDoesNotTrustRPCOnlyReference
+--- PASS: TestIndependentLogPublicationDoesNotTrustRPCOnlyReference (0.57s)
+FAIL
+FAIL	github.com/JDinSeattle/forge-runtime/internal/application	3.260s
+FAIL

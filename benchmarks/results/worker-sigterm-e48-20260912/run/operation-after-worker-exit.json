@@ -1,0 +1,38 @@
+{
+  "request": {
+    "tenant_id": "sigterm-kr6lwxeu2cjqtzskzz5zj4hqqq",
+    "run_id": "run_OT6VFIVN6UN2AZRITQJGUAGAGQ",
+    "workspace_id": "run_OT6VFIVN6UN2AZRITQJGUAGAGQ",
+    "epoch": 2,
+    "grant": "",
+    "operation_id": "run_OT6VFIVN6UN2AZRITQJGUAGAGQ_step_1_op_0",
+    "expected_revision": 1,
+    "kind": "run_command",
+    "args": {
+      "command": [
+        "python",
+        "-I",
+        "-B",
+        "-c",
+        "import os,time\nwith open('sigterm-counter.txt','a') as f:\n f.write('1\\n');f.flush();os.fsync(f.fileno())\nprint('SIGTERM_OPERATION_RUNNING',flush=True)\ntime.sleep(12)\nprint('SIGTERM_OPERATION_FINISHED',flush=True)"
+      ]
+    },
+    "args_hash": "6133bea5f7f63d2d294860c69078f01d84b48a61f8b9fedd350bed58e8d6c106",
+    "policy_version": "workspace-v1",
+    "deadline": "2026-09-12T00:17:57.578686Z"
+  },
+  "status": "running",
+  "job_id": "forge-14adf9064218c541e3363391d5988bf8131b24d9",
+  "before_hash": "8b0fc272ee30b0c4aa6f0b1d286033c5b1519ff2d6f019e3c962c45dc4123357",
+  "after_revision": 0,
+  "result": {},
+  "receipt": {
+    "tenant_id": "",
+    "run_id": "",
+    "kind": "",
+    "object_key": "",
+    "sha256": "",
+    "size": 0
+  },
+  "cancel_requested": false
+}

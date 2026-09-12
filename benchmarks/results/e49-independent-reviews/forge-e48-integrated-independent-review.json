@@ -1,0 +1,91 @@
+{
+  "P1_P2_findings": [],
+  "all_observed_source_files_match_commit": true,
+  "binary_hashes_currently_match_recorded": {
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/e48-build-integrated/application-faults.test": "7da90f279433c918b960f789a50bc7c0d523557df40e5d79e6687d8363e8f0a7",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/e48-build-integrated/forge-worker": "1e06ec9213fa50a98c296ee5f17fa99d28e244d300d379f706467d2a18b6365c"
+  },
+  "build_VCS_modified": "true",
+  "claim_lease_seconds": 30,
+  "cleanup": {
+    "run_4KRCRAJNVBN2KYUSW5XEBTQTYF": {
+      "allocation": "released",
+      "cleanup_phase": "released",
+      "contiguous_events": 53,
+      "snapshot_ref": "artifact_f2b5106166f5968f915dda5d3a830ef97b8ef8d6c8272c8a91f1f2a2421ca870",
+      "state": "completed"
+    },
+    "run_FQQECU2DB2F6IXAMZXUAAILXYB": {
+      "allocation": "released",
+      "cleanup_phase": "released",
+      "contiguous_events": 50,
+      "snapshot_ref": "artifact_02ae39c58a1f82afbe6a7231a3139593838070cf9bc70b7b86a4a0cad482bc58",
+      "state": "completed"
+    }
+  },
+  "dispatch_epoch": 2,
+  "elapsed_test_seconds": 47.24,
+  "final_active_tenant_runner_request_token_cost_reservations": [
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "job_id": "forge-0b03b92c53517b32e4fc0ef80401314768b427e9",
+  "journal_readonly_at_review": {
+    "sha256": "98a0a17579dd9c82d7a23d8ec11c78cf30108f570672d554e588bc064bff09b6",
+    "unique_target_row_matches_job_and_dispatch": true,
+    "unsettled_operations": 0,
+    "version": 5
+  },
+  "limitations": [
+    "Real worker OS processes, SIGTERM, private PostgreSQL restricted LOGIN, gRPC and SQLite; no Docker or actual command child process in TestBackend",
+    "Twelve-second recording job finishes before the default 30-second lease takeover; no claim of adopting a still-running real container",
+    "Provider is deterministic ScriptedProvider with synthetic usage/cost, no paid API or model-quality evidence",
+    "Build occurred in working tree with vcs.modified=true; 318 captured code/config/script inputs independently match the commit, but this is not an independent clean rebuild or complete transitive toolchain attestation",
+    "Manifest intentionally excludes mutable objects/runner trees and SQLite; receipt bytes are archived and hash-checked, journal is separately hashed/read at review",
+    "Cross-table captures and process identities are sampled, not one atomic distributed snapshot or cryptographic session attestation",
+    "Final registry/row state and finite execution do not prove all shutdown interleavings"
+  ],
+  "manifest_files_verified": 81,
+  "observed_source_files": 318,
+  "old_SQL_lease_until": "2026-09-12T00:26:24.190562+00:00",
+  "operation_id": "run_4KRCRAJNVBN2KYUSW5XEBTQTYF_step_1_op_0",
+  "operation_unchanged_across_worker_exit": true,
+  "previous_execution_status": "Original worker-sigterm-e48-20260912 remains FAIL; corrected integrated run is separate",
+  "probe_run_id": "run_FQQECU2DB2F6IXAMZXUAAILXYB",
+  "raw_manifest_sha256": "a6224eead58f146467d9a6fcfbbf5eda2e05cab9eb2351fbcb2a7e170a24fe10",
+  "raw_root": "/home/postedism/Desktop/mini claude code/forge-runtime/benchmarks/results/worker-sigterm-e48-integrated-20260912",
+  "result": "PASS within recording-backend acceptance scope",
+  "reviewed_at": "2026-09-12T00:34:23.794085+00:00",
+  "reviewer": "observability_sqlc",
+  "run_id": "run_4KRCRAJNVBN2KYUSW5XEBTQTYF",
+  "signals": {
+    "original": {
+      "db_signal_window_ms": 0.296,
+      "exit_code": 0,
+      "pid": 3383176,
+      "proc_start_ticks": "45710987",
+      "signal_to_reaped_ms": 1.5759999999999998
+    },
+    "successor": {
+      "db_signal_window_ms": 0.118,
+      "exit_code": 0,
+      "pid": 3383524,
+      "proc_start_ticks": "45711070",
+      "signal_to_reaped_ms": 1.537
+    }
+  },
+  "source_before_equals_after": true,
+  "source_commit": "0c796c744b90bd08a26513a3586a475387ba775d",
+  "successor_Adopt_count": 1,
+  "successor_SQL_claim_time": "2026-09-11T17:26:24.28288-07:00",
+  "successor_epoch": 3,
+  "successor_target_Inspect_count": 1,
+  "successor_target_Start_count": 0,
+  "synthetic_committed_microusd_two_runs": 840,
+  "takeover_after_old_lease_ms": 92.318,
+  "target_Start_RPC_count": 1,
+  "unique_reconciled_receipt_bound_to_SQL_and_artifact": true
+}

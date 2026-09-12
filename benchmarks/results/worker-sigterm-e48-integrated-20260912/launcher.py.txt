@@ -1,0 +1,41 @@
+import pathlib,json,hashlib,subprocess,os,shlex,sys,importlib.util
+root=pathlib.Path('/home/postedism/Desktop/mini claude code/forge-runtime');repo=root
+out=root/'benchmarks/results/worker-sigterm-e48-integrated-20260912';build=repo/'var/local/e48-build-integrated'
+spec=importlib.util.spec_from_file_location('bounded',root/'tests/review/run_api_lifecycle.py');bounded=importlib.util.module_from_spec(spec);spec.loader.exec_module(bounded)
+def digest(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+def dump(n,v):(out/n).write_text(json.dumps(v,indent=2,sort_keys=True)+'\n')
+def source():
+ names=subprocess.check_output(['rg','--files','--hidden','-g','!.git','-g','!var','-g','!bin','-g','!benchmarks/results'],cwd=repo,text=True).splitlines()
+ return {n:digest(repo/n) for n in sorted(names) if pathlib.Path(n).suffix in ('.go','.mod','.sum','.sql','.proto','.py','.sh','.yaml','.yml') or n=='Makefile'}
+env={k:v for k,v in os.environ.items() if not k.startswith(('FORGE_','OTEL_'))}
+env.update(GOCACHE=str(root/'var/local/go-build-cache'),GOTMPDIR=str(root/'var/local/integration-go-tmp'),TMPDIR='/tmp',GOMAXPROCS='2',GOPROXY='off',GOSUMDB='off',GOENV='off',GOTOOLCHAIN='local')
+if sys.argv[1]=='build':
+ out.mkdir(mode=0o700);build.mkdir(parents=True,exist_ok=True)
+ (out/'launcher.py.txt').write_bytes(pathlib.Path(__file__).read_bytes())
+ before=source();dump('source-before.json',before)
+ assert subprocess.check_output(['git','rev-parse','HEAD'],cwd=repo,text=True).strip()=='0c796c744b90bd08a26513a3586a475387ba775d'
+ results=[]
+ for name,cmd in [('worker-build',['go','build','-o',str(build/'forge-worker'),'./cmd/forge-worker']),('test-build',['go','test','-race','-c','-o',str(build/'application-faults.test'),'./scripts/faults/application'])]:
+  with (out/(name+'.log')).open('xb') as log:rc=bounded.execute_bounded(cmd,repo,env,log,180)
+  results.append({'name':name,'exit_code':rc});dump('build-results.json',results);assert rc==0
+ assert before==source()
+ dump('identity.json',{'commit':'0c796c744b90bd08a26513a3586a475387ba775d','go':subprocess.check_output(['go','version'],env=env,text=True).strip(),'source_inputs':len(before),'build_GOMAXPROCS':2,'binaries':{str(build/n):digest(build/n) for n in ['forge-worker','application-faults.test']},'scope':'fixed-commit actual worker and race test binary; no process acceptance yet'})
+ print(json.dumps({'build_passed':True,'source_inputs':len(before)}),flush=True)
+elif sys.argv[1]=='run':
+ identity=json.loads((out/'identity.json').read_text());assert all(digest(pathlib.Path(p))==h for p,h in identity['binaries'].items())
+ assert source()==json.loads((out/'source-before.json').read_text())
+ for line in (root/'var/local/review-database.env').read_text().splitlines():
+  k,s,v=line.removeprefix('export ').strip().partition('=')
+  if s and k=='FORGE_REVIEW_DATABASE_URL':env['FORGE_TEST_DATABASE_URL']=shlex.split(v)[0]
+ assert env.get('FORGE_TEST_DATABASE_URL')
+ env.update(FORGE_RUN_WORKER_SIGTERM='1',FORGE_WORKER_SIGTERM_SOURCE_ROOT=str(repo),FORGE_WORKER_SIGTERM_BINARY=str(build/'forge-worker'),FORGE_WORKER_SIGTERM_EVIDENCE=str(out/'run'))
+ with (out/'execution.log').open('xb') as log:rc=bounded.execute_bounded([str(build/'application-faults.test'),'-test.v','-test.run=^TestRealWorkerSIGTERMRecording$','-test.timeout=3m'],repo,env,log,195)
+ dump('execution-result.json',{'exit_code':rc,'scope':'actual worker subprocess SIGTERM, real private PG LOGIN/gRPC/SQLite; deterministic provider and recording backend, no Docker'})
+ after=source();dump('source-after.json',after);assert after==json.loads((out/'source-before.json').read_text())
+ # Exclude live operational trees; their object/receipt bytes have separate
+ # harness captures. Preserve fixed build/process logs and all JSON evidence.
+ files={str(p.relative_to(out)):digest(p) for p in sorted(out.rglob('*')) if p.is_file() and p.name!='manifest.json' and (not p.is_relative_to(out/'run/objects')) and (not p.is_relative_to(out/'run/runner')) and not p.name.startswith('journal.sqlite')}
+ dump('manifest.json',files)
+ print(json.dumps({'exit_code':rc,'evidence':str(out),'files':len(files)}),flush=True)
+ sys.exit(rc)
+else:raise ValueError('build or run')

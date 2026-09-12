@@ -1,0 +1,27 @@
+import pathlib,json,hashlib,subprocess,os,shlex
+root=pathlib.Path('/home/postedism/Desktop/mini claude code/forge-runtime');repo=root/'var/local/feature-worktrees/logs'
+out=root/'benchmarks/results/log-publication-e44-controlled-20260912';out.mkdir(exist_ok=False)
+(out/'launcher.py.txt').write_bytes(pathlib.Path(__file__).read_bytes())
+env={k:v for k,v in os.environ.items() if not k.startswith(('FORGE_','OTEL_'))}
+for ln in (root/'var/local/review-database.env').read_text().splitlines():
+ k,s,v=ln.removeprefix('export ').strip().partition('=')
+ if s and k=='FORGE_REVIEW_DATABASE_URL':env['FORGE_TEST_DATABASE_URL']=shlex.split(v)[0]
+assert env.get('FORGE_TEST_DATABASE_URL')
+env.update(GOCACHE=str(root/'var/local/go-build-cache'),GOTMPDIR=str(root/'var/local/integration-go-tmp'),TMPDIR='/tmp',GOPROXY='off',GOSUMDB='off',GOENV='off',GOTOOLCHAIN='local')
+for name in ['forge-e44-controlled-prior-manifest.json','forge-e44-controlled-prior-receipt.txt']:(out/name).write_bytes((pathlib.Path('/tmp')/name).read_bytes())
+results=[]
+for phase in ['before','after']:
+ raw=json.loads((pathlib.Path('/tmp')/('forge-e44-log-publication-'+phase+'-v2-overlay.json')).read_text())
+ for k,v in raw['Replace'].copy().items():
+  dst=out/(phase+'-'+pathlib.Path(v).name+'.txt');dst.write_bytes(pathlib.Path(v).read_bytes());raw['Replace'][k]=str(dst)
+ for name in ['internal/application/driver.go','internal/application/log_artifacts.go']:
+  if str(repo/name) not in raw['Replace']:
+   dst=out/(phase+'-'+name.replace('/','_')+'.txt');dst.write_bytes((repo/name).read_bytes());raw['Replace'][str(repo/name)]=str(dst)
+ overlay=out/(phase+'-overlay.json');overlay.write_text(json.dumps(raw,indent=2)+'\n')
+ cmd=['go','test','-race','-count=1','-v','-timeout=90s','-overlay',str(overlay),'./internal/application','-run=^TestIndependentLogPublication']
+ with (out/(phase+'.log')).open('xb') as f:p=subprocess.run(cmd,cwd=repo,env=env,stdout=f,stderr=subprocess.STDOUT,timeout=110)
+ row={'phase':phase,'exit_code':p.returncode,'expected_exit_code':1 if phase=='before' else 0};results.append(row);print(json.dumps(row),flush=True)
+(out/'results.json').write_text(json.dumps(results,indent=2)+'\n')
+(out/'scope.json').write_text(json.dumps({'before':'controlled exact prior receipt implementation from 5de6f0f in a copy of current E44 Driver; not a historical complete executable','after':'current E44 receipt and verifiedLogArtifact copied into overlay','fixture':'v2 declares retained bytes equal to artifact size; application publication boundary, opaque artifact contents; actual PG and filesystem, no provider, runner, Docker or HTTP request'},indent=2)+'\n')
+(out/'manifest.json').write_text(json.dumps({x.name:hashlib.sha256(x.read_bytes()).hexdigest() for x in sorted(out.iterdir())},indent=2)+'\n')
+assert all(r['exit_code']==r['expected_exit_code'] for r in results)

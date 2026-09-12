@@ -1,0 +1,46 @@
+from pathlib import Path
+import hashlib, importlib.util, json, os, subprocess, sys
+
+root = Path('/home/postedism/Desktop/mini claude code/forge-runtime')
+source = root / 'var/local/feature-worktrees/logs'
+binary = source / 'var/local/e44-nomount-sandbox.test'
+out = root / 'benchmarks/results/log-capture-nomount-e44-20260912'
+expected_binary = 'ffc7f39dcf5852e41049a422020abc75ddbdd49cfe34ac9997385071149763f6'
+expected_test = '804fc65f6347fd31ab94a68614f6bd546709d7d2c162f2421c2bf43e77e74149'
+
+def sha(p):
+    return hashlib.sha256(p.read_bytes()).hexdigest()
+
+def dump(name, value):
+    (out / name).write_text(json.dumps(value, indent=2, sort_keys=True) + '\n')
+
+def inputs():
+    names = subprocess.check_output(['rg', '--files', '--hidden', '-g', '!.git', '-g', '!var', '-g', '!bin', '-g', '!benchmarks/results'], cwd=source, text=True).splitlines()
+    return {n: sha(source / n) for n in sorted(names) if Path(n).suffix in ('.go', '.mod', '.sum')}
+
+test = source / 'internal/sandbox/logs_nomount_integration_test.go'
+assert sha(binary) == expected_binary
+assert sha(test) == expected_test
+out.mkdir(mode=0o700)
+before = inputs()
+dump('source-before.json', before)
+dump('identity.json', {'source_root': str(source), 'base_commit': subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=source, text=True).strip(), 'working_tree': True, 'binary': str(binary), 'binary_sha256': expected_binary, 'test_sha256': expected_test, 'scope': 'only production startCaptured with four fresh no-mount containers and a bounded recording memory sink; no Engine, pool, journal, services or fixed-volume spool'})
+(out / 'launcher.py.txt').write_bytes(Path(__file__).read_bytes())
+(out / 'logs_nomount_integration_test.go.txt').write_bytes(test.read_bytes())
+for name in ('forge-e44-nomount-independent-review.json', 'forge-e44-nomount-independent-offline.log'):
+    (out / name).write_bytes((Path('/tmp') / name).read_bytes())
+env = {k: v for k, v in os.environ.items() if not k.startswith(('FORGE_', 'OTEL_'))}
+env.update(FORGE_E44_NOMOUNT_DOCKER_HOST='unix:///run/user/1000/forge-runtime-docker.sock', FORGE_E44_NOMOUNT_OUTPUT=str(out / 'run'))
+spec = importlib.util.spec_from_file_location('bounded', root / 'tests/review/run_api_lifecycle.py')
+bounded = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(bounded)
+argv = [str(binary), '-test.run=^TestNoMountCapturedDockerAcceptance$', '-test.v', '-test.count=1', '-test.timeout=90s']
+with (out / 'execution.log').open('xb') as log:
+    rc = bounded.execute_bounded(argv, source, env, log, 100)
+after = inputs()
+dump('source-after.json', after)
+dump('result.json', {'exit_code': rc, 'source_unchanged': before == after, 'binary_unchanged': sha(binary) == expected_binary, 'argv': argv})
+dump('manifest.json', {str(p.relative_to(out)): sha(p) for p in sorted(out.rglob('*')) if p.is_file() and p.name != 'manifest.json'})
+print(json.dumps({'exit_code': rc, 'evidence': str(out), 'source_unchanged': before == after}), flush=True)
+assert before == after and sha(binary) == expected_binary
+sys.exit(rc)

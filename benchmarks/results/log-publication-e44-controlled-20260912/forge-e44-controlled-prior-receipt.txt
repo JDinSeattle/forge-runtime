@@ -1,0 +1,7 @@
+func (d *Driver) receipt(ctx context.Context, op runner.Operation) (flow.EffectReceipt, error) {
+	if !op.Status.Terminal() {
+		return flow.EffectReceipt{}, domain.ErrReconciliation
+	}
+	ref, err := d.publish(ctx, op.Receipt)
+	return flow.EffectReceipt{EffectID: op.Request.OperationID, ArgsHash: op.Request.ArgsHash, Epoch: op.Request.Epoch, Status: flow.EffectStatus(op.Status), BeforeRevision: op.Request.ExpectedRevision, AfterRevision: op.AfterRevision, Ref: ref, Settled: true}, err
+}

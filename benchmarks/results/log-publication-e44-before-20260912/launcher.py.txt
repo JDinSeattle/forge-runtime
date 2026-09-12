@@ -1,0 +1,20 @@
+import pathlib,json,hashlib,subprocess,os,shlex,shutil
+root=pathlib.Path('/home/postedism/Desktop/mini claude code/forge-runtime');repo=root/'var/local/feature-worktrees/logs'
+out=root/'benchmarks/results/log-publication-e44-before-20260912';out.mkdir(exist_ok=False)
+files=json.loads(pathlib.Path('/tmp/forge-e44-log-publication-overlay.json').read_text())['Replace']
+for name in ['internal/application/driver.go']:
+ dst=out/(name.replace('/','_')+'.txt');dst.write_bytes((repo/name).read_bytes());files[str(repo/name)]=str(dst)
+test=out/'independent-publication-test.go.txt';test.write_bytes(pathlib.Path('/tmp/forge-e44-log-publication-tests.go').read_bytes());files[str(repo/'internal/application/e44_independent_log_publication_test.go')]=str(test)
+(out/'overlay.json').write_text(json.dumps({'Replace':files},indent=2)+'\n')
+(out/'launcher.py.txt').write_bytes(pathlib.Path(__file__).read_bytes())
+env={k:v for k,v in os.environ.items() if not k.startswith(('FORGE_','OTEL_'))}
+for ln in (root/'var/local/review-database.env').read_text().splitlines():
+ k,s,v=ln.removeprefix('export ').strip().partition('=')
+ if s and k=='FORGE_REVIEW_DATABASE_URL':env['FORGE_TEST_DATABASE_URL']=shlex.split(v)[0]
+assert env.get('FORGE_TEST_DATABASE_URL')
+env.update(GOCACHE=str(root/'var/local/go-build-cache'),GOTMPDIR=str(root/'var/local/integration-go-tmp'),TMPDIR='/tmp',GOPROXY='off',GOSUMDB='off',GOENV='off',GOTOOLCHAIN='local')
+cmd=['go','test','-race','-count=1','-v','-timeout=90s','-overlay',str(out/'overlay.json'),'./internal/application','-run=^TestIndependentLogPublication']
+with (out/'execution.log').open('xb') as f:p=subprocess.run(cmd,cwd=repo,env=env,stdout=f,stderr=subprocess.STDOUT,timeout=110)
+(out/'result.json').write_text(json.dumps({'exit_code':p.returncode,'scope':'independent PG/artifact publication tests; original Driver receipt copied before fix; no provider or runner call'},indent=2)+'\n')
+(out/'manifest.json').write_text(json.dumps({x.name:hashlib.sha256(x.read_bytes()).hexdigest() for x in sorted(out.iterdir())},indent=2)+'\n')
+print(json.dumps({'exit_code':p.returncode,'evidence':str(out)}))

@@ -1,0 +1,84 @@
+{
+  "all_claim_leases_seconds": 30,
+  "at_worker_exit_capacity": {
+    "reserved_allocation": 1,
+    "runner_slots": 1,
+    "tenant_active": 1
+  },
+  "business_cancel_events": 0,
+  "claims_after_signal_db_window": 0,
+  "completed_main_model_attempts": 3,
+  "final_epoch": 3,
+  "final_state": {
+    "progress": {
+      "last_checked_step": 2,
+      "message_seq": 0,
+      "repeated_batches": 0,
+      "classification": "new_evidence",
+      "recent_evidence": [
+        "0d8390c5cf1b9643d3e2e97fbe07ceb65d1113712cfc7275d1571b881ee5f37b",
+        "399417140d8430390c9c6cd3ae5b4218a9ebb7ded45f5ac5342e8f4c5927a210"
+      ],
+      "recent_trees": [
+        "8b0fc272ee30b0c4aa6f0b1d286033c5b1519ff2d6f019e3c962c45dc4123357",
+        "f050a1b5434cdb1001980364f2b5999c11bef528a010580ae49959d33ceb7487"
+      ]
+    },
+    "schema_version": 2,
+    "run_id": "run_4KRCRAJNVBN2KYUSW5XEBTQTYF",
+    "tenant_id": "sigterm-2zz2liklqd5clvi2d352pydvou",
+    "version": 22,
+    "status": "completed",
+    "stage": "stopped",
+    "resume_stage": "execute_effects",
+    "lease": {
+      "owner": "signal-successor-0",
+      "epoch": 3,
+      "until": "2026-09-11T17:26:54.28288-07:00"
+    },
+    "step_seq": 3,
+    "workspace_revision": 2,
+    "output_ref": "artifact_990e1794141ec9ab12140f7308d772e9cf21be157acd81d20f669039af2f3679",
+    "verification_status": "verified",
+    "verification_report_ref": "artifact_931d378eb9ccfe21f00ad92af0f476c0e100730073845a208db39e16bb611fea",
+    "verification_revision": 2,
+    "model_rounds": 3,
+    "tool_calls": 2,
+    "cost_microusd": 420,
+    "limits": {
+      "max_no_progress_batches": 3,
+      "max_model_rounds": 8,
+      "max_tool_calls": 20,
+      "max_cost_microusd": 1000000,
+      "deadline": "2026-09-11T17:28:48.642888-07:00"
+    }
+  },
+  "main_event_count": 53,
+  "old_lease_until": "2026-09-11T17:26:24.190562-07:00",
+  "original_epoch": 2,
+  "original_job_id": "forge-0b03b92c53517b32e4fc0ef80401314768b427e9",
+  "original_operation_id": "run_4KRCRAJNVBN2KYUSW5XEBTQTYF_step_1_op_0",
+  "passed": true,
+  "probe_epoch_before_admission": 0,
+  "probe_run_id": "run_FQQECU2DB2F6IXAMZXUAAILXYB",
+  "probe_version_before_admission": 1,
+  "provider_requests": 0,
+  "recording_backend_start_count": 1,
+  "run_id": "run_4KRCRAJNVBN2KYUSW5XEBTQTYF",
+  "runner_slots": 0,
+  "scope": "actual forge-worker OS processes and SIGTERM; real private PostgreSQL restricted LOGIN and gRPC; production Engine with recording no-process backend; deterministic provider",
+  "signal_boundary": {
+    "SentAt": "2026-09-12T00:25:54.452288618Z",
+    "DBBefore": "2026-09-11T17:25:54.452073-07:00",
+    "DBAfter": "2026-09-11T17:25:54.452369-07:00",
+    "ExitedAt": "2026-09-12T00:25:54.453864127Z"
+  },
+  "start_rpc_count": 1,
+  "successor_adopt_count": 1,
+  "successor_claim_observed_db_time": "2026-09-11T17:26:24.305784-07:00",
+  "successor_inspect_count": 1,
+  "successor_start_count": 0,
+  "target_effect_confirmations": 1,
+  "target_successor_reconciliations": 1,
+  "tenant_active": 0
+}

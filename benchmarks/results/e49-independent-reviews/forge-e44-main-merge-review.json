@@ -1,0 +1,35 @@
+{
+  "head": "4846457b637346e0a567d76b6d11f4950b7455af",
+  "review_scope": "read-only merge review; no service, socket, mounted-pool, model or database operation",
+  "unchanged_model_progress_files": {
+    "internal/application/model.go": "3f39e8a1d916eeb4a0562e75b0fa27946f256c09cb2b74c45483ce8260f9df81",
+    "internal/application/context.go": "653b622e0015f3bcf37a4d8102bb9df028a9c04e9f1f52f2303376975f17bf4d",
+    "internal/application/model_route.go": "3d4dc509e9432651861724520966d8212f5a24f9d074f6dc2282523cfdc94503",
+    "internal/application/progress.go": "143b6a39290b0de9443f447b595a53b01ce9d60328866e3b6d23c439e9885402",
+    "internal/persistence/model_route.go": "fb85d48c6204227d082f2199928391ccafec26b4f56b55baecd8df435221e8b0",
+    "internal/persistence/model_pricing.go": "87145eb6b07b8194665dab054aab941bc299bada9b4eed8b1a5fc4ac5b558763",
+    "internal/persistence/progress.go": "8df5d49e9b3fd966f04c547ad6dbacc974b70e27b8fccde0a24a3762e03b2408"
+  },
+  "reviewed_sources": {
+    "cmd/forge-runner/main.go": "7c10b66c31e15244e261cb72ca5a0c2ce4b95275bc0466493e29471fcf03af1b",
+    "internal/runner/types.go": "a980eceec8bc084353300b2655d8ddb922d3ab49773fd7dea4f9c40ca39b7529",
+    "internal/runner/engine.go": "0075fb5540cf700dea321910b807b241e99e1fc33118f832cf757cad33b733c4",
+    "internal/sandbox/docker_attach.go": "267e80742e8d636fb7ffa48feaaf1144dfe1b6ce8fcf42fb08ef3bb60fa4983b",
+    "internal/application/driver.go": "c04892e9797c67bb6edf893a0324db7a7cf916a54d7eeb5d41d76539961a0c6e",
+    "internal/application/log_artifacts.go": "c15c82e5bf791ff5012444dab6637256ae3e0886153afa8ca206cb75bef0c8a8",
+    "scripts/retention/check-local.py": "8e03931e4c0041723dbb4838311dfe29d34ca11cc458e6956faf3fc3872714ee",
+    "internal/retention/objects.go": "21777972db85f1f8987b7fa119b2c3b6a809832e0808b6096fd94f8d2bffca9f"
+  },
+  "checks": [
+    "runner Config retains Telemetry and Logs; executable supplies both with normalized strict policy",
+    "metrics default 8099; BeginShutdown before RPC Close; Engine closed before cancelling independent operation contexts",
+    "runner StartRunner span surrounds real executor and uses copied RPC SpanContext; completion deferred across strict capture",
+    "strict DetachOnCancel observes closed and calls no business Cancel on runner shutdown",
+    "driver ErrContextStale reload and after_progress_transition/after_advance_before_reload preserved",
+    "heartbeat same-epoch terminal/waiting_approval/queued exception preserved",
+    "v1 fallback gate before prepared replay and on locked current snapshot; attempt insert retains route and traceparent",
+    "verifiedLogArtifact matches reviewed c15 implementation: receipt first, original-result legacy decision, strict exact-result/ref checks then PG publication",
+    "retention local script accepts journal 4/5, matching production GC; identity and pin scans preserved"
+  ],
+  "p1_p2_findings": []
+}

@@ -1,0 +1,116 @@
+import datetime, hashlib, json, pathlib, re, sqlite3, subprocess
+repo=pathlib.Path('/home/postedism/Desktop/mini claude code/forge-runtime')
+root=repo/'benchmarks/results/worker-sigterm-e48-integrated-20260912'
+out=pathlib.Path('/tmp/forge-e48-integrated-independent-review.json')
+def read(n):return json.loads((root/n).read_text())
+def sha(p):return hashlib.sha256(pathlib.Path(p).read_bytes()).hexdigest()
+def date(s):return datetime.datetime.fromisoformat(s.replace('Z','+00:00'))
+manifest=read('manifest.json');assert all(sha(root/n)==v for n,v in manifest.items())
+identity=read('identity.json');before=read('source-before.json');after=read('source-after.json')
+assert before==after and len(before)==identity['source_inputs']
+# Verify captured code inputs directly against the specified commit, independently
+# of the launcher's current working tree and its own assertion.
+paths=list(before);specs=''.join(identity['commit']+':'+p+'\n' for p in paths).encode()
+response=subprocess.run(['git','cat-file','--batch'],input=specs,capture_output=True,check=True,cwd=repo).stdout
+pos=0
+for name in paths:
+ end=response.index(b'\n',pos);header=response[pos:end].decode();pos=end+1
+ assert not header.endswith(' missing'),name
+ _,kind,length=header.split();assert kind=='blob';length=int(length)
+ contents=response[pos:pos+length];pos+=length+1
+ assert hashlib.sha256(contents).hexdigest()==before[name],name
+assert all(sha(p)==v for p,v in identity['binaries'].items())
+worker=read('run/binary.json');harness=read('run/harness-identity.json')
+assert worker['sha256']==identity['binaries'][worker['path']]
+assert harness['test_sha256']==identity['binaries'][harness['test_executable']]
+assert all(before[p]==v for p,v in harness['selected_observed_source_sha256'].items())
+buildsettings={r['Key']:r.get('Value','') for r in worker['build_settings']}
+assert buildsettings['vcs.revision']==identity['commit']
+assert worker['package']=='github.com/JDinSeattle/forge-runtime/cmd/forge-worker'
+assert read('execution-result.json')['exit_code']==0 and all(x['exit_code']==0 for x in read('build-results.json'))
+# Launch- and signal-time /proc samples must refer to the same exact binary/PID/start ticks.
+signals={}
+for label in ['original','successor']:
+ launch=read('run/signal-'+label+'.log.identity.json');signal=read('run/'+label+'-signal.json')
+ for k in ['pid','proc_start_ticks','exe_path','exe_sha256','args']:assert launch[k]==signal[k],(label,k)
+ assert signal['exe_sha256']==worker['sha256'] and signal['exit_code']==0
+ assert signal['args'][-2:]==['-id','signal-'+label]
+ assert date(launch['observed_at'])<=date(signal['observed_at'])<=date(signal['db_before_signal'])<=date(signal['signal_sent_at'])<=date(signal['db_after_signal_return'])<=date(signal['exited_at'])
+ latency=(date(signal['exited_at'])-date(signal['signal_sent_at'])).total_seconds()
+ assert 0<=latency<8
+ signals[label]={'pid':signal['pid'],'proc_start_ticks':signal['proc_start_ticks'],'exit_code':0,'signal_to_reaped_ms':latency*1000,'db_signal_window_ms':(date(signal['db_after_signal_return'])-date(signal['db_before_signal'])).total_seconds()*1000}
+assert signals['original']['pid']!=signals['successor']['pid']
+fixture=read('run/fixture.json');accept=read('run/acceptance.json');target=fixture['target_operation'];main=fixture['main_run'];probe=accept['probe_run_id']
+op0=read('run/operation-before-signal.json');op1=read('run/operation-after-worker-exit.json')
+assert op0==op1 and op0['status']=='running' and not op0['cancel_requested']
+assert op0['request']['grant']=='' and op0['request']['operation_id']==target
+assert op0['request']['run_id']==main and op0['request']['workspace_id']==main
+exit_pg=read('run/after-worker-exit-postgres.json');exit_run=exit_pg['runs'][0]
+epoch=exit_run['lease_epoch'];assert epoch==op0['request']['epoch']==accept['original_epoch']
+assert exit_run['lease_owner']=='signal-original-0' and exit_run['state']=='running'
+assert exit_run['snapshot']['pending_effect']['operation_id']==target
+assert exit_pg['tenant_runtime'][0]['active_count']==1 and exit_pg['runners'][0]['reserved_slots']==1
+assert len(exit_pg['runner_allocations'])==1 and exit_pg['runner_allocations'][0]['state']=='reserved' and exit_pg['runner_allocations'][0]['slots']==1 and exit_pg['runner_allocations'][0]['lease_epoch']==epoch
+pg=read('run/main-completed-postgres.json');events=[s['input_event'] for s in pg['run_snapshots'] if s.get('input_event')]
+claims=[e for e in events if e['kind']=='claimed'];successor=[e for e in claims if e['owner']=='signal-successor-0']
+assert len(successor)==1 and successor[0]['epoch']==epoch+1
+for c in claims:assert (date(c['lease']['until'])-date(c['at'])).total_seconds()==30
+assert date(successor[0]['at'])>=date(exit_run['lease_until'])
+assert date(successor[0]['at'])<=date(accept['successor_claim_observed_db_time'])
+assert date(accept['old_lease_until'])==date(exit_run['lease_until'])
+assert not [e for e in claims if e['owner']=='signal-original-0' and date(e['at'])>date(read('run/original-signal.json')['db_after_signal_return'])]
+confirm=[e for e in events if e['kind'] in ('reconciled','effect_completed') and e.get('receipt',{}).get('effect_id')==target]
+assert len(confirm)==1
+confirm=confirm[0];receipt=confirm['receipt'];assert confirm['kind']=='reconciled' and confirm['owner']=='signal-successor-0' and confirm['epoch']==epoch+1
+assert receipt['epoch']==epoch and receipt['status']=='succeeded' and receipt['settled'] is True
+matches=[e for e in pg['effects'] if e['operation_id']==target];assert len(matches)==1;effect=matches[0]
+assert effect['epoch']==epoch and effect['status']==receipt['status'] and effect['args_hash']==receipt['args_hash']==op0['request']['args_hash'] and effect['receipt_ref']==receipt['ref']
+artifact_path=root/'run'/main/'artifacts'/(receipt['ref']+'.json')
+metadata=next(a for a in pg['artifacts'] if a['id']==receipt['ref'])
+assert metadata['kind']=='operation_receipt' and metadata['state']=='ready'
+assert sha(artifact_path)==metadata['sha256'] and artifact_path.stat().st_size==metadata['byte_size']
+receipt_operation=json.loads(artifact_path.read_text())
+assert receipt_operation['request']['operation_id']==target and receipt_operation['request']['epoch']==epoch and receipt_operation['request']['args_hash']==effect['args_hash'] and receipt_operation['job_id']==op0['job_id'] and receipt_operation['status']=='succeeded'
+rpcs=read('run/rpc-observer.json');mainrpc=[e for e in rpcs if e['run_id']==main]
+starts=[e for e in mainrpc if e['method']=='Start.request' and e['operation_id']==target]
+assert len(starts)==1 and starts[0]['epoch']==epoch
+inspects=[e for e in mainrpc if e['method']=='Inspect.return' and e['operation_id']==target and e['epoch']>epoch]
+adopts=[e for e in mainrpc if e['method']=='Adopt.request' and e['epoch']>epoch]
+assert len(inspects)==1 and inspects[0]['status']=='succeeded' and len(adopts)==1
+assert not [e for e in rpcs if e['method']=='Cancel.request']
+assert not [e for e in mainrpc if e['method'] in ('Stop.request','Cancel.request') and date(e['at'])<=date(read('run/original-signal.json')['exited_at'])]
+# No Engine opening: inspect the isolated, now-closed test journal in read-only mode.
+journal=root/'run/journal.sqlite';db=sqlite3.connect(journal.as_uri()+'?mode=ro',uri=True)
+try:
+ rows=db.execute('SELECT id,job_id,status,request_json,receipt_json FROM operations WHERE id=?',(target,)).fetchall();assert len(rows)==1
+ j=rows[0];request=json.loads(j[3]);assert j[0]==target and j[1]==op0['job_id'] and j[2]=='succeeded'
+ assert request['epoch']==epoch and request['run_id']==main and request['workspace_id']==main and request['args_hash']==effect['args_hash']
+ assert db.execute("SELECT count(*) FROM operations WHERE status IN ('prepared','running','unknown')").fetchone()[0]==0
+ version=db.execute('pragma user_version').fetchone()[0]
+finally:db.close()
+# Both runs are sealed and released. The last capture supplies shared quota counters.
+cleanups={}
+for run in [main,probe]:
+ c=read('run/'+run+'/cleanup-postgres.json');assert c['runs'][0]['state']=='completed'
+ assert len(c['workspace_cleanup'])==1 and c['workspace_cleanup'][0]['phase']=='released' and c['workspace_cleanup'][0]['snapshot_ref']
+ assert len(c['runner_allocations'])==1 and c['runner_allocations'][0]['state']=='released'
+ assert not [e for e in c['effects'] if e['status'] in ('in_flight','unknown')]
+ ce=[s['input_event'] for s in c['run_snapshots'] if s.get('input_event')]
+ assert not [e for e in ce if e['kind']=='cancel_requested']
+ assert all((date(e['lease']['until'])-date(e['at'])).total_seconds()==30 for e in ce if e['kind']=='claimed')
+ seqs=sorted(e['seq'] for e in c['run_events']);assert seqs==list(range(1,len(seqs)+1))
+ cleanups[run]={'state':'completed','allocation':'released','cleanup_phase':'released','snapshot_ref':c['workspace_cleanup'][0]['snapshot_ref'],'contiguous_events':len(seqs)}
+last=read('run/'+probe+'/cleanup-postgres.json');q=last['provider_quotas'][0]
+assert last['tenant_runtime'][0]['active_count']==last['runners'][0]['reserved_slots']==q['active_requests']==q['reserved_tokens']==q['reserved_microusd']==0
+queued=read('run/probe-queued-after-exit-postgres.json')['runs'][0]
+assert queued['id']==probe and queued['version']==1 and queued['lease_epoch']==0 and queued['state']=='queued'
+assert date(queued['created_at'])>date(read('run/original-signal.json')['exited_at'])
+assert len([a for a in pg['model_attempts'] if a['status']=='completed'])==3
+assert pg['runs'][0]['state']=='completed'
+assert accept['passed'] and accept['target_effect_confirmations']==accept['target_successor_reconciliations']==1
+assert all(sha(root/n)==v for n,v in manifest.items())
+assert all(sha(p)==v for p,v in identity['binaries'].items())
+report={'reviewer':'observability_sqlc','reviewed_at':datetime.datetime.now(datetime.timezone.utc).isoformat(),'result':'PASS within recording-backend acceptance scope','P1_P2_findings':[],'raw_root':str(root),'raw_manifest_sha256':sha(root/'manifest.json'),'manifest_files_verified':len(manifest),'source_commit':identity['commit'],'observed_source_files':len(before),'source_before_equals_after':True,'all_observed_source_files_match_commit':True,'binary_hashes_currently_match_recorded':identity['binaries'],'build_VCS_modified':buildsettings.get('vcs.modified'),'signals':signals,'run_id':main,'probe_run_id':probe,'operation_id':target,'job_id':op0['job_id'],'operation_unchanged_across_worker_exit':True,'dispatch_epoch':epoch,'successor_epoch':epoch+1,'old_SQL_lease_until':exit_run['lease_until'],'successor_SQL_claim_time':successor[0]['at'],'takeover_after_old_lease_ms':(date(successor[0]['at'])-date(exit_run['lease_until'])).total_seconds()*1000,'claim_lease_seconds':30,'target_Start_RPC_count':len(starts),'successor_target_Inspect_count':len(inspects),'successor_Adopt_count':len(adopts),'successor_target_Start_count':0,'unique_reconciled_receipt_bound_to_SQL_and_artifact':True,'cleanup':cleanups,'final_active_tenant_runner_request_token_cost_reservations':[0,0,0,0,0],'synthetic_committed_microusd_two_runs':q['committed_microusd'],'journal_readonly_at_review':{'version':version,'sha256':sha(journal),'unique_target_row_matches_job_and_dispatch':True,'unsettled_operations':0},'elapsed_test_seconds':47.24,'previous_execution_status':'Original worker-sigterm-e48-20260912 remains FAIL; corrected integrated run is separate','limitations':['Real worker OS processes, SIGTERM, private PostgreSQL restricted LOGIN, gRPC and SQLite; no Docker or actual command child process in TestBackend','Twelve-second recording job finishes before the default 30-second lease takeover; no claim of adopting a still-running real container','Provider is deterministic ScriptedProvider with synthetic usage/cost, no paid API or model-quality evidence','Build occurred in working tree with vcs.modified=true; 318 captured code/config/script inputs independently match the commit, but this is not an independent clean rebuild or complete transitive toolchain attestation','Manifest intentionally excludes mutable objects/runner trees and SQLite; receipt bytes are archived and hash-checked, journal is separately hashed/read at review','Cross-table captures and process identities are sampled, not one atomic distributed snapshot or cryptographic session attestation','Final registry/row state and finite execution do not prove all shutdown interleavings']}
+out.write_text(json.dumps(report,indent=2,sort_keys=True)+'\n')
+print(json.dumps({k:report[k] for k in ['result','manifest_files_verified','observed_source_files','signals','takeover_after_old_lease_ms','elapsed_test_seconds']}))
+print('report',out,'sha256',sha(out))

@@ -1,0 +1,242 @@
+"""Execute only a frozen, bounded E44 fixture using an idle original pool.
+The fixture owns the pool flock. This parent never opens a new Engine/journal.
+"""
+import argparse,datetime,hashlib,json,os,pathlib,shlex,sqlite3,subprocess,time,urllib.parse,re
+REPO=pathlib.Path('/home/postedism/Desktop/mini claude code/forge-runtime')
+CONFIG=REPO/'var/local/runner.json'
+UNITS=['forge-runtime-api.service','forge-runtime-worker.service','forge-runtime-worker-2.service','forge-runtime-runner.service']
+def run(argv,timeout=15,**kw):return subprocess.run(argv,check=True,timeout=timeout,**kw)
+def text(argv):return run(argv,capture_output=True,text=True).stdout.strip()
+def sha(p):return hashlib.sha256(pathlib.Path(p).read_bytes()).hexdigest()
+def write(p,data):p.write_text(json.dumps(data,indent=2,sort_keys=True)+'\n')
+def show(unit):
+ fields=['ActiveState','SubState','MainPID','ControlGroup','EnvironmentFiles','ExecStart','WorkingDirectory','Delegate','Environment']
+ raw=text(['systemctl','--user','show',unit,'--property='+','.join(fields)])
+ return dict(s.split('=',1) for s in raw.splitlines() if '=' in s)
+def sqlite_state(c):
+ db=sqlite3.connect(pathlib.Path(c['journal_path']).as_uri()+'?mode=ro',uri=True);db.execute('BEGIN')
+ try:
+  version=db.execute('PRAGMA user_version').fetchone()[0]
+  identity=db.execute('SELECT id FROM journal_identity').fetchone()[0]
+  pending=db.execute("SELECT count(*) FROM operations WHERE status IN ('prepared','running','unknown')").fetchone()[0]
+  leased=db.execute('SELECT count(*) FROM volume_leases WHERE released=0').fetchone()[0]
+  names=[r[0] for r in db.execute("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name")]
+  tables={}
+  for name in names:
+   assert name.replace('_','').isalnum()
+   rows=db.execute('SELECT * FROM "'+name+'" ORDER BY rowid').fetchall()
+   tables[name]={'rows':len(rows),'sha256':hashlib.sha256(json.dumps(rows,separators=(',',':'),ensure_ascii=True).encode()).hexdigest()}
+  return {'version':version,'identity':identity,'pending_operations':pending,'unreleased_leases':leased,'tables':tables}
+ finally:db.rollback();db.close()
+def pg_state():
+ env=dict(os.environ);private=None
+ for line in (REPO/'var/local/review-database.env').read_text().splitlines():
+  key,sep,val=line.removeprefix('export ').strip().partition('=')
+  if sep and key=='FORGE_REVIEW_DATABASE_URL':private=shlex.split(val)[0]
+ assert private
+ u=urllib.parse.urlsplit(private);assert u.hostname in ('127.0.0.1','localhost') and u.path=='/forge'
+ env.update(PGHOST=u.hostname,PGPORT=str(u.port or 5432),PGDATABASE='forge',PGUSER=urllib.parse.unquote(u.username),PGPASSWORD=urllib.parse.unquote(u.password),PGSSLMODE='disable')
+ sql="SELECT json_build_object('nonterminal',(SELECT count(*) FROM public.runs WHERE state NOT IN ('completed','failed','cancelled','budget_exhausted')),'allocated',(SELECT count(*) FROM public.runner_allocations WHERE state<>'released'),'runs_md5',(SELECT md5(coalesce(string_agg(to_jsonb(t)::text,E'\\n' ORDER BY id),'')) FROM public.runs t),'allocations_md5',(SELECT md5(coalesce(string_agg(to_jsonb(t)::text,E'\\n' ORDER BY run_id),'')) FROM public.runner_allocations t));"
+ p=run(['psql','-XAt','--no-psqlrc','-v','ON_ERROR_STOP=1','-c',sql],env=env,capture_output=True,text=True)
+ return json.loads(p.stdout)
+def active(unit):return show(unit).get('ActiveState')=='active'
+def validate_sources(states,c):
+ expected=[('forge-api','platform.json',None),('forge-worker','platform.json','recovery-worker-1'),('forge-worker','platform.json','recovery-worker-2'),('forge-runner','runner.json',None)]
+ files={str(CONFIG):sha(CONFIG),str(REPO/'var/local/platform.json'):sha(REPO/'var/local/platform.json')}
+ runtime={}
+ def process_identity(pid):
+  path=pathlib.Path('/proc')/pid
+  return {'argv':(path/'cmdline').read_bytes().rstrip(b'\0').decode().split('\0'),'cwd':str((path/'cwd').resolve()),'uid_map':(path/'uid_map').read_text(),'gid_map':(path/'gid_map').read_text(),'exe_sha256':sha(path/'exe')}
+ for unit,(exe,conf,worker) in zip(UNITS,expected):
+  s=states[unit];assert s['ActiveState']=='active' and s['SubState']=='running',(unit,'not running')
+  binary=REPO/'bin'/exe;files[str(binary)]=sha(binary)
+  expected_cwd=str(REPO) if exe!='forge-runner' else '/home/postedism'
+  assert s['WorkingDirectory'].removeprefix('!')==expected_cwd
+  identity=process_identity(s['MainPID']);assert identity['cwd']==expected_cwd
+  expected_args=[str(binary),'-config',str(REPO/'var/local'/conf)]
+  if worker:expected_args+=['-id',worker]
+  if exe=='forge-runner':expected_args=['/usr/bin/rootlesskit','--propagation=rslave','--state-dir=/run/user/1000/forge-runtime-runnerkit']+expected_args
+  assert identity['argv']==expected_args,(unit,'unexpected process arguments')
+  assert s['Delegate']==('yes' if exe=='forge-runner' else 'no')
+  if exe=='forge-runner':assert not s.get('EnvironmentFiles')
+  runtime[unit]={'main':identity,'service':{'working_directory':s['WorkingDirectory'].removeprefix('!'),'environment_files':s.get('EnvironmentFiles',''),'environment':s.get('Environment',''),'delegate':s['Delegate']}}
+  assert str(binary) in s['ExecStart'] and str(REPO/'var/local'/conf) in s['ExecStart']
+  if worker:assert ' -id '+worker+' ' in s['ExecStart']
+  if exe!='forge-runner':
+   assert sha('/proc/'+s['MainPID']+'/exe')==files[str(binary)],(unit,'different running binary')
+   filename=REPO/'var/local'/('api.env' if exe=='forge-api' else 'worker.env')
+   assert s['EnvironmentFiles']==str(filename)+' (ignore_errors=no)'
+   files[str(filename)]=sha(filename)
+  else:
+   assert identity['exe_sha256']==sha('/usr/bin/rootlesskit'),'running rootlesskit differs from restorable file'
+   assert s['Delegate']=='yes' and '/usr/bin/rootlesskit --propagation=rslave --state-dir=/run/user/1000/forge-runtime-runnerkit ' in s['ExecStart']
+   cgroup=pathlib.Path('/sys/fs/cgroup')/s['ControlGroup'].lstrip('/')
+   candidates=[]
+   for f in cgroup.rglob('cgroup.procs'):
+    for pid in f.read_text().split():
+     path=pathlib.Path('/proc')/pid/'exe'
+     try:
+      if path.resolve()==binary:candidates.append(pid)
+     except (OSError,RuntimeError):pass
+   assert len(set(candidates))==1,('runner PID identity',candidates)
+   child=process_identity(candidates[0])
+   assert child['exe_sha256']==files[str(binary)] and child['cwd']==expected_cwd and child['argv']==[str(binary),'-config',str(CONFIG)]
+   runtime[unit]['runner_child']=child
+  for entry in shlex.split(s.get('Environment','')):
+   key,sep,value=entry.partition('=');assert sep and unit==UNITS[2] and key=='FORGE_METRICS_LISTEN'
+   host,port=value.rsplit(':',1);assert host=='127.0.0.1' and 1024<=int(port)<=65535
+ return files,runtime
+def restore(unit,state):
+ if active(unit):return
+ i=UNITS.index(unit)
+ cmd=['systemd-run','--user','--unit='+unit,'--collect']
+ if i==3:
+  cmd+=['--property=Delegate=yes','--working-directory=/home/postedism','/usr/bin/rootlesskit','--propagation=rslave','--state-dir=/run/user/1000/forge-runtime-runnerkit',str(REPO/'bin/forge-runner'),'-config',str(CONFIG)]
+ else:
+  cmd+=['--working-directory='+str(REPO),'--property=EnvironmentFile='+str(REPO/'var/local'/('api.env' if i==0 else 'worker.env'))]
+  for item in shlex.split(state.get('Environment','')):cmd+=['--setenv='+item]
+  cmd+=[str(REPO/'bin'/('forge-api' if i==0 else 'forge-worker')),'-config',str(REPO/'var/local/platform.json')]
+  if i:cmd+=['-id','recovery-worker-'+str(i)]
+ run(cmd,capture_output=True,text=True)
+ end=time.monotonic()+15
+ while time.monotonic()<end:
+  if active(unit):return
+  time.sleep(.1)
+ raise RuntimeError('failed to restore '+unit)
+def test_unit_state(unit):
+ p=subprocess.run(['systemctl','--user','show',unit,'--property=LoadState,ActiveState,SubState,MainPID,ControlGroup'],capture_output=True,text=True,timeout=10)
+ state=dict(s.split('=',1) for s in p.stdout.splitlines() if '=' in s)
+ if p.returncode and state.get('LoadState')!='not-found':raise RuntimeError('could not inspect exact test unit')
+ return state
+
+def stop_test_group(unit,known_state=None):
+ before=test_unit_state(unit)
+ stopped=subprocess.run(['systemctl','--user','stop',unit],capture_output=True,timeout=25)
+ after=test_unit_state(unit)
+ assert after.get('LoadState')=='not-found' or (after.get('ActiveState') in ('inactive','failed') and after.get('MainPID')=='0'), 'test unit termination not confirmed'
+ for state in [known_state or {},before,after]:
+  group=state.get('ControlGroup')
+  if not group:continue
+  assert group.startswith('/') and '..' not in pathlib.PurePosixPath(group).parts
+  path=pathlib.Path('/sys/fs/cgroup')/group.lstrip('/')
+  if path.exists():
+   for members in path.rglob('cgroup.procs'):assert not members.read_text().strip(), 'test cgroup still has executing PIDs'
+ return {'stop_exit_code':stopped.returncode,'before':before,'after':after,'no_executing_test_pids':True}
+def cleanup_fixture(cfg,out):
+ actions=[]
+ backend=out/'backend'
+ if not backend.exists():return actions
+ for path in sorted(backend.glob('forge-e44-*-intent.json')):
+  plan=json.loads(path.read_text());op=plan['operation'];name=op['operation_id']
+  assert re.fullmatch(r'forge-e44-[0-9a-f]{16}-(binary|flood|cancel|shutdown)',name)
+  assert path.name==name+'-intent.json' and plan['expected_labels']=={'forge.runtime':'1','forge.operation_id':name}
+  cmd=['docker','--host',cfg['docker_host']]
+  found=subprocess.run(cmd+['container','inspect',name],capture_output=True,text=True,timeout=10)
+  if found.returncode:
+   assert 'No such container' in found.stderr or 'No such object' in found.stderr, 'unconfirmed fixture lookup'
+   actions.append({'name':name,'absent':True});continue
+  rows=json.loads(found.stdout);assert len(rows)==1;facts=rows[0];identity=facts['Id']
+  assert re.fullmatch('[0-9a-f]{64}',identity) and facts['Name']=='/'+name
+  if plan.get('container_id'):assert identity==plan['container_id']
+  labels=facts['Config']['Labels'];assert labels['forge.runtime']=='1' and labels['forge.operation_id']==name
+  assert facts['Config']['Image']==cfg['image'] and facts['HostConfig']['LogConfig']['Type']=='none'
+  if facts['State']['Running']:run(cmd+['container','kill','--signal=KILL',identity],capture_output=True,text=True,timeout=15)
+  # Never use force-remove. Remove only the observed stopped, identity-checked fixture.
+  current=json.loads(text(cmd+['container','inspect',identity]))[0]
+  assert current['Id']==identity and current['Name']=='/'+name and not current['State']['Running']
+  run(cmd+['container','rm',identity],capture_output=True,text=True,timeout=15)
+  actions.append({'name':name,'container_id':identity,'fixture_fallback_removal':True})
+ return actions
+def main():
+ p=argparse.ArgumentParser();p.add_argument('--config',type=pathlib.Path,required=True);p.add_argument('--binary',type=pathlib.Path,required=True);p.add_argument('--sha256',required=True);p.add_argument('--test',required=True);p.add_argument('--execute',action='store_true');a=p.parse_args()
+ assert a.test=='TestStrictLogDockerBackendAcceptance'
+ for path in [a.config,a.binary]:assert path.is_absolute() and path.is_relative_to(REPO)
+ assert sha(a.binary)==a.sha256
+ config_bytes=a.config.read_bytes();frozen_config_hash=hashlib.sha256(config_bytes).hexdigest()
+ cfg=json.loads(config_bytes);c=json.loads(CONFIG.read_text())
+ assert cfg['exclusive_handoff'] is True and cfg['volume']==c['volume_slots'][0]
+ assert cfg['docker_host']==c['docker_host']
+ assert '@sha256:' in cfg['image'] and len(cfg['image'].rsplit(':',1)[1])==64
+ out=pathlib.Path(cfg['output_dir']);assert out.is_absolute() and out.is_relative_to(REPO/'benchmarks/results')
+ assert out.is_dir() and not (out/'host-preflight.json').exists()
+ states={u:show(u) for u in UNITS};files,runtime=validate_sources(states,c)
+ files.update({str(a.binary):a.sha256,str(a.config):frozen_config_hash,'/usr/bin/rootlesskit':sha('/usr/bin/rootlesskit')})
+ initial=sqlite_state(c);pg=pg_state()
+ assert initial['version']==4 and initial['pending_operations']==0 and initial['unreleased_leases']==0
+ assert pg['nonterminal']==0 and pg['allocated']==0
+ owner=pathlib.Path(cfg['volume']['mount_path'])/'.forge-pool.owner'
+ assert owner.read_text()==c['journal_path']+'\n'
+ pre={'sqlite':initial,'postgres':pg,'runtime_identity':runtime,'services':{k:{f:v for f,v in s.items() if f!='Environment'} for k,s in states.items()},'binary':str(a.binary),'binary_sha256':a.sha256,'config_sha256':frozen_config_hash,'at':datetime.datetime.now(datetime.timezone.utc).isoformat(),'executing':a.execute}
+ if not a.execute:
+  print(json.dumps({'preflight_passed':True,'zero_active_runs_and_operations':True,'original_schema':4,'frozen_binary_sha256':a.sha256}));return
+ write(out/'host-preflight.json',pre);(out/'host-wrapper.py.txt').write_bytes(pathlib.Path(__file__).read_bytes())
+ unit='forge-runtime-e44-'+datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%d%H%M%S')
+ changed=False;failure=None;known_test_state=None
+ try:
+  for name in UNITS:
+   changed=True
+   run(['systemctl','--user','stop',name],timeout=30,capture_output=True,text=True)
+   assert not active(name)
+  assert sqlite_state(c)==initial and pg_state()==pg,'state changed before exclusive test'
+  assert all(sha(path)==digest for path,digest in files.items())
+  cmd=['systemd-run','--user','--unit='+unit,'--collect','--wait','--pipe','--property=Delegate=yes','--property=RuntimeMaxSec=150s','--property=TimeoutStopSec=10s','--working-directory='+str(a.binary.parent),'--setenv=FORGE_E44_BACKEND_CONFIG='+str(a.config),'/usr/bin/rootlesskit','--propagation=rslave','--state-dir=/run/user/1000/'+unit,str(a.binary),'-test.run=^'+a.test+'$','-test.timeout=120s','-test.v']
+  with (out/'host-execution.log').open('xb') as log:
+   client=subprocess.Popen(cmd,stdout=log,stderr=subprocess.STDOUT)
+   try:
+    discover_until=time.monotonic()+5
+    while client.poll() is None and time.monotonic()<discover_until:
+     observed=test_unit_state(unit)
+     if observed.get('ControlGroup'):
+      known_test_state=observed;write(out/'host-test-unit-started.json',observed);break
+     time.sleep(.05)
+    code=client.wait(timeout=170)
+   finally:
+    if client.poll() is None:
+     client.terminate()
+     try:client.wait(timeout=3)
+     except subprocess.TimeoutExpired:client.kill();client.wait(timeout=3)
+  write(out/'host-execution.json',{'exit_code':code,'unit':unit,'argv':cmd})
+  if code:raise RuntimeError('backend fixture failed; retained raw')
+ except Exception as e:
+  failure=type(e).__name__+': '+str(e)
+ finally:
+  finalization={'test_unit':unit,'restoration_blocked':False,'errors':[],'scope':'all SQLite table rows and public PostgreSQL runs/runner_allocations only; not every PostgreSQL table'}
+  try:
+   # Stop only our exact transient test group, even when its waiting client fails.
+   stopped=stop_test_group(unit,known_test_state)
+   write(out/'host-test-unit-stopped.json',stopped)
+   cleanup=cleanup_fixture(cfg,out)
+   write(out/'host-fixture-cleanup.json',cleanup)
+  except Exception as e:
+   finalization['restoration_blocked']=True
+   finalization['errors'].append('fixture shutdown/identity confirmation: '+type(e).__name__+': '+str(e))
+  try:
+   after=sqlite_state(c);post=pg_state()
+   preserved=after==initial and post==pg and all(sha(path)==digest for path,digest in files.items()) and owner.read_text()==c['journal_path']+'\n'
+   write(out/'host-preservation.json',{'sqlite':after,'postgres':post,'original_inputs_preserved':preserved,'failure':failure,'postgres_scope':'public runs and runner_allocations'})
+   if not preserved:
+    finalization['restoration_blocked']=True
+    finalization['errors'].append('original state or configuration changed; keep services quiesced for review')
+  except Exception as e:
+   finalization['restoration_blocked']=True
+   finalization['errors'].append('original state could not be verified: '+type(e).__name__+': '+str(e))
+  write(out/'host-finalization.json',finalization)
+  if changed and not finalization['restoration_blocked']:
+   try:
+    for name in reversed(UNITS):restore(name,states[name])
+    current={u:show(u) for u in UNITS};_,restored_runtime=validate_sources(current,c)
+    assert restored_runtime==runtime,'restored process arguments/cwd/UID map differ'
+    verified_sqlite=sqlite_state(c)==initial;verified_pg=pg_state()==pg
+    write(out/'host-restored.json',{'runtime_identity':restored_runtime,'active_services':{u:{k:v for k,v in s.items() if k!='Environment'} for u,s in current.items()},'sqlite_unchanged':verified_sqlite,'postgres_runs_allocations_unchanged':verified_pg})
+    finalization['services_restarted']=True
+    assert verified_sqlite and verified_pg,'post-restoration database comparison failed; services are restarted, review required'
+   except Exception as e:
+    finalization['restoration_blocked']=True
+    finalization['errors'].append('service restoration: '+type(e).__name__+': '+str(e))
+  write(out/'host-finalization.json',finalization)
+  if finalization['restoration_blocked']:
+   raise RuntimeError('restoration needs review; details retained in host-finalization.json')
+
+ if failure:raise RuntimeError(failure)
+ print(json.dumps({'passed':True,'original_services_restored':True,'output':str(out)}))
+if __name__=='__main__':main()

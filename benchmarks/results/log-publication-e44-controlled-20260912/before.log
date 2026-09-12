@@ -1,0 +1,23 @@
+=== RUN   TestIndependentLogPublicationVisibleAndIdempotent
+    e44_independent_log_publication_test.go:42: retained logs absent or duplicated in PostgreSQL READY: logs=0 receipts=1
+--- FAIL: TestIndependentLogPublicationVisibleAndIdempotent (0.56s)
+=== RUN   TestIndependentLogPublicationRejectsInvalidReference
+=== RUN   TestIndependentLogPublicationRejectsInvalidReference/foreign_run
+    e44_independent_log_publication_test.go:59: receipt with foreign_run log ref accepted for settlement
+=== RUN   TestIndependentLogPublicationRejectsInvalidReference/wrong_kind
+    e44_independent_log_publication_test.go:59: receipt with wrong_kind log ref accepted for settlement
+=== RUN   TestIndependentLogPublicationRejectsInvalidReference/wrong_sha
+    e44_independent_log_publication_test.go:59: receipt with wrong_sha log ref accepted for settlement
+=== RUN   TestIndependentLogPublicationRejectsInvalidReference/wrong_size
+    e44_independent_log_publication_test.go:59: receipt with wrong_size log ref accepted for settlement
+--- FAIL: TestIndependentLogPublicationRejectsInvalidReference (2.31s)
+    --- FAIL: TestIndependentLogPublicationRejectsInvalidReference/foreign_run (0.62s)
+    --- FAIL: TestIndependentLogPublicationRejectsInvalidReference/wrong_kind (0.55s)
+    --- FAIL: TestIndependentLogPublicationRejectsInvalidReference/wrong_sha (0.62s)
+    --- FAIL: TestIndependentLogPublicationRejectsInvalidReference/wrong_size (0.52s)
+=== RUN   TestIndependentLogPublicationDoesNotTrustRPCOnlyReference
+    e44_independent_log_publication_test.go:71: accepted receipt but did not publish its authenticated original log: not_found
+--- FAIL: TestIndependentLogPublicationDoesNotTrustRPCOnlyReference (0.66s)
+FAIL
+FAIL	github.com/JDinSeattle/forge-runtime/internal/application	3.565s
+FAIL

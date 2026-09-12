@@ -1,0 +1,36 @@
+import importlib.util,subprocess,json,pathlib,unittest.mock
+spec=importlib.util.spec_from_file_location('host','/tmp/forge-e44-exclusive-host.py');host=importlib.util.module_from_spec(spec);spec.loader.exec_module(host)
+results=[]
+for name,after,code,accept in [
+ ('stop_failed_still_running',{'LoadState':'loaded','ActiveState':'active','MainPID':'123','ControlGroup':''},1,False),
+ ('already_collected',{'LoadState':'not-found','ActiveState':'inactive','MainPID':'0','ControlGroup':''},5,True),
+ ('inactive_with_pid',{'LoadState':'loaded','ActiveState':'inactive','MainPID':'123','ControlGroup':''},0,False),
+ ('inactive_confirmed',{'LoadState':'loaded','ActiveState':'inactive','MainPID':'0','ControlGroup':''},0,True),
+]:
+ calls=[]
+ def fake(cmd,**kw):
+  calls.append(cmd)
+  if 'show' in cmd:return subprocess.CompletedProcess(cmd,1 if after['LoadState']=='not-found' else 0,'\n'.join(k+'='+v for k,v in after.items()),'')
+  assert 'stop' in cmd;return subprocess.CompletedProcess(cmd,code,b'',b'')
+ with unittest.mock.patch.object(host.subprocess,'run',fake):
+  try:host.stop_test_group('fixture-only');actual=True
+  except (RuntimeError,AssertionError):actual=False
+ assert actual==accept,(name,actual)
+ results.append({'case':name,'restoration_allowed':actual,'expected':accept,'real_service_calls':0})
+# A nominally inactive unit with an executing descendant must remain blocked.
+class Member:
+ def read_text(self):return '123\n'
+class Group:
+ def exists(self):return True
+ def rglob(self,pattern):return [Member()]
+class Root:
+ def __truediv__(self,part):return Group()
+def fake(cmd,**kw):
+ if 'show' in cmd:return subprocess.CompletedProcess(cmd,0,'LoadState=loaded\nActiveState=inactive\nMainPID=0\nControlGroup=/test-owned', '')
+ return subprocess.CompletedProcess(cmd,0,b'',b'')
+with unittest.mock.patch.object(host.subprocess,'run',fake),unittest.mock.patch.object(host.pathlib,'Path',lambda _:Root()):
+ try:host.stop_test_group('fixture-only');raise RuntimeError('cgroup child ignored')
+ except AssertionError as e:assert 'executing PIDs' in str(e)
+results.append({'case':'inactive_with_cgroup_child','restoration_allowed':False,'expected':False,'real_service_calls':0})
+pathlib.Path('/tmp/forge-e44-host-negative-check.json').write_text(json.dumps(results,indent=2)+'\n')
+print(json.dumps(results))

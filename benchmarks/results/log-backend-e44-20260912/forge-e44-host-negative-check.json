@@ -1,0 +1,32 @@
+[
+  {
+    "case": "stop_failed_still_running",
+    "restoration_allowed": false,
+    "expected": false,
+    "real_service_calls": 0
+  },
+  {
+    "case": "already_collected",
+    "restoration_allowed": true,
+    "expected": true,
+    "real_service_calls": 0
+  },
+  {
+    "case": "inactive_with_pid",
+    "restoration_allowed": false,
+    "expected": false,
+    "real_service_calls": 0
+  },
+  {
+    "case": "inactive_confirmed",
+    "restoration_allowed": true,
+    "expected": true,
+    "real_service_calls": 0
+  },
+  {
+    "case": "inactive_with_cgroup_child",
+    "restoration_allowed": false,
+    "expected": false,
+    "real_service_calls": 0
+  }
+]

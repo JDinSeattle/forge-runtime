@@ -1,0 +1,26 @@
+{
+  "scope": {
+    "before": "controlled exact prior receipt implementation from 5de6f0f in a copy of current E44 Driver; not a historical complete executable",
+    "after": "current E44 receipt and verifiedLogArtifact copied into overlay",
+    "fixture": "v2 declares retained bytes equal to artifact size; application publication boundary, opaque artifact contents; actual PG and filesystem, no provider, runner, Docker or HTTP request"
+  },
+  "manifest_files_verified": 15,
+  "identical_before_after_tests": true,
+  "test_sha256": "6f325c2862584d69bb4040228f8fe998d151e33b52f317b2f84f41d77d8d1bbd",
+  "phase_results": [
+    {
+      "phase": "before",
+      "exit_code": 1,
+      "expected_exit_code": 1
+    },
+    {
+      "phase": "after",
+      "exit_code": 0,
+      "expected_exit_code": 0
+    }
+  ],
+  "before_expected_logs_missing": true,
+  "after_log_pass": true,
+  "strip_metadata_after_log": "/tmp/forge-e44-stripped-log-metadata-after.log",
+  "production_p1_p2_remaining": []
+}

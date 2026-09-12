@@ -1,0 +1,25 @@
+{
+  "reviewed_at": "2026-09-12T00:17:03.392300+00:00",
+  "reviewer": "observability_sqlc",
+  "scope": "Read-only quickdiff of 3 previously reported P2 fixes and added cgroup recording; no service operations or host execution",
+  "file": "/tmp/forge-e44-exclusive-host.py",
+  "sha256": "7573663e940a435febe14ecfda102ec7e92c31b3315848dda0f6a1056dee89cb",
+  "syntax": "PASS",
+  "rootlesskit_initial_guard": {
+    "line": 71,
+    "source": "assert identity['exe_sha256']==sha('/usr/bin/rootlesskit'),'running rootlesskit differs from restorable file'"
+  },
+  "findings_closed": [
+    "Full real process argv/cwd and UID/GID map plus service configuration compared against original baseline",
+    "Fixture binary/config and rootlesskit included in before/after frozen input hashes",
+    "Post-restoration PostgreSQL runs/allocations and full SQLite row comparison failures prevent passed result",
+    "Running original rootlesskit binary hash must match disk before quiescing"
+  ],
+  "additional_changes_reviewed": "Popen captures running test cgroup; finally checks known/current cgroups after exact unit termination",
+  "remaining_P1_P2": [],
+  "limitations": [
+    "Static review only; actual execution and restoration evidence are produced by parent task",
+    "PostgreSQL invariant covers public runs and runner_allocations, not all PostgreSQL tables",
+    "Process identity is sampled, not a cryptographic session attestation"
+  ]
+}

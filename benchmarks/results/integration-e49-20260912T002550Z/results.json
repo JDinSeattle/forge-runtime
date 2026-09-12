@@ -1,0 +1,182 @@
+[
+  {
+    "argv": [
+      "go",
+      "build",
+      "-o",
+      "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/forge-checked-binaries-integration-e49-20260912T002550Z/",
+      "./cmd/..."
+    ],
+    "elapsed_seconds": 1.6166661899769679,
+    "exit_code": 0,
+    "name": "build"
+  },
+  {
+    "argv": [
+      "go",
+      "test",
+      "-json",
+      "-count=1",
+      "./..."
+    ],
+    "elapsed_seconds": 88.58506347099319,
+    "exit_code": 0,
+    "failed_tests": [],
+    "name": "test",
+    "packages": {
+      "fail": 0,
+      "pass": 23,
+      "skip": 10
+    },
+    "tests": {
+      "fail": 0,
+      "pass": 563,
+      "skip": 31
+    }
+  },
+  {
+    "argv": [
+      "go",
+      "test",
+      "-race",
+      "-json",
+      "-count=1",
+      "./..."
+    ],
+    "elapsed_seconds": 106.78333258302882,
+    "exit_code": 0,
+    "failed_tests": [],
+    "name": "race",
+    "packages": {
+      "fail": 0,
+      "pass": 23,
+      "skip": 10
+    },
+    "tests": {
+      "fail": 0,
+      "pass": 563,
+      "skip": 31
+    }
+  },
+  {
+    "argv": [
+      "go",
+      "vet",
+      "./..."
+    ],
+    "elapsed_seconds": 0.6652674619690515,
+    "exit_code": 0,
+    "name": "vet"
+  },
+  {
+    "argv": [
+      "make",
+      "check-generated"
+    ],
+    "elapsed_seconds": 1.017419048002921,
+    "exit_code": 0,
+    "name": "generated"
+  },
+  {
+    "argv": [
+      "python3",
+      "-I",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "scripts/workspace-volumes",
+      "-p",
+      "test_*.py",
+      "-v"
+    ],
+    "elapsed_seconds": 0.11535529099637643,
+    "exit_code": 0,
+    "name": "python-volumes"
+  },
+  {
+    "argv": [
+      "python3",
+      "-I",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "cmd/forge-runner",
+      "-p",
+      "test_*.py",
+      "-v"
+    ],
+    "elapsed_seconds": 0.06396408699220046,
+    "exit_code": 0,
+    "name": "python-runner"
+  },
+  {
+    "argv": [
+      "python3",
+      "-I",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "scripts/recovery",
+      "-p",
+      "test_*.py",
+      "-v"
+    ],
+    "elapsed_seconds": 0.06400433095404878,
+    "exit_code": 0,
+    "name": "python-recovery"
+  },
+  {
+    "argv": [
+      "python3",
+      "-I",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "scripts/evaluation",
+      "-p",
+      "test_*.py",
+      "-v"
+    ],
+    "elapsed_seconds": 3.1713392150122672,
+    "exit_code": 0,
+    "name": "python-evaluation"
+  },
+  {
+    "argv": [
+      "python3",
+      "-I",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "scripts/faults",
+      "-p",
+      "test_*.py",
+      "-v"
+    ],
+    "elapsed_seconds": 0.1154988729977049,
+    "exit_code": 0,
+    "name": "python-faults"
+  },
+  {
+    "argv": [
+      "python3",
+      "-I",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "scripts/progress",
+      "-p",
+      "test_*.py",
+      "-v"
+    ],
+    "elapsed_seconds": 0.06398802704643458,
+    "exit_code": 0,
+    "name": "python-progress"
+  }
+]

@@ -49,6 +49,13 @@ a durable [closed-batch repetition limit](docs/no-progress-evidence.md), and
 Their evidence distinguishes local native-protocol fixtures, real database and
 journal behavior, and the still-pending paid-model and operational acceptance.
 
+[Strict process logs](docs/log-limits-evidence.md) have durable bounds and
+receipt-bound artifact publication. [Worker SIGTERM recovery](docs/worker-sigterm-evidence.md)
+has an actual process test with a recording execution backend. The latest
+[integrated local checks](docs/integration-checks-e49-20260912.md) pass 563
+ordinary/race entries each; combined disk/runtime recovery and paid-model
+evaluation remain explicit acceptance boundaries.
+
 ## Build and verify
 
 Go 1.26 and Git are required; contract generation also requires protoc 36.1.

@@ -1,0 +1,255 @@
+{
+  "name": "binary",
+  "job_name": "forge-e44-nomount-44113062cc40accf-binary",
+  "container_id": "46ff021505902d342b8717eed32dfae2ae302acdd2d890a60a938af6bc6f0672",
+  "expected_labels": {
+    "forge.e44_fixture": "forge-e44-nomount-44113062cc40accf",
+    "forge.operation_id": "forge-e44-nomount-44113062cc40accf-binary",
+    "forge.runtime": "1"
+  },
+  "image": "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+  "command": [
+    "python",
+    "-B",
+    "-u",
+    "-c",
+    "import os,time\nos.write(1,b'out\\0')\ntime.sleep(.03)\nos.write(2,b'err\\xff')\n"
+  ],
+  "create_args": [
+    "create",
+    "--pull=never",
+    "--name",
+    "forge-e44-nomount-44113062cc40accf-binary",
+    "--label",
+    "forge.runtime=1",
+    "--label",
+    "forge.operation_id=forge-e44-nomount-44113062cc40accf-binary",
+    "--label",
+    "forge.e44_fixture=forge-e44-nomount-44113062cc40accf",
+    "--read-only",
+    "--network",
+    "none",
+    "--cap-drop",
+    "ALL",
+    "--security-opt",
+    "no-new-privileges",
+    "--user",
+    "1000:1000",
+    "--pids-limit",
+    "64",
+    "--memory",
+    "268435456",
+    "--memory-swap",
+    "268435456",
+    "--cpus",
+    "1",
+    "--log-driver",
+    "none",
+    "--init",
+    "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+    "python",
+    "-B",
+    "-u",
+    "-c",
+    "import os,time\nos.write(1,b'out\\0')\ntime.sleep(.03)\nos.write(2,b'err\\xff')\n"
+  ],
+  "create_begin": "2026-09-12T00:34:21.745659706Z",
+  "create_acknowledged": "2026-09-12T00:34:21.898496076Z",
+  "attach_acknowledged_before_start": "2026-09-12T00:34:21.926444409Z",
+  "start_count": 1,
+  "control_requested": "0001-01-01T00:00:00Z",
+  "stage_returned": "2026-09-12T00:34:22.210999632Z",
+  "created_facts": {
+    "ID": "46ff021505902d342b8717eed32dfae2ae302acdd2d890a60a938af6bc6f0672",
+    "Name": "/forge-e44-nomount-44113062cc40accf-binary",
+    "Image": "sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+    "LogPath": "",
+    "Mounts": [],
+    "Config": {
+      "Image": "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+      "User": "1000:1000",
+      "Labels": {
+        "forge.e44_fixture": "forge-e44-nomount-44113062cc40accf",
+        "forge.operation_id": "forge-e44-nomount-44113062cc40accf-binary",
+        "forge.runtime": "1"
+      },
+      "Volumes": null,
+      "Tty": false
+    },
+    "HostConfig": {
+      "ReadonlyRootfs": true,
+      "NetworkMode": "none",
+      "Memory": 268435456,
+      "MemorySwap": 268435456,
+      "NanoCpus": 1000000000,
+      "PidsLimit": 64,
+      "CapDrop": [
+        "ALL"
+      ],
+      "SecurityOpt": [
+        "no-new-privileges"
+      ],
+      "Binds": null,
+      "Tmpfs": null,
+      "Privileged": false,
+      "LogConfig": {
+        "Type": "none"
+      }
+    },
+    "State": {
+      "Running": false,
+      "Pid": 0,
+      "ExitCode": 0,
+      "StartedAt": "0001-01-01T00:00:00Z",
+      "FinishedAt": "0001-01-01T00:00:00Z",
+      "OOMKilled": false
+    }
+  },
+  "return_facts": {
+    "ID": "46ff021505902d342b8717eed32dfae2ae302acdd2d890a60a938af6bc6f0672",
+    "Name": "/forge-e44-nomount-44113062cc40accf-binary",
+    "Image": "sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+    "LogPath": "",
+    "Mounts": [],
+    "Config": {
+      "Image": "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+      "User": "1000:1000",
+      "Labels": {
+        "forge.e44_fixture": "forge-e44-nomount-44113062cc40accf",
+        "forge.operation_id": "forge-e44-nomount-44113062cc40accf-binary",
+        "forge.runtime": "1"
+      },
+      "Volumes": null,
+      "Tty": false
+    },
+    "HostConfig": {
+      "ReadonlyRootfs": true,
+      "NetworkMode": "none",
+      "Memory": 268435456,
+      "MemorySwap": 268435456,
+      "NanoCpus": 1000000000,
+      "PidsLimit": 64,
+      "CapDrop": [
+        "ALL"
+      ],
+      "SecurityOpt": [
+        "no-new-privileges"
+      ],
+      "Binds": null,
+      "Tmpfs": null,
+      "Privileged": false,
+      "LogConfig": {
+        "Type": "none"
+      }
+    },
+    "State": {
+      "Running": false,
+      "Pid": 0,
+      "ExitCode": 0,
+      "StartedAt": "2026-09-12T00:34:21.986758752Z",
+      "FinishedAt": "2026-09-12T00:34:22.146639765Z",
+      "OOMKilled": false
+    }
+  },
+  "stopped_facts": {
+    "ID": "46ff021505902d342b8717eed32dfae2ae302acdd2d890a60a938af6bc6f0672",
+    "Name": "/forge-e44-nomount-44113062cc40accf-binary",
+    "Image": "sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+    "LogPath": "",
+    "Mounts": [],
+    "Config": {
+      "Image": "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+      "User": "1000:1000",
+      "Labels": {
+        "forge.e44_fixture": "forge-e44-nomount-44113062cc40accf",
+        "forge.operation_id": "forge-e44-nomount-44113062cc40accf-binary",
+        "forge.runtime": "1"
+      },
+      "Volumes": null,
+      "Tty": false
+    },
+    "HostConfig": {
+      "ReadonlyRootfs": true,
+      "NetworkMode": "none",
+      "Memory": 268435456,
+      "MemorySwap": 268435456,
+      "NanoCpus": 1000000000,
+      "PidsLimit": 64,
+      "CapDrop": [
+        "ALL"
+      ],
+      "SecurityOpt": [
+        "no-new-privileges"
+      ],
+      "Binds": null,
+      "Tmpfs": null,
+      "Privileged": false,
+      "LogConfig": {
+        "Type": "none"
+      }
+    },
+    "State": {
+      "Running": false,
+      "Pid": 0,
+      "ExitCode": 0,
+      "StartedAt": "2026-09-12T00:34:21.986758752Z",
+      "FinishedAt": "2026-09-12T00:34:22.146639765Z",
+      "OOMKilled": false
+    }
+  },
+  "job": {
+    "container_id": "46ff021505902d342b8717eed32dfae2ae302acdd2d890a60a938af6bc6f0672",
+    "container_name": "/forge-e44-nomount-44113062cc40accf-binary",
+    "strict_logs": true,
+    "log": {
+      "schema_version": 1,
+      "policy": {
+        "entry_bytes": 16384,
+        "operation_bytes": 524288,
+        "run_bytes": 16777216,
+        "max_operations": 32,
+        "preview_bytes": 65536
+      },
+      "operation_id": "forge-e44-nomount-44113062cc40accf-binary",
+      "binding_hash": "",
+      "stdout_seen": 4,
+      "stderr_seen": 4,
+      "retained_bytes": 8,
+      "retained_payload": 8,
+      "records": 2,
+      "complete": true,
+      "dropped_known": true,
+      "dropped_bytes": 0,
+      "truncated": false,
+      "termination_requested": false,
+      "termination_observed": false,
+      "artifact": {
+        "tenant_id": "",
+        "run_id": "",
+        "kind": "",
+        "object_key": "",
+        "sha256": "",
+        "size": 0
+      }
+    },
+    "id": "forge-e44-nomount-44113062cc40accf-binary",
+    "running": false,
+    "exit_code": 0,
+    "started": true,
+    "output": "b3V0AGVycv8=",
+    "truncated": false
+  },
+  "stream_sha256": {
+    "stderr": "5ba88cd1254e9fb68085dbf9165b786f9de30b3b26b5e77a06c2c030bf1aea6d",
+    "stdout": "9fa08a0adfa661d19d078477b29d287bd556130ddbb88d8204382802869d5cff"
+  },
+  "retained_stream_bytes": {
+    "stderr": 4,
+    "stdout": 4
+  },
+  "markers_observed": false,
+  "detach_observed_running": false,
+  "natural_exit_observed": false,
+  "cleanup_confirmed": true,
+  "passed": true
+}

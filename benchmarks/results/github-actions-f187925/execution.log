@@ -1,0 +1,756 @@
+verify	Set up job	﻿2026-09-12T00:01:24.7845592Z Current runner version: '2.337.0'
+verify	Set up job	2026-09-12T00:01:24.7872625Z ##[group]Runner Image Provisioner
+verify	Set up job	2026-09-12T00:01:24.7873306Z Hosted Compute Agent
+verify	Set up job	2026-09-12T00:01:24.7873713Z Version: 20260828.587
+verify	Set up job	2026-09-12T00:01:24.7874173Z Commit: abac92662cab4cc7352de4f9f9d2e2419aad9c29
+verify	Set up job	2026-09-12T00:01:24.7874666Z Build Date: 2026-08-28T16:44:25Z
+verify	Set up job	2026-09-12T00:01:24.7875118Z Worker ID: {378effb2-afe1-44dc-9594-3add1a4de707}
+verify	Set up job	2026-09-12T00:01:24.7875675Z Azure Region: centralus
+verify	Set up job	2026-09-12T00:01:24.7876077Z ##[endgroup]
+verify	Set up job	2026-09-12T00:01:24.7877434Z ##[group]Operating System
+verify	Set up job	2026-09-12T00:01:24.7877864Z Ubuntu
+verify	Set up job	2026-09-12T00:01:24.7878206Z 24.04.5
+verify	Set up job	2026-09-12T00:01:24.7878598Z LTS
+verify	Set up job	2026-09-12T00:01:24.7878950Z ##[endgroup]
+verify	Set up job	2026-09-12T00:01:24.7879320Z ##[group]Runner Image
+verify	Set up job	2026-09-12T00:01:24.7879734Z Image: ubuntu-24.04
+verify	Set up job	2026-09-12T00:01:24.7880119Z Version: 20260907.300.1
+verify	Set up job	2026-09-12T00:01:24.7880921Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260907.300/images/ubuntu/Ubuntu2404-Readme.md
+verify	Set up job	2026-09-12T00:01:24.7882073Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260907.300
+verify	Set up job	2026-09-12T00:01:24.7882722Z ##[endgroup]
+verify	Set up job	2026-09-12T00:01:24.7883480Z ##[group]GITHUB_TOKEN Permissions
+verify	Set up job	2026-09-12T00:01:24.7885164Z Contents: read
+verify	Set up job	2026-09-12T00:01:24.7885557Z Metadata: read
+verify	Set up job	2026-09-12T00:01:24.7885968Z ##[endgroup]
+verify	Set up job	2026-09-12T00:01:24.7887789Z Secret source: Actions
+verify	Set up job	2026-09-12T00:01:24.7888476Z Cache mode: write
+verify	Set up job	2026-09-12T00:01:24.7889161Z Prepare workflow directory
+verify	Set up job	2026-09-12T00:01:24.8228590Z Prepare all required actions
+verify	Set up job	2026-09-12T00:01:24.8278518Z Getting action download info
+verify	Set up job	2026-09-12T00:01:25.1085825Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+verify	Set up job	2026-09-12T00:01:25.1945865Z Download action repository 'actions/setup-go@v5' (SHA:40f1582b2485089dde7abd97c1529aa768e1baff)
+verify	Set up job	2026-09-12T00:01:25.7988316Z Complete job name: verify
+verify	Initialize containers	﻿2026-09-12T00:01:25.8340728Z ##[group]Checking docker version
+verify	Initialize containers	2026-09-12T00:01:25.8349843Z ##[command]/usr/bin/docker version --format '{{.Server.APIVersion}}'
+verify	Initialize containers	2026-09-12T00:01:25.9112490Z '1.48'
+verify	Initialize containers	2026-09-12T00:01:25.9121091Z Docker daemon API version: '1.48'
+verify	Initialize containers	2026-09-12T00:01:25.9121886Z ##[command]/usr/bin/docker version --format '{{.Client.APIVersion}}'
+verify	Initialize containers	2026-09-12T00:01:25.9245937Z '1.48'
+verify	Initialize containers	2026-09-12T00:01:25.9252906Z Docker client API version: '1.48'
+verify	Initialize containers	2026-09-12T00:01:25.9257716Z ##[endgroup]
+verify	Initialize containers	2026-09-12T00:01:25.9262163Z ##[group]Clean up resources from previous jobs
+verify	Initialize containers	2026-09-12T00:01:25.9265802Z ##[command]/usr/bin/docker ps --all --quiet --no-trunc --filter "label=9a09fc"
+verify	Initialize containers	2026-09-12T00:01:25.9375831Z ##[command]/usr/bin/docker network prune --force --filter "label=9a09fc"
+verify	Initialize containers	2026-09-12T00:01:25.9477170Z ##[endgroup]
+verify	Initialize containers	2026-09-12T00:01:25.9477788Z ##[group]Create local container network
+verify	Initialize containers	2026-09-12T00:01:25.9484761Z ##[command]/usr/bin/docker network create --label 9a09fc github_network_2ae9d7f7a98542c1ab9201fc38395074
+verify	Initialize containers	2026-09-12T00:01:26.0029331Z 9246ae2cd935537a8974fa0a96b381fe7c04b3a4e035ee927049b15e093e4c96
+verify	Initialize containers	2026-09-12T00:01:26.0038215Z ##[endgroup]
+verify	Initialize containers	2026-09-12T00:01:26.0056322Z ##[group]Starting postgres service container
+verify	Initialize containers	2026-09-12T00:01:26.0072166Z ##[command]/usr/bin/docker pull postgres:17.11-alpine
+verify	Initialize containers	2026-09-12T00:01:26.5281466Z 17.11-alpine: Pulling from library/postgres
+verify	Initialize containers	2026-09-12T00:01:26.6898809Z 55afa1ecc21d: Already exists
+verify	Initialize containers	2026-09-12T00:01:26.6939862Z 4d80c046a9c7: Pulling fs layer
+verify	Initialize containers	2026-09-12T00:01:26.6941072Z 592349920552: Pulling fs layer
+verify	Initialize containers	2026-09-12T00:01:26.6942047Z a12187db4b17: Pulling fs layer
+verify	Initialize containers	2026-09-12T00:01:26.6943073Z 5858a3f690ea: Pulling fs layer
+verify	Initialize containers	2026-09-12T00:01:26.6944056Z 75de48f507ff: Pulling fs layer
+verify	Initialize containers	2026-09-12T00:01:26.6945023Z d884d6f49732: Pulling fs layer
+verify	Initialize containers	2026-09-12T00:01:26.6945964Z b36c1b75fdb7: Pulling fs layer
+verify	Initialize containers	2026-09-12T00:01:26.6947152Z f070a6577866: Pulling fs layer
+verify	Initialize containers	2026-09-12T00:01:26.6948127Z 7f3590dcd843: Pulling fs layer
+verify	Initialize containers	2026-09-12T00:01:26.6949161Z 5858a3f690ea: Waiting
+verify	Initialize containers	2026-09-12T00:01:26.6950138Z 75de48f507ff: Waiting
+verify	Initialize containers	2026-09-12T00:01:26.6951057Z d884d6f49732: Waiting
+verify	Initialize containers	2026-09-12T00:01:26.6952238Z b36c1b75fdb7: Waiting
+verify	Initialize containers	2026-09-12T00:01:26.6953128Z f070a6577866: Waiting
+verify	Initialize containers	2026-09-12T00:01:26.6954045Z 7f3590dcd843: Waiting
+verify	Initialize containers	2026-09-12T00:01:26.8747301Z a12187db4b17: Verifying Checksum
+verify	Initialize containers	2026-09-12T00:01:26.8853436Z a12187db4b17: Download complete
+verify	Initialize containers	2026-09-12T00:01:26.8855848Z 4d80c046a9c7: Download complete
+verify	Initialize containers	2026-09-12T00:01:27.0773085Z 75de48f507ff: Verifying Checksum
+verify	Initialize containers	2026-09-12T00:01:27.0773815Z 75de48f507ff: Download complete
+verify	Initialize containers	2026-09-12T00:01:27.0774506Z 592349920552: Verifying Checksum
+verify	Initialize containers	2026-09-12T00:01:27.0775060Z 592349920552: Download complete
+verify	Initialize containers	2026-09-12T00:01:27.0775542Z 4d80c046a9c7: Pull complete
+verify	Initialize containers	2026-09-12T00:01:27.1025536Z 592349920552: Pull complete
+verify	Initialize containers	2026-09-12T00:01:27.1229996Z a12187db4b17: Pull complete
+verify	Initialize containers	2026-09-12T00:01:27.1547485Z d884d6f49732: Verifying Checksum
+verify	Initialize containers	2026-09-12T00:01:27.1548478Z d884d6f49732: Download complete
+verify	Initialize containers	2026-09-12T00:01:27.1616163Z b36c1b75fdb7: Verifying Checksum
+verify	Initialize containers	2026-09-12T00:01:27.1617698Z b36c1b75fdb7: Download complete
+verify	Initialize containers	2026-09-12T00:01:27.3231423Z 7f3590dcd843: Verifying Checksum
+verify	Initialize containers	2026-09-12T00:01:27.3231903Z 7f3590dcd843: Download complete
+verify	Initialize containers	2026-09-12T00:01:27.3232311Z f070a6577866: Verifying Checksum
+verify	Initialize containers	2026-09-12T00:01:27.3232704Z f070a6577866: Download complete
+verify	Initialize containers	2026-09-12T00:01:27.4622920Z 5858a3f690ea: Verifying Checksum
+verify	Initialize containers	2026-09-12T00:01:27.4623508Z 5858a3f690ea: Download complete
+verify	Initialize containers	2026-09-12T00:01:32.1184295Z 5858a3f690ea: Pull complete
+verify	Initialize containers	2026-09-12T00:01:32.1348863Z 75de48f507ff: Pull complete
+verify	Initialize containers	2026-09-12T00:01:32.1560243Z d884d6f49732: Pull complete
+verify	Initialize containers	2026-09-12T00:01:32.1712082Z b36c1b75fdb7: Pull complete
+verify	Initialize containers	2026-09-12T00:01:32.1842221Z f070a6577866: Pull complete
+verify	Initialize containers	2026-09-12T00:01:32.1978240Z 7f3590dcd843: Pull complete
+verify	Initialize containers	2026-09-12T00:01:32.2033938Z Digest: sha256:18cfe3ef5e6815560c98237d6216d1e5119702fb0f3894c8785dd58b8bbe5d73
+verify	Initialize containers	2026-09-12T00:01:32.2052071Z Status: Downloaded newer image for postgres:17.11-alpine
+verify	Initialize containers	2026-09-12T00:01:32.2365609Z docker.io/library/postgres:17.11-alpine
+verify	Initialize containers	2026-09-12T00:01:32.2416408Z ##[command]/usr/bin/docker create --name 5e19617f4f58456c9f043826cfd58e06_postgres1711alpine_cc92f5 --label 9a09fc --network github_network_2ae9d7f7a98542c1ab9201fc38395074 --network-alias postgres -p 5432:5432 --health-cmd "pg_isready -U forge_admin -d forge" --health-interval 2s --health-timeout 2s --health-retries 20 -e "POSTGRES_USER=forge_admin" -e "POSTGRES_PASSWORD=forge_ci_only" -e "POSTGRES_DB=forge" -e GITHUB_ACTIONS=true -e CI=true postgres:17.11-alpine
+verify	Initialize containers	2026-09-12T00:01:32.2734462Z 365e19df6ea17464c3f13621e72f8ecbb0dcd7dfff88612c6ae066813f1e1bb2
+verify	Initialize containers	2026-09-12T00:01:32.2747325Z ##[command]/usr/bin/docker start 365e19df6ea17464c3f13621e72f8ecbb0dcd7dfff88612c6ae066813f1e1bb2
+verify	Initialize containers	2026-09-12T00:01:32.4744972Z 365e19df6ea17464c3f13621e72f8ecbb0dcd7dfff88612c6ae066813f1e1bb2
+verify	Initialize containers	2026-09-12T00:01:32.4756042Z ##[command]/usr/bin/docker ps --all --filter id=365e19df6ea17464c3f13621e72f8ecbb0dcd7dfff88612c6ae066813f1e1bb2 --filter status=running --no-trunc --format "{{.ID}} {{.Status}}"
+verify	Initialize containers	2026-09-12T00:01:32.4892821Z 365e19df6ea17464c3f13621e72f8ecbb0dcd7dfff88612c6ae066813f1e1bb2 Up Less than a second (health: starting)
+verify	Initialize containers	2026-09-12T00:01:32.4907373Z ##[command]/usr/bin/docker port 365e19df6ea17464c3f13621e72f8ecbb0dcd7dfff88612c6ae066813f1e1bb2
+verify	Initialize containers	2026-09-12T00:01:32.5024162Z 5432/tcp -> 0.0.0.0:5432
+verify	Initialize containers	2026-09-12T00:01:32.5024710Z 5432/tcp -> [::]:5432
+verify	Initialize containers	2026-09-12T00:01:32.5055450Z ##[endgroup]
+verify	Initialize containers	2026-09-12T00:01:32.5062298Z ##[group]Waiting for all services to be ready
+verify	Initialize containers	2026-09-12T00:01:32.5072422Z ##[command]/usr/bin/docker inspect --format="{{if .Config.Healthcheck}}{{print .State.Health.Status}}{{end}}" 365e19df6ea17464c3f13621e72f8ecbb0dcd7dfff88612c6ae066813f1e1bb2
+verify	Initialize containers	2026-09-12T00:01:32.5160922Z starting
+verify	Initialize containers	2026-09-12T00:01:32.5172199Z postgres service is starting, waiting 2 seconds before checking again.
+verify	Initialize containers	2026-09-12T00:01:34.5179674Z ##[command]/usr/bin/docker inspect --format="{{if .Config.Healthcheck}}{{print .State.Health.Status}}{{end}}" 365e19df6ea17464c3f13621e72f8ecbb0dcd7dfff88612c6ae066813f1e1bb2
+verify	Initialize containers	2026-09-12T00:01:34.5416077Z starting
+verify	Initialize containers	2026-09-12T00:01:34.5423305Z postgres service is starting, waiting 4 seconds before checking again.
+verify	Initialize containers	2026-09-12T00:01:38.6433136Z ##[command]/usr/bin/docker inspect --format="{{if .Config.Healthcheck}}{{print .State.Health.Status}}{{end}}" 365e19df6ea17464c3f13621e72f8ecbb0dcd7dfff88612c6ae066813f1e1bb2
+verify	Initialize containers	2026-09-12T00:01:38.6541100Z healthy
+verify	Initialize containers	2026-09-12T00:01:38.6550323Z postgres service is healthy.
+verify	Initialize containers	2026-09-12T00:01:38.6551045Z ##[endgroup]
+verify	Run actions/checkout@v4	﻿2026-09-12T00:01:38.6770172Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.6775615Z ##[group]Run actions/checkout@v4
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.6776001Z with:
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.6776243Z   repository: JDinSeattle/forge-runtime
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.6778352Z   token: ***
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.6778609Z   ssh-strict: true
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.6778857Z   ssh-user: git
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.6779076Z   persist-credentials: true
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.6779316Z   clean: true
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.6779555Z   sparse-checkout-cone-mode: true
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.6779835Z   fetch-depth: 1
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.6780046Z   fetch-tags: false
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.6780260Z   show-progress: true
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.6780487Z   lfs: false
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.6780702Z   submodules: false
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.6781018Z   set-safe-directory: true
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.6781263Z   allow-unsafe-pr-checkout: false
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.6781647Z env:
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.6782099Z   FORGE_TEST_DATABASE_URL: ***127.0.0.1:5432/forge?sslmode=disable
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.6782549Z   FORGE_REVIEW_DATABASE_URL: ***127.0.0.1:5432/forge?sslmode=disable
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.6782862Z   FORGE_REVIEW_ALLOW_FIXTURES: 1
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.6783095Z ##[endgroup]
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.7638982Z Syncing repository: JDinSeattle/forge-runtime
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.7640513Z ##[group]Getting Git version info
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.7641056Z Working directory is '/home/runner/work/forge-runtime/forge-runtime'
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.7641778Z [command]/usr/bin/git version
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.7657719Z git version 2.55.0
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.7688799Z ##[endgroup]
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.7708610Z Temporarily overriding HOME='/home/runner/work/_temp/53351920-7db5-46dc-bc7f-b2546b366d93' before making global git config changes
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.7713506Z Adding repository directory to the temporary git global config as a safe directory
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.7714581Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/forge-runtime/forge-runtime
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.7794668Z Deleting the contents of '/home/runner/work/forge-runtime/forge-runtime'
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.7795581Z ##[group]Initializing the repository
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.7796093Z [command]/usr/bin/git init /home/runner/work/forge-runtime/forge-runtime
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.7917844Z hint: Using 'master' as the name for the initial branch. This default branch name
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.7919244Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.7922465Z hint: to use in all of your new repositories, which will suppress this warning,
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.7923090Z hint: call:
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.7924453Z hint:
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.7924872Z hint: 	git config --global init.defaultBranch <name>
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.7925304Z hint:
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.7925743Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.7926356Z hint: 'development'. The just-created branch can be renamed via this command:
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.7928021Z hint:
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.7928362Z hint: 	git branch -m <name>
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.7928723Z hint:
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.7929216Z hint: Disable this message with "git config set advice.defaultBranchName false"
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.7932579Z Initialized empty Git repository in /home/runner/work/forge-runtime/forge-runtime/.git/
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.7939264Z [command]/usr/bin/git remote add origin https://github.com/JDinSeattle/forge-runtime
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.7955437Z ##[endgroup]
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.7956139Z ##[group]Disabling automatic garbage collection
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.7957011Z [command]/usr/bin/git config --local gc.auto 0
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.8007943Z ##[endgroup]
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.8008508Z ##[group]Setting up auth
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.8009028Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.8032560Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.8489562Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.8515937Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.8655002Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.8678053Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.8828997Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.8853034Z ##[endgroup]
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.8853679Z ##[group]Fetching the repository
+verify	Run actions/checkout@v4	2026-09-12T00:01:38.8861761Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +f187925a4036f34c905943f9ae33e2b4dd0a7627:refs/remotes/origin/main
+verify	Run actions/checkout@v4	2026-09-12T00:01:40.4400400Z From https://github.com/JDinSeattle/forge-runtime
+verify	Run actions/checkout@v4	2026-09-12T00:01:40.4401229Z  * [new ref]         f187925a4036f34c905943f9ae33e2b4dd0a7627 -> origin/main
+verify	Run actions/checkout@v4	2026-09-12T00:01:40.4405301Z ##[endgroup]
+verify	Run actions/checkout@v4	2026-09-12T00:01:40.4405881Z ##[group]Determining the checkout info
+verify	Run actions/checkout@v4	2026-09-12T00:01:40.4407279Z ##[endgroup]
+verify	Run actions/checkout@v4	2026-09-12T00:01:40.4412587Z [command]/usr/bin/git sparse-checkout disable
+verify	Run actions/checkout@v4	2026-09-12T00:01:40.4450921Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+verify	Run actions/checkout@v4	2026-09-12T00:01:40.4471485Z ##[group]Checking out the ref
+verify	Run actions/checkout@v4	2026-09-12T00:01:40.4475223Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+verify	Run actions/checkout@v4	2026-09-12T00:01:40.6142679Z Switched to a new branch 'main'
+verify	Run actions/checkout@v4	2026-09-12T00:01:40.6146384Z branch 'main' set up to track 'origin/main'.
+verify	Run actions/checkout@v4	2026-09-12T00:01:40.6157658Z ##[endgroup]
+verify	Run actions/checkout@v4	2026-09-12T00:01:40.6193018Z [command]/usr/bin/git log -1 --format=%H
+verify	Run actions/checkout@v4	2026-09-12T00:01:40.6210685Z f187925a4036f34c905943f9ae33e2b4dd0a7627
+verify	Run actions/setup-go@v5	﻿2026-09-12T00:01:40.6386414Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+verify	Run actions/setup-go@v5	2026-09-12T00:01:40.6387930Z ##[group]Run actions/setup-go@v5
+verify	Run actions/setup-go@v5	2026-09-12T00:01:40.6388244Z with:
+verify	Run actions/setup-go@v5	2026-09-12T00:01:40.6388452Z   go-version: 1.26.8
+verify	Run actions/setup-go@v5	2026-09-12T00:01:40.6388673Z   cache: true
+verify	Run actions/setup-go@v5	2026-09-12T00:01:40.6388863Z   check-latest: false
+verify	Run actions/setup-go@v5	2026-09-12T00:01:40.6390435Z   token: ***
+verify	Run actions/setup-go@v5	2026-09-12T00:01:40.6390647Z env:
+verify	Run actions/setup-go@v5	2026-09-12T00:01:40.6391032Z   FORGE_TEST_DATABASE_URL: ***127.0.0.1:5432/forge?sslmode=disable
+verify	Run actions/setup-go@v5	2026-09-12T00:01:40.6391490Z   FORGE_REVIEW_DATABASE_URL: ***127.0.0.1:5432/forge?sslmode=disable
+verify	Run actions/setup-go@v5	2026-09-12T00:01:40.6391774Z   FORGE_REVIEW_ALLOW_FIXTURES: 1
+verify	Run actions/setup-go@v5	2026-09-12T00:01:40.6392044Z ##[endgroup]
+verify	Run actions/setup-go@v5	2026-09-12T00:01:40.7293410Z Setup go version spec 1.26.8
+verify	Run actions/setup-go@v5	2026-09-12T00:01:40.7380949Z Found in cache @ /opt/hostedtoolcache/go/1.26.8/x64
+verify	Run actions/setup-go@v5	2026-09-12T00:01:40.7382245Z (node:2341) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+verify	Run actions/setup-go@v5	2026-09-12T00:01:40.7383014Z (Use `node --trace-deprecation ...` to show where the warning was created)
+verify	Run actions/setup-go@v5	2026-09-12T00:01:40.7384801Z Added go to the path
+verify	Run actions/setup-go@v5	2026-09-12T00:01:40.7389319Z Successfully set up Go version 1.26.8
+verify	Run actions/setup-go@v5	2026-09-12T00:01:41.7349388Z [command]/opt/hostedtoolcache/go/1.26.8/x64/bin/go env GOMODCACHE
+verify	Run actions/setup-go@v5	2026-09-12T00:01:41.7384309Z [command]/opt/hostedtoolcache/go/1.26.8/x64/bin/go env GOCACHE
+verify	Run actions/setup-go@v5	2026-09-12T00:01:41.7417475Z /home/runner/go/pkg/mod
+verify	Run actions/setup-go@v5	2026-09-12T00:01:41.7447478Z /home/runner/.cache/go-build
+verify	Run actions/setup-go@v5	2026-09-12T00:01:41.9397999Z Cache hit for: setup-go-Linux-x64-ubuntu24-go-1.26.8-cedb9ebd5173b2e560a9f174fcf9d51bd384b906b951b5704fe4bf43d946dc9b
+verify	Run actions/setup-go@v5	2026-09-12T00:01:41.9490447Z (node:2341) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+verify	Run actions/setup-go@v5	2026-09-12T00:01:43.0711955Z Received 117440512 of 524691682 (22.4%), 112.0 MBs/sec
+verify	Run actions/setup-go@v5	2026-09-12T00:01:44.0720809Z Received 297795584 of 524691682 (56.8%), 141.9 MBs/sec
+verify	Run actions/setup-go@v5	2026-09-12T00:01:45.0731757Z Received 507914466 of 524691682 (96.8%), 161.4 MBs/sec
+verify	Run actions/setup-go@v5	2026-09-12T00:01:45.1953452Z Received 524691682 of 524691682 (100.0%), 160.1 MBs/sec
+verify	Run actions/setup-go@v5	2026-09-12T00:01:45.1954630Z Cache Size: ~500 MB (524691682 B)
+verify	Run actions/setup-go@v5	2026-09-12T00:01:45.1983981Z [command]/usr/bin/tar -xf /home/runner/work/_temp/7afdf529-0e6d-42de-a1b0-71444d389d04/cache.tzst -P -C /home/runner/work/forge-runtime/forge-runtime --use-compress-program unzstd
+verify	Run actions/setup-go@v5	2026-09-12T00:02:17.9159676Z Cache restored successfully
+verify	Run actions/setup-go@v5	2026-09-12T00:02:17.9365611Z Cache restored from key: setup-go-Linux-x64-ubuntu24-go-1.26.8-cedb9ebd5173b2e560a9f174fcf9d51bd384b906b951b5704fe4bf43d946dc9b
+verify	Run actions/setup-go@v5	2026-09-12T00:02:17.9391815Z go version go1.26.8 linux/amd64
+verify	Run actions/setup-go@v5	2026-09-12T00:02:17.9392487Z 
+verify	Run actions/setup-go@v5	2026-09-12T00:02:17.9393178Z ##[group]go env
+verify	Run actions/setup-go@v5	2026-09-12T00:02:18.2193876Z AR='ar'
+verify	Run actions/setup-go@v5	2026-09-12T00:02:18.2194545Z CC='gcc'
+verify	Run actions/setup-go@v5	2026-09-12T00:02:18.2195208Z CGO_CFLAGS='-O2 -g'
+verify	Run actions/setup-go@v5	2026-09-12T00:02:18.2195813Z CGO_CPPFLAGS=''
+verify	Run actions/setup-go@v5	2026-09-12T00:02:18.2196226Z CGO_CXXFLAGS='-O2 -g'
+verify	Run actions/setup-go@v5	2026-09-12T00:02:18.2196641Z CGO_ENABLED='1'
+verify	Run actions/setup-go@v5	2026-09-12T00:02:18.2197285Z CGO_FFLAGS='-O2 -g'
+verify	Run actions/setup-go@v5	2026-09-12T00:02:18.2197708Z CGO_LDFLAGS='-O2 -g'
+verify	Run actions/setup-go@v5	2026-09-12T00:02:18.2198106Z CXX='g++'
+verify	Run actions/setup-go@v5	2026-09-12T00:02:18.2198432Z GCCGO='gccgo'
+verify	Run actions/setup-go@v5	2026-09-12T00:02:18.2198757Z GO111MODULE=''
+verify	Run actions/setup-go@v5	2026-09-12T00:02:18.2199181Z GOAMD64='v1'
+verify	Run actions/setup-go@v5	2026-09-12T00:02:18.2199607Z GOARCH='amd64'
+verify	Run actions/setup-go@v5	2026-09-12T00:02:18.2200050Z GOAUTH='netrc'
+verify	Run actions/setup-go@v5	2026-09-12T00:02:18.2200451Z GOBIN=''
+verify	Run actions/setup-go@v5	2026-09-12T00:02:18.2200889Z GOCACHE='/home/runner/.cache/go-build'
+verify	Run actions/setup-go@v5	2026-09-12T00:02:18.2201320Z GOCACHEPROG=''
+verify	Run actions/setup-go@v5	2026-09-12T00:02:18.2201706Z GODEBUG=''
+verify	Run actions/setup-go@v5	2026-09-12T00:02:18.2202100Z GOENV='/home/runner/.config/go/env'
+verify	Run actions/setup-go@v5	2026-09-12T00:02:18.2202496Z GOEXE=''
+verify	Run actions/setup-go@v5	2026-09-12T00:02:18.2202821Z GOEXPERIMENT=''
+verify	Run actions/setup-go@v5	2026-09-12T00:02:18.2203196Z GOFIPS140='off'
+verify	Run actions/setup-go@v5	2026-09-12T00:02:18.2203912Z GOFLAGS=''
+verify	Run actions/setup-go@v5	2026-09-12T00:02:18.2204885Z GOGCCFLAGS='-fPIC -m64 -pthread -Wl,--no-gc-sections -fmessage-length=0 -ffile-prefix-map=/tmp/go-build2630996169=/tmp/go-build -gno-record-gcc-switches'
+verify	Run actions/setup-go@v5	2026-09-12T00:02:18.2205740Z GOHOSTARCH='amd64'
+verify	Run actions/setup-go@v5	2026-09-12T00:02:18.2206132Z GOHOSTOS='linux'
+verify	Run actions/setup-go@v5	2026-09-12T00:02:18.2206480Z GOINSECURE=''
+verify	Run actions/setup-go@v5	2026-09-12T00:02:18.2207022Z GOMOD='/home/runner/work/forge-runtime/forge-runtime/go.mod'
+verify	Run actions/setup-go@v5	2026-09-12T00:02:18.2207527Z GOMODCACHE='/home/runner/go/pkg/mod'
+verify	Run actions/setup-go@v5	2026-09-12T00:02:18.2207982Z GONOPROXY=''
+verify	Run actions/setup-go@v5	2026-09-12T00:02:18.2208396Z GONOSUMDB=''
+verify	Run actions/setup-go@v5	2026-09-12T00:02:18.2208741Z GOOS='linux'
+verify	Run actions/setup-go@v5	2026-09-12T00:02:18.2209146Z GOPATH='/home/runner/go'
+verify	Run actions/setup-go@v5	2026-09-12T00:02:18.2209721Z GOPRIVATE=''
+verify	Run actions/setup-go@v5	2026-09-12T00:02:18.2210149Z GOPROXY='https://proxy.golang.org,direct'
+verify	Run actions/setup-go@v5	2026-09-12T00:02:18.2210728Z GOROOT='/opt/hostedtoolcache/go/1.26.8/x64'
+verify	Run actions/setup-go@v5	2026-09-12T00:02:18.2211170Z GOSUMDB='sum.golang.org'
+verify	Run actions/setup-go@v5	2026-09-12T00:02:18.2211534Z GOTELEMETRY='local'
+verify	Run actions/setup-go@v5	2026-09-12T00:02:18.2211930Z GOTELEMETRYDIR='/home/runner/.config/go/telemetry'
+verify	Run actions/setup-go@v5	2026-09-12T00:02:18.2212325Z GOTMPDIR=''
+verify	Run actions/setup-go@v5	2026-09-12T00:02:18.2212689Z GOTOOLCHAIN='auto'
+verify	Run actions/setup-go@v5	2026-09-12T00:02:18.2213148Z GOTOOLDIR='/opt/hostedtoolcache/go/1.26.8/x64/pkg/tool/linux_amd64'
+verify	Run actions/setup-go@v5	2026-09-12T00:02:18.2213900Z GOVCS=''
+verify	Run actions/setup-go@v5	2026-09-12T00:02:18.2214340Z GOVERSION='go1.26.8'
+verify	Run actions/setup-go@v5	2026-09-12T00:02:18.2214715Z GOWORK=''
+verify	Run actions/setup-go@v5	2026-09-12T00:02:18.2215065Z PKG_CONFIG='pkg-config'
+verify	Run actions/setup-go@v5	2026-09-12T00:02:18.2215333Z 
+verify	Run actions/setup-go@v5	2026-09-12T00:02:18.2215924Z ##[endgroup]
+verify	Run go build -o bin/ ./cmd/...	﻿2026-09-12T00:02:18.2352577Z ##[group]Run go build -o bin/ ./cmd/...
+verify	Run go build -o bin/ ./cmd/...	2026-09-12T00:02:18.2352958Z ^[[36;1mgo build -o bin/ ./cmd/...^[[0m
+verify	Run go build -o bin/ ./cmd/...	2026-09-12T00:02:18.2434319Z shell: /usr/bin/bash -e {0}
+verify	Run go build -o bin/ ./cmd/...	2026-09-12T00:02:18.2434615Z env:
+verify	Run go build -o bin/ ./cmd/...	2026-09-12T00:02:18.2435124Z   FORGE_TEST_DATABASE_URL: ***127.0.0.1:5432/forge?sslmode=disable
+verify	Run go build -o bin/ ./cmd/...	2026-09-12T00:02:18.2435647Z   FORGE_REVIEW_DATABASE_URL: ***127.0.0.1:5432/forge?sslmode=disable
+verify	Run go build -o bin/ ./cmd/...	2026-09-12T00:02:18.2435961Z   FORGE_REVIEW_ALLOW_FIXTURES: 1
+verify	Run go build -o bin/ ./cmd/...	2026-09-12T00:02:18.2436220Z ##[endgroup]
+verify	Run go test ./...	﻿2026-09-12T00:02:36.3783165Z ##[group]Run go test ./...
+verify	Run go test ./...	2026-09-12T00:02:36.3783588Z ^[[36;1mgo test ./...^[[0m
+verify	Run go test ./...	2026-09-12T00:02:36.3805845Z shell: /usr/bin/bash -e {0}
+verify	Run go test ./...	2026-09-12T00:02:36.3806190Z env:
+verify	Run go test ./...	2026-09-12T00:02:36.3806930Z   FORGE_TEST_DATABASE_URL: ***127.0.0.1:5432/forge?sslmode=disable
+verify	Run go test ./...	2026-09-12T00:02:36.3807581Z   FORGE_REVIEW_DATABASE_URL: ***127.0.0.1:5432/forge?sslmode=disable
+verify	Run go test ./...	2026-09-12T00:02:36.3807952Z   FORGE_REVIEW_ALLOW_FIXTURES: 1
+verify	Run go test ./...	2026-09-12T00:02:36.3808247Z ##[endgroup]
+verify	Run go test ./...	2026-09-12T00:02:41.7702597Z ok  	github.com/JDinSeattle/forge-runtime/benchmarks	0.014s
+verify	Run go test ./...	2026-09-12T00:02:41.9108271Z ok  	github.com/JDinSeattle/forge-runtime/cmd/forge	0.137s
+verify	Run go test ./...	2026-09-12T00:02:41.9109462Z ?   	github.com/JDinSeattle/forge-runtime/cmd/forge-admin	[no test files]
+verify	Run go test ./...	2026-09-12T00:02:41.9128356Z ?   	github.com/JDinSeattle/forge-runtime/cmd/forge-api	[no test files]
+verify	Run go test ./...	2026-09-12T00:02:41.9338299Z ok  	github.com/JDinSeattle/forge-runtime/cmd/forge-runner	0.020s
+verify	Run go test ./...	2026-09-12T00:02:41.9349836Z ?   	github.com/JDinSeattle/forge-runtime/cmd/forge-worker	[no test files]
+verify	Run go test ./...	2026-09-12T00:02:41.9367800Z ?   	github.com/JDinSeattle/forge-runtime/db	[no test files]
+verify	Run go test ./...	2026-09-12T00:04:08.9803234Z ok  	github.com/JDinSeattle/forge-runtime/internal/application	82.356s
+verify	Run go test ./...	2026-09-12T00:04:08.9809613Z ok  	github.com/JDinSeattle/forge-runtime/internal/artifact	0.604s
+verify	Run go test ./...	2026-09-12T00:04:08.9810445Z ok  	github.com/JDinSeattle/forge-runtime/internal/configuration	0.009s
+verify	Run go test ./...	2026-09-12T00:04:08.9811940Z ok  	github.com/JDinSeattle/forge-runtime/internal/dependency	0.109s
+verify	Run go test ./...	2026-09-12T00:04:08.9812543Z ok  	github.com/JDinSeattle/forge-runtime/internal/domain	(cached)
+verify	Run go test ./...	2026-09-12T00:04:08.9813180Z ok  	github.com/JDinSeattle/forge-runtime/internal/eventstream	0.068s
+verify	Run go test ./...	2026-09-12T00:04:08.9813669Z ok  	github.com/JDinSeattle/forge-runtime/internal/httpapi	3.669s
+verify	Run go test ./...	2026-09-12T00:04:08.9814293Z ?   	github.com/JDinSeattle/forge-runtime/internal/httpcontract	[no test files]
+verify	Run go test ./...	2026-09-12T00:04:08.9814970Z ok  	github.com/JDinSeattle/forge-runtime/internal/localsetup	0.010s
+verify	Run go test ./...	2026-09-12T00:04:08.9815635Z ok  	github.com/JDinSeattle/forge-runtime/internal/persistence	10.280s
+verify	Run go test ./...	2026-09-12T00:04:08.9816313Z ?   	github.com/JDinSeattle/forge-runtime/internal/persistence/sqlgen	[no test files]
+verify	Run go test ./...	2026-09-12T00:04:08.9817040Z ok  	github.com/JDinSeattle/forge-runtime/internal/provider	0.017s
+verify	Run go test ./...	2026-09-12T00:04:08.9817559Z ok  	github.com/JDinSeattle/forge-runtime/internal/quota	1.966s
+verify	Run go test ./...	2026-09-12T00:04:08.9818794Z ok  	github.com/JDinSeattle/forge-runtime/internal/retention	0.964s
+verify	Run go test ./...	2026-09-12T00:04:08.9819395Z ok  	github.com/JDinSeattle/forge-runtime/internal/runner	3.613s
+verify	Run go test ./...	2026-09-12T00:04:08.9820002Z ok  	github.com/JDinSeattle/forge-runtime/internal/runnerclient	0.858s
+verify	Run go test ./...	2026-09-12T00:04:08.9820507Z ok  	github.com/JDinSeattle/forge-runtime/internal/runtime	0.072s
+verify	Run go test ./...	2026-09-12T00:04:08.9821066Z ok  	github.com/JDinSeattle/forge-runtime/internal/sandbox	0.011s
+verify	Run go test ./...	2026-09-12T00:04:08.9821673Z ok  	github.com/JDinSeattle/forge-runtime/internal/telemetry	1.037s
+verify	Run go test ./...	2026-09-12T00:04:08.9822320Z ?   	github.com/JDinSeattle/forge-runtime/internal/testdb	[no test files]
+verify	Run go test ./...	2026-09-12T00:04:08.9822895Z ?   	github.com/JDinSeattle/forge-runtime/internal/testutil	[no test files]
+verify	Run go test ./...	2026-09-12T00:04:08.9823532Z ?   	github.com/JDinSeattle/forge-runtime/proto/runner/v1	[no test files]
+verify	Run go test ./...	2026-09-12T00:04:08.9824555Z ?   	github.com/JDinSeattle/forge-runtime/scripts/evaluation	[no test files]
+verify	Run go test ./...	2026-09-12T00:04:08.9825180Z ok  	github.com/JDinSeattle/forge-runtime/scripts/faults/application	0.013s
+verify	Run go test ./...	2026-09-12T00:04:08.9825748Z ok  	github.com/JDinSeattle/forge-runtime/tests/client	0.020s
+verify	Run go test ./...	2026-09-12T00:04:08.9826319Z ok  	github.com/JDinSeattle/forge-runtime/tests/review	31.007s
+verify	Run go test -race ./...	﻿2026-09-12T00:04:09.0051168Z ##[group]Run go test -race ./...
+verify	Run go test -race ./...	2026-09-12T00:04:09.0051552Z ^[[36;1mgo test -race ./...^[[0m
+verify	Run go test -race ./...	2026-09-12T00:04:09.0077487Z shell: /usr/bin/bash -e {0}
+verify	Run go test -race ./...	2026-09-12T00:04:09.0077987Z env:
+verify	Run go test -race ./...	2026-09-12T00:04:09.0078998Z   FORGE_TEST_DATABASE_URL: ***127.0.0.1:5432/forge?sslmode=disable
+verify	Run go test -race ./...	2026-09-12T00:04:09.0079728Z   FORGE_REVIEW_DATABASE_URL: ***127.0.0.1:5432/forge?sslmode=disable
+verify	Run go test -race ./...	2026-09-12T00:04:09.0080181Z   FORGE_REVIEW_ALLOW_FIXTURES: 1
+verify	Run go test -race ./...	2026-09-12T00:04:09.0080528Z ##[endgroup]
+verify	Run go test -race ./...	2026-09-12T00:04:18.9558288Z ok  	github.com/JDinSeattle/forge-runtime/benchmarks	1.042s
+verify	Run go test -race ./...	2026-09-12T00:04:19.5185453Z ok  	github.com/JDinSeattle/forge-runtime/cmd/forge	1.142s
+verify	Run go test -race ./...	2026-09-12T00:04:19.5186099Z ?   	github.com/JDinSeattle/forge-runtime/cmd/forge-admin	[no test files]
+verify	Run go test -race ./...	2026-09-12T00:04:19.5187000Z ?   	github.com/JDinSeattle/forge-runtime/cmd/forge-api	[no test files]
+verify	Run go test -race ./...	2026-09-12T00:04:20.0898768Z ok  	github.com/JDinSeattle/forge-runtime/cmd/forge-runner	1.089s
+verify	Run go test -race ./...	2026-09-12T00:04:20.0906386Z ?   	github.com/JDinSeattle/forge-runtime/cmd/forge-worker	[no test files]
+verify	Run go test -race ./...	2026-09-12T00:04:20.0948752Z ?   	github.com/JDinSeattle/forge-runtime/db	[no test files]
+verify	Run go test -race ./...	2026-09-12T00:06:07.6218242Z ok  	github.com/JDinSeattle/forge-runtime/internal/application	101.598s
+verify	Run go test -race ./...	2026-09-12T00:06:07.6218869Z ok  	github.com/JDinSeattle/forge-runtime/internal/artifact	1.340s
+verify	Run go test -race ./...	2026-09-12T00:06:07.6219256Z ok  	github.com/JDinSeattle/forge-runtime/internal/configuration	1.030s
+verify	Run go test -race ./...	2026-09-12T00:06:07.6219675Z ok  	github.com/JDinSeattle/forge-runtime/internal/dependency	1.117s
+verify	Run go test -race ./...	2026-09-12T00:06:07.6220059Z ok  	github.com/JDinSeattle/forge-runtime/internal/domain	(cached)
+verify	Run go test -race ./...	2026-09-12T00:06:07.6220485Z ok  	github.com/JDinSeattle/forge-runtime/internal/eventstream	1.079s
+verify	Run go test -race ./...	2026-09-12T00:06:07.6220895Z ok  	github.com/JDinSeattle/forge-runtime/internal/httpapi	4.849s
+verify	Run go test -race ./...	2026-09-12T00:06:07.6221534Z ?   	github.com/JDinSeattle/forge-runtime/internal/httpcontract	[no test files]
+verify	Run go test -race ./...	2026-09-12T00:06:07.6222061Z ok  	github.com/JDinSeattle/forge-runtime/internal/localsetup	1.032s
+verify	Run go test -race ./...	2026-09-12T00:06:07.6222611Z ok  	github.com/JDinSeattle/forge-runtime/internal/persistence	14.906s
+verify	Run go test -race ./...	2026-09-12T00:06:07.6223210Z ?   	github.com/JDinSeattle/forge-runtime/internal/persistence/sqlgen	[no test files]
+verify	Run go test -race ./...	2026-09-12T00:06:07.6223761Z ok  	github.com/JDinSeattle/forge-runtime/internal/provider	1.085s
+verify	Run go test -race ./...	2026-09-12T00:06:07.6224240Z ok  	github.com/JDinSeattle/forge-runtime/internal/quota	3.430s
+verify	Run go test -race ./...	2026-09-12T00:06:07.6224759Z ok  	github.com/JDinSeattle/forge-runtime/internal/retention	2.115s
+verify	Run go test -race ./...	2026-09-12T00:06:07.6225235Z ok  	github.com/JDinSeattle/forge-runtime/internal/runner	8.416s
+verify	Run go test -race ./...	2026-09-12T00:06:07.6226011Z ok  	github.com/JDinSeattle/forge-runtime/internal/runnerclient	1.994s
+verify	Run go test -race ./...	2026-09-12T00:06:07.6226462Z ok  	github.com/JDinSeattle/forge-runtime/internal/runtime	1.694s
+verify	Run go test -race ./...	2026-09-12T00:06:07.6227025Z ok  	github.com/JDinSeattle/forge-runtime/internal/sandbox	1.020s
+verify	Run go test -race ./...	2026-09-12T00:06:07.6227411Z ok  	github.com/JDinSeattle/forge-runtime/internal/telemetry	2.159s
+verify	Run go test -race ./...	2026-09-12T00:06:07.6227825Z ?   	github.com/JDinSeattle/forge-runtime/internal/testdb	[no test files]
+verify	Run go test -race ./...	2026-09-12T00:06:07.6228255Z ?   	github.com/JDinSeattle/forge-runtime/internal/testutil	[no test files]
+verify	Run go test -race ./...	2026-09-12T00:06:07.6228712Z ?   	github.com/JDinSeattle/forge-runtime/proto/runner/v1	[no test files]
+verify	Run go test -race ./...	2026-09-12T00:06:07.6229107Z ?   	github.com/JDinSeattle/forge-runtime/scripts/evaluation	[no test files]
+verify	Run go test -race ./...	2026-09-12T00:06:07.6229561Z ok  	github.com/JDinSeattle/forge-runtime/scripts/faults/application	1.037s
+verify	Run go test -race ./...	2026-09-12T00:06:07.6229929Z ok  	github.com/JDinSeattle/forge-runtime/tests/client	1.151s
+verify	Run go test -race ./...	2026-09-12T00:06:17.1856636Z ok  	github.com/JDinSeattle/forge-runtime/tests/review	38.371s
+verify	Run go vet ./...	﻿2026-09-12T00:06:17.2152958Z ##[group]Run go vet ./...
+verify	Run go vet ./...	2026-09-12T00:06:17.2153407Z ^[[36;1mgo vet ./...^[[0m
+verify	Run go vet ./...	2026-09-12T00:06:17.2185459Z shell: /usr/bin/bash -e {0}
+verify	Run go vet ./...	2026-09-12T00:06:17.2185816Z env:
+verify	Run go vet ./...	2026-09-12T00:06:17.2186677Z   FORGE_TEST_DATABASE_URL: ***127.0.0.1:5432/forge?sslmode=disable
+verify	Run go vet ./...	2026-09-12T00:06:17.2187661Z   FORGE_REVIEW_DATABASE_URL: ***127.0.0.1:5432/forge?sslmode=disable
+verify	Run go vet ./...	2026-09-12T00:06:17.2188166Z   FORGE_REVIEW_ALLOW_FIXTURES: 1
+verify	Run go vet ./...	2026-09-12T00:06:17.2188504Z ##[endgroup]
+verify	Install pinned protoc compiler	﻿2026-09-12T00:06:19.3250962Z ##[group]Run curl --fail --location --retry 3 https://github.com/protocolbuffers/protobuf/releases/download/v36.1/protoc-36.1-linux-x86_64.zip -o "$RUNNER_TEMP/protoc.zip"
+verify	Install pinned protoc compiler	2026-09-12T00:06:19.3252316Z ^[[36;1mcurl --fail --location --retry 3 https://github.com/protocolbuffers/protobuf/releases/download/v36.1/protoc-36.1-linux-x86_64.zip -o "$RUNNER_TEMP/protoc.zip"^[[0m
+verify	Install pinned protoc compiler	2026-09-12T00:06:19.3253221Z ^[[36;1munzip -q "$RUNNER_TEMP/protoc.zip" -d "$RUNNER_TEMP/forge-protoc"^[[0m
+verify	Install pinned protoc compiler	2026-09-12T00:06:19.3253856Z ^[[36;1mecho "$RUNNER_TEMP/forge-protoc/bin" >> "$GITHUB_PATH"^[[0m
+verify	Install pinned protoc compiler	2026-09-12T00:06:19.3281058Z shell: /usr/bin/bash -e {0}
+verify	Install pinned protoc compiler	2026-09-12T00:06:19.3281435Z env:
+verify	Install pinned protoc compiler	2026-09-12T00:06:19.3282175Z   FORGE_TEST_DATABASE_URL: ***127.0.0.1:5432/forge?sslmode=disable
+verify	Install pinned protoc compiler	2026-09-12T00:06:19.3282921Z   FORGE_REVIEW_DATABASE_URL: ***127.0.0.1:5432/forge?sslmode=disable
+verify	Install pinned protoc compiler	2026-09-12T00:06:19.3283365Z   FORGE_REVIEW_ALLOW_FIXTURES: 1
+verify	Install pinned protoc compiler	2026-09-12T00:06:19.3283715Z ##[endgroup]
+verify	Install pinned protoc compiler	2026-09-12T00:06:19.3406593Z   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+verify	Install pinned protoc compiler	2026-09-12T00:06:19.3409294Z                                  Dload  Upload   Total   Spent    Left  Speed
+verify	Install pinned protoc compiler	2026-09-12T00:06:19.3409598Z 
+verify	Install pinned protoc compiler	2026-09-12T00:06:19.5117074Z   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+verify	Install pinned protoc compiler	2026-09-12T00:06:19.5117797Z   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+verify	Install pinned protoc compiler	2026-09-12T00:06:19.6324208Z 
+verify	Install pinned protoc compiler	2026-09-12T00:06:19.7205641Z  10 3592k   10  366k    0     0  1255k      0  0:00:02 --:--:--  0:00:02 1255k
+verify	Install pinned protoc compiler	2026-09-12T00:06:19.7224398Z 100 3592k  100 3592k    0     0  9468k      0 --:--:-- --:--:-- --:--:-- 36.2M
+verify	Run make check-generated	﻿2026-09-12T00:06:19.8185737Z ##[group]Run make check-generated
+verify	Run make check-generated	2026-09-12T00:06:19.8186139Z ^[[36;1mmake check-generated^[[0m
+verify	Run make check-generated	2026-09-12T00:06:19.8207709Z shell: /usr/bin/bash -e {0}
+verify	Run make check-generated	2026-09-12T00:06:19.8208085Z env:
+verify	Run make check-generated	2026-09-12T00:06:19.8208539Z   FORGE_TEST_DATABASE_URL: ***127.0.0.1:5432/forge?sslmode=disable
+verify	Run make check-generated	2026-09-12T00:06:19.8209027Z   FORGE_REVIEW_DATABASE_URL: ***127.0.0.1:5432/forge?sslmode=disable
+verify	Run make check-generated	2026-09-12T00:06:19.8209347Z   FORGE_REVIEW_ALLOW_FIXTURES: 1
+verify	Run make check-generated	2026-09-12T00:06:19.8209611Z ##[endgroup]
+verify	Run make check-generated	2026-09-12T00:06:19.8539834Z sh api/check-generated.sh
+verify	Run make check-generated	2026-09-12T00:06:20.7111273Z sh db/check-generated.sh
+verify	Run make check-generated	2026-09-12T00:06:21.1273141Z sh proto/check-generated.sh
+verify	Run python3 -m unittest discover -s scripts/workspace-volumes -p 'test_*.py' -v	﻿2026-09-12T00:06:21.3490146Z ##[group]Run python3 -m unittest discover -s scripts/workspace-volumes -p 'test_*.py' -v
+verify	Run python3 -m unittest discover -s scripts/workspace-volumes -p 'test_*.py' -v	2026-09-12T00:06:21.3491332Z ^[[36;1mpython3 -m unittest discover -s scripts/workspace-volumes -p 'test_*.py' -v^[[0m
+verify	Run python3 -m unittest discover -s scripts/workspace-volumes -p 'test_*.py' -v	2026-09-12T00:06:21.3516505Z shell: /usr/bin/bash -e {0}
+verify	Run python3 -m unittest discover -s scripts/workspace-volumes -p 'test_*.py' -v	2026-09-12T00:06:21.3517320Z env:
+verify	Run python3 -m unittest discover -s scripts/workspace-volumes -p 'test_*.py' -v	2026-09-12T00:06:21.3517958Z   FORGE_TEST_DATABASE_URL: ***127.0.0.1:5432/forge?sslmode=disable
+verify	Run python3 -m unittest discover -s scripts/workspace-volumes -p 'test_*.py' -v	2026-09-12T00:06:21.3518731Z   FORGE_REVIEW_DATABASE_URL: ***127.0.0.1:5432/forge?sslmode=disable
+verify	Run python3 -m unittest discover -s scripts/workspace-volumes -p 'test_*.py' -v	2026-09-12T00:06:21.3519218Z   FORGE_REVIEW_ALLOW_FIXTURES: 1
+verify	Run python3 -m unittest discover -s scripts/workspace-volumes -p 'test_*.py' -v	2026-09-12T00:06:21.3519583Z ##[endgroup]
+verify	Run python3 -m unittest discover -s scripts/workspace-volumes -p 'test_*.py' -v	2026-09-12T00:06:21.6685177Z test_commands_have_fixed_binary_clean_environment_and_no_shell (test_volumes.StorageValidation.test_commands_have_fixed_binary_clean_environment_and_no_shell) ... ok
+verify	Run python3 -m unittest discover -s scripts/workspace-volumes -p 'test_*.py' -v	2026-09-12T00:06:21.6698141Z test_duplicate_loop_mappings_are_not_adopted (test_volumes.StorageValidation.test_duplicate_loop_mappings_are_not_adopted) ... ok
+verify	Run python3 -m unittest discover -s scripts/workspace-volumes -p 'test_*.py' -v	2026-09-12T00:06:21.7027101Z test_exclusive_prepare_then_repeat_only_inspects (test_volumes.StorageValidation.test_exclusive_prepare_then_repeat_only_inspects) ... ok
+verify	Run python3 -m unittest discover -s scripts/workspace-volumes -p 'test_*.py' -v	2026-09-12T00:06:21.7032127Z test_fixed_manifest_rejects_scope_and_path_changes (test_volumes.StorageValidation.test_fixed_manifest_rejects_scope_and_path_changes) ... ok
+verify	Run python3 -m unittest discover -s scripts/workspace-volumes -p 'test_*.py' -v	2026-09-12T00:06:21.7037158Z test_image_replacement_is_detected_before_filesystem_probe (test_volumes.StorageValidation.test_image_replacement_is_detected_before_filesystem_probe) ... ok
+verify	Run python3 -m unittest discover -s scripts/workspace-volumes -p 'test_*.py' -v	2026-09-12T00:06:21.7102889Z test_json_metadata_rejects_hardlink_and_bad_owner (test_volumes.StorageValidation.test_json_metadata_rejects_hardlink_and_bad_owner) ... ok
+verify	Run python3 -m unittest discover -s scripts/workspace-volumes -p 'test_*.py' -v	2026-09-12T00:06:21.7105851Z test_live_capacity_rejects_host_directory_before_reading_sysfs (test_volumes.StorageValidation.test_live_capacity_rejects_host_directory_before_reading_sysfs) ... ok
+verify	Run python3 -m unittest discover -s scripts/workspace-volumes -p 'test_*.py' -v	2026-09-12T00:06:21.7110460Z test_loop_identity_and_options_fail_closed (test_volumes.StorageValidation.test_loop_identity_and_options_fail_closed) ... ok
+verify	Run python3 -m unittest discover -s scripts/workspace-volumes -p 'test_*.py' -v	2026-09-12T00:06:21.7113452Z test_mountinfo_handles_spaces_and_rejects_stacking (test_volumes.StorageValidation.test_mountinfo_handles_spaces_and_rejects_stacking) ... ok
+verify	Run python3 -m unittest discover -s scripts/workspace-volumes -p 'test_*.py' -v	2026-09-12T00:06:21.7128318Z test_prepare_never_formats_existing_unrecorded_file (test_volumes.StorageValidation.test_prepare_never_formats_existing_unrecorded_file) ... ok
+verify	Run python3 -m unittest discover -s scripts/workspace-volumes -p 'test_*.py' -v	2026-09-12T00:06:21.7129669Z test_symlink_ancestor_and_leaf_are_rejected (test_volumes.StorageValidation.test_symlink_ancestor_and_leaf_are_rejected) ... ok
+verify	Run python3 -m unittest discover -s scripts/workspace-volumes -p 'test_*.py' -v	2026-09-12T00:06:21.7130879Z test_unmount_refuses_foreign_state_without_any_command (test_volumes.StorageValidation.test_unmount_refuses_foreign_state_without_any_command) ... ok
+verify	Run python3 -m unittest discover -s scripts/workspace-volumes -p 'test_*.py' -v	2026-09-12T00:06:21.7137925Z test_unmount_retains_state_when_detach_is_not_confirmed (test_volumes.StorageValidation.test_unmount_retains_state_when_detach_is_not_confirmed) ... ok
+verify	Run python3 -m unittest discover -s scripts/workspace-volumes -p 'test_*.py' -v	2026-09-12T00:06:21.7141158Z test_unready_manifest_cannot_reach_privileged_stage (test_volumes.StorageValidation.test_unready_manifest_cannot_reach_privileged_stage) ... ok
+verify	Run python3 -m unittest discover -s scripts/workspace-volumes -p 'test_*.py' -v	2026-09-12T00:06:21.7142419Z 
+verify	Run python3 -m unittest discover -s scripts/workspace-volumes -p 'test_*.py' -v	2026-09-12T00:06:21.7142838Z ----------------------------------------------------------------------
+verify	Run python3 -m unittest discover -s scripts/workspace-volumes -p 'test_*.py' -v	2026-09-12T00:06:21.7143530Z Ran 14 tests in 0.046s
+verify	Run python3 -m unittest discover -s scripts/workspace-volumes -p 'test_*.py' -v	2026-09-12T00:06:21.7143844Z 
+verify	Run python3 -m unittest discover -s scripts/workspace-volumes -p 'test_*.py' -v	2026-09-12T00:06:21.7144104Z OK
+verify	Run python3 -m unittest discover -s cmd/forge-runner -p 'test_*.py' -v	﻿2026-09-12T00:06:21.7292607Z ##[group]Run python3 -m unittest discover -s cmd/forge-runner -p 'test_*.py' -v
+verify	Run python3 -m unittest discover -s cmd/forge-runner -p 'test_*.py' -v	2026-09-12T00:06:21.7293257Z ^[[36;1mpython3 -m unittest discover -s cmd/forge-runner -p 'test_*.py' -v^[[0m
+verify	Run python3 -m unittest discover -s cmd/forge-runner -p 'test_*.py' -v	2026-09-12T00:06:21.7314288Z shell: /usr/bin/bash -e {0}
+verify	Run python3 -m unittest discover -s cmd/forge-runner -p 'test_*.py' -v	2026-09-12T00:06:21.7314699Z env:
+verify	Run python3 -m unittest discover -s cmd/forge-runner -p 'test_*.py' -v	2026-09-12T00:06:21.7315304Z   FORGE_TEST_DATABASE_URL: ***127.0.0.1:5432/forge?sslmode=disable
+verify	Run python3 -m unittest discover -s cmd/forge-runner -p 'test_*.py' -v	2026-09-12T00:06:21.7316017Z   FORGE_REVIEW_DATABASE_URL: ***127.0.0.1:5432/forge?sslmode=disable
+verify	Run python3 -m unittest discover -s cmd/forge-runner -p 'test_*.py' -v	2026-09-12T00:06:21.7316458Z   FORGE_REVIEW_ALLOW_FIXTURES: 1
+verify	Run python3 -m unittest discover -s cmd/forge-runner -p 'test_*.py' -v	2026-09-12T00:06:21.7317272Z ##[endgroup]
+verify	Run python3 -m unittest discover -s cmd/forge-runner -p 'test_*.py' -v	2026-09-12T00:06:21.7931086Z test_fresh_mixed_profiles_require_their_own_explicit_digests (test_configure_local.ConfigurationBoundaryTests.test_fresh_mixed_profiles_require_their_own_explicit_digests) ... ok
+verify	Run python3 -m unittest discover -s cmd/forge-runner -p 'test_*.py' -v	2026-09-12T00:06:21.7933465Z test_preserves_control_paths_and_replaces_only_explicit_config (test_configure_local.ConfigurationBoundaryTests.test_preserves_control_paths_and_replaces_only_explicit_config) ... ok
+verify	Run python3 -m unittest discover -s cmd/forge-runner -p 'test_*.py' -v	2026-09-12T00:06:21.7937892Z test_python_cannot_enable_executable_tmpfs (test_configure_local.ConfigurationBoundaryTests.test_python_cannot_enable_executable_tmpfs) ... ok
+verify	Run python3 -m unittest discover -s cmd/forge-runner -p 'test_*.py' -v	2026-09-12T00:06:21.7939633Z test_python_image_does_not_overwrite_pinned_go_profile (test_configure_local.ConfigurationBoundaryTests.test_python_image_does_not_overwrite_pinned_go_profile) ... ok
+verify	Run python3 -m unittest discover -s cmd/forge-runner -p 'test_*.py' -v	2026-09-12T00:06:21.7943137Z test_rejects_changed_scope_even_when_mount_digest_recomputed (test_configure_local.ConfigurationBoundaryTests.test_rejects_changed_scope_even_when_mount_digest_recomputed) ... ok
+verify	Run python3 -m unittest discover -s cmd/forge-runner -p 'test_*.py' -v	2026-09-12T00:06:21.7945894Z test_rejects_outside_image_and_duplicate_image_identity (test_configure_local.ConfigurationBoundaryTests.test_rejects_outside_image_and_duplicate_image_identity) ... ok
+verify	Run python3 -m unittest discover -s cmd/forge-runner -p 'test_*.py' -v	2026-09-12T00:06:21.7949879Z test_rejects_partial_stale_or_aliased_mount_records (test_configure_local.ConfigurationBoundaryTests.test_rejects_partial_stale_or_aliased_mount_records) ... ok
+verify	Run python3 -m unittest discover -s cmd/forge-runner -p 'test_*.py' -v	2026-09-12T00:06:21.7956560Z test_requires_explicit_digest_unix_socket_and_nonroot_real_profile (test_configure_local.ConfigurationBoundaryTests.test_requires_explicit_digest_unix_socket_and_nonroot_real_profile) ... ok
+verify	Run python3 -m unittest discover -s cmd/forge-runner -p 'test_*.py' -v	2026-09-12T00:06:21.7958223Z 
+verify	Run python3 -m unittest discover -s cmd/forge-runner -p 'test_*.py' -v	2026-09-12T00:06:21.7958895Z ----------------------------------------------------------------------
+verify	Run python3 -m unittest discover -s cmd/forge-runner -p 'test_*.py' -v	2026-09-12T00:06:21.7959385Z Ran 8 tests in 0.004s
+verify	Run python3 -m unittest discover -s cmd/forge-runner -p 'test_*.py' -v	2026-09-12T00:06:21.7959620Z 
+verify	Run python3 -m unittest discover -s cmd/forge-runner -p 'test_*.py' -v	2026-09-12T00:06:21.7959832Z OK
+verify	Run python3 -I -m unittest discover -s scripts/recovery -p 'test_*.py' -v	﻿2026-09-12T00:06:21.8045833Z ##[group]Run python3 -I -m unittest discover -s scripts/recovery -p 'test_*.py' -v
+verify	Run python3 -I -m unittest discover -s scripts/recovery -p 'test_*.py' -v	2026-09-12T00:06:21.8046446Z ^[[36;1mpython3 -I -m unittest discover -s scripts/recovery -p 'test_*.py' -v^[[0m
+verify	Run python3 -I -m unittest discover -s scripts/recovery -p 'test_*.py' -v	2026-09-12T00:06:21.8063673Z shell: /usr/bin/bash -e {0}
+verify	Run python3 -I -m unittest discover -s scripts/recovery -p 'test_*.py' -v	2026-09-12T00:06:21.8063997Z env:
+verify	Run python3 -I -m unittest discover -s scripts/recovery -p 'test_*.py' -v	2026-09-12T00:06:21.8064426Z   FORGE_TEST_DATABASE_URL: ***127.0.0.1:5432/forge?sslmode=disable
+verify	Run python3 -I -m unittest discover -s scripts/recovery -p 'test_*.py' -v	2026-09-12T00:06:21.8064858Z   FORGE_REVIEW_DATABASE_URL: ***127.0.0.1:5432/forge?sslmode=disable
+verify	Run python3 -I -m unittest discover -s scripts/recovery -p 'test_*.py' -v	2026-09-12T00:06:21.8065250Z   FORGE_REVIEW_ALLOW_FIXTURES: 1
+verify	Run python3 -I -m unittest discover -s scripts/recovery -p 'test_*.py' -v	2026-09-12T00:06:21.8065493Z ##[endgroup]
+verify	Run python3 -I -m unittest discover -s scripts/recovery -p 'test_*.py' -v	2026-09-12T00:06:21.8771689Z test_copy_tree_never_traverses_symlink (test_recovery.RecoveryTests.test_copy_tree_never_traverses_symlink) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/recovery -p 'test_*.py' -v	2026-09-12T00:06:21.8789054Z test_manifest_detects_tamper_extra_and_symlink (test_recovery.RecoveryTests.test_manifest_detects_tamper_extra_and_symlink) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/recovery -p 'test_*.py' -v	2026-09-12T00:06:21.8794660Z test_partial_freeze_only_thaws_known_frozen_set (test_recovery.RecoveryTests.test_partial_freeze_only_thaws_known_frozen_set) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/recovery -p 'test_*.py' -v	2026-09-12T00:06:21.8804883Z test_pg_environment_requires_loopback_and_has_no_shell (test_recovery.RecoveryTests.test_pg_environment_requires_loopback_and_has_no_shell) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/recovery -p 'test_*.py' -v	2026-09-12T00:06:21.8829245Z test_prepare_has_private_scope_even_under_umask_022 (test_recovery.RecoveryTests.test_prepare_has_private_scope_even_under_umask_022) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/recovery -p 'test_*.py' -v	2026-09-12T00:06:21.8832214Z test_private_path_rejects_writable_scope_and_symlinks (test_recovery.RecoveryTests.test_private_path_rejects_writable_scope_and_symlinks) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/recovery -p 'test_*.py' -v	2026-09-12T00:06:21.8865407Z test_registry_refuses_wrong_durable_identity (test_recovery.RecoveryTests.test_registry_refuses_wrong_durable_identity) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/recovery -p 'test_*.py' -v	2026-09-12T00:06:21.8911146Z test_registry_relocation_preserves_durable_id_and_source_copy (test_recovery.RecoveryTests.test_registry_relocation_preserves_durable_id_and_source_copy) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/recovery -p 'test_*.py' -v	2026-09-12T00:06:21.8912580Z test_scope_never_accepts_absolute_traversal_or_shell_text (test_recovery.RecoveryTests.test_scope_never_accepts_absolute_traversal_or_shell_text) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/recovery -p 'test_*.py' -v	2026-09-12T00:06:21.8917123Z test_thaw_failure_still_attempts_every_mount_and_close (test_recovery.RecoveryTests.test_thaw_failure_still_attempts_every_mount_and_close) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/recovery -p 'test_*.py' -v	2026-09-12T00:06:21.8918092Z 
+verify	Run python3 -I -m unittest discover -s scripts/recovery -p 'test_*.py' -v	2026-09-12T00:06:21.8918632Z ----------------------------------------------------------------------
+verify	Run python3 -I -m unittest discover -s scripts/recovery -p 'test_*.py' -v	2026-09-12T00:06:21.8919451Z Ran 10 tests in 0.015s
+verify	Run python3 -I -m unittest discover -s scripts/recovery -p 'test_*.py' -v	2026-09-12T00:06:21.8919787Z 
+verify	Run python3 -I -m unittest discover -s scripts/recovery -p 'test_*.py' -v	2026-09-12T00:06:21.8920017Z OK
+verify	Run python3 -I -m unittest discover -s scripts/recovery -p 'test_*.py' -v	2026-09-12T00:06:21.8927896Z Source fixture prepared; current live four-volume pool was not touched.
+verify	Run python3 -I -m unittest discover -s scripts/recovery -p 'test_*.py' -v	2026-09-12T00:06:21.8928918Z Next: sudo /usr/bin/python3 -I '/tmp/tmpe1in_7lu/rehearsals/rfixture/source/scripts/workspace-volumes/mount.py' mount
+verify	Run python3 -I -m unittest discover -s scripts/recovery -p 'test_*.py' -v	2026-09-12T00:06:21.8929763Z Then: python3 -I scripts/recovery/rehearse.py source-config --id rfixture
+verify	Run python3 -I -m unittest discover -s scripts/evaluation -p 'test_*.py' -v	﻿2026-09-12T00:06:21.9059303Z ##[group]Run python3 -I -m unittest discover -s scripts/evaluation -p 'test_*.py' -v
+verify	Run python3 -I -m unittest discover -s scripts/evaluation -p 'test_*.py' -v	2026-09-12T00:06:21.9059977Z ^[[36;1mpython3 -I -m unittest discover -s scripts/evaluation -p 'test_*.py' -v^[[0m
+verify	Run python3 -I -m unittest discover -s scripts/evaluation -p 'test_*.py' -v	2026-09-12T00:06:21.9079671Z shell: /usr/bin/bash -e {0}
+verify	Run python3 -I -m unittest discover -s scripts/evaluation -p 'test_*.py' -v	2026-09-12T00:06:21.9080013Z env:
+verify	Run python3 -I -m unittest discover -s scripts/evaluation -p 'test_*.py' -v	2026-09-12T00:06:21.9080686Z   FORGE_TEST_DATABASE_URL: ***127.0.0.1:5432/forge?sslmode=disable
+verify	Run python3 -I -m unittest discover -s scripts/evaluation -p 'test_*.py' -v	2026-09-12T00:06:21.9081329Z   FORGE_REVIEW_DATABASE_URL: ***127.0.0.1:5432/forge?sslmode=disable
+verify	Run python3 -I -m unittest discover -s scripts/evaluation -p 'test_*.py' -v	2026-09-12T00:06:21.9081801Z   FORGE_REVIEW_ALLOW_FIXTURES: 1
+verify	Run python3 -I -m unittest discover -s scripts/evaluation -p 'test_*.py' -v	2026-09-12T00:06:21.9082120Z ##[endgroup]
+verify	Run python3 -I -m unittest discover -s scripts/evaluation -p 'test_*.py' -v	2026-09-12T00:06:21.9739120Z test_audit_rejects_nonlocal_or_implicit_database (test_evaluation.EvaluationTests.test_audit_rejects_nonlocal_or_implicit_database) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/evaluation -p 'test_*.py' -v	2026-09-12T00:06:21.9760207Z test_corpus_digest_changes_with_bytes_order_or_executable_bit (test_evaluation.EvaluationTests.test_corpus_digest_changes_with_bytes_order_or_executable_bit) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/evaluation -p 'test_*.py' -v	2026-09-12T00:06:21.9763390Z test_fake_missing_budget_overbudget_and_missing_prices_fail (test_evaluation.EvaluationTests.test_fake_missing_budget_overbudget_and_missing_prices_fail) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/evaluation -p 'test_*.py' -v	2026-09-12T00:06:21.9782001Z test_fixed_corpus_has_four_disjoint_cases_and_exact_bytes (test_evaluation.EvaluationTests.test_fixed_corpus_has_four_disjoint_cases_and_exact_bytes) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/evaluation -p 'test_*.py' -v	2026-09-12T00:06:21.9789204Z test_go_cache_inherits_explicit_configuration_or_go_default (test_evaluation.EvaluationTests.test_go_cache_inherits_explicit_configuration_or_go_default) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/evaluation -p 'test_*.py' -v	2026-09-12T00:06:21.9790358Z test_grader_selection_is_fixed (test_evaluation.EvaluationTests.test_grader_selection_is_fixed) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/evaluation -p 'test_*.py' -v	2026-09-12T00:06:21.9791679Z test_oracle_requires_an_executed_assertion_not_just_exit_one (test_evaluation.EvaluationTests.test_oracle_requires_an_executed_assertion_not_just_exit_one) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/evaluation -p 'test_*.py' -v	2026-09-12T00:06:23.0873186Z test_prepare_writes_candidate_only_and_validation_never_runs_cli (test_evaluation.EvaluationTests.test_prepare_writes_candidate_only_and_validation_never_runs_cli) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/evaluation -p 'test_*.py' -v	2026-09-12T00:06:23.3756353Z test_production_model_spec_serialization_preserves_quote_zero_and_omission (test_evaluation.EvaluationTests.test_production_model_spec_serialization_preserves_quote_zero_and_omission) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/evaluation -p 'test_*.py' -v	2026-09-12T00:06:23.5499848Z test_report_creation_is_exclusive_and_atomic_replacement_is_explicit (test_evaluation.EvaluationTests.test_report_creation_is_exclusive_and_atomic_replacement_is_explicit) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/evaluation -p 'test_*.py' -v	2026-09-12T00:06:23.5501271Z test_report_keeps_failed_dispatched_unknown_reservation (test_evaluation.EvaluationTests.test_report_keeps_failed_dispatched_unknown_reservation) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/evaluation -p 'test_*.py' -v	2026-09-12T00:06:25.5548573Z test_timeout_stops_owned_helper_and_its_child (test_evaluation.EvaluationTests.test_timeout_stops_owned_helper_and_its_child) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/evaluation -p 'test_*.py' -v	2026-09-12T00:06:25.5558196Z test_unconfirmed_submission_never_disappears_from_budget_report (test_evaluation.EvaluationTests.test_unconfirmed_submission_never_disappears_from_budget_report) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/evaluation -p 'test_*.py' -v	2026-09-12T00:06:25.5559910Z test_unknown_quote_needs_positive_bound_and_anthropic_cache_rates (test_evaluation.EvaluationTests.test_unknown_quote_needs_positive_bound_and_anthropic_cache_rates) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/evaluation -p 'test_*.py' -v	2026-09-12T00:06:25.5562920Z test_v1_archive_reconstructs_original_failed_revision_hash (test_evaluation.EvaluationTests.test_v1_archive_reconstructs_original_failed_revision_hash) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/evaluation -p 'test_*.py' -v	2026-09-12T00:06:25.5577500Z 
+verify	Run python3 -I -m unittest discover -s scripts/evaluation -p 'test_*.py' -v	2026-09-12T00:06:25.5578585Z ----------------------------------------------------------------------
+verify	Run python3 -I -m unittest discover -s scripts/evaluation -p 'test_*.py' -v	2026-09-12T00:06:25.5579275Z Ran 15 tests in 3.584s
+verify	Run python3 -I -m unittest discover -s scripts/evaluation -p 'test_*.py' -v	2026-09-12T00:06:25.5579587Z 
+verify	Run python3 -I -m unittest discover -s scripts/evaluation -p 'test_*.py' -v	2026-09-12T00:06:25.5579768Z OK
+verify	Run python3 -I -m unittest discover -s scripts/faults -p 'test_*.py' -v	﻿2026-09-12T00:06:25.5745227Z ##[group]Run python3 -I -m unittest discover -s scripts/faults -p 'test_*.py' -v
+verify	Run python3 -I -m unittest discover -s scripts/faults -p 'test_*.py' -v	2026-09-12T00:06:25.5745937Z ^[[36;1mpython3 -I -m unittest discover -s scripts/faults -p 'test_*.py' -v^[[0m
+verify	Run python3 -I -m unittest discover -s scripts/faults -p 'test_*.py' -v	2026-09-12T00:06:25.5772251Z shell: /usr/bin/bash -e {0}
+verify	Run python3 -I -m unittest discover -s scripts/faults -p 'test_*.py' -v	2026-09-12T00:06:25.5772570Z env:
+verify	Run python3 -I -m unittest discover -s scripts/faults -p 'test_*.py' -v	2026-09-12T00:06:25.5773186Z   FORGE_TEST_DATABASE_URL: ***127.0.0.1:5432/forge?sslmode=disable
+verify	Run python3 -I -m unittest discover -s scripts/faults -p 'test_*.py' -v	2026-09-12T00:06:25.5773658Z   FORGE_REVIEW_DATABASE_URL: ***127.0.0.1:5432/forge?sslmode=disable
+verify	Run python3 -I -m unittest discover -s scripts/faults -p 'test_*.py' -v	2026-09-12T00:06:25.5774028Z   FORGE_REVIEW_ALLOW_FIXTURES: 1
+verify	Run python3 -I -m unittest discover -s scripts/faults -p 'test_*.py' -v	2026-09-12T00:06:25.5774282Z ##[endgroup]
+verify	Run python3 -I -m unittest discover -s scripts/faults -p 'test_*.py' -v	2026-09-12T00:06:25.6519372Z test_actual_continuation_evidence_is_accepted (test_audit_application.EvidenceAuditTests.test_actual_continuation_evidence_is_accepted) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/faults -p 'test_*.py' -v	2026-09-12T00:06:25.6539619Z test_actual_writer_evidence_crosses_expiry_and_orders_container_death (test_audit_application.EvidenceAuditTests.test_actual_writer_evidence_crosses_expiry_and_orders_container_death) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/faults -p 'test_*.py' -v	2026-09-12T00:06:25.6551486Z test_f02_replaced_task_after_claim_is_rejected (test_audit_application.EvidenceAuditTests.test_f02_replaced_task_after_claim_is_rejected) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/faults -p 'test_*.py' -v	2026-09-12T00:06:25.6579341Z test_f06_summary_hashes_and_revision_must_match_archived_patch_receipt (test_audit_application.EvidenceAuditTests.test_f06_summary_hashes_and_revision_must_match_archived_patch_receipt) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/faults -p 'test_*.py' -v	2026-09-12T00:06:25.6600221Z test_f09_original_approval_must_match_the_actual_resumed_action (test_audit_application.EvidenceAuditTests.test_f09_original_approval_must_match_the_actual_resumed_action) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/faults -p 'test_*.py' -v	2026-09-12T00:06:25.6621704Z test_summary_with_both_writers_before_expiry_is_rejected (test_audit_application.EvidenceAuditTests.test_summary_with_both_writers_before_expiry_is_rejected) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/faults -p 'test_*.py' -v	2026-09-12T00:06:25.6641981Z test_actual_native_evidence_is_accepted (test_audit_model_stream.ModelStreamAuditTests.test_actual_native_evidence_is_accepted) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/faults -p 'test_*.py' -v	2026-09-12T00:06:25.6668712Z test_attempt_from_another_run_is_rejected (test_audit_model_stream.ModelStreamAuditTests.test_attempt_from_another_run_is_rejected) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/faults -p 'test_*.py' -v	2026-09-12T00:06:25.6692934Z test_durable_failure_for_another_attempt_is_rejected (test_audit_model_stream.ModelStreamAuditTests.test_durable_failure_for_another_attempt_is_rejected) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/faults -p 'test_*.py' -v	2026-09-12T00:06:25.6716045Z test_fake_model_ledger_for_native_request_is_rejected (test_audit_model_stream.ModelStreamAuditTests.test_fake_model_ledger_for_native_request_is_rejected) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/faults -p 'test_*.py' -v	2026-09-12T00:06:25.6739203Z test_observed_tool_payload_not_sent_on_wire_is_rejected (test_audit_model_stream.ModelStreamAuditTests.test_observed_tool_payload_not_sent_on_wire_is_rejected) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/faults -p 'test_*.py' -v	2026-09-12T00:06:25.6763953Z test_summary_cannot_claim_unexpired_database_lease_expired (test_audit_model_stream.ModelStreamAuditTests.test_summary_cannot_claim_unexpired_database_lease_expired) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/faults -p 'test_*.py' -v	2026-09-12T00:06:25.6788935Z test_summary_cannot_invent_second_claim_owner_or_epoch (test_audit_model_stream.ModelStreamAuditTests.test_summary_cannot_invent_second_claim_owner_or_epoch) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/faults -p 'test_*.py' -v	2026-09-12T00:06:25.6828090Z test_unrelated_quota_group_is_rejected (test_audit_model_stream.ModelStreamAuditTests.test_unrelated_quota_group_is_rejected) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/faults -p 'test_*.py' -v	2026-09-12T00:06:25.6848727Z test_wire_without_observed_text_is_rejected (test_audit_model_stream.ModelStreamAuditTests.test_wire_without_observed_text_is_rejected) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/faults -p 'test_*.py' -v	2026-09-12T00:06:25.6960292Z test_actual_network_evidence_is_accepted (test_audit_network.NetworkAuditTests.test_actual_network_evidence_is_accepted) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/faults -p 'test_*.py' -v	2026-09-12T00:06:25.6989657Z test_f10_cancellation_transition_must_match_stop_proof (test_audit_network.NetworkAuditTests.test_f10_cancellation_transition_must_match_stop_proof) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/faults -p 'test_*.py' -v	2026-09-12T00:06:25.7018658Z test_f10_finalization_requires_original_version_and_lease (test_audit_network.NetworkAuditTests.test_f10_finalization_requires_original_version_and_lease) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/faults -p 'test_*.py' -v	2026-09-12T00:06:25.7047575Z test_f10_prior_settled_effect_cannot_change_with_cancellation (test_audit_network.NetworkAuditTests.test_f10_prior_settled_effect_cannot_change_with_cancellation) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/faults -p 'test_*.py' -v	2026-09-12T00:06:25.7077090Z test_f11_database_cut_cannot_hide_new_durable_event (test_audit_network.NetworkAuditTests.test_f11_database_cut_cannot_hide_new_durable_event) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/faults -p 'test_*.py' -v	2026-09-12T00:06:25.7107425Z test_f12_http_snapshot_must_expose_original_pending_effect (test_audit_network.NetworkAuditTests.test_f12_http_snapshot_must_expose_original_pending_effect) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/faults -p 'test_*.py' -v	2026-09-12T00:06:25.7137273Z test_f12_unknown_allocation_cannot_be_released_despite_counters (test_audit_network.NetworkAuditTests.test_f12_unknown_allocation_cannot_be_released_despite_counters) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/faults -p 'test_*.py' -v	2026-09-12T00:06:25.7138696Z 
+verify	Run python3 -I -m unittest discover -s scripts/faults -p 'test_*.py' -v	2026-09-12T00:06:25.7139179Z ----------------------------------------------------------------------
+verify	Run python3 -I -m unittest discover -s scripts/faults -p 'test_*.py' -v	2026-09-12T00:06:25.7139919Z Ran 22 tests in 0.067s
+verify	Run python3 -I -m unittest discover -s scripts/faults -p 'test_*.py' -v	2026-09-12T00:06:25.7140259Z 
+verify	Run python3 -I -m unittest discover -s scripts/faults -p 'test_*.py' -v	2026-09-12T00:06:25.7140443Z OK
+verify	Run python3 -I -m unittest discover -s scripts/progress -p 'test_*.py' -v	﻿2026-09-12T00:06:25.7269051Z ##[group]Run python3 -I -m unittest discover -s scripts/progress -p 'test_*.py' -v
+verify	Run python3 -I -m unittest discover -s scripts/progress -p 'test_*.py' -v	2026-09-12T00:06:25.7269702Z ^[[36;1mpython3 -I -m unittest discover -s scripts/progress -p 'test_*.py' -v^[[0m
+verify	Run python3 -I -m unittest discover -s scripts/progress -p 'test_*.py' -v	2026-09-12T00:06:25.7291000Z shell: /usr/bin/bash -e {0}
+verify	Run python3 -I -m unittest discover -s scripts/progress -p 'test_*.py' -v	2026-09-12T00:06:25.7291353Z env:
+verify	Run python3 -I -m unittest discover -s scripts/progress -p 'test_*.py' -v	2026-09-12T00:06:25.7291956Z   FORGE_TEST_DATABASE_URL: ***127.0.0.1:5432/forge?sslmode=disable
+verify	Run python3 -I -m unittest discover -s scripts/progress -p 'test_*.py' -v	2026-09-12T00:06:25.7292656Z   FORGE_REVIEW_DATABASE_URL: ***127.0.0.1:5432/forge?sslmode=disable
+verify	Run python3 -I -m unittest discover -s scripts/progress -p 'test_*.py' -v	2026-09-12T00:06:25.7293106Z   FORGE_REVIEW_ALLOW_FIXTURES: 1
+verify	Run python3 -I -m unittest discover -s scripts/progress -p 'test_*.py' -v	2026-09-12T00:06:25.7293451Z ##[endgroup]
+verify	Run python3 -I -m unittest discover -s scripts/progress -p 'test_*.py' -v	2026-09-12T00:06:25.7815664Z test_all_final_original_reports (test_audit.ProgressAuditRegression.test_all_final_original_reports) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/progress -p 'test_*.py' -v	2026-09-12T00:06:25.7831187Z test_changed_counter_rejected (test_audit.ProgressAuditRegression.test_changed_counter_rejected) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/progress -p 'test_*.py' -v	2026-09-12T00:06:25.7886482Z test_final_current_run_must_match_last_snapshot (test_audit.ProgressAuditRegression.test_final_current_run_must_match_last_snapshot) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/progress -p 'test_*.py' -v	2026-09-12T00:06:25.7906054Z test_ledger_argument_change_rejected (test_audit.ProgressAuditRegression.test_ledger_argument_change_rejected) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/progress -p 'test_*.py' -v	2026-09-12T00:06:25.7923486Z test_middle_counter_cannot_replace_committed_predecessor (test_audit.ProgressAuditRegression.test_middle_counter_cannot_replace_committed_predecessor) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/progress -p 'test_*.py' -v	2026-09-12T00:06:25.7940676Z test_non_context_transition_cannot_change_progress (test_audit.ProgressAuditRegression.test_non_context_transition_cannot_change_progress) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/progress -p 'test_*.py' -v	2026-09-12T00:06:25.7998550Z test_only_heartbeat_lease_until_may_differ (test_audit.ProgressAuditRegression.test_only_heartbeat_lease_until_may_differ) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/progress -p 'test_*.py' -v	2026-09-12T00:06:25.8073383Z test_receipt_and_sql_terminal_status_must_match (test_audit.ProgressAuditRegression.test_receipt_and_sql_terminal_status_must_match) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/progress -p 'test_*.py' -v	2026-09-12T00:06:25.8092663Z test_receipt_change_rejected (test_audit.ProgressAuditRegression.test_receipt_change_rejected) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/progress -p 'test_*.py' -v	2026-09-12T00:06:25.8129506Z test_valid_fixture (test_audit.ProgressAuditRegression.test_valid_fixture) ... ok
+verify	Run python3 -I -m unittest discover -s scripts/progress -p 'test_*.py' -v	2026-09-12T00:06:25.8130331Z 
+verify	Run python3 -I -m unittest discover -s scripts/progress -p 'test_*.py' -v	2026-09-12T00:06:25.8130751Z ----------------------------------------------------------------------
+verify	Run python3 -I -m unittest discover -s scripts/progress -p 'test_*.py' -v	2026-09-12T00:06:25.8131395Z Ran 10 tests in 0.043s
+verify	Run python3 -I -m unittest discover -s scripts/progress -p 'test_*.py' -v	2026-09-12T00:06:25.8131734Z 
+verify	Run python3 -I -m unittest discover -s scripts/progress -p 'test_*.py' -v	2026-09-12T00:06:25.8132001Z OK
+verify	Post Run actions/setup-go@v5	﻿2026-09-12T00:06:25.8292724Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+verify	Post Run actions/setup-go@v5	2026-09-12T00:06:25.8294465Z Post job cleanup.
+verify	Post Run actions/setup-go@v5	2026-09-12T00:06:26.4010383Z (node:8651) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+verify	Post Run actions/setup-go@v5	2026-09-12T00:06:26.4011107Z (Use `node --trace-deprecation ...` to show where the warning was created)
+verify	Post Run actions/setup-go@v5	2026-09-12T00:06:26.4147298Z [command]/opt/hostedtoolcache/go/1.26.8/x64/bin/go env GOMODCACHE
+verify	Post Run actions/setup-go@v5	2026-09-12T00:06:26.4237700Z [command]/opt/hostedtoolcache/go/1.26.8/x64/bin/go env GOCACHE
+verify	Post Run actions/setup-go@v5	2026-09-12T00:06:26.4257443Z /home/runner/go/pkg/mod
+verify	Post Run actions/setup-go@v5	2026-09-12T00:06:26.4428208Z /home/runner/.cache/go-build
+verify	Post Run actions/setup-go@v5	2026-09-12T00:06:26.4448035Z Cache hit occurred on the primary key setup-go-Linux-x64-ubuntu24-go-1.26.8-cedb9ebd5173b2e560a9f174fcf9d51bd384b906b951b5704fe4bf43d946dc9b, not saving cache.
+verify	Post Run actions/checkout@v4	﻿2026-09-12T00:06:26.4728679Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+verify	Post Run actions/checkout@v4	2026-09-12T00:06:26.4729793Z Post job cleanup.
+verify	Post Run actions/checkout@v4	2026-09-12T00:06:26.5408409Z [command]/usr/bin/git version
+verify	Post Run actions/checkout@v4	2026-09-12T00:06:26.5459506Z git version 2.55.0
+verify	Post Run actions/checkout@v4	2026-09-12T00:06:26.5463581Z Temporarily overriding HOME='/home/runner/work/_temp/5df6261e-1733-4e24-9af9-38e71b0d6bf3' before making global git config changes
+verify	Post Run actions/checkout@v4	2026-09-12T00:06:26.5464517Z Adding repository directory to the temporary git global config as a safe directory
+verify	Post Run actions/checkout@v4	2026-09-12T00:06:26.5473721Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/forge-runtime/forge-runtime
+verify	Post Run actions/checkout@v4	2026-09-12T00:06:26.5519467Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+verify	Post Run actions/checkout@v4	2026-09-12T00:06:26.5610249Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+verify	Post Run actions/checkout@v4	2026-09-12T00:06:26.5819375Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+verify	Post Run actions/checkout@v4	2026-09-12T00:06:26.5845197Z http.https://github.com/.extraheader
+verify	Post Run actions/checkout@v4	2026-09-12T00:06:26.5872498Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+verify	Post Run actions/checkout@v4	2026-09-12T00:06:26.5910218Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+verify	Post Run actions/checkout@v4	2026-09-12T00:06:26.6256926Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+verify	Post Run actions/checkout@v4	2026-09-12T00:06:26.6265635Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+verify	Stop containers	﻿2026-09-12T00:06:26.6465392Z Print service container logs: 5e19617f4f58456c9f043826cfd58e06_postgres1711alpine_cc92f5
+verify	Stop containers	2026-09-12T00:06:26.6470348Z ##[command]/usr/bin/docker logs --details 365e19df6ea17464c3f13621e72f8ecbb0dcd7dfff88612c6ae066813f1e1bb2
+verify	Stop containers	2026-09-12T00:06:26.6584732Z  sh: locale: not found
+verify	Stop containers	2026-09-12T00:06:26.6585139Z  The files belonging to this database system will be owned by user "postgres".
+verify	Stop containers	2026-09-12T00:06:26.6586118Z  This user must also own the server process.
+verify	Stop containers	2026-09-12T00:06:26.6586361Z  
+verify	Stop containers	2026-09-12T00:06:26.6586646Z  The database cluster will be initialized with locale "en_US.utf8".
+verify	Stop containers	2026-09-12T00:06:26.6587206Z  The default database encoding has accordingly been set to "UTF8".
+verify	Stop containers	2026-09-12T00:06:26.6587628Z  The default text search configuration will be set to "english".
+verify	Stop containers	2026-09-12T00:06:26.6587972Z  
+verify	Stop containers	2026-09-12T00:06:26.6588159Z  Data page checksums are disabled.
+verify	Stop containers	2026-09-12T00:06:26.6588400Z  
+verify	Stop containers	2026-09-12T00:06:26.6588687Z  fixing permissions on existing directory /var/lib/postgresql/data ... ok
+verify	Stop containers	2026-09-12T00:06:26.6589084Z  creating subdirectories ... ok
+verify	Stop containers	2026-09-12T00:06:26.6589382Z  selecting dynamic shared memory implementation ... posix
+verify	Stop containers	2026-09-12T00:06:26.6589730Z  selecting default "max_connections" ... 100
+verify	Stop containers	2026-09-12T00:06:26.6590045Z  selecting default "shared_buffers" ... 128MB
+verify	Stop containers	2026-09-12T00:06:26.6590320Z  selecting default time zone ... UTC
+verify	Stop containers	2026-09-12T00:06:26.6590607Z  creating configuration files ... ok
+verify	Stop containers	2026-09-12T00:06:26.6590872Z  running bootstrap script ... ok
+verify	Stop containers	2026-09-12T00:06:26.6591165Z  performing post-bootstrap initialization ... ok
+verify	Stop containers	2026-09-12T00:06:26.6591462Z  syncing data to disk ... ok
+verify	Stop containers	2026-09-12T00:06:26.6592203Z  
+verify	Stop containers	2026-09-12T00:06:26.6592378Z  
+verify	Stop containers	2026-09-12T00:06:26.6592593Z  Success. You can now start the database server using:
+verify	Stop containers	2026-09-12T00:06:26.6592860Z  
+verify	Stop containers	2026-09-12T00:06:26.6593228Z      pg_ctl -D /var/lib/postgresql/data -l logfile start
+verify	Stop containers	2026-09-12T00:06:26.6593476Z  
+verify	Stop containers	2026-09-12T00:06:26.6593930Z  waiting for server to start....2026-09-12 00:01:34.180 UTC [40] LOG:  starting PostgreSQL 17.11 on x86_64-pc-linux-musl, compiled by gcc (Alpine 15.2.0) 15.2.0, 64-bit
+verify	Stop containers	2026-09-12T00:06:26.6594459Z  2026-09-12 00:01:34.181 UTC [40] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+verify	Stop containers	2026-09-12T00:06:26.6594856Z  2026-09-12 00:01:34.231 UTC [43] LOG:  database system was shut down at 2026-09-12 00:01:33 UTC
+verify	Stop containers	2026-09-12T00:06:26.6595197Z  2026-09-12 00:01:34.234 UTC [40] LOG:  database system is ready to accept connections
+verify	Stop containers	2026-09-12T00:06:26.6595449Z   done
+verify	Stop containers	2026-09-12T00:06:26.6595595Z  server started
+verify	Stop containers	2026-09-12T00:06:26.6595743Z  CREATE DATABASE
+verify	Stop containers	2026-09-12T00:06:26.6595880Z  
+verify	Stop containers	2026-09-12T00:06:26.6596125Z  2026-09-12 00:01:32.931 UTC [34] WARNING:  no usable system locales were found
+verify	Stop containers	2026-09-12T00:06:26.6596438Z  initdb: warning: enabling "trust" authentication for local connections
+verify	Stop containers	2026-09-12T00:06:26.6597215Z  initdb: hint: You can change this by editing pg_hba.conf or using the option -A, or --auth-local and --auth-host, the next time you run initdb.
+verify	Stop containers	2026-09-12T00:06:26.6597781Z  2026-09-12 00:01:34.646 UTC [1] LOG:  starting PostgreSQL 17.11 on x86_64-pc-linux-musl, compiled by gcc (Alpine 15.2.0) 15.2.0, 64-bit
+verify	Stop containers	2026-09-12T00:06:26.6598206Z  2026-09-12 00:01:34.646 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+verify	Stop containers	2026-09-12T00:06:26.6598521Z  2026-09-12 00:01:34.646 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+verify	Stop containers	2026-09-12T00:06:26.6598876Z  2026-09-12 00:01:34.648 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+verify	Stop containers	2026-09-12T00:06:26.6599258Z  2026-09-12 00:01:34.653 UTC [64] LOG:  database system was shut down at 2026-09-12 00:01:34 UTC
+verify	Stop containers	2026-09-12T00:06:26.6599609Z  2026-09-12 00:01:34.657 UTC [1] LOG:  database system is ready to accept connections
+verify	Stop containers	2026-09-12T00:06:26.6599896Z  2026-09-12 00:02:55.879 UTC [421] ERROR:  division by zero
+verify	Stop containers	2026-09-12T00:06:26.6600148Z  2026-09-12 00:02:55.879 UTC [421] STATEMENT:  SELECT 1/0
+verify	Stop containers	2026-09-12T00:06:26.6600435Z  2026-09-12 00:02:59.918 UTC [429] ERROR:  canceling statement due to user request
+verify	Stop containers	2026-09-12T00:06:26.6601871Z  2026-09-12 00:02:59.918 UTC [429] STATEMENT:  SELECT tenant_id,id,project_id,principal_id,task,base_commit,coalesce(runner_id,''),snapshot,config_snapshot,created_at,next_event_seq-1,pending_commands,lease_owner,lease_epoch,lease_until,retained_from_seq,coalesce(traceparent,''),coalesce(parent_run_id,''),priority,snapshot_hold_at,snapshot_hold_reason,snapshot_hold_schema,snapshot_hold_sha256,coalesce(last_claim_traceparent,''),runnable_at,CASE WHEN isfinite(not_before) THEN not_before ELSE NULL END,lease_yielded FROM runs WHERE tenant_id=$1 AND id=$2
+verify	Stop containers	2026-09-12T00:06:26.6603183Z  2026-09-12 00:03:04.527 UTC [488] ERROR:  canceling statement due to user request
+verify	Stop containers	2026-09-12T00:06:26.6603480Z  2026-09-12 00:03:04.527 UTC [488] STATEMENT:  SELECT pg_sleep(5)
+verify	Stop containers	2026-09-12T00:06:26.6603875Z  2026-09-12 00:03:11.867 UTC [571] ERROR:  new row for relation "run_events" violates check constraint "reject_publication_fixture"
+verify	Stop containers	2026-09-12T00:06:26.6604740Z  2026-09-12 00:03:11.867 UTC [571] DETAIL:  Failing row contains (tenant, run_KODSKK3SMYCS34I5M3BGZUSZHE, 3, artifact.ready, 1, null, null, {"id": "failed_publication", "kind": "rejected_fixture", "state"..., 2026-09-12 00:03:11.867174+00).
+verify	Stop containers	2026-09-12T00:06:26.6605580Z  2026-09-12 00:03:11.867 UTC [571] STATEMENT:  INSERT INTO run_events(tenant_id,run_id,seq,type,payload) VALUES($1,$2,$3,$4,$5)
+verify	Stop containers	2026-09-12T00:06:26.6606006Z  2026-09-12 00:03:31.974 UTC [716] ERROR:  permission denied for table memberships
+verify	Stop containers	2026-09-12T00:06:26.6606395Z  2026-09-12 00:03:31.974 UTC [716] STATEMENT:  UPDATE memberships SET role='admin' WHERE tenant_id=$1 AND principal_id=$2
+verify	Stop containers	2026-09-12T00:06:26.6606910Z  2026-09-12 00:03:31.976 UTC [716] ERROR:  membership authority scope mismatch
+verify	Stop containers	2026-09-12T00:06:26.6607386Z  2026-09-12 00:03:31.976 UTC [716] CONTEXT:  PL/pgSQL function review_y6pvgnspurlppgqxmr2jlmjda7.lock_current_membership(text,text) line 7 at RAISE
+verify	Stop containers	2026-09-12T00:06:26.6607891Z  2026-09-12 00:03:31.976 UTC [716] STATEMENT:  SELECT lock_current_membership($1,$2)
+verify	Stop containers	2026-09-12T00:06:26.6608202Z  2026-09-12 00:03:31.977 UTC [716] ERROR:  membership authority scope mismatch
+verify	Stop containers	2026-09-12T00:06:26.6608645Z  2026-09-12 00:03:31.977 UTC [716] CONTEXT:  PL/pgSQL function review_y6pvgnspurlppgqxmr2jlmjda7.lock_current_membership(text,text) line 7 at RAISE
+verify	Stop containers	2026-09-12T00:06:26.6609094Z  2026-09-12 00:03:31.977 UTC [716] STATEMENT:  SELECT lock_current_membership($1,$2)
+verify	Stop containers	2026-09-12T00:06:26.6609440Z  2026-09-12 00:03:31.983 UTC [716] ERROR:  permission denied for function lock_current_membership
+verify	Stop containers	2026-09-12T00:06:26.6609787Z  2026-09-12 00:03:31.983 UTC [716] STATEMENT:  SELECT lock_current_membership($1,$2)
+verify	Stop containers	2026-09-12T00:06:26.6610094Z  2026-09-12 00:03:32.512 UTC [733] ERROR:  canceling statement due to user request
+verify	Stop containers	2026-09-12T00:06:26.6610429Z  2026-09-12 00:03:32.512 UTC [733] CONTEXT:  while updating tuple (0,1) in relation "memberships"
+verify	Stop containers	2026-09-12T00:06:26.6610924Z  2026-09-12 00:03:32.512 UTC [733] STATEMENT:  UPDATE memberships SET role='viewer' WHERE tenant_id=$1 AND principal_id=$2
+verify	Stop containers	2026-09-12T00:06:26.6611312Z  2026-09-12 00:03:33.026 UTC [735] ERROR:  model attempt pricing is immutable
+verify	Stop containers	2026-09-12T00:06:26.6611663Z  2026-09-12 00:03:33.026 UTC [735] CONTEXT:  PL/pgSQL function preserve_attempt_pricing() line 4 at RAISE
+verify	Stop containers	2026-09-12T00:06:26.6612185Z  2026-09-12 00:03:33.026 UTC [735] STATEMENT:  UPDATE model_attempts SET pricing=jsonb_set(pricing,'{price_version}','"tampered"') WHERE tenant_id=$1 AND attempt_id=$2
+verify	Stop containers	2026-09-12T00:06:26.6612655Z  2026-09-12 00:03:33.699 UTC [751] ERROR:  model attempt pricing is immutable
+verify	Stop containers	2026-09-12T00:06:26.6613005Z  2026-09-12 00:03:33.699 UTC [751] CONTEXT:  PL/pgSQL function preserve_attempt_pricing() line 4 at RAISE
+verify	Stop containers	2026-09-12T00:06:26.6613514Z  2026-09-12 00:03:33.699 UTC [751] STATEMENT:  UPDATE model_attempts SET pricing=jsonb_set(pricing,'{price_version}','"tampered"') WHERE tenant_id=$1 AND attempt_id=$2
+verify	Stop containers	2026-09-12T00:06:26.6613972Z  2026-09-12 00:03:34.415 UTC [762] ERROR:  model attempt pricing is immutable
+verify	Stop containers	2026-09-12T00:06:26.6614318Z  2026-09-12 00:03:34.415 UTC [762] CONTEXT:  PL/pgSQL function preserve_attempt_pricing() line 4 at RAISE
+verify	Stop containers	2026-09-12T00:06:26.6614935Z  2026-09-12 00:03:34.415 UTC [762] STATEMENT:  UPDATE model_attempts SET pricing=jsonb_set(pricing,'{price_version}','"tampered"') WHERE tenant_id=$1 AND attempt_id=$2
+verify	Stop containers	2026-09-12T00:06:26.6615459Z  2026-09-12 00:03:35.571 UTC [794] ERROR:  new row for relation "runs" violates check constraint "runs_priority_check"
+verify	Stop containers	2026-09-12T00:06:26.6616746Z  2026-09-12 00:03:35.571 UTC [794] DETAIL:  Failing row contains (priority_tenant, run_BBDG4GNJ3G322XAEBP32LQ7G5S, project_BEWAKRAWR3P6XY5MINH4JTX6LG, priority_user, null, repair, fixed, {"schema_version":1,"project_id":"project_BEWAKRAWR3P6XY5MINH4JT..., queued, 1, 0, , null, null, , {"schema_version":2,"run_id":"run_BBDG4GNJ3G322XAEBP32LQ7G5S","t..., {"model": "fixture", "provider": "fake", "max_tool_calls": 3, "m..., 2, -infinity, 2026-09-12 00:03:35.530562+00, 2026-09-12 00:03:35.530562+00, [], , 1, 3, null, null, null, null, 2026-09-12 00:03:35.529892+00, f, null).
+verify	Stop containers	2026-09-12T00:06:26.6618157Z  2026-09-12 00:03:35.571 UTC [794] STATEMENT:  UPDATE runs SET priority=3 WHERE tenant_id=$1 AND id=$2
+verify	Stop containers	2026-09-12T00:06:26.6618648Z  2026-09-12 00:03:38.462 UTC [870] ERROR:  insert or update on table "effects" violates foreign key constraint "effects_tenant_id_run_id_step_seq_fkey"
+verify	Stop containers	2026-09-12T00:06:26.6619253Z  2026-09-12 00:03:38.462 UTC [870] DETAIL:  Key (tenant_id, run_id, step_seq)=(review_a_7VKNEGRGQVLAKPOGXEWW7V65MN, run_a, 999) is not present in table "steps".
+verify	Stop containers	2026-09-12T00:06:26.6619926Z  2026-09-12 00:03:38.462 UTC [870] STATEMENT:  INSERT INTO effects(tenant_id,run_id,step_seq,ordinal,operation_id,kind,args,args_hash,expected_revision,epoch,policy_version,status)
+verify	Stop containers	2026-09-12T00:06:26.6620510Z  				VALUES($1,'run_a',999,1,'orphan_operation','read_file','{}','review-hash',1,1,'review-policy','planned')
+verify	Stop containers	2026-09-12T00:06:26.6621027Z  2026-09-12 00:03:38.463 UTC [870] ERROR:  insert or update on table "approvals" violates foreign key constraint "approvals_tenant_id_run_id_effect_id_fkey"
+verify	Stop containers	2026-09-12T00:06:26.6621682Z  2026-09-12 00:03:38.463 UTC [870] DETAIL:  Key (tenant_id, run_id, effect_id)=(review_a_7VKNEGRGQVLAKPOGXEWW7V65MN, run_a_other, operation_a) is not present in table "effects".
+verify	Stop containers	2026-09-12T00:06:26.6622304Z  2026-09-12 00:03:38.463 UTC [870] STATEMENT:  INSERT INTO approvals(tenant_id,id,run_id,effect_id,args_hash,workspace_revision,policy_version)
+verify	Stop containers	2026-09-12T00:06:26.6622789Z  				VALUES($1,'wrong_run_approval','run_a_other','operation_a','review-hash',1,'review-policy')
+verify	Stop containers	2026-09-12T00:06:26.6623260Z  2026-09-12 00:03:38.464 UTC [870] ERROR:  insert or update on table "runs" violates foreign key constraint "runs_tenant_id_project_id_fkey"
+verify	Stop containers	2026-09-12T00:06:26.6623834Z  2026-09-12 00:03:38.464 UTC [870] DETAIL:  Key (tenant_id, project_id)=(review_b_BBPZWDSJ4UBGPBSQQM6ORUZ6BA, project_a) is not present in table "projects".
+verify	Stop containers	2026-09-12T00:06:26.6624513Z  2026-09-12 00:03:38.464 UTC [870] STATEMENT:  INSERT INTO runs(tenant_id,id,project_id,principal_id,task,base_commit,state,version,snapshot,config_snapshot)
+verify	Stop containers	2026-09-12T00:06:26.6625042Z  				VALUES($1,'cross_tenant_run','project_a','review_principal','review','fixed-base','queued',1,'{}','{}')
+verify	Stop containers	2026-09-12T00:06:26.6625457Z  2026-09-12 00:03:38.683 UTC [874] ERROR:  new row violates row-level security policy for table "projects"
+verify	Stop containers	2026-09-12T00:06:26.6625875Z  2026-09-12 00:03:38.683 UTC [874] STATEMENT:  INSERT INTO projects(tenant_id,id,name,repo_source,repo_profile)
+verify	Stop containers	2026-09-12T00:06:26.6626235Z  			VALUES($1,'cross_tenant_project','review','local-review','{}')
+verify	Stop containers	2026-09-12T00:06:26.6626501Z  2026-09-12 00:04:44.810 UTC [1365] ERROR:  division by zero
+verify	Stop containers	2026-09-12T00:06:26.6626948Z  2026-09-12 00:04:44.810 UTC [1365] STATEMENT:  SELECT 1/0
+verify	Stop containers	2026-09-12T00:06:26.6627271Z  2026-09-12 00:04:51.109 UTC [1396] ERROR:  canceling statement due to user request
+verify	Stop containers	2026-09-12T00:06:26.6628591Z  2026-09-12 00:04:51.109 UTC [1396] STATEMENT:  SELECT tenant_id,id,project_id,principal_id,task,base_commit,coalesce(runner_id,''),snapshot,config_snapshot,created_at,next_event_seq-1,pending_commands,lease_owner,lease_epoch,lease_until,retained_from_seq,coalesce(traceparent,''),coalesce(parent_run_id,''),priority,snapshot_hold_at,snapshot_hold_reason,snapshot_hold_schema,snapshot_hold_sha256,coalesce(last_claim_traceparent,''),runnable_at,CASE WHEN isfinite(not_before) THEN not_before ELSE NULL END,lease_yielded FROM runs WHERE tenant_id=$1 AND id=$2
+verify	Stop containers	2026-09-12T00:06:26.6629919Z  2026-09-12 00:04:55.547 UTC [1453] ERROR:  canceling statement due to user request
+verify	Stop containers	2026-09-12T00:06:26.6630235Z  2026-09-12 00:04:55.547 UTC [1453] STATEMENT:  SELECT pg_sleep(5)
+verify	Stop containers	2026-09-12T00:06:26.6630649Z  2026-09-12 00:05:07.816 UTC [1551] ERROR:  new row for relation "run_events" violates check constraint "reject_publication_fixture"
+verify	Stop containers	2026-09-12T00:06:26.6631413Z  2026-09-12 00:05:07.816 UTC [1551] DETAIL:  Failing row contains (tenant, run_CETHFQ7XFZYQU7GIL7QNITXCEX, 3, artifact.ready, 1, null, null, {"id": "failed_publication", "kind": "rejected_fixture", "state"..., 2026-09-12 00:05:07.816857+00).
+verify	Stop containers	2026-09-12T00:06:26.6632137Z  2026-09-12 00:05:07.816 UTC [1551] STATEMENT:  INSERT INTO run_events(tenant_id,run_id,seq,type,payload) VALUES($1,$2,$3,$4,$5)
+verify	Stop containers	2026-09-12T00:06:26.6632567Z  2026-09-12 00:05:19.188 UTC [1631] ERROR:  model attempt pricing is immutable
+verify	Stop containers	2026-09-12T00:06:26.6632936Z  2026-09-12 00:05:19.188 UTC [1631] CONTEXT:  PL/pgSQL function preserve_attempt_pricing() line 4 at RAISE
+verify	Stop containers	2026-09-12T00:06:26.6633492Z  2026-09-12 00:05:19.188 UTC [1631] STATEMENT:  UPDATE model_attempts SET pricing=jsonb_set(pricing,'{price_version}','"tampered"') WHERE tenant_id=$1 AND attempt_id=$2
+verify	Stop containers	2026-09-12T00:06:26.6633983Z  2026-09-12 00:05:20.258 UTC [1636] ERROR:  model attempt pricing is immutable
+verify	Stop containers	2026-09-12T00:06:26.6634349Z  2026-09-12 00:05:20.258 UTC [1636] CONTEXT:  PL/pgSQL function preserve_attempt_pricing() line 4 at RAISE
+verify	Stop containers	2026-09-12T00:06:26.6634891Z  2026-09-12 00:05:20.258 UTC [1636] STATEMENT:  UPDATE model_attempts SET pricing=jsonb_set(pricing,'{price_version}','"tampered"') WHERE tenant_id=$1 AND attempt_id=$2
+verify	Stop containers	2026-09-12T00:06:26.6635377Z  2026-09-12 00:05:21.069 UTC [1647] ERROR:  model attempt pricing is immutable
+verify	Stop containers	2026-09-12T00:06:26.6635739Z  2026-09-12 00:05:21.069 UTC [1647] CONTEXT:  PL/pgSQL function preserve_attempt_pricing() line 4 at RAISE
+verify	Stop containers	2026-09-12T00:06:26.6636283Z  2026-09-12 00:05:21.069 UTC [1647] STATEMENT:  UPDATE model_attempts SET pricing=jsonb_set(pricing,'{price_version}','"tampered"') WHERE tenant_id=$1 AND attempt_id=$2
+verify	Stop containers	2026-09-12T00:06:26.6636852Z  2026-09-12 00:05:46.603 UTC [1817] ERROR:  permission denied for table memberships
+verify	Stop containers	2026-09-12T00:06:26.6637367Z  2026-09-12 00:05:46.603 UTC [1817] STATEMENT:  UPDATE memberships SET role='admin' WHERE tenant_id=$1 AND principal_id=$2
+verify	Stop containers	2026-09-12T00:06:26.6637865Z  2026-09-12 00:05:46.605 UTC [1817] ERROR:  membership authority scope mismatch
+verify	Stop containers	2026-09-12T00:06:26.6638333Z  2026-09-12 00:05:46.605 UTC [1817] CONTEXT:  PL/pgSQL function review_okixwwh25vn6txku55cedea7oa.lock_current_membership(text,text) line 7 at RAISE
+verify	Stop containers	2026-09-12T00:06:26.6638815Z  2026-09-12 00:05:46.605 UTC [1817] STATEMENT:  SELECT lock_current_membership($1,$2)
+verify	Stop containers	2026-09-12T00:06:26.6639169Z  2026-09-12 00:05:46.606 UTC [1817] ERROR:  membership authority scope mismatch
+verify	Stop containers	2026-09-12T00:06:26.6639628Z  2026-09-12 00:05:46.606 UTC [1817] CONTEXT:  PL/pgSQL function review_okixwwh25vn6txku55cedea7oa.lock_current_membership(text,text) line 7 at RAISE
+verify	Stop containers	2026-09-12T00:06:26.6640097Z  2026-09-12 00:05:46.606 UTC [1817] STATEMENT:  SELECT lock_current_membership($1,$2)
+verify	Stop containers	2026-09-12T00:06:26.6640458Z  2026-09-12 00:05:46.615 UTC [1817] ERROR:  permission denied for function lock_current_membership
+verify	Stop containers	2026-09-12T00:06:26.6640808Z  2026-09-12 00:05:46.615 UTC [1817] STATEMENT:  SELECT lock_current_membership($1,$2)
+verify	Stop containers	2026-09-12T00:06:26.6641142Z  2026-09-12 00:05:47.265 UTC [1824] ERROR:  canceling statement due to user request
+verify	Stop containers	2026-09-12T00:06:26.6641496Z  2026-09-12 00:05:47.265 UTC [1824] CONTEXT:  while updating tuple (0,1) in relation "memberships"
+verify	Stop containers	2026-09-12T00:06:26.6641975Z  2026-09-12 00:05:47.265 UTC [1824] STATEMENT:  UPDATE memberships SET role='viewer' WHERE tenant_id=$1 AND principal_id=$2
+verify	Stop containers	2026-09-12T00:06:26.6642462Z  2026-09-12 00:05:50.247 UTC [1876] ERROR:  new row for relation "runs" violates check constraint "runs_priority_check"
+verify	Stop containers	2026-09-12T00:06:26.6643742Z  2026-09-12 00:05:50.247 UTC [1876] DETAIL:  Failing row contains (priority_tenant, run_GNIRK23EUA563RXYC42375M4AW, project_TEY7TNUBN6KU3XQ7WYRPZE5FPO, priority_user, null, repair, fixed, {"schema_version":1,"project_id":"project_TEY7TNUBN6KU3XQ7WYRPZE..., queued, 1, 0, , null, null, , {"schema_version":2,"run_id":"run_GNIRK23EUA563RXYC42375M4AW","t..., {"model": "fixture", "provider": "fake", "max_tool_calls": 3, "m..., 2, -infinity, 2026-09-12 00:05:50.201608+00, 2026-09-12 00:05:50.201608+00, [], , 1, 3, null, null, null, null, 2026-09-12 00:05:50.2007+00, f, null).
+verify	Stop containers	2026-09-12T00:06:26.6645029Z  2026-09-12 00:05:50.247 UTC [1876] STATEMENT:  UPDATE runs SET priority=3 WHERE tenant_id=$1 AND id=$2
+verify	Stop containers	2026-09-12T00:06:26.6645540Z  2026-09-12 00:05:56.149 UTC [1945] ERROR:  insert or update on table "effects" violates foreign key constraint "effects_tenant_id_run_id_step_seq_fkey"
+verify	Stop containers	2026-09-12T00:06:26.6646165Z  2026-09-12 00:05:56.149 UTC [1945] DETAIL:  Key (tenant_id, run_id, step_seq)=(review_a_KLJVUYSGVI26EVSPCMZTNMX2YL, run_a, 999) is not present in table "steps".
+verify	Stop containers	2026-09-12T00:06:26.6647009Z  2026-09-12 00:05:56.149 UTC [1945] STATEMENT:  INSERT INTO effects(tenant_id,run_id,step_seq,ordinal,operation_id,kind,args,args_hash,expected_revision,epoch,policy_version,status)
+verify	Stop containers	2026-09-12T00:06:26.6647626Z  				VALUES($1,'run_a',999,1,'orphan_operation','read_file','{}','review-hash',1,1,'review-policy','planned')
+verify	Stop containers	2026-09-12T00:06:26.6648167Z  2026-09-12 00:05:56.151 UTC [1945] ERROR:  insert or update on table "approvals" violates foreign key constraint "approvals_tenant_id_run_id_effect_id_fkey"
+verify	Stop containers	2026-09-12T00:06:26.6648848Z  2026-09-12 00:05:56.151 UTC [1945] DETAIL:  Key (tenant_id, run_id, effect_id)=(review_a_KLJVUYSGVI26EVSPCMZTNMX2YL, run_a_other, operation_a) is not present in table "effects".
+verify	Stop containers	2026-09-12T00:06:26.6649497Z  2026-09-12 00:05:56.151 UTC [1945] STATEMENT:  INSERT INTO approvals(tenant_id,id,run_id,effect_id,args_hash,workspace_revision,policy_version)
+verify	Stop containers	2026-09-12T00:06:26.6650015Z  				VALUES($1,'wrong_run_approval','run_a_other','operation_a','review-hash',1,'review-policy')
+verify	Stop containers	2026-09-12T00:06:26.6650506Z  2026-09-12 00:05:56.152 UTC [1945] ERROR:  insert or update on table "runs" violates foreign key constraint "runs_tenant_id_project_id_fkey"
+verify	Stop containers	2026-09-12T00:06:26.6651099Z  2026-09-12 00:05:56.152 UTC [1945] DETAIL:  Key (tenant_id, project_id)=(review_b_CQ6AE4TPKD4QJDEEU2KBRXVU6U, project_a) is not present in table "projects".
+verify	Stop containers	2026-09-12T00:06:26.6651810Z  2026-09-12 00:05:56.152 UTC [1945] STATEMENT:  INSERT INTO runs(tenant_id,id,project_id,principal_id,task,base_commit,state,version,snapshot,config_snapshot)
+verify	Stop containers	2026-09-12T00:06:26.6652360Z  				VALUES($1,'cross_tenant_run','project_a','review_principal','review','fixed-base','queued',1,'{}','{}')
+verify	Stop containers	2026-09-12T00:06:26.6652807Z  2026-09-12 00:05:56.419 UTC [1948] ERROR:  new row violates row-level security policy for table "projects"
+verify	Stop containers	2026-09-12T00:06:26.6653260Z  2026-09-12 00:05:56.419 UTC [1948] STATEMENT:  INSERT INTO projects(tenant_id,id,name,repo_source,repo_profile)
+verify	Stop containers	2026-09-12T00:06:26.6653639Z  			VALUES($1,'cross_tenant_project','review','local-review','{}')
+verify	Stop containers	2026-09-12T00:06:26.6653915Z  
+verify	Stop containers	2026-09-12T00:06:26.6654166Z  /usr/local/bin/docker-entrypoint.sh: ignoring /docker-entrypoint-initdb.d/*
+verify	Stop containers	2026-09-12T00:06:26.6654453Z  
+verify	Stop containers	2026-09-12T00:06:26.6654727Z  waiting for server to shut down....2026-09-12 00:01:34.328 UTC [40] LOG:  received fast shutdown request
+verify	Stop containers	2026-09-12T00:06:26.6655119Z  2026-09-12 00:01:34.329 UTC [40] LOG:  aborting any active transactions
+verify	Stop containers	2026-09-12T00:06:26.6655517Z  2026-09-12 00:01:34.333 UTC [40] LOG:  background worker "logical replication launcher" (PID 46) exited with exit code 1
+verify	Stop containers	2026-09-12T00:06:26.6655940Z  2026-09-12 00:01:34.333 UTC [41] LOG:  shutting down
+verify	Stop containers	2026-09-12T00:06:26.6656243Z  2026-09-12 00:01:34.334 UTC [41] LOG:  checkpoint starting: shutdown immediate
+verify	Stop containers	2026-09-12T00:06:26.6656571Z  2026-09-12 00:01:34.500 UTC [60] FATAL:  the database system is shutting down
+verify	Stop containers	2026-09-12T00:06:26.6657495Z  2026-09-12 00:01:34.549 UTC [41] LOG:  checkpoint complete: wrote 926 buffers (5.7%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.136 s, sync=0.076 s, total=0.217 s; sync files=301, longest=0.033 s, average=0.001 s; distance=4266 kB, estimate=4266 kB; lsn=0/191E818, redo lsn=0/191E818
+verify	Stop containers	2026-09-12T00:06:26.6658214Z  2026-09-12 00:01:34.552 UTC [40] LOG:  database system is shut down
+verify	Stop containers	2026-09-12T00:06:26.6658476Z   done
+verify	Stop containers	2026-09-12T00:06:26.6658650Z  server stopped
+verify	Stop containers	2026-09-12T00:06:26.6658856Z  
+verify	Stop containers	2026-09-12T00:06:26.6659066Z  PostgreSQL init process complete; ready for start up.
+verify	Stop containers	2026-09-12T00:06:26.6659318Z  
+verify	Stop containers	2026-09-12T00:06:26.6663431Z Stop and remove container: 5e19617f4f58456c9f043826cfd58e06_postgres1711alpine_cc92f5
+verify	Stop containers	2026-09-12T00:06:26.6666473Z ##[command]/usr/bin/docker rm --force 365e19df6ea17464c3f13621e72f8ecbb0dcd7dfff88612c6ae066813f1e1bb2
+verify	Stop containers	2026-09-12T00:06:27.6364414Z 365e19df6ea17464c3f13621e72f8ecbb0dcd7dfff88612c6ae066813f1e1bb2
+verify	Stop containers	2026-09-12T00:06:27.6380326Z Remove container network: github_network_2ae9d7f7a98542c1ab9201fc38395074
+verify	Stop containers	2026-09-12T00:06:27.6383307Z ##[command]/usr/bin/docker network rm github_network_2ae9d7f7a98542c1ab9201fc38395074
+verify	Stop containers	2026-09-12T00:06:28.0806947Z github_network_2ae9d7f7a98542c1ab9201fc38395074
+verify	Complete job	﻿2026-09-12T00:06:28.0859382Z Cleaning up orphan processes
+verify	Complete job	2026-09-12T00:06:28.1096540Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-go@v5. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
