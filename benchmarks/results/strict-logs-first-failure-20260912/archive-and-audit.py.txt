@@ -1,0 +1,143 @@
+#!/usr/bin/env python3
+"""Offline evidence archive/audit. Reads historical files and immutable git blobs only."""
+import gzip, hashlib, io, json, pathlib, re, subprocess, tarfile, zlib
+from datetime import datetime, timezone
+R=pathlib.Path('/home/postedism/Desktop/mini claude code/forge-runtime')
+W=R/'var/local/feature-worktrees/progress'
+S=R/'var/lifecycle-rehearsals/lr20260912_a/evidence'
+P=S/'logs-01'
+O=W/'benchmarks/results/strict-logs-first-failure-20260912'
+FROZEN='c9414210b58124aa7c9dd25edd3f18c89004cf10'
+sha=lambda b:hashlib.sha256(b).hexdigest()
+def jb(o): return (json.dumps(o,indent=2,sort_keys=True,ensure_ascii=False)+'\n').encode()
+def read(n): return (P/n).read_bytes()
+def obj(n): return json.loads(read(n))
+def instant(s):
+ # Preserve all nanoseconds while normalizing timezone; Python datetime alone drops sub-microsecond precision.
+ m=re.fullmatch(r'(.*?)(?:\.(\d{1,9}))?(Z|[+-]\d\d:\d\d)',s)
+ check(m is not None,'timestamp shape')
+ return (datetime.fromisoformat(m[1]+m[3].replace('Z','+00:00')).astimezone(timezone.utc), (m[2] or '').ljust(9,'0'))
+def request_equal(x,y):
+ a=dict(x); b=dict(y)
+ return instant(a.pop('deadline'))==instant(b.pop('deadline')) and a==b
+def check(v,label):
+ if not v: raise AssertionError(label)
+checks=[]
+def proof(v,label): check(v,label); checks.append(label)
+manifest=obj('manifest.json')
+proof(len(manifest)==524,'original manifest has exactly 524 members')
+proof(set(manifest)|{'manifest.json'}=={str(q.relative_to(P)) for q in P.rglob('*') if q.is_file()},'exact original inventory')
+for n,h in manifest.items(): proof(sha(read(n))==h,'source manifest '+n)
+proof(sha(read('manifest.json'))=='3ff0f3548c756214e9bdd41032c749d1b873d5322e680baac3a5850a125cf15d','original manifest identity')
+a=obj('acceptance.json'); host=json.loads((S/'host-logs-02/result.json').read_bytes())
+proof(a['passed'] is False and host['exit_code']==1,'original overall failure is retained')
+proof(set(a['cases'])=={'L1','L2-L3-default','L5'} and all(c['passed'] is True for c in a['cases'].values()),'exact three partial passed cases')
+proof(a['input_sha256_before']==a['input_sha256_after']==obj('preflight.json')['input_sha256'],'recorded input identities agree before/after/preflight')
+# Independently decode every complete framed capture. Do not substitute summaries for bytes.
+frames={}
+for q in sorted(P.glob('*-log.flg')):
+ n=q.name.removesuffix('-log.flg'); data=q.read_bytes(); off=0; seq=0; streams=[bytearray(),bytearray()]; maxentry=0
+ while off<len(data):
+  h=data[off:off+32]; check(len(h)==32,n+' short frame')
+  size=int.from_bytes(h[16:20],'big'); payload=data[off+32:off+32+size]
+  check(h[:4]==b'FLG1' and h[4] in (1,2) and h[5:8]==bytes(3) and h[24:32]==bytes(8),n+' frame header')
+  check(int.from_bytes(h[8:16],'big')==seq and 0<size<=16384-32 and len(payload)==size,n+' sequence/entry')
+  check(zlib.crc32(payload)==int.from_bytes(h[20:24],'big'),n+' CRC')
+  streams[h[4]-1].extend(payload); maxentry=max(maxentry,32+size); off+=32+size; seq+=1
+ d={'bytes':len(data),'payload':sum(map(len,streams)),'records':seq,'max_entry':maxentry,'stream_bytes':list(map(len,streams)),'stream_sha256':[sha(s) for s in streams],'prefix_sha256':sha(data),'invalid_tail':0}
+ proof(d==obj(n+'-oracle.json'),'independent framed decode '+n)
+ proof(data==read(n+'-disk.spool'),'disk/artifact bytes '+n)
+ op=obj(n+'-operation.json'); receipt=obj(n+'-receipt.json'); req=obj(n+'-request.json'); meta=obj(n+'-disk.meta'); log=op['result']['log']
+ proof(request_equal(op['request'],req) and request_equal(req,receipt['request']),'request evidence binding '+n)
+ proof(sha(read(n+'-receipt.json'))==op['receipt']['sha256'] and len(read(n+'-receipt.json'))==op['receipt']['size'],'receipt content address '+n)
+ op_without_ref=dict(op); op_without_ref['receipt']=receipt['receipt']
+ proof(op_without_ref==receipt,'receipt result/status binding '+n)
+ proof(log['artifact']['sha256']==sha(data) and log['artifact']['size']==len(data) and log['artifact']['tenant_id']==req['tenant_id'] and log['artifact']['run_id']==req['run_id'],'log reference binding '+n)
+ proof(meta['data_hash']==sha(data),'sidecar data hash '+n)
+ side=dict(meta['summary']); side['artifact']=log['artifact']
+ proof(side==log,'sidecar/log metadata '+n)
+ proof(log['records']==seq and log['retained_bytes']==len(data) and log['retained_payload']==d['payload'],'frame counters '+n)
+ proof(log['stdout_seen']>=len(streams[0]) and log['stderr_seen']>=len(streams[1]),'per-stream seen bounds '+n)
+ if log['dropped_known']:
+  proof(log['stdout_seen']+log['stderr_seen']-d['payload']==log['dropped_bytes'],'exact known loss equation '+n)
+ frames[n]=d
+proof(len(frames)==37,'37 independent complete frame audits')
+bad='L3-bytes-op-03'; log=obj(bad+'-operation.json')['result']['log']
+proof(frames[bad]['stream_bytes']==[0,522304] and log['stdout_seen']==524299 and log['stderr_seen']==524299,'failed oracle retained stderr only but both streams seen')
+proof(log['complete'] and log['truncated'] and log['termination_requested'] and log['termination_observed'] and log['reason']=='output_limit' and obj(bad+'-operation.json')['status']=='failed','overflow is explicitly terminated and not successful')
+proof(all(not any(x.name.startswith(n) for x in P.iterdir()) for n in ['L3-count','L4-']),'count and ENOSPC raw cases absent')
+# Independent default reservation and physical byte sums; immutable raw checks stay separate from live state.
+default=a['cases']['L2-L3-default']; run=default['run_id']
+proof(sum(v['bytes'] for k,v in frames.items() if k.startswith('L2-L3-default-op-'))==default['physical_spool_sum']==16253029,'default physical framed bytes')
+proof(default['actual_operations']==32 and default['reserved_bytes']==16777216,'default lifetime cap sample')
+for n in ['L2-L3-default-lifetime-budget.json','L2-L3-default-reopened.json','L2-L3-default-released-journal.json']:
+ rows=[v for v in obj(n)['tables']['log_runs'] if v['run_id']==run]
+ proof(len(rows)==1 and rows[0]['operations']==32 and rows[0]['reserved_bytes']==16777216,'default reservation retained '+n)
+for n in ['L1','L5']:
+ h=obj(n+'-http-proof.json'); b=read(n+'-http.flg')
+ proof(h['status']==200 and h['list_status']==200 and h['listed_matches']==1 and h['cross_tenant_download']==404 and h['cross_tenant_list']==404,'HTTP and tenant oracle '+n)
+ proof(sha(b)==h['body_sha256']==h['artifact']['sha256'] and len(b)==h['body_bytes']==h['artifact']['byte_size'],'HTTP artifact bytes '+n)
+# Credential-bearing configuration is never read. Remove its recorded digest from this one evidence projection.
+private_digest=obj('L1/fixture.json')['worker_config_sha256'].encode()
+check(re.fullmatch(rb'[0-9a-f]{64}',private_digest) is not None,'private digest shape')
+entries={}; index=[]; sensitive=re.compile(rb'postgres(?:ql)?://|(?:DEEPSEEK_API_KEY|OPENAI_API_KEY|ANTHROPIC_API_KEY|FORGE_TOKEN|PGPASSWORD)\s*=',re.I)
+def add(source,member,original,archived=None,projection=None):
+ b=original if archived is None else archived
+ check(not sensitive.search(b),'credential-pattern in '+member)
+ check(private_digest not in b,'private configuration digest in '+member)
+ check(member not in entries,'duplicate archive member')
+ check(not member.startswith('/') and '..' not in pathlib.PurePosixPath(member).parts,'unsafe member')
+ entries[member]=b
+ index.append({'source':source,'source_sha256':sha(original),'source_bytes':len(original),'archive_member':member,'archived_sha256':sha(b),'archived_bytes':len(b),'transformation':projection or 'byte-identical'})
+for n in sorted(set(manifest)|{'manifest.json'}):
+ b=read(n)
+ if n=='L1/fixture.json':
+  j=json.loads(b); del j['worker_config_sha256']
+  j['_archive_projection']={'source_evidence_sha256':sha(b),'removed_fields':['worker_config_sha256'],'reason':'omit digest of private credential-bearing worker configuration; original evidence unchanged'}
+  add(str(P/n),'raw/logs-01/'+n,b,jb(j),'explicit JSON projection; removed worker_config_sha256, marker added')
+ else: add(str(P/n),'raw/logs-01/'+n,b)
+for q in sorted((S/'host-logs-02').iterdir()):
+ check(q.is_file(),'unexpected host directory'); add(str(q),'raw/host-logs-02/'+q.name,q.read_bytes())
+for n in ['forge-s12-first-archive-reader-v1.py.txt','forge-s12-first-archive-reader-v1.log']:
+ q=pathlib.Path('/tmp')/n; add(str(q),'reader-history/'+n,q.read_bytes())
+reviews=['forge-strict-logs-fairness-independent-review.json','forge-strict-overflow-oracle-independent-review.json','forge-strict-logs-safe-continuation-design.json']
+for n in reviews:
+ q=pathlib.Path('/tmp')/n; add(str(q),'reviews/'+n,q.read_bytes())
+for n in [reviews[0],reviews[1]]:
+ j=json.loads((pathlib.Path('/tmp')/n).read_bytes()); rev=j.get('source_revision',j.get('commit'))
+ for path,h in j['source_sha256'].items():
+  b=subprocess.check_output(['git','show',rev+':'+path],cwd=W)
+  proof(sha(b)==h,'review source Git blob '+rev+':'+path)
+  add('git:'+rev+':'+path,'source/'+rev+'/'+path+'.txt',b)
+race=json.loads((pathlib.Path('/tmp')/reviews[1]).read_bytes())['root_race_log']; q=pathlib.Path(race['path']); b=q.read_bytes()
+proof(sha(b)==race['sha256'],'independent review offline regression log identity'); add(str(q),'reviews/'+q.name,b)
+# These are recorded public build/config identities, not live process or runtime file observations.
+report={'schema_version':1,'audited_at':datetime.now(timezone.utc).isoformat(),'scope':'Offline archival audit of historical raw files and immutable source blobs. No PostgreSQL, Docker, process, mount, cleanup, runtime/private configuration, key or provider call.',
+ 'archive_base_revision':subprocess.check_output(['git','rev-parse','HEAD'],cwd=W,text=True).strip(),'executed_revision':FROZEN,
+ 'audit_passed':True,'original_overall_passed':False,'source_manifest_sha256':sha(read('manifest.json')),'original_manifest_members_verified':len(manifest),'original_directory_files':525,'original_directory_bytes':sum(len(read(n)) for n in set(manifest)|{'manifest.json'}),
+ 'checks_passed':len(checks),'checks':checks,'frame_audits':frames,'original_acceptance':a,
+ 'timing':{'go_test_seconds':57.99,'launcher_elapsed_seconds':host['elapsed_seconds'],'source':'original host execution.log/result.json; distinct timing boundaries'},
+ 'failure':{'case':'L3-bytes','operation':obj(bad+'-request.json')['operation_id'],'independently_decoded':frames[bad],'stdout_seen':log['stdout_seen'],'stderr_seen':log['stderr_seen'],'exact_dropped_bytes':log['dropped_bytes'],'conclusion':'The retained bounded prefix is all stderr while both streams were drained; the fixture required unsupported retained-stream fairness. This does not retroactively pass the unfinished full suite.'},
+ 'reader_history':'Initial offline audit reader rejected equivalent RFC3339 deadlines with different timezones; original reader and failed trace retained. Corrected comparison normalizes timezone while retaining all nanosecond digits. No raw data or acceptance outcome changed.',
+ 'unexecuted':['remaining L3-bytes rejection/replay/reopen acceptance','L3-count','L4 physical ENOSPC/pause/recovery/PG publication','explicit retained-workspace cleanup','new full logs-02 attempt','paid DeepSeek evaluation'],
+ 'retained_target_historical_only':json.loads((pathlib.Path('/tmp')/reviews[0]).read_bytes())['retained_cleanup_target'],
+ 'limits':['Only L1, L2-L3-default and L5 have complete passed case reports. All raw remains first-attempt failure evidence.','The corrected oracle review is source/offline validation, not a new actual combined result.','Captured cross-system observations are sequential. No later live state is inferred; cleanup must recheck identity and inactivity.','E50 is separately audited in ../lifecycle-e50-second-20260912; its success does not close full ordered API/worker/runner service shutdown.','Runner config evidence contains paths to signing keys but no key material. One private worker-config digest was explicitly projected out. No runtime private file was read.','Input identity agreement is a raw before/after comparison; full clean build evidence is the separately archived c941421 build.','All model activity in this fixture is deterministic with synthetic fees; no paid provider outcome.']}
+O.mkdir(parents=True,exist_ok=False)
+with (O/'raw-evidence.tar.gz').open('wb') as out:
+ with gzip.GzipFile(filename='',mode='wb',fileobj=out,mtime=0,compresslevel=9) as gz:
+  with tarfile.open(fileobj=gz,mode='w',format=tarfile.PAX_FORMAT) as tf:
+   for n,b in sorted(entries.items()):
+    info=tarfile.TarInfo(n); info.size=len(b);info.mtime=0;info.uid=info.gid=0;info.uname=info.gname='';info.mode=0o644; tf.addfile(info,io.BytesIO(b))
+# Full post-write readback, no extraction or mutable source reliance.
+with tarfile.open(O/'raw-evidence.tar.gz','r:gz') as tf:
+ members=tf.getmembers(); proof(len(members)==len(index) and len({v.name for v in members})==len(index),'archive unique complete inventory')
+ for rec in index:
+  b=tf.extractfile(rec['archive_member']).read(); proof(sha(b)==rec['archived_sha256'] and len(b)==rec['archived_bytes'],'archive readback '+rec['archive_member'])
+readable=['raw/logs-01/acceptance.json','raw/logs-01/manifest.json','raw/host-logs-02/result.json','raw/host-logs-02/intent.json','raw/host-logs-02/execution.log']+[n for n in entries if n.startswith('reviews/')]
+for n in readable:
+ dst=O/n; dst.parent.mkdir(parents=True,exist_ok=True);dst.write_bytes(entries[n])
+idx={'format':'raw-evidence.tar.gz regular-file members, canonical uid/gid/mtime/mode; JSON projections explicitly marked; Git Go snapshots suffixed .go.txt','entries':index,'loose_readable_copies':[{'path':n,'sha256':sha(entries[n]),'archive_member':n} for n in readable]}
+(O/'source-archive-index.json').write_bytes(jb(idx))
+report.update({'checks_passed':len(checks),'checks':checks,'archive':{'path':'raw-evidence.tar.gz','sha256':sha((O/'raw-evidence.tar.gz').read_bytes()),'compressed_bytes':(O/'raw-evidence.tar.gz').stat().st_size,'members':len(index),'member_bytes':sum(v['archived_bytes'] for v in index),'byte_identical_members':sum(v['transformation']=='byte-identical' for v in index),'projected_members':sum(v['transformation']!='byte-identical' for v in index),'index_sha256':sha((O/'source-archive-index.json').read_bytes())}})
+(O/'report.json').write_bytes(jb(report)); (O/'archive-and-audit.py.txt').write_bytes(pathlib.Path(__file__).read_bytes())
+print(json.dumps({k:report[k] for k in ['audit_passed','original_overall_passed','original_manifest_members_verified','checks_passed','archive']},indent=2))

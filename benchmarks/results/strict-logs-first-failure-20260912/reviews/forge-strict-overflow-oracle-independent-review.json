@@ -1,0 +1,30 @@
+{
+  "passed": true,
+  "remaining_p1_p2": [],
+  "reviewed_at": "2026-09-12T04:57:40.321369+00:00",
+  "commit": "f67ee04ee73104eecf985a96500f03e5858d6214",
+  "source_sha256": {
+    "scripts/faults/application/strict_logs_combined_helpers_test.go": "0dc5e23a52c352bc78be2abd0f31da3da27badbc7a849a841beb405803f0b652",
+    "scripts/faults/application/strict_logs_combined_test.go": "1fb40e551923050709e501339c339eb1a7cf1a4030e00ddbfb8d19cfc83fc197"
+  },
+  "scope": "Read-only review of the two-file oracle correction plus its retained root race log. No Go, Docker, PostgreSQL, service, cleanup or mounted filesystem operation executed by reviewer.",
+  "conclusion": "The correction removes only the unsupported cross-stream retained-prefix fairness condition and replaces it with both seen counters being positive. Existing completeness, loss/CRC/ref identity, bounds, truncation, termination and no-success conditions are preserved.",
+  "evidence": [
+    "slOverflowDrain is called after captureOperation/slValidateLog verifies raw framed bytes, per-stream seen bounds, exact drop equation, receipt/artifact/meta equality and pins.",
+    "The new synthetic regression supplies valid full 512KiB retained frames entirely from either stream, then rejects missing seen counters, missing termination observation, incomplete logs and succeeded overflow.",
+    "The original actual failure was independently recomputed from all524 manifest members and is preserved as failed; the corrected criterion does not retroactively make the incomplete six-case suite pass."
+  ],
+  "root_race_log": {
+    "path": "/tmp/forge-strict-overflow-oracle-tests.log",
+    "sha256": "2447e89c81565c814179b0be1a90a73bbd427dc04fa054be489a6cc68aae9a63",
+    "observed": "2 top-level tests plus7 nested cases PASS, package1.054s; root reports -race invocation."
+  },
+  "related_reports": {
+    "raw_failure": "/tmp/forge-strict-logs-fairness-independent-review.json",
+    "continuation_contract": "/tmp/forge-strict-logs-safe-continuation-design.json"
+  },
+  "limits": [
+    "No new full combined acceptance was executed.",
+    "Seen-counter upper bound against this exact finite producer and retained content prefix checks are optional strengthening, not part of the prior required oracle or a blocker for this scoped correction."
+  ]
+}

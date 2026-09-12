@@ -1,6 +1,6 @@
 # E50 — actual worker and runner SIGTERM acceptance fixture
 
-Status on 2026-09-12: the first actual attempt stopped at `before_runner`, after private schema/run creation but before a usable runner, worker, journal, volume owner or container existed. The original runner rejected Docker inspection output containing a stderr warning. **The complete SIGTERM scenario has not passed.** The separately preserved first-failure evidence is authoritative; the abort/second-attempt extension below has only offline validation. No container, service, mounted volume, runner journal, or public PostgreSQL schema was changed while developing this fixture. This document does not promote S16.4 to verified.
+Status on 2026-09-12: **the second actual E50 SIGTERM scenario passed in 34.45 seconds**, with its [independent raw/build audit](../benchmarks/results/lifecycle-e50-second-20260912/independent-recompute.json) retained. Original/successor worker and runner processes, in-flight Docker work, natural lease expiry, same-operation adoption and production cleanup were observed in the dedicated lifecycle pool. The first attempt remains a `before_runner` failure caused by stderr contaminating Docker JSON; its separate abort leaves the original run nonterminal `cancel_requested`, lease epoch 0 and zero effects. Complete ordered API/worker/runner shutdown is a broader boundary, so this document does not promote S16.4 to verified.
 
 The fixture extends the acceptance capability beyond E48's actual worker processes with an in-process recording backend. It uses actual `forge-worker` and `forge-runner` child executables, the production gRPC client, `Docker.Start`, rootless capability checks, a physically bounded ext4 workspace, SQLite v5, and the production strict log spool. The provider is deterministic and its fees are synthetic. Existing API shutdown evidence remains a separate component; this fixture does not start an API service or claim HTTP download coverage.
 
@@ -35,7 +35,7 @@ The source is exactly `def clamp(v, lo, hi):\n    return v\n`. The target loads 
 
 The host launcher must provide the full rootless UID/GID mapping: namespace UID 0 maps to host UID 1000, and task UID 1000 is covered by the subordinate range. The test records these maps. It creates only its private schema, non-owner restricted LOGIN/BYPASSRLS role and private worker configuration. The admin connection is accepted only on `127.0.0.1:32773/forge`; neither it nor another parent credential is inherited by a child process. `runtime/sigterm-private/database.json` retains the restricted recovery credential at mode 0600 and **must not be archived as public evidence**.
 
-## Planned actual sequence and oracles
+## Acceptance sequence and oracles
 
 1. Check all paths, four real volume identities and executable hashes before creating a schema or process. Launch the actual runner, then the actual worker. Approve the first immutable literal command through the real store control path.
 2. The Python command appends one durable start-counter line and creates one child. Parent and child emit distinct stdout markers and stderr containing `00 ff`. The parent writes timestamped lines every 200 ms. Both have a natural 70-second bound; the test has a three-minute bound. Expected process containers are the initial target and this command; the second proposed command is never approved.
@@ -73,7 +73,7 @@ Recovery requires the original executable/configuration hashes, journal UUID, fo
 
 ## Evidence files and current validation
 
-The future actual case writes executable/PID/start-tick identities, signal database/wall-clock boundaries, PostgreSQL snapshots, grant-stripped SQLite snapshots, original Docker inspect/top/events, cgroup contents, the single-write counter and writer timestamps. `runner-shutdown.spool`, `.meta.json`, `.stdout` and `.stderr` preserve the real detached capture prefix and its digest; `after-adoption` repeats the check before cleanup. The final receipt retains the authenticated log artifact reference. `cleanup-released-postgres.json`, `cleanup-released-sqlite.json` and the archived READY artifact bytes support later independent audit and HTTP-download follow-up.
+The actual case records executable/PID/start-tick identities, signal database/wall-clock boundaries, PostgreSQL snapshots, grant-stripped SQLite snapshots, original Docker inspect/top/events, cgroup contents, the single-write counter and writer timestamps. `runner-shutdown.spool`, `.meta.json`, `.stdout` and `.stderr` preserve the real detached capture prefix and its digest; `after-adoption` repeats the check before cleanup. The final receipt retains the authenticated log artifact reference. `cleanup-released-postgres.json`, `cleanup-released-sqlite.json` and the archived READY artifact bytes support later independent audit and HTTP-download follow-up.
 
 Offline records are under `benchmarks/results/worker-runner-sigterm-e50`:
 
@@ -81,7 +81,7 @@ Offline records are under `benchmarks/results/worker-runner-sigterm-e50`:
 - `offline-02` records ordinary and race tests, package vet, and application test-binary compilation, all exit 0. The local tests cover the two exact binary writes, deliberately wrong parent/child escapes, stream frame corruption, UID maps, symlinked ancestors and nine unsafe fixture shapes. The two actual lifecycle/recovery entry points were skipped.
 - The 281 observed Go/SQL/module input hashes were unchanged across these checks. These are an observed source inventory, not an independent rebuild attestation. The preserved local compiled binary is identified in `offline-02/report.json`; it is not claimed as a later integrated main binary.
 
-Actual process/container execution, the complete acceptance report and an independent raw-evidence audit remain pending an authorized, independently mounted fixture pool and root launch.
+Those initial offline records predate actual execution. The separately archived second-attempt result below supplies the process/container execution and raw audit; the earlier failed attempt is not relabeled.
 
 
 ## Before-runner abort and a second independent attempt
@@ -100,4 +100,17 @@ The second SIGTERM attempt requires exactly `scope/acceptance-02.json`, `evidenc
 
 The recovery entry point derives private configuration from the selected evidence attempt. S12's L5 likewise reads the selected `sigterm-01` or `sigterm-02` report and corresponding private schema. Its overall six-case output remains `evidence/logs-01/acceptance.json`; changing the selected SIGTERM attempt does not overwrite or rename earlier evidence. The selected new case still writes `evidence/sigterm-02/worker-runner-sigterm/acceptance.json`.
 
-Offline validation for this extension is archived under `benchmarks/results/lifecycle-second-attempt`. Synthetic control observations cover refusal of changed deadlines, hidden work/capacity, leases, mixed schema/run history, missing stop intent, premature terminal state, rewritten snapshots, incorrect control steps, database routing overrides and mixed/short binary revisions. These are fixture-oracle tests, not PostgreSQL/Cancel/Docker execution evidence. The actual abort and attempt 02 remain pending independent review and host execution.
+Offline validation for this extension is archived under `benchmarks/results/lifecycle-second-attempt`. Synthetic control observations cover refusal of changed deadlines, hidden work/capacity, leases, mixed schema/run history, missing stop intent, premature terminal state, rewritten snapshots, incorrect control steps, database routing overrides and mixed/short binary revisions. These are fixture-oracle tests, not PostgreSQL/Cancel/Docker execution evidence. The actual abort and attempt 02 have since executed and been independently audited as recorded below; this historical offline validation is not substituted for that execution.
+
+
+## Actual abort and second-attempt result
+
+The [versioned archive](../benchmarks/results/lifecycle-e50-second-20260912/README.md) retains the original failure, the intent-only abort and the new second attempt separately. Its 636 independent checks bind PID/start ticks/argv/executable hashes for all four signals, captured SQL lease/claim authority, unchanged operation/container identity, artifact bytes and cleanup. The actual Go case lasted 34.45 s; the launcher elapsed 34.7059637659695 s.
+
+For `run_4B2L5YVPJSHMQSNEBGGPSEVSFB`, SQL epoch 2 expired at `2026-09-12T04:46:04.013658Z`; epoch 3 was claimed at `2026-09-12T04:46:04.163610Z`, 0.149952 s later. The original container remained running after both original processes exited and its writer continued. The successor inspected/adopted that same operation with one create/start and one reconciled effect confirmation. SIGTERM itself did not write business Cancel; a later explicit fixture Cancel ended the run as cancelled. The operation retained `log_capture_incomplete`, not a successful repair.
+
+Seventeen READY artifact byte sizes/hashes match the captured PG rows. Cleanup sealed/published the snapshot and released the workspace; recorded final capacity/request counters were zero and all four volume leases were released at that observation. The shutdown prefix is 336 bytes with `complete=false`, `truncated=true`, unknown dropped count and reason `runner_shutdown`. L5 of the later [first strict-log attempt](strict-logs-combined-evidence.md) independently checks its PG/HTTP publication; that later suite nevertheless fails overall and leaves its own byte-guard workspace pending cleanup. E50 cleanup does not establish subsequent pool availability.
+
+The build is `c9414210b58124aa7c9dd25edd3f18c89004cf10`: 424 unchanged inputs and exact runner/worker/test hashes, with 297 ordinary and 297 race passing entries and 56 opt-in skips each in five affected packages. This is not a new whole-tree validation. Both model attempts use the deterministic provider, totaling 300 synthetic microUSD. No paid DeepSeek call or model-quality result is claimed.
+
+The aborted original `run_OAZ33S3LRG5O7EOUL6GDQ5QB4N` remains nonterminal `cancel_requested`, version 2, lease epoch 0, with one initialization control step and no executed effects/model requests/workspace. Its deadline `2026-09-12T04:04:17.356217Z` is unchanged. Its private schema must not be routed to a worker. Sequential database/filesystem/Docker observations are not an atomic cross-system snapshot; complete ordered-service shutdown and paired recovery remain separate acceptance work.

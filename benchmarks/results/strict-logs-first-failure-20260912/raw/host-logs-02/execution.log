@@ -1,0 +1,12 @@
+Running as unit: forge-lifecycle-lr20260912_a-logs-9b7ee7d18173afdb.service; invocation ID: 7f15e25e177e42f4a740e535134a071b
+=== RUN   TestStrictLogsCombinedAcceptance
+    strict_logs_combined_test.go:763: actual default overflow/continued drain not proven &{1 {16384 524288 2097152 32 65536} sl-L3-bytes-46djebzw3ifph2ui7nesemhkz6-op-03 9e2c55f1719b5f1776551d0b3d40a76b8d141bce3c4da14822f08882261f201a 524299 524299 524288 522304 62 true true 526294 true output_limit true true {strict-log-fixture sl-L3-bytes-46djebzw3ifph2ui7nesemhkz6 operation_log strict-log-fixture/sl-L3-bytes-46djebzw3ifph2ui7nesemhkz6/0d45fcddd5e10e799520b7dbf66ae4db6360049d9ac1b37c50d02ff8dd9ffade 0d45fcddd5e10e799520b7dbf66ae4db6360049d9ac1b37c50d02ff8dd9ffade 524288}}
+--- FAIL: TestStrictLogsCombinedAcceptance (57.99s)
+FAIL
+[rootlesskit:child ] error: command [/usr/bin/python3 -I /home/postedism/Desktop/mini claude code/forge-runtime/scripts/faults/sigterm/run.py child --phase logs --attempt 02] exited: exit status 1
+[rootlesskit:parent] error: child exited: exit status 1
+          Finished with result: exit-code
+Main processes terminated with: code=exited, status=1/FAILURE
+               Service runtime: 58.212s
+             CPU time consumed: 30.537s
+                   Memory peak: 427.4M (swap: 0B)

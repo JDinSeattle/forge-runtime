@@ -1,10 +1,13 @@
 # S12.9 combined fixed-volume log acceptance
 
-Status: **implemented opt-in fixture; actual combined execution pending**. This
-file does not promote S12.9, E44, or the overall acceptance goal. Offline tests
-cannot demonstrate a Docker process, a kernel ENOSPC, a mounted spool, or a
-PostgreSQL publication. No host/daemon/volume/model execution was performed while
-implementing this fixture.
+Status on 2026-09-12: **the first actual combined attempt failed overall**.
+L1, default limits and L5 passed with real Engine/Docker/fixed-volume spool/private-PG
+evidence. L3-bytes stopped at its fourth operation because of an incorrect retained-stream
+fairness oracle. Remaining byte-guard checks, L3-count and L4 were not reached.
+The correction has source/offline review; retained-workspace cleanup and a new full
+logs-02 attempt remain pending. S12.9 and the overall acceptance goal remain open.
+The [first-failure archive](../benchmarks/results/strict-logs-first-failure-20260912/README.md)
+preserves original raw, source identities and independent recomputation.
 
 The two Linux test files are
 `scripts/faults/application/strict_logs_combined_test.go` and
@@ -148,9 +151,10 @@ opt-in skip (package 1.037 seconds); `go vet ./scripts/faults/application`
 exited zero. The raw logs are `/tmp/forge-strict-logs-final-offline-race.log`
 and `/tmp/forge-strict-logs-final-vet.log`, retained for root archival.
 These package timings measure offline checks only. Final source identity is
-reported with the local fixture commit. Actual case durations, final resource counts,
-ENOSPC outcome, source/binary attestations and independent raw review remain
-**pending actual execution**. An offline PASS never changes those fields.
+reported with the local fixture commit. At that initial freeze, actual case durations, final resource counts,
+ENOSPC outcome, source/binary attestations and independent raw review were
+pending. The first actual partial result below now records what ran; ENOSPC
+and complete acceptance still remain pending. An offline PASS does not change those fields.
 
 ## Review correction after the initial fixture freeze
 
@@ -182,8 +186,9 @@ source review found two acceptance defects, with no actual combined run yet:
 New offline negatives include missing/nonnumeric ticks, changed PID/argv,
 changed historical/live claimed rows and summary times, insufficient lease,
 missing stopped confirmation, watchdog timeout and replacement-process identity.
-This validates fixture guards only; actual pause duration, pressure/recovery and
-all host acceptance observations remain pending. New logs use the distinct
+This validates fixture guards only. Actual pause duration and pressure/recovery
+remain pending because the first actual attempt did not reach L4; the partial
+host observations below have their own execution identity. New logs use the distinct
 `/tmp/forge-strict-logs-review-fix-*` prefix; the earlier freeze is not overwritten.
 
 At the correction freeze, ordinary and race offline runs each passed 53
@@ -192,3 +197,20 @@ parent/subtest records with one opt-in skip; vet exited zero. Their logs are
 serializes actual STOP and CONT under one mutex: once watchdog recovery has
 occurred, a late STOP is rejected. No actual process signal was sent by these
 pure offline tests.
+
+
+## First actual execution and retained failure
+
+The actual `c9414210b58124aa7c9dd25edd3f18c89004cf10` test uses the same fixed combined build as E50's successful second attempt. `host-logs-02` selects `sigterm-02` history but still produces the first `logs-01` output. It does not mean a second log execution. The original [acceptance](../benchmarks/results/strict-logs-first-failure-20260912/raw/logs-01/acceptance.json) remains `passed=false`; [host output](../benchmarks/results/strict-logs-first-failure-20260912/raw/host-logs-02/execution.log) records Go test duration 57.99 s and launcher result records elapsed 58.23804849595763 s.
+
+The [offline archival audit](../benchmarks/results/strict-logs-first-failure-20260912/report.json) recomputes all 524 original manifest members and 37 framed captures, including exact CRC/sequence/limits, spool/receipt/meta references, request timestamps, stream hashes and known-loss equations. It also verifies default reserved-byte persistence and L1/L5 HTTP bytes with exact cross-tenant 404s. Its `audit_passed=true` concerns evidence consistency only. The original execution has three complete passed case reports:
+
+- L1: exact binary stdout/stderr, two durable publication-window pins, no premature PG artifact rows, and receipt-bound READY artifact downloadable through authenticated HTTP.
+- L2/L3 default: 32 real operations, 16,253,029 physical framed bytes, 16,777,216 reserved bytes; duplicate requests unchanged, new operation rejected, lifetime reservation preserved after workspace release and same-journal reopen. This combines the two coincident default limits; independent byte/count cases are still required.
+- L5: the original E50 operation, journal UUID, container and single execution/confirmation remain bound. Its same 336-byte `runner_shutdown` prefix is downloadable but explicitly incomplete. HTTP uses an authorized fixture API store and does not establish a separately deployed API database role.
+
+L3-bytes completed four overflowing terminal failed operations with a 2 MiB run limit. The fourth, `sl-L3-bytes-46djebzw3ifph2ui7nesemhkz6-op-03`, retains 524,288 framed bytes: 62 valid records, 522,304 payload bytes, all stderr. Stdout and stderr seen counters are each 524,299, and exact dropped payload is 526,294. The failed predicate required both retained streams to be nonempty even though a globally bounded prefix may fill from either stream. The raw receipt still correctly records complete drain, truncation, output_limit and termination requested/observed, with failed operation status. No complete successful verification or stream fairness is inferred.
+
+The [independent correction review](../benchmarks/results/strict-logs-first-failure-20260912/reviews/forge-strict-overflow-oracle-independent-review.json) identifies source `f67ee04ee73104eecf985a96500f03e5858d6214` and retains its offline regressions. It removes only the unsupported retained-prefix fairness requirement. It cannot turn this unfinished suite into a pass: remaining byte-guard rejection/replay/reopen assertions, L3-count and L4 physical ENOSPC/pause/recovery/publication did not run.
+
+At this archive boundary, the byte-guard workspace remains a historical retained cleanup target: journal UUID `b010dd7440a54c58601967342f397faf686b7e306061af9f49809ee342b0ec8e`, tenant `strict-log-fixture`, run/workspace `sl-L3-bytes-46djebzw3ifph2ui7nesemhkz6`, epoch/revision 1, slot-001. L1/default releases already recorded in the partial run do not release this target. The [continuation design](../benchmarks/results/strict-logs-first-failure-20260912/reviews/forge-strict-logs-safe-continuation-design.json) requires fresh live identity/inactivity checks, explicit Stop/Seal/publish/Release, and a separate new full logs-02 output. It has not been executed and does not authorize generic pool cleanup. No paid model call occurred.

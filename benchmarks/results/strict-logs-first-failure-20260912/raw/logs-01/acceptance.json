@@ -1,0 +1,103 @@
+{
+  "cases": {
+    "L1": {
+      "binary_streams_exact": true,
+      "passed": true,
+      "pre_terminal_pg_rows": 0,
+      "publication_window_pins": 2
+    },
+    "L2-L3-default": {
+      "actual_operations": 32,
+      "duplicate_unchanged": true,
+      "new_id_capacity_rejected": true,
+      "passed": true,
+      "physical_spool_sum": 16253029,
+      "policy": {
+        "entry_bytes": 16384,
+        "operation_bytes": 524288,
+        "run_bytes": 16777216,
+        "max_operations": 32,
+        "preview_bytes": 65536
+      },
+      "release_refunded": false,
+      "reserved_bytes": 16777216,
+      "run_id": "sl-L2-L3-default-33qgp4sxm6fnl5a33t6ydg3ik7",
+      "same_journal_reopen_preserved": true,
+      "scope": "direct production typed RPC and actual Engine/Docker/spool; Driver/PG publication supplied separately by L1/L4/L5"
+    },
+    "L5": {
+      "current_allocations": 0,
+      "current_effect_confirmations": 1,
+      "log_gap": {
+        "schema_version": 1,
+        "policy": {
+          "entry_bytes": 16384,
+          "operation_bytes": 524288,
+          "run_bytes": 16777216,
+          "max_operations": 32,
+          "preview_bytes": 65536
+        },
+        "operation_id": "run_4B2L5YVPJSHMQSNEBGGPSEVSFB_step_1_op_0",
+        "binding_hash": "10309564756fec75c0e51067703b0a639bc907d467a7816812f580a130336699",
+        "stdout_seen": 115,
+        "stderr_seen": 29,
+        "retained_bytes": 336,
+        "retained_payload": 144,
+        "records": 6,
+        "complete": false,
+        "dropped_known": false,
+        "dropped_bytes": 0,
+        "truncated": true,
+        "reason": "runner_shutdown",
+        "termination_requested": false,
+        "termination_observed": false,
+        "artifact": {
+          "tenant_id": "lifecycle-b6qty6f6cjxb5ckmty5n225jwi",
+          "run_id": "run_4B2L5YVPJSHMQSNEBGGPSEVSFB",
+          "kind": "operation_log",
+          "object_key": "lifecycle-b6qty6f6cjxb5ckmty5n225jwi/run_4B2L5YVPJSHMQSNEBGGPSEVSFB/7a701556f37944bd8d1c50ba0d5ff2f099ce1e5b8c7f5010aa85a446a96226b4",
+          "sha256": "7a701556f37944bd8d1c50ba0d5ff2f099ce1e5b8c7f5010aa85a446a96226b4",
+          "size": 336
+        }
+      },
+      "original_container_id": "197dd6788f9662bf00695df11f3957482f5875a02f97ffbc3c66ea6c13e0fa8a",
+      "original_operation": "run_4B2L5YVPJSHMQSNEBGGPSEVSFB_step_1_op_0",
+      "passed": true,
+      "raw_daemon_counts": {
+        "attach": 1,
+        "create": 1,
+        "die": 1,
+        "kill": 1,
+        "start": 1,
+        "top": 5
+      },
+      "same_journal_uuid": "b010dd7440a54c58601967342f397faf686b7e306061af9f49809ee342b0ec8e",
+      "unchanged_spool_bytes": 336
+    }
+  },
+  "failure_policy": "unknown operation/pressure/slot/schema preserved; no automatic cancellation or erasure",
+  "finished_at": "2026-09-12T04:48:37.26928144Z",
+  "input_sha256_after": {
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/acceptance-02.json": "f41acf98de6b4c3a0a36ac1e025d9ec6434c0cb51daa00228ac663566bd3a76b",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/bin/c9414210b58124aa7c9dd25edd3f18c89004cf10/application-faults.test": "67d19c03d8625c41179808ae1a2553c203393d6dd7834d1db7b16c1baf26ac79",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/bin/c9414210b58124aa7c9dd25edd3f18c89004cf10/forge-runner": "33038601c91e0b516acb02c493c4f5df2089bbd09bfca887b4e456fc2dc9d229",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/bin/c9414210b58124aa7c9dd25edd3f18c89004cf10/forge-worker": "213e619d6bbbfe57381561dc8ba3813bf40a3018c8755ca5e385f5f5376d194a",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/runtime/runner-byteguard.json": "deffd2025305466e8b9fefc144ab3b0ee8a913ea959fb0b7a2b87b223e5f7f1e",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/runtime/runner-countguard.json": "667946d3b988b4495aac80a843775cc6f8404479c8c08e25761afa29d02ceef0",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/runtime/runner.json": "638beb069eddfbfd8fe12c543be27376386af6036fd83494fd8c644260e3ca0a",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/runtime/source/app.py": "2e58f21315d06188eee52f946b4274062668be4a188f1795b966e795d529f674"
+  },
+  "input_sha256_before": {
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/acceptance-02.json": "f41acf98de6b4c3a0a36ac1e025d9ec6434c0cb51daa00228ac663566bd3a76b",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/bin/c9414210b58124aa7c9dd25edd3f18c89004cf10/application-faults.test": "67d19c03d8625c41179808ae1a2553c203393d6dd7834d1db7b16c1baf26ac79",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/bin/c9414210b58124aa7c9dd25edd3f18c89004cf10/forge-runner": "33038601c91e0b516acb02c493c4f5df2089bbd09bfca887b4e456fc2dc9d229",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/bin/c9414210b58124aa7c9dd25edd3f18c89004cf10/forge-worker": "213e619d6bbbfe57381561dc8ba3813bf40a3018c8755ca5e385f5f5376d194a",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/runtime/runner-byteguard.json": "deffd2025305466e8b9fefc144ab3b0ee8a913ea959fb0b7a2b87b223e5f7f1e",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/runtime/runner-countguard.json": "667946d3b988b4495aac80a843775cc6f8404479c8c08e25761afa29d02ceef0",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/runtime/runner.json": "638beb069eddfbfd8fe12c543be27376386af6036fd83494fd8c644260e3ca0a",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/runtime/source/app.py": "2e58f21315d06188eee52f946b4274062668be4a188f1795b966e795d529f674"
+  },
+  "passed": false,
+  "scope": "real Engine/Docker/fixed-volume disk spool and private PG; deterministic provider, no paid calls; sequential cross-system observations",
+  "started_at": "2026-09-12T04:47:39.588220451Z"
+}

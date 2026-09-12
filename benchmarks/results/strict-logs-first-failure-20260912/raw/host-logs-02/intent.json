@@ -1,0 +1,36 @@
+{
+  "argv": [
+    "/usr/bin/systemd-run",
+    "--user",
+    "--unit=forge-lifecycle-lr20260912_a-logs-9b7ee7d18173afdb.service",
+    "--collect",
+    "--wait",
+    "--pipe",
+    "--property=Delegate=yes",
+    "--property=KillMode=control-group",
+    "--property=RuntimeMaxSec=630s",
+    "--property=TimeoutStopSec=15s",
+    "--working-directory=/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a",
+    "/usr/bin/rootlesskit",
+    "--propagation=rslave",
+    "--state-dir=/run/user/1000/forge-lifecycle-lr20260912_a-logs-9b7ee7d18173afdb",
+    "/usr/bin/python3",
+    "-I",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/scripts/faults/sigterm/run.py",
+    "child",
+    "--phase",
+    "logs",
+    "--attempt",
+    "02"
+  ],
+  "attempt": "02",
+  "input_sha256": {
+    "/home/postedism/Desktop/mini claude code/forge-runtime/scripts/faults/sigterm/prepare.py": "6cb0af3805dfaeae3bf3e1b03df7b5daf46f36127e1c7c278247d3193543d1c9",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/scripts/faults/sigterm/run.py": "f3bb028397ac615dc26294c6d06ad6035f9164b8a475bf49f7d07ebf245c6803",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/acceptance-02.json": "f41acf98de6b4c3a0a36ac1e025d9ec6434c0cb51daa00228ac663566bd3a76b",
+    "/usr/bin/rootlesskit": "f64c4715d2bbb1cafbbfc9b7af55ad7599597cfe2b9b50c76f3fb12a2ce1d0b4"
+  },
+  "phase": "logs",
+  "scope": "only this new transient service; original services and uncertain Docker work untouched",
+  "unit": "forge-lifecycle-lr20260912_a-logs-9b7ee7d18173afdb.service"
+}

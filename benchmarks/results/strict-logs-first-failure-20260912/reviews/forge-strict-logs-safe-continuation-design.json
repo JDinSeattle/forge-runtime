@@ -1,0 +1,46 @@
+{
+  "scope": "Design only for exact retained direct-RPC fixture workspace. No cleanup executed.",
+  "authority": {
+    "scope_root": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a",
+    "failed_case": "evidence/logs-01",
+    "journal_uuid": "b010dd7440a54c58601967342f397faf686b7e306061af9f49809ee342b0ec8e",
+    "journal_version": 5,
+    "tenant_id": "strict-log-fixture",
+    "run_id": "sl-L3-bytes-46djebzw3ifph2ui7nesemhkz6",
+    "workspace_id": "sl-L3-bytes-46djebzw3ifph2ui7nesemhkz6",
+    "epoch": 1,
+    "revision": 1,
+    "slot_id": "slot-001",
+    "operation_suffixes": [
+      "op-00",
+      "op-01",
+      "op-02",
+      "op-03"
+    ]
+  },
+  "required_preflight": [
+    "Pin new cleanup manifest to original failed acceptance/manifest/config/source/old binary hashes and the four archived terminal operation request/receipt/log refs, plus exact journal UUID. Verify all four pool device/image/owner identities unchanged.",
+    "Require original launcher unit terminal and its worker/runner processes absent; serialize this new action with the fixture control lock. Start only one newly recorded runner using the original byteguard authority/config and same journal, never a worker or new workspace.",
+    "Before RPC mutation recheck live journal exactly matches the relevant retained target: sole unreleased lease is that workspace, epoch1/revision1, active_operation empty, all four exact operations terminal with unchanged request/result/receipt, and no prepared/running/unknown operations. Refuse any unexpected workspace/job/journal UUID or unresolved physical state.",
+    "This quota fixture has no application PostgreSQL run for its direct-RPC workspace. Do not invent a PG terminal state or fake database-backed cleanup lease. Issue only explicit short-lived operator fixture authority scoped to this tuple and inspect/cancel/snapshot/release; never reuse an expired original grant or add prepare/execute/adopt rights."
+  ],
+  "stages": [
+    "Save an exclusive cleanup intent and full pre-observation in a new evidence/logs-01-cleanup directory; preserve logs-01 byte-for-byte, including its failed acceptance.",
+    "Call production StopWorkspace at the same epoch and verify the returned same workspace/revision plus NoActiveOperations and the content-addressed stop artifact bytes/pin. No new execution/adoption or epoch increment.",
+    "Call production SealSnapshot, read and hash its actual artifact, verify tenant/run/kind/workspace/revision/content and durable journal pin, then archive its bytes and proof before release. Label it a code snapshot. All four log/receipt/disk sidecar evidence must already be preserved and hash checked.",
+    "Call production ReleaseWorkspace only after the archived snapshot proof is durable. It removes only identity-checked four terminal containers and the exact workspace storage; require target volume lease released, workspace released, old receipt/request/result rows unchanged and only expected cleanup/pin/stop fields changed. Confirm no active or unknown work.",
+    "Stop only the newly launched runner after acknowledged release and retain PID/binary/config/signal identity. Write a separate cleanup result, never replace original failed acceptance."
+  ],
+  "crash_boundary": [
+    "Persist and validate each stage. If release outcome is unknown, reobserve the exact UUID/tuple before any next action.",
+    "Once workspace released=true or storage removed, do not repeat Stop/Seal (they can be fenced). Require the previously saved verified snapshot proof and retry only the same idempotent ReleaseWorkspace if storage cleanup is incomplete; if proof is missing or identities differ, stop for inspection.",
+    "No direct journal edits, Docker force-removal, directory reset, pool rebind, lease refund or reformat."
+  ],
+  "new_full_attempt_paths": [
+    "Add an explicit logs execution attempt dimension; existing --phase logs --attempt02 selects SIGTERM02 but currently outputs logs01. Preserve that meaning rather than silently changing old output.",
+    "New execution uses an exclusive acceptance-logs-02.json, evidence/logs-02 and runtime/strict-logs-private-02, plus a distinct host launcher output. Bind its new versioned binaries and original journal/pool; require prior cleanup receipt/live idle state before any new run/schema.",
+    "Keep SIGTERM source EvidenceDir pointing to sigterm-02. New logs binary identity differs from historical E50 c941421 identity: bind the old E50 manifest/hash and all four original signal/claim proofs separately, while binding new logs execution to its new binaries. Do not alter old E50 hashes or bypass its history checks.",
+    "Run all six log cases as a new complete sample. The prior logs01 L1/default/L5 remain partial results, never relabeled as a full pass."
+  ],
+  "oracle_correction": "No retained-stream fairness requirement. Require both seen counters positive/bounded by finite output, exact frame/hash/metadata/loss checks, truncation/policy kill confirmation and no trusted verification; permit an empty retained prefix for either stream."
+}
