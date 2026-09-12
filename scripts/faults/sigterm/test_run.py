@@ -33,9 +33,12 @@ class LaunchBoundaryTests(unittest.TestCase):
         self.credential()
         a = {"scope_root": str(self.repo), "test_binary": str(self.repo / "bin/application-faults.test")}
         for phase in run.PHASES:
-            argv, env = run.command(phase, a)
+            argv, env = run.command(phase, a, "02" if phase == "logs-cleanup" else "01")
             self.assertNotIn(self.secret, repr(argv))
-            self.assertEqual(env["FORGE_TEST_DATABASE_URL"], self.dsn)
+            if phase == "logs-cleanup":
+                self.assertNotIn("FORGE_TEST_DATABASE_URL", env)
+            else:
+                self.assertEqual(env["FORGE_TEST_DATABASE_URL"], self.dsn)
             self.assertEqual(env["HOME"], str(self.repo))
             self.assertEqual(sum(details[1] in env for details in run.PHASES.values()), 1)
             self.assertNotIn("FORGE_REVIEW_DATABASE_URL", env)
@@ -54,6 +57,43 @@ class LaunchBoundaryTests(unittest.TestCase):
                 argv, env = run.command(phase, a, attempt)
                 self.assertEqual(env[run.PHASES[phase][2]], str(self.repo / name))
                 self.assertNotIn(self.secret, repr(argv))
+
+    def test_log_execution_is_separate_from_sigterm_source_and_cleanup_has_no_database(self):
+        a = {"scope_root": str(self.repo), "test_binary": str(self.repo / "bin/application-faults.test")}
+        with patch.object(run, "credential", side_effect=AssertionError("cleanup must not read a credential")):
+            argv, env = run.command("logs-cleanup", a, "02")
+            self.assertEqual(env["FORGE_STRICT_LOGS_ACCEPTANCE"], str(self.repo / "acceptance-logs-cleanup-01.json"))
+            self.assertNotIn("FORGE_TEST_DATABASE_URL", env)
+            self.assertNotIn("FORGE_STRICT_LOGS_EXECUTION", env)
+            for phase, attempt, execution in (("logs", "01", "02"), ("sigterm", "02", "02"), ("logs-cleanup", "01", "01"), ("logs-cleanup", "02", "02")):
+                with self.assertRaises(ValueError):
+                    run.command(phase, a, attempt, execution)
+        self.credential()
+        _, old = run.command("logs", a, "02")
+        _, new = run.command("logs", a, "02", "02")
+        self.assertEqual(old["FORGE_STRICT_LOGS_ACCEPTANCE"], str(self.repo / "acceptance-02.json"))
+        self.assertEqual(old["FORGE_STRICT_LOGS_EXECUTION"], "01")
+        self.assertEqual(new["FORGE_STRICT_LOGS_ACCEPTANCE"], str(self.repo / "acceptance-logs-02.json"))
+        self.assertEqual(new["FORGE_STRICT_LOGS_EXECUTION"], "02")
+
+    def test_new_log_report_does_not_accept_old_success_or_partial_cleanup(self):
+        evidence = self.repo / "evidence"
+        evidence.mkdir(mode=0o700)
+        (evidence / "logs-01").mkdir(mode=0o700)
+        cases = {name: {"passed": True} for name in ("L1", "L2-L3-default", "L3-bytes", "L3-count", "L4", "L5")}
+        run.p.save(evidence / "logs-01/acceptance.json", {"passed": True, "cases": cases})
+        with self.assertRaises(OSError):
+            run.completed_report("logs", self.repo, "02", "02")
+        (evidence / "logs-02").mkdir(mode=0o700)
+        run.p.save(evidence / "logs-02/acceptance.json", {"passed": True, "cases": cases})
+        run.completed_report("logs", self.repo, "02", "02")
+        (evidence / "logs-01-cleanup").mkdir(mode=0o700)
+        report = evidence / "logs-01-cleanup/report.json"
+        run.p.save(report, {"passed": True, "released": True, "snapshot_verified": True})
+        run.completed_report("logs-cleanup", self.repo, "02")
+        report.write_text(run.json.dumps({"passed": True, "released": True}))
+        with self.assertRaises(ValueError):
+            run.completed_report("logs-cleanup", self.repo, "02")
 
     def test_second_attempt_cannot_use_old_success_or_claim_terminal_abort(self):
         case = self.repo / "evidence/sigterm-01/worker-runner-sigterm"
@@ -108,6 +148,31 @@ class LaunchBoundaryTests(unittest.TestCase):
             run.inputs("abort", "01")
             run.inputs("sigterm", "02")
             credential.assert_not_called()
+            sigterm = base / "evidence/sigterm-02/worker-runner-sigterm"
+            sigterm.mkdir(mode=0o700, parents=True)
+            run.p.save(sigterm / "acceptance.json", {"passed": True})
+            logs = base / "evidence/logs-01"
+            logs.mkdir(mode=0o700)
+            run.p.save(logs / "acceptance.json", {"passed": False})
+            next_revision = "b" * 40
+            next_bin = base / "bin" / next_revision
+            next_bin.mkdir(mode=0o700)
+            for old_path in new_bin.iterdir():
+                executable = next_bin / old_path.name
+                executable.write_bytes(b"logs revision " + old_path.read_bytes())
+                executable.chmod(0o700)
+            before_logs = (base / "acceptance-02.json").read_bytes()
+            for value in (None, "b" * 39):
+                with self.assertRaises(ValueError):
+                    run.prepare_logs_continuation(value)
+            result = run.prepare_logs_continuation(next_revision)
+            self.assertFalse(result["executed"])
+            run.inputs("logs-cleanup", "02")
+            run.inputs("logs", "02", "02")
+            self.assertEqual((base / "acceptance-02.json").read_bytes(), before_logs)
+            credential.assert_not_called()
+            with self.assertRaises(ValueError):
+                run.prepare_logs_continuation(next_revision)
             with self.assertRaises(ValueError):
                 run.prepare_continuation(revision)
             continuation = base / "acceptance-02.json"

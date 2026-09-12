@@ -73,6 +73,7 @@ type slFixture struct {
 	a         slAcceptance
 	c         slRunnerConfig
 	dir       string
+	private   string
 	journalID string
 	seq       int
 	ownRunner *process
@@ -455,7 +456,7 @@ func (f *slFixture) setupPG() {
 	if u.Hostname() != "127.0.0.1" || u.Port() != "32773" || u.Path != "/forge" || u.Query().Get("search_path") != "" {
 		f.t.Fatal("dedicated loopback32773 /forge without search_path required")
 	}
-	private := filepath.Join(f.a.ScopeRoot, "runtime", "strict-logs-private")
+	private := f.private
 	f.check(os.Mkdir(private, 0700))
 	h := &harness{t: f.t, ctx: f.ctx, dir: f.dir, private: private, schema: "appfault_strictlogs_" + strings.ToLower(rand.Text())}
 	f.h = h
@@ -1199,15 +1200,17 @@ func (f *slFixture) l5() {
 	f.check(err)
 	var historical slAcceptance
 	f.check(slReadJSON(filepath.Join(dir, "acceptance-input.json"), &historical))
-	if !reflect.DeepEqual(historical, f.a) {
-		f.t.Fatal("E50 historical acceptance/binary authority differs from current inputs")
+	historicalInputs, err := slHistoricalAuthority(f.a, historical, f.c, filepath.Base(f.dir) == "logs-02")
+	f.check(err)
+	for path, hash := range historicalInputs {
+		f.inputs[path] = hash
 	}
 	var historicalPreflight map[string]json.RawMessage
 	f.check(slReadJSON(filepath.Join(dir, "preflight.json"), &historicalPreflight))
 	var historicalBinary struct {
 		SHA256 string `json:"sha256"`
 	}
-	f.check(json.Unmarshal(historicalPreflight[f.a.TestBinary], &historicalBinary))
+	f.check(json.Unmarshal(historicalPreflight[historical.TestBinary], &historicalBinary))
 	if historicalBinary.SHA256 != historical.TestSHA {
 		f.t.Fatal("E50 executed binary proof differs")
 	}
@@ -1275,10 +1278,10 @@ func (f *slFixture) l5() {
 		label, launchName, path, hash string
 		args                          []string
 	}{
-		{"worker-original", "lifecycle-original", f.a.WorkerBinary, f.a.WorkerSHA, []string{f.a.WorkerBinary, "-config", filepath.Join(privateDir, "worker.json"), "-id", "lifecycle-original"}},
-		{"runner-original", "runner-original", f.a.RunnerBinary, f.a.RunnerSHA, []string{f.a.RunnerBinary, "-config", f.a.RunnerConfig}},
-		{"worker-successor", "lifecycle-successor", f.a.WorkerBinary, f.a.WorkerSHA, []string{f.a.WorkerBinary, "-config", filepath.Join(privateDir, "worker.json"), "-id", "lifecycle-successor"}},
-		{"runner-successor", "runner-successor", f.a.RunnerBinary, f.a.RunnerSHA, []string{f.a.RunnerBinary, "-config", f.a.RunnerConfig}},
+		{"worker-original", "lifecycle-original", historical.WorkerBinary, historical.WorkerSHA, []string{historical.WorkerBinary, "-config", filepath.Join(privateDir, "worker.json"), "-id", "lifecycle-original"}},
+		{"runner-original", "runner-original", historical.RunnerBinary, historical.RunnerSHA, []string{historical.RunnerBinary, "-config", historical.RunnerConfig}},
+		{"worker-successor", "lifecycle-successor", historical.WorkerBinary, historical.WorkerSHA, []string{historical.WorkerBinary, "-config", filepath.Join(privateDir, "worker.json"), "-id", "lifecycle-successor"}},
+		{"runner-successor", "runner-successor", historical.RunnerBinary, historical.RunnerSHA, []string{historical.RunnerBinary, "-config", historical.RunnerConfig}},
 	} {
 		launchRaw, e := slRead(filepath.Join(dir, spec.launchName+".log.identity.json"), 64<<10)
 		f.check(e)
@@ -1398,7 +1401,7 @@ func (f *slFixture) l5() {
 		hashes[rel] = slSHA(raw)
 		return nil
 	}))
-	f.save("L5-referenced-evidence.json", map[string]any{"source_directory": dir, "sha256": hashes, "source_test_binary_sha256": historicalBinary.SHA256, "journal_uuid": uuid, "scope": "recomputed prior actual E50 evidence plus live PG/SQLite and new authenticated HTTP download; no repeated lifecycle workload"})
+	f.save("L5-referenced-evidence.json", map[string]any{"source_directory": dir, "sha256": hashes, "source_test_binary_sha256": historicalBinary.SHA256, "historical_acceptance": historical, "current_logs_execution": f.a, "historical_input_sha256": historicalInputs, "journal_uuid": uuid, "scope": "recomputed prior actual E50 evidence plus live PG/SQLite and new authenticated HTTP download; no repeated lifecycle workload"})
 	f.cases["L5"] = map[string]any{"passed": true, "original_operation": op.Request.OperationID, "original_container_id": cid, "raw_daemon_counts": counts, "unchanged_spool_bytes": len(raw), "log_gap": job.Log, "current_effect_confirmations": confirmations, "current_allocations": allocations, "same_journal_uuid": uuid}
 }
 func slMapping(raw []byte) bool {
@@ -1494,6 +1497,16 @@ func TestStrictLogsCombinedAcceptance(t *testing.T) {
 	if e := slValidateContract(a, c); e != nil {
 		t.Fatal(e)
 	}
+	execution := os.Getenv("FORGE_STRICT_LOGS_EXECUTION")
+	dir, private, err := slExecutionPaths(a, path, execution)
+	if err != nil {
+		t.Fatal(err)
+	}
+	unlock, err := lifecycleControlLock(a.ScopeRoot)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer unlock()
 	uid, e := os.ReadFile("/proc/self/uid_map")
 	if e != nil {
 		t.Fatal(e)
@@ -1511,7 +1524,7 @@ func TestStrictLogsCombinedAcceptance(t *testing.T) {
 	}
 	ctx, end := context.WithTimeout(context.Background(), 10*time.Minute)
 	defer end()
-	f := &slFixture{t: t, ctx: ctx, a: a, c: c, dir: filepath.Join(a.ScopeRoot, "evidence", "logs-01"), configs: map[string]string{"default": a.RunnerConfig, "bytes": filepath.Join(a.ScopeRoot, "runtime", "runner-byteguard.json"), "count": filepath.Join(a.ScopeRoot, "runtime", "runner-countguard.json")}, inputs: map[string]string{}, cases: map[string]any{}, started: time.Now().UTC()}
+	f := &slFixture{t: t, ctx: ctx, a: a, c: c, dir: dir, private: private, configs: map[string]string{"default": a.RunnerConfig, "bytes": filepath.Join(a.ScopeRoot, "runtime", "runner-byteguard.json"), "count": filepath.Join(a.ScopeRoot, "runtime", "runner-countguard.json")}, inputs: map[string]string{}, cases: map[string]any{}, started: time.Now().UTC()}
 	for _, x := range []struct{ path, hash, pkg string }{{a.RunnerBinary, a.RunnerSHA, "github.com/JDinSeattle/forge-runtime/cmd/forge-runner"}, {a.WorkerBinary, a.WorkerSHA, "github.com/JDinSeattle/forge-runtime/cmd/forge-worker"}, {a.TestBinary, a.TestSHA, ""}} {
 		raw, e := slRead(x.path, 128<<20)
 		f.check(e)
@@ -1553,6 +1566,13 @@ func TestStrictLogsCombinedAcceptance(t *testing.T) {
 	f.check(e)
 	f.check(slIdle(j))
 	f.journalID = j.Identity
+	if execution == "02" {
+		cleanupInputs, err := slCleanupPrerequisite(a, c, j)
+		f.check(err)
+		for path, hash := range cleanupInputs {
+			f.inputs[path] = hash
+		}
+	}
 	var old struct {
 		Passed bool   `json:"passed"`
 		UUID   string `json:"journal_uuid"`

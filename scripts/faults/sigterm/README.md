@@ -175,3 +175,34 @@ The [integrated offline record](../../../benchmarks/results/lifecycle-integrated
 identifies all four merged Go fixture sources. Ordinary and race checks each
 pass 43 test/subtest entries and skip the three actual-environment entry points;
 package vet also passes. Those results are preparation evidence only.
+
+## Explicit continuation of the first log execution
+
+`--attempt 02` selects the SIGTERM source. It continues to mean `logs-01` for
+the original log invocation. A later, corrected log execution has its own
+explicit selector and never overwrites that failed sample:
+
+```bash
+python3 -I scripts/faults/sigterm/run.py prepare-logs-continuation --revision <full-revision>
+python3 -I scripts/faults/sigterm/run.py launch --phase logs-cleanup --attempt 02
+python3 -I scripts/faults/sigterm/run.py launch --phase logs --attempt 02 --logs-execution 02
+```
+
+Preparation creates `acceptance-logs-cleanup-01.json` and
+`acceptance-logs-02.json` from a new frozen binary directory, retaining the
+original SIGTERM manifest and all old binaries. It performs no cleanup itself.
+The first explicit phase handles only the known retained direct-RPC workspace;
+it never needs a database credential or a model key. Its production
+Stop/Snapshot/Release proof goes under `evidence/logs-01-cleanup`. An uncertain
+outcome remains retained for inspection, with no automatic retry or deletion.
+
+The new six-case sample goes under `evidence/logs-02`, with private database
+settings under `runtime/strict-logs-private-02` and launcher evidence under
+`evidence/host-logs-02-retry`. It requires the verified cleanup proof and an
+idle unchanged journal before any new schema or workspace. L5 validates the
+original SIGTERM manifest, old executable bytes and original process signals
+separately from the new log executable identity; it never claims that E50 ran
+the newer binary. Both phases acquire the existing fixture control lock.
+
+These commands describe the reviewed continuation interface. Their presence
+is not evidence that cleanup or the new full log execution has passed.
