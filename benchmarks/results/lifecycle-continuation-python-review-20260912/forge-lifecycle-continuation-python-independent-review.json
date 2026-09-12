@@ -1,0 +1,89 @@
+{
+  "passed": true,
+  "created_at": "2026-09-12T04:30:27.120190+00:00",
+  "commit": "ab5dbe007617c7e7236ec794bce018e75dd27664",
+  "remaining_p1_p2": [],
+  "scope": "Independent read-only Python continuation/HOME commit review and offline temporary-fixture tests. E50 Go abort and attempt02 live gates are design prerequisites, not reviewed implementation or executed acceptance in this record.",
+  "validation": {
+    "commit": "ab5dbe007617c7e7236ec794bce018e75dd27664",
+    "argv": [
+      "/usr/bin/python3",
+      "-I",
+      "-B",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "scripts/faults/sigterm",
+      "-p",
+      "test_*.py",
+      "-v"
+    ],
+    "exit_code": 0,
+    "tests": 31,
+    "elapsed_seconds": 0.11384763597743586,
+    "source_inputs": 14,
+    "source_matches_fixed_git_blob": true,
+    "source_before_after_equal": true,
+    "source_sha256": {
+      "cmd/forge-runner/configure-local.py": "e38d12e2822b0b5941d7fce38ff2c8ad93d927a4de78421193187e65770450eb",
+      "scripts/faults/sigterm/README.md": "4587d94ecc436efbe200cc83b77ed2311458fd7a27a779bf2e238e4e4c02f76d",
+      "scripts/faults/sigterm/configure.py": "567aa4fd085a39d11bc7313dd612ec8204c8f159255d3fe3542a96230162ce05",
+      "scripts/faults/sigterm/prepare.py": "6cb0af3805dfaeae3bf3e1b03df7b5daf46f36127e1c7c278247d3193543d1c9",
+      "scripts/faults/sigterm/run.py": "f3bb028397ac615dc26294c6d06ad6035f9164b8a475bf49f7d07ebf245c6803",
+      "scripts/faults/sigterm/test_configure.py": "79b39b181dad760ca9fa00a451eba4c75ed6bbacbc66c8c947c3ce7ab790e7be",
+      "scripts/faults/sigterm/test_prepare.py": "1f3c972b05cb6feed5f8c56f7dde2bdc9b36734364d794c09d51b21a0f885d79",
+      "scripts/faults/sigterm/test_run.py": "cd85c43cca777a4b40ec1c3fb1637659d4c7aa4f076e4f2c667fd9d589113771",
+      "scripts/workspace-volumes/.gitignore": "32dae3052f331ee34d628ef535709b301259a45df7c7522c4d35dcf49873f00b",
+      "scripts/workspace-volumes/README.md": "e2e8a345f8053cb9bb89f13a5cb572e22be00051091cf32d29463ed3794d869a",
+      "scripts/workspace-volumes/common.py": "bf50b9bfaef24a1d6b2980495a6d84baa68ab10b6184ba21b56a0b5e89229bc2",
+      "scripts/workspace-volumes/mount.py": "bfa00fab40652ba84e18409f85fd56bc1c1285923cfea6295a3bd31a7130027a",
+      "scripts/workspace-volumes/test_volumes.py": "eb37c83753e3739a3460bc5ac6e3645f1cb1da3eed38500b560653c52e0c591a",
+      "scripts/workspace-volumes/volumes.py": "683ebc5e3538ba65a701b4d7cad17d6e21d12cb1ab1cfc54835d2689718cd4bc"
+    },
+    "scope": "Offline temporary fixtures and recording subprocess mocks only. No actual prepare/configure/mount/PG/Docker/service action."
+  },
+  "reviewed_boundaries": [
+    "Invalid phase or attempt is rejected before credentials; abort supports only attempt01 and resolves its separate manifest. All three versioned executable paths must agree on one confined full-40-lowercase-hex directory, hashes and regular single-link private executable inputs.",
+    "prepare-continuation rechecks original acceptance/config/binaries and exclusively writes two new manifests. It does not invoke credential, subprocess, Docker or PG and cannot overwrite existing manifests or original binaries. A partial preparation remains visible and blocks repetition.",
+    "HOME is set only in the new minimal child environment to the previously validated scope root. No parent environment is mutated, and credentials remain absent from systemd argv/properties and intent logs.",
+    "The mapped child checks the exact compiled test entry before invoking its one opt-in test. Exit0 is insufficient without the selected final report; attempt02 cannot use attempt01 SIGTERM acceptance. Abort report must explicitly say cancel_requested and terminal=false.",
+    "Launcher admission creates an exclusive output directory and random new systemd unit with a separate RootlessKit state directory. It retains nonzero status and requires confirmed unit termination; it does not stop previous services or erase prior evidence.",
+    "Production Cancel intentionally remains cancel_requested with a pending stop command. The proposal accurately preserves this nonterminal fixture-abandonment state and the expired original deadline."
+  ],
+  "required_go_execution_gates_not_yet_verified": [
+    "Bind exact original tenant/run/schema/input/config/deadline and failed before_runner descriptor. Recheck both SQL header and snapshot lease0, zero effects/model attempts/steps/allocations/fees/artifact publications, no existing journal/WAL/SHM/owner/workspace and empty artifact root before Cancel.",
+    "Maintain quiescence: original unit and workers are absent. Store.Cancel is not a conditional compare-and-swap over every precondition; recheck its allowed changes afterward and refuse continuation if any execution evidence appears. Pending stop command and cancel event/version changes are legitimate; do not falsely require commands=0 afterward.",
+    "After original cancellation intent, confirm immutable deadline/input/config unchanged and original lease0/zero execution still hold; keep old schema unserved. cancel_requested is schedulable, so never launch any worker with the original private DSN.",
+    "Attempt02 must create a different schema/run and distinct private worker config/evidence, link original and new IDs explicitly, and recheck live original proof plus unchanged never-owned pool. No Product ParentRunID retry is implied for this nonterminal fixture.",
+    "L5 must bind the selected SIGTERM02 evidence/private schema. Its logs-01 output remains exclusive; prior log evidence cannot be replaced or reinterpreted."
+  ],
+  "limits": [
+    "These 31 tests are offline mocks and temporary files. They do not prove mapped namespace/service behavior, live PostgreSQL guards, Docker execution, cancellation completion, SIGTERM recovery, or log acceptance.",
+    "Preparing manifests before actual abort is intentional and produces no success claim. The Go fixture remains authoritative for all live preconditions before trial02.",
+    "The binary directory revision and local hashes enforce identity consistency, not source-to-binary provenance by themselves. A separate reviewed clean-revision build attestation is required before real execution.",
+    "Existing original before-runner read-only PostgreSQL record was inspected without another database connection; it is historical evidence, not a current live precondition."
+  ],
+  "original_historical_pg_record": {
+    "path": "var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-01/before-runner-readonly-audit.json",
+    "sha256": "ed3711e47e2eb860add3fdea4f24a9d6e71f9be668683ccc7691b5b80fbc6876",
+    "run_id": "run_OAZ33S3LRG5O7EOUL6GDQ5QB4N",
+    "state": "queued",
+    "version": 1,
+    "lease_epoch": 0,
+    "deadline_utc": "2026-09-12T04:04:17.356217Z"
+  },
+  "artifacts": {
+    "test-result.json": "20d4bdb7ae874c264b565b731f9a1ffb895184802aeecb640a51a5c7401ea086",
+    "inputs-after.json": "b523628b85be701e212e74e041e2b6d280c65c9d61b2965896757735d3bf02e4",
+    "tests.log": "74d16d0b6c9ff16f1a7229d3d27cf68f97a0e080726ab898105c376547aaad97",
+    "inputs-before.json": "b523628b85be701e212e74e041e2b6d280c65c9d61b2965896757735d3bf02e4",
+    "source/scripts/faults/sigterm/test_run.py": "cd85c43cca777a4b40ec1c3fb1637659d4c7aa4f076e4f2c667fd9d589113771",
+    "source/scripts/faults/sigterm/test_prepare.py": "1f3c972b05cb6feed5f8c56f7dde2bdc9b36734364d794c09d51b21a0f885d79",
+    "source/scripts/faults/sigterm/test_configure.py": "79b39b181dad760ca9fa00a451eba4c75ed6bbacbc66c8c947c3ce7ab790e7be",
+    "source/scripts/faults/sigterm/run.py": "f3bb028397ac615dc26294c6d06ad6035f9164b8a475bf49f7d07ebf245c6803",
+    "source/scripts/faults/sigterm/prepare.py": "6cb0af3805dfaeae3bf3e1b03df7b5daf46f36127e1c7c278247d3193543d1c9",
+    "source/scripts/faults/sigterm/configure.py": "567aa4fd085a39d11bc7313dd612ec8204c8f159255d3fe3542a96230162ce05",
+    "source/scripts/faults/sigterm/README.md": "4587d94ecc436efbe200cc83b77ed2311458fd7a27a779bf2e238e4e4c02f76d"
+  }
+}

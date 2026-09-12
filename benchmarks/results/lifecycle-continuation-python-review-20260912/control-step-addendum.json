@@ -1,0 +1,7 @@
+{
+  "scope": "Addendum correcting a design prerequisite; original review remains byte-for-byte unchanged.",
+  "original_review_sha256": "4a76136999c6c7635ab50951fcfa931f69b094347c398a275a1121e923b323eb",
+  "source": "internal/persistence/scheduler.go persistTransition steps upsert at current source",
+  "correction": "Before Cancel: steps=0. After production Store.Cancel: exactly one control ledger steps row seq0/kind initialize/status committed with empty input_hash/output_ref is expected. Snapshot step_seq remains0. Model/effects/runner allocations/quota/artifacts/cleanup and all execution/fee counters remain0; pending stop command and cancel transition are expected. This row is not tool or model execution.",
+  "impact": "No production semantics or original evidence changed; future Go gate must verify the exact permitted control row instead of requiring after steps=0."
+}
