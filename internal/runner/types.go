@@ -13,7 +13,10 @@ import (
 )
 
 type Config struct {
-	Telemetry   *telemetry.Telemetry
+	Telemetry *telemetry.Telemetry
+	// Nil preserves legacy embedding compatibility. The executable supplies the
+	// normalized strict policy by default for every newly admitted process.
+	Logs        *sandbox.LogPolicy
 	VolumeSlots []sandbox.VolumeSpec
 	// TestVolumeVerifier is only accepted with the explicit no-process TestBackend.
 	TestVolumeVerifier func(context.Context, sandbox.VolumeSpec) error

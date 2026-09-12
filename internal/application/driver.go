@@ -384,7 +384,7 @@ func (d *Driver) execute(ctx context.Context, r persistence.Run, command flow.Co
 			if err = json.Unmarshal(op.Result, &job); err != nil {
 				return flow.Event{}, err
 			}
-			evidence.TargetFailed = job.Started && !job.Running && job.ExitCode != 0
+			evidence.TargetFailed = op.Status == runner.Failed && job.Started && !job.Running && job.ExitCode != 0 && sandbox.VerificationLogValid(job)
 			evidence.ReceiptRef = receipt.Ref
 			evidence.Revision = op.AfterRevision
 		}
@@ -555,6 +555,15 @@ func (d *Driver) receipt(ctx context.Context, op runner.Operation) (flow.EffectR
 	if !op.Status.Terminal() {
 		return flow.EffectReceipt{}, domain.ErrReconciliation
 	}
+	logRef, err := d.verifiedLogArtifact(ctx, op)
+	if err != nil {
+		return flow.EffectReceipt{}, err
+	}
+	if logRef.ObjectKey != "" {
+		if _, err = d.publish(ctx, logRef); err != nil {
+			return flow.EffectReceipt{}, err
+		}
+	}
 	ref, err := d.publish(ctx, op.Receipt)
 	return flow.EffectReceipt{EffectID: op.Request.OperationID, ArgsHash: op.Request.ArgsHash, Epoch: op.Request.Epoch, Status: flow.EffectStatus(op.Status), BeforeRevision: op.Request.ExpectedRevision, AfterRevision: op.AfterRevision, Ref: ref, Settled: true}, err
 }
@@ -620,7 +629,7 @@ func (d *Driver) verify(ctx context.Context, r persistence.Run) (flow.Event, err
 		if err = json.Unmarshal(op.Result, &job); err != nil {
 			return flow.Event{}, err
 		}
-		targetPassed = op.Status == runner.Succeeded && job.Started && !job.Running && job.ExitCode == 0
+		targetPassed = op.Status == runner.Succeeded && job.Started && !job.Running && job.ExitCode == 0 && sandbox.VerificationLogValid(job)
 		refs = append(refs, receipt.Ref)
 		if op.AfterRevision != r.State.WorkspaceRevision {
 			return flow.Event{}, domain.ErrReconciliation
@@ -638,7 +647,7 @@ func (d *Driver) verify(ctx context.Context, r persistence.Run) (flow.Event, err
 		return flow.Event{}, domain.ErrReconciliation
 	}
 	refs = append(refs, receipt.Ref)
-	evidence := flow.VerificationEvidence{Trusted: d.TrustedVerification, WorkspaceRevision: r.State.WorkspaceRevision, BaselineTargetFailed: b.TargetFailed, TargetPassed: targetPassed, RegressionPassed: op.Status == runner.Succeeded && job.Started && !job.Running && job.ExitCode == 0}
+	evidence := flow.VerificationEvidence{Trusted: d.TrustedVerification, WorkspaceRevision: r.State.WorkspaceRevision, BaselineTargetFailed: b.TargetFailed, TargetPassed: targetPassed, RegressionPassed: op.Status == runner.Succeeded && job.Started && !job.Running && job.ExitCode == 0 && sandbox.VerificationLogValid(job)}
 	ref, err := d.put(ctx, r, "verification_report", struct {
 		Evidence   flow.VerificationEvidence `json:"evidence"`
 		Receipts   []string                  `json:"receipts"`

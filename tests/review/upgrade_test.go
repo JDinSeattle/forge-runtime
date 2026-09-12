@@ -235,7 +235,7 @@ func TestRecoverySQLiteV3AdditiveUpgrade(t *testing.T) {
 	defer journal.Close()
 	// Build a historical v3 fixture offline from freshly created local state.
 	// Drop only columns known to be introduced by the not-yet-deployed v4.
-	for _, query := range []string{`DROP TABLE runner_artifacts`, `DROP TABLE IF EXISTS journal_identity`, `ALTER TABLE operations DROP COLUMN dispatch_started`, `ALTER TABLE volume_leases DROP COLUMN epoch`, `ALTER TABLE volume_leases DROP COLUMN source_hash`} {
+	for _, query := range []string{`DROP TABLE operation_logs`, `DROP TABLE log_runs`, `DROP TABLE runner_artifacts`, `DROP TABLE IF EXISTS journal_identity`, `ALTER TABLE operations DROP COLUMN dispatch_started`, `ALTER TABLE volume_leases DROP COLUMN epoch`, `ALTER TABLE volume_leases DROP COLUMN source_hash`} {
 		if _, err = journal.ExecContext(ctx, query); err != nil {
 			t.Fatal(err)
 		}
@@ -280,7 +280,7 @@ func TestRecoverySQLiteV3AdditiveUpgrade(t *testing.T) {
 	}
 	defer journal.Close()
 	var version, conservative, pins int
-	if err = journal.QueryRowContext(ctx, `PRAGMA user_version`).Scan(&version); err != nil || version != 4 {
+	if err = journal.QueryRowContext(ctx, `PRAGMA user_version`).Scan(&version); err != nil || version != 5 {
 		t.Fatalf("version=%d %v", version, err)
 	}
 	if err = journal.QueryRowContext(ctx, `SELECT count(*) FROM operations WHERE dispatch_started=1`).Scan(&conservative); err != nil || conservative != 2 {

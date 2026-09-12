@@ -1,0 +1,17 @@
+ok  	github.com/JDinSeattle/forge-runtime/internal/runner	15.706s
+ok  	github.com/JDinSeattle/forge-runtime/internal/sandbox	1.062s
+--- FAIL: TestUDSContractAndPermissions (0.04s)
+    transport_test.go:87: listen unix /tmp/forge-rpc-2589360519/runner.sock: setsockopt: operation not permitted
+--- FAIL: TestStartTimeoutInspectsSameIDWithoutResubmission (0.00s)
+    --- FAIL: TestStartTimeoutInspectsSameIDWithoutResubmission/accepted (0.00s)
+        transport_test.go:178: listen unix /tmp/forge-rpc-1236523653/runner.sock: setsockopt: operation not permitted
+    --- FAIL: TestStartTimeoutInspectsSameIDWithoutResubmission/unknown (0.00s)
+        transport_test.go:178: listen unix /tmp/forge-rpc-1001607543/runner.sock: setsockopt: operation not permitted
+--- FAIL: TestRemoteRequiresVerifiedMutualIdentity (0.04s)
+    transport_test.go:214: listen tcp 127.0.0.1:0: socket: operation not permitted
+FAIL
+FAIL	github.com/JDinSeattle/forge-runtime/internal/runnerclient	0.102s
+ok  	github.com/JDinSeattle/forge-runtime/internal/application	2.218s
+ok  	github.com/JDinSeattle/forge-runtime/internal/retention	1.203s
+ok  	github.com/JDinSeattle/forge-runtime/cmd/forge-runner	1.035s
+FAIL

@@ -42,6 +42,16 @@ func Open(config Config) (*Engine, error) {
 	if config.Now == nil {
 		config.Now = time.Now
 	}
+	if config.Logs != nil {
+		policy, err := config.Logs.Normalize()
+		if err != nil {
+			return nil, err
+		}
+		config.Logs = &policy
+		if _, test := config.Backend.(*sandbox.TestBackend); !test && len(config.VolumeSlots) == 0 {
+			return nil, fmt.Errorf("%w: strict log spool requires fixed quota volumes", domain.ErrInvalid)
+		}
+	}
 	if config.MaxFileBytes <= 0 {
 		config.MaxFileBytes = 1 << 20
 	}
@@ -296,7 +306,7 @@ func (e *Engine) StartOperation(ctx context.Context, r OperationRequest) (Operat
 		}
 		o.ExpectedAfterHash = treeHash(after)
 	}
-	o, created, err := e.journal.reserve(ctx, o)
+	o, created, err := e.journal.reserve(ctx, o, e.config.Logs)
 	if err != nil || !created {
 		unlock()
 		return o, err
@@ -401,7 +411,21 @@ func (e *Engine) execute(ctx context.Context, o Operation, before tree) {
 				return
 			}
 		}
-		job, err := e.config.Backend.Start(ctx, sandbox.JobSpec{ID: o.JobID, Workspace: jobWorkspace, OperationID: o.Request.OperationID, Epoch: o.Request.Epoch, WorkspaceID: o.Request.WorkspaceID, TenantID: o.Request.TenantID, RunID: o.Request.RunID, Profile: profile, Command: command, Deadline: o.Request.Deadline, TrustedVerification: o.Request.Kind == "verify", BeforeStart: func(ctx context.Context) error {
+		var capture *logCapture
+		policy, err := e.journal.logPolicy(ctx, o.Request.OperationID)
+		if err != nil {
+			e.unknown(o, err)
+			return
+		}
+		if policy != nil {
+			capture, err = newLogCapture(e.logDir(o.Request.WorkspaceID), o, *policy)
+			if err != nil {
+				e.unknown(o, err)
+				return
+			}
+			defer func() { _ = capture.Finish(false, "capture_gap", false, false) }()
+		}
+		spec := sandbox.JobSpec{ID: o.JobID, Workspace: jobWorkspace, OperationID: o.Request.OperationID, Epoch: o.Request.Epoch, WorkspaceID: o.Request.WorkspaceID, TenantID: o.Request.TenantID, RunID: o.Request.RunID, Profile: profile, Command: command, Deadline: o.Request.Deadline, TrustedVerification: o.Request.Kind == "verify", BeforeStart: func(ctx context.Context) error {
 			result, err := e.journal.db.ExecContext(ctx, `UPDATE operations SET docker_start_intent=1 WHERE id=? AND status='running' AND cancel_requested=0`, o.Request.OperationID)
 			if err != nil {
 				return err
@@ -410,10 +434,24 @@ func (e *Engine) execute(ctx context.Context, o Operation, before tree) {
 				return domain.ErrReconciliation
 			}
 			return nil
-		}})
+		}}
+		if capture != nil {
+			spec.Capture = capture
+			spec.OnCreated = func(ctx context.Context, id string) error {
+				return e.journal.recordLogContainer(ctx, o.Request.OperationID, id)
+			}
+			spec.DetachOnCancel = func() bool { e.mu.Lock(); defer e.mu.Unlock(); return e.closed }
+		}
+		job, err := e.config.Backend.Start(ctx, spec)
 		if err != nil {
+			if capture != nil {
+				_ = capture.Finish(false, "capture_gap", false, false)
+			}
 			e.unknown(o, err)
 			return
+		}
+		if job.Interrupted {
+			status = Cancelled
 		}
 		if err = e.faultAt("after_job_start", o.Request); err != nil {
 			e.unknown(o, err)
@@ -455,6 +493,9 @@ func (e *Engine) execute(ctx context.Context, o Operation, before tree) {
 			return
 		}
 		if job.ExitCode != 0 && status != Cancelled {
+			status = Failed
+		}
+		if job.Log != nil && !sandbox.VerificationLogValid(job) && status != Cancelled {
 			status = Failed
 		}
 		if err = e.faultAt("after_job_exit", o.Request); err != nil {
@@ -519,12 +560,14 @@ func (e *Engine) complete(o Operation, status Status, result json.RawMessage, ex
 	// Execution grants are bearer capabilities, not part of a downloadable
 	// receipt. Keep only the immutable operation binding and observed facts.
 	o.Request.Grant = ""
-	data, err := json.Marshal(o)
-	if err != nil {
-		e.unknown(o, err)
-		return
-	}
 	err = artifact.WithPublication(ctx, e.config.Artifacts, func(locked context.Context) error {
+		if err := e.publishLogs(locked, &o); err != nil {
+			return err
+		}
+		data, err := json.Marshal(o)
+		if err != nil {
+			return err
+		}
 		ref, err := e.config.Artifacts.Put(locked, o.Request.TenantID, o.Request.RunID, "operation_receipt", bytes.NewReader(data))
 		if err != nil {
 			return err
@@ -640,6 +683,12 @@ func (e *Engine) reconcileLocked(ctx context.Context, o Operation, cancelJob boo
 			interrupted = job.Interrupted
 		}
 		if job.Running {
+			if policy, policyErr := e.journal.logPolicy(ctx, o.Request.OperationID); policyErr != nil {
+				return o, policyErr
+			} else if policy != nil {
+				e.unknown(o, sandbox.ErrCaptureGap)
+				return e.journal.operation(ctx, o.Request.OperationID)
+			}
 			return o, nil
 		}
 		if !job.Started && job.NeverStarted {
@@ -658,6 +707,8 @@ func (e *Engine) reconcileLocked(ctx context.Context, o Operation, cancelJob boo
 		if interrupted {
 			status = Cancelled
 		}
+		// publishLogs loads durable capture facts and conservatively fails a
+		// stopped strict job whose original attach stream was incomplete.
 		result, _ := json.Marshal(job)
 		e.complete(o, status, result, nil)
 	} else {
@@ -754,6 +805,9 @@ func (e *Engine) ReleaseWorkspace(ctx context.Context, r WorkspaceRequest) (Rele
 	}
 	if w.ActiveOperation != "" {
 		return ReleaseResult{}, domain.ErrReconciliation
+	}
+	if err = e.cleanupLogContainers(ctx, r.WorkspaceID); err != nil {
+		return ReleaseResult{}, err
 	}
 	result, err := e.journal.db.ExecContext(ctx, "UPDATE workspaces SET released=1,adopting=1 WHERE id=? AND epoch=? AND active_operation=''", r.WorkspaceID, r.Epoch)
 	if err != nil {

@@ -1,0 +1,185 @@
+{
+  "scope": "local module files reported by go list -deps -test for runner test binary; application is not linked",
+  "files": [
+    {
+      "path": "go.mod",
+      "size": 5515,
+      "sha256": "61a96a6dbfdc546edcc7abab472adc49313db486443c47f2272ad75cdae21682"
+    },
+    {
+      "path": "go.sum",
+      "size": 37939,
+      "sha256": "fb95568a8246ed4b2759494d6384e27a57e330b722154046b8160357ed1c7718"
+    },
+    {
+      "path": "internal/artifact/deadline.go",
+      "size": 2231,
+      "sha256": "23f537aa0d41297a71936cc10109b9ab71e77c81c7654880b22048fd68fe4df3"
+    },
+    {
+      "path": "internal/artifact/journals.go",
+      "size": 4664,
+      "sha256": "26d3fa7096f37ba6beb9062ba88a6fee709db92e6ed6c98c481c1e5e8eedddb4"
+    },
+    {
+      "path": "internal/artifact/local.go",
+      "size": 7433,
+      "sha256": "47924f9e6793b6c65e90b5430c60fe80c28a4bf73cf79acda1928169bc4b671f"
+    },
+    {
+      "path": "internal/artifact/retention.go",
+      "size": 5607,
+      "sha256": "45f3a12762a23a8b7134c3c168b47d2e92cc14b91411034dde9808c953c424fe"
+    },
+    {
+      "path": "internal/dependency/context.go",
+      "size": 584,
+      "sha256": "3a98133165102cc963b816d204ad74f10725d1d781a6668185b8792296f4bd94"
+    },
+    {
+      "path": "internal/dependency/transaction.go",
+      "size": 4142,
+      "sha256": "e9ea80b104f471fb8537a29d2e27a19cadd0859f544deefa1bee6a88826a4f3d"
+    },
+    {
+      "path": "internal/domain/canonical.go",
+      "size": 1628,
+      "sha256": "bbe1014f42f02a889acf1db9e6f2dc1d63fdd9a05e56c94cce35637ed0e5bc7e"
+    },
+    {
+      "path": "internal/domain/types.go",
+      "size": 5543,
+      "sha256": "b93bd45fb092186b9c8efe60d8f031f166903c633487002f1a59fc05eaa2d571"
+    },
+    {
+      "path": "internal/runner/cleanup_grant_test.go",
+      "size": 2048,
+      "sha256": "79236d76812bb4d92f4d6fa75df6affc5c293c05f4de7735080a20e79202b0fd"
+    },
+    {
+      "path": "internal/runner/engine.go",
+      "size": 28639,
+      "sha256": "9e31dc53ab966598dae8ce79855275942cd828339428fb71da4dc98a4152b390"
+    },
+    {
+      "path": "internal/runner/engine_test.go",
+      "size": 20276,
+      "sha256": "528e47755c2d3d037e914f3528e63c9d59181300edef2106801b83601c4e247a"
+    },
+    {
+      "path": "internal/runner/files.go",
+      "size": 12645,
+      "sha256": "dc582d1f54c21238cefce34fcd6f1aafddeb02d5938018b02fdef85c2b8d43fb"
+    },
+    {
+      "path": "internal/runner/grant.go",
+      "size": 4276,
+      "sha256": "df8e491e086402275f1e0a5bedcdcf9b20cff51c36f42ec0318a0dc9e4f3dd47"
+    },
+    {
+      "path": "internal/runner/initialization.go",
+      "size": 3808,
+      "sha256": "ce87fe2578b224e9bfe33c7df42ddb7e56a26066d95aae9505623f5055b83a19"
+    },
+    {
+      "path": "internal/runner/initialization_test.go",
+      "size": 10401,
+      "sha256": "2d383af19c09724211b7a7dab0460b662c407502feba6e4a03ae2eee83de6f4f"
+    },
+    {
+      "path": "internal/runner/journal.go",
+      "size": 16685,
+      "sha256": "559ff6d2b65b63b670e0d27736f8f203a5a09fde3004a4d48bbc3a516610f97f"
+    },
+    {
+      "path": "internal/runner/journal_identity_test.go",
+      "size": 3086,
+      "sha256": "2158bca6f9d2eb81d982ec40fcf175562ae33ec76d86e593f523d2c6de46e6d9"
+    },
+    {
+      "path": "internal/runner/lock_linux.go",
+      "size": 808,
+      "sha256": "2f4a81777e2756668ce62c2f0004c7061a003359be155cccce58eba4692a2adc"
+    },
+    {
+      "path": "internal/runner/log_capture.go",
+      "size": 10893,
+      "sha256": "3b7c93353804d757d5bece4531363045c521a5f9c52f561b45214f574d1cfdcc"
+    },
+    {
+      "path": "internal/runner/log_capture_test.go",
+      "size": 14242,
+      "sha256": "a841bcb784b407e197be8aa27d65a6e1677fac71c28a238c7a91a2fe1b49ee8c"
+    },
+    {
+      "path": "internal/runner/log_journal.go",
+      "size": 3117,
+      "sha256": "3f678a651d6f3df043a3e4711d5ab202a2eba3d7f3857658efb3e81ba855c148"
+    },
+    {
+      "path": "internal/runner/log_publication.go",
+      "size": 3336,
+      "sha256": "81e9f4cbd72970bd7dc22b7b0879ae709c91df4c3436b765bd3e549930e38ef0"
+    },
+    {
+      "path": "internal/runner/logs_backend_integration_test.go",
+      "size": 17854,
+      "sha256": "77caa6e947482e0b2f1e5c160b4188aac7625ad8d597d6c186e097452ae22a2b"
+    },
+    {
+      "path": "internal/runner/storage.go",
+      "size": 7754,
+      "sha256": "79f088790073d307dbadc4664b71b3f3a5efc1dac73231b29c61cbe614ce3c9c"
+    },
+    {
+      "path": "internal/runner/storage_test.go",
+      "size": 8647,
+      "sha256": "365f33eaa1e99f5de79526e72be56ff242d4baccc50f3b8b3d9a9be0491caa12"
+    },
+    {
+      "path": "internal/runner/sync_linux.go",
+      "size": 871,
+      "sha256": "cbee18ee506b2b0ef53a493ca02d883b223cfe362ffe941729c01d539f6a3c39"
+    },
+    {
+      "path": "internal/runner/types.go",
+      "size": 4910,
+      "sha256": "3478e8d2571869ed9c4432970944b8e319f70a8b89604e1aff546fb846155b55"
+    },
+    {
+      "path": "internal/runner/verification.go",
+      "size": 2442,
+      "sha256": "cf68fcf7cf3e72331292d54a5d9fb16f51187c163e6ede296be8bc1cd700f3bb"
+    },
+    {
+      "path": "internal/sandbox/docker.go",
+      "size": 8888,
+      "sha256": "2799ccd8bcb95fd0ab1d5e72c7502a27f5a74ef6f13550057ac018cf56de371f"
+    },
+    {
+      "path": "internal/sandbox/docker_attach.go",
+      "size": 7892,
+      "sha256": "267e80742e8d636fb7ffa48feaaf1144dfe1b6ce8fcf42fb08ef3bb60fa4983b"
+    },
+    {
+      "path": "internal/sandbox/logs.go",
+      "size": 2920,
+      "sha256": "e9f2a28b84fbcbb28a3606e567bb58a5b8c0b27a0c2777009737205e4857bafc"
+    },
+    {
+      "path": "internal/sandbox/quota_linux.go",
+      "size": 1672,
+      "sha256": "a1dd994b6c8c6839078a3218ff20684410c9adb42b33c1b1dcc037f108415d36"
+    },
+    {
+      "path": "internal/sandbox/types.go",
+      "size": 4678,
+      "sha256": "f870713276a0057d07369dd3d39fc2737ffeb280175e1aa907196d0a36a8402a"
+    },
+    {
+      "path": "internal/sandbox/volume_linux.go",
+      "size": 5324,
+      "sha256": "130208395c4ad95012307e1238daafb3faf2b7f19e1c93f7fc31ca43dbc239e2"
+    }
+  ]
+}

@@ -21,6 +21,7 @@ import (
 )
 
 type configuration struct {
+	Logs             sandbox.LogPolicy          `json:"logs,omitempty"`
 	RootDir          string                     `json:"root_dir"`
 	JournalPath      string                     `json:"journal_path"`
 	ArtifactRoot     string                     `json:"artifact_root"`
@@ -150,7 +151,11 @@ func run(args []string) error {
 		_ = stopMetrics(ctx)
 	}()
 	c.Server.Telemetry = metrics
-	engine, err := runner.Open(runner.Config{Telemetry: metrics, RootDir: c.RootDir, JournalPath: c.JournalPath, Artifacts: store, Backend: backend, Signer: signer, Profiles: c.Profiles, Sources: c.Sources, VolumeSlots: c.VolumeSlots, OperatorFault: operatorFault})
+	logPolicy, err := c.Logs.Normalize()
+	if err != nil {
+		return err
+	}
+	engine, err := runner.Open(runner.Config{Telemetry: metrics, RootDir: c.RootDir, JournalPath: c.JournalPath, Artifacts: store, Backend: backend, Signer: signer, Profiles: c.Profiles, Sources: c.Sources, VolumeSlots: c.VolumeSlots, OperatorFault: operatorFault, Logs: &logPolicy})
 	if err != nil {
 		return err
 	}
