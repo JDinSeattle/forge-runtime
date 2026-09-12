@@ -1,0 +1,73 @@
+{
+  "script": "/tmp/forge-prepare-isolated-eval-build.py",
+  "script_sha256": "c2b76f70545fd8bb57cbcb3521e8edc0060196e0e8367ed3ef0b2c6e955ffae6",
+  "result": "REQUIRES_THREE_BOUNDED_FIXES",
+  "artifact_root": "/tmp/forge-isolated-eval-build-independent-review",
+  "syntax_valid": true,
+  "findings": [
+    {
+      "priority": "P2",
+      "reported_by": "root, independently confirmed",
+      "location": "snapshot -> regular(path)",
+      "problem": "Current exact Git-blob-bound main source files are group-writable0664, and the global strict regular guard rejects them before E creation.",
+      "rejected_source_count": 439,
+      "examples": [
+        {
+          "path": ".env.example",
+          "mode": "0o664",
+          "owner_uid": 1000
+        },
+        {
+          "path": ".github/workflows/ci.yml",
+          "mode": "0o664",
+          "owner_uid": 1000
+        },
+        {
+          "path": ".gitignore",
+          "mode": "0o664",
+          "owner_uid": 1000
+        },
+        {
+          "path": "Makefile",
+          "mode": "0o664",
+          "owner_uid": 1000
+        }
+      ],
+      "fix": "Use a source-only regular/nlink1/owner1000/no-worldwrite check with exact Git blob + clean before/after; keep strict binary/private-input guards and do not chmod main."
+    },
+    {
+      "priority": "P2",
+      "reported_by": "independent review",
+      "location": "os.umask(077), clone and sync_new_tree",
+      "problem": "New trusted graders become files0600/directories0700, but production Docker.Start readonly-binds TrustedTestsDir directly into a user1000 container. The subordinate mapped UID cannot read the hostowner-only tree. prepare verifies bytes/exec bits and does not detect this.",
+      "probe": {
+        "probe": "Actual frozen sync_new_tree on an exclusively new temporary tree; no clone/build/container invoked",
+        "directory_mode": "0o700",
+        "file_mode": "0o600",
+        "owner_uid": 1000,
+        "other_read": false,
+        "other_traverse": false
+      },
+      "production_binding": "internal/sandbox/docker.go: args --user p.User plus bind src=p.TrustedTestsDir,dst=/forge-tests,readonly",
+      "fix": "Only the newly cloned E/source corpus gets searchable0755 directories and readable0644 files, preserving executable0755. E and all external/private ancestors stay0700. Final recursive sync must preserve this explicit exception; do not chmod the original repo."
+    },
+    {
+      "priority": "P2",
+      "reported_by": "root, independently confirmed",
+      "location": "main socket_path prefix requirement",
+      "actual_preserved_socket": "/tmp/forge-lifecycle-lr20260912_a/runner.sock",
+      "problem": "The original authority UDS is in the exact private /tmp/forge-lifecycle-lr20260912_a directory, not under S/runtime. The prefix test rejects the legitimate existing authority.",
+      "fix": "Require the exact frozen existing /tmp/forge-lifecycle-lr20260912_a/runner.sock path; preserve config and never unlink/rebind the socket."
+    }
+  ],
+  "reviewed_contracts": [
+    "Fixed single E only, exclusive creation, partial preserved; no build or candidate rerun into existing E",
+    "Clean current main fullrevision, all tracked nonbenchmark bytes equal Git blob before/after and clone has independent objects/no-hardlinks",
+    "Seven packages + exact Go1.26.8 Linuxamd64 clean VCS metadata and binary bytes recorded; all outputs under new E/bin",
+    "Existing prepare invoked from E/source, so common.REPO/CORPUS and hashes/profile paths point to that frozen checkout; Python+Go pinnedimages/user1000/resourcebounds agree with launcher policy",
+    "Registration actual selected alias and2USD/four500000 allocations,20rounds64tools600seconds; original strictlogpolicy and4volume authority retained",
+    "MinimalofflineGo/Git environment, no provider/DSN/key environment, bounded own process groups; exact config/registration hashes unchanged; no source data deletion or original chmod",
+    "Exclusive0600 evidence, file/dir/parent fsync and finalmanifest; source-only exceptions pending above"
+  ],
+  "scope": "Only source reads, nonsecret config/registration metadata, syntax parse and isolated temporary filesystem permission probe. No E creation, clone, compiler, provision, key, PostgreSQL, Docker, service or volume operation executed."
+}

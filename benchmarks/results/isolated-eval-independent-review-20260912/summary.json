@@ -1,0 +1,49 @@
+{
+  "archive_base_commit": "a4e056758d44acbe68726771823bc2fa41786069",
+  "scope": "Independent offline review of the local-only evaluation preparer and the logs03/five-schema isolated-launcher delta. No evaluation or host acceptance is claimed.",
+  "build": {
+    "reviewed_script_sha256": "01c55705a00b5869ecfc2c09c973009cd757e9211137d9822a21b3d15f2592ee",
+    "prior_script_sha256": "c2b76f70545fd8bb57cbcb3521e8edc0060196e0e8367ed3ef0b2c6e955ffae6",
+    "result": "bounded delta review PASS",
+    "evidence": "3 real0664 source stat/blob checks; actual temporary sync_new_tree mode checks; no clone/build/candidate execution",
+    "closed": "source-only mode policy, source-bound helper hash, exact existing UDS, nonroot-readable new corpus with private outer dirs"
+  },
+  "launcher": {
+    "reviewed_commit": "b837b4e40f396af3a3851f6c401598acb007512e",
+    "base_commit": "de29684e4f1e86892422da06aa5722725c94ded7",
+    "result": "bounded binding/read-only guard delta review PASS",
+    "independent_python_tests": 58,
+    "copied_record_negative_mutations_rejected": 10,
+    "historical_nonsecret_file_hashes": 577,
+    "actual_failed_logs03_input_hashes": 595,
+    "author_archive_files_verified": 13,
+    "author_archive_manifest_members": 12,
+    "source_hashes_equal_git_blobs": {
+      "scripts/evaluation/isolated_checks.py": "1737bb6933db1e8dceca8b3182f69ed22afa85a475ddd3c52133b9e761565c0b",
+      "scripts/evaluation/isolated_state.py": "4b4d659db862e84ad5f5b155ad309a07c4acf53a48d3812742e185b4dfdea614",
+      "scripts/evaluation/test_isolated.py": "0870bbf7ab43670d857f8308bcee3d4161ea105b19e11acec5dc4dac6a6dc7d2",
+      "scripts/evaluation/ISOLATED.md": "cb5f95df17a4fbdc362d1343dc1404aa9b245e6c66ed4ad4f3e87520e9f7287f"
+    },
+    "existing_Go_checks": "Go/preflight and orchestration source unchanged from prior18race/vet review, not rerun here"
+  },
+  "boundaries": {
+    "provider_key_read": false,
+    "provider_calls": 0,
+    "postgresql_connections": 0,
+    "docker_or_service_operations": 0,
+    "volume_operations": 0,
+    "actual_logs03_passed": false,
+    "actual_logs03_cases_passed": [
+      "L1",
+      "L2-L3-default",
+      "L3-bytes",
+      "L3-count",
+      "L5"
+    ],
+    "L4_accepted": false,
+    "evaluation_gate_opened": false,
+    "later_L4_composite_contract_reviewed": false
+  },
+  "file_map": "file-map.json records byte-exact original source paths, archive paths and SHA256. Original reports retain their original /tmp paths; source scripts are archived with .txt suffixes to avoid discovery/execution.",
+  "copied_original_file_count": 18
+}

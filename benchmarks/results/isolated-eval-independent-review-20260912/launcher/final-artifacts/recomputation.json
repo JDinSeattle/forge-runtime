@@ -1,0 +1,58 @@
+{
+  "commit": "b837b4e40f396af3a3851f6c401598acb007512e",
+  "archive_files": 13,
+  "archive_manifest_members": 12,
+  "archive_manifest_sha256": "124a4898bef91622e428f5a19caee6ca3da261772422bdcb856000872634cd72",
+  "all_archive_bytes_match": true,
+  "changed_source_hashes": {
+    "scripts/evaluation/isolated_checks.py": "1737bb6933db1e8dceca8b3182f69ed22afa85a475ddd3c52133b9e761565c0b",
+    "scripts/evaluation/isolated_state.py": "4b4d659db862e84ad5f5b155ad309a07c4acf53a48d3812742e185b4dfdea614",
+    "scripts/evaluation/test_isolated.py": "0870bbf7ab43670d857f8308bcee3d4161ea105b19e11acec5dc4dac6a6dc7d2",
+    "scripts/evaluation/ISOLATED.md": "cb5f95df17a4fbdc362d1343dc1404aa9b245e6c66ed4ad4f3e87520e9f7287f"
+  },
+  "changed_source_archive_and_git_match": true,
+  "unchanged_go_and_orchestration": true,
+  "closed_old_p2": {
+    "exact_e50_input": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/acceptance-input.json",
+    "sha256": "993e5f618144f008c88730f76e4294fbafca1c978477b24bfe49cdc0ad8320c3",
+    "accepted_via_closed_pinned_material_graph": true
+  },
+  "historical_material_members": 577,
+  "actual_failed_logs03_inputs": 595,
+  "actual_failed_logs03_input_hashes_match": true,
+  "actual_failed_logs03_acceptance_sha256": "8319cefe795b6b1429bf15381617dc50143393eba50b2c63960042a8b7b677f6",
+  "actual_passed_cases": [
+    "L1",
+    "L2-L3-default",
+    "L3-bytes",
+    "L3-count",
+    "L5"
+  ],
+  "strict_actual_gate": {
+    "accepted": false,
+    "error_type": "FileNotFoundError",
+    "message": "[Errno 2] No such file or directory: '/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/logs-03/final-journal.json'"
+  },
+  "original_second_fixture_readonly_record_shape_accepts": {
+    "schema": "appfault_strictlogs_ggl4ub23utvo6qnlzlkgroms5n",
+    "run_id": "run_VZZ7CZCKDG65KNL3BW7ZH7F2O4",
+    "status": "queued",
+    "version": 1,
+    "epoch": 0,
+    "unchanged_saved_snapshot_and_history": true,
+    "worker_routed": false
+  },
+  "negative_mutations_rejected": [
+    "schema_oid",
+    "epoch",
+    "owner",
+    "deadline",
+    "new_effect",
+    "status",
+    "pending_commands",
+    "extra_step",
+    "event",
+    "extra_allocation"
+  ],
+  "scope": "File-only recomputation and copied original PG JSON with SQL boundary mocked. No PostgreSQL query, host service, model, key or resource mutation. Five-schema live preflight remains unexecuted; failed logs03 does not grant acceptance."
+}

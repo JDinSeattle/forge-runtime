@@ -1,0 +1,329 @@
+#!/usr/bin/python3
+"""Local-only one-shot E/source clone, seven builds and existing candidate prepare.
+
+Invocation (after independent review, not executed by the author):
+  python3 -I -B /tmp/forge-prepare-isolated-eval-build.py --revision <40hex>
+Preserves partial E on every failure. No DB/key read, provision, seal, service,
+container or volume operation. No automatic retry or second evaluation root.
+"""
+from __future__ import annotations
+import argparse
+import hashlib
+import importlib.util
+import json
+import os
+from pathlib import Path
+import re
+import stat
+import subprocess
+import sys
+import time
+
+REPO = Path('/home/postedism/Desktop/mini claude code/forge-runtime')
+SCOPE = REPO / 'var/lifecycle-rehearsals/lr20260912_a'
+E = SCOPE / 'evaluation/deepseek-flash-2usd-20260912_a'
+GO = Path('/home/postedism/.local/share/mise/installs/go/1.26.8/bin/go')
+REGISTRATION = REPO / 'var/evaluation/deepseek-flash-2usd-registration.proposed.json'
+AUTHORITY = SCOPE / 'runtime/runner.json'
+PYTHON_IMAGE = 'python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36'
+GO_IMAGE = 'golang@sha256:9fdc884aacc3bec89b20ffc69f4bb369c78210e3e4f600387b5128b12c199f81'
+PACKAGES = {
+    'forge': 'cmd/forge', 'forge-api': 'cmd/forge-api',
+    'forge-worker': 'cmd/forge-worker', 'forge-runner': 'cmd/forge-runner',
+    'forge-admin': 'cmd/forge-admin', 'eval-provision': 'scripts/evaluation/provision',
+    'eval-preflight': 'scripts/evaluation/preflight',
+}
+BASE_ENV = {
+    'PATH': str(GO.parent) + ':/usr/bin:/bin', 'LC_ALL': 'C',
+    'TMPDIR': '/tmp', 'GOPROXY': 'off', 'GOSUMDB': 'off', 'GOENV': 'off',
+    'GOTOOLCHAIN': 'local', 'CGO_ENABLED': '1', 'GOPATH': '/home/postedism/go',
+    'GOMODCACHE': '/home/postedism/go/pkg/mod',
+    'GOCACHE': str(REPO / 'var/local/go-build-cache'),
+    'GIT_CONFIG_NOSYSTEM': '1', 'GIT_CONFIG_GLOBAL': '/dev/null',
+    'GIT_TERMINAL_PROMPT': '0', 'GIT_OPTIONAL_LOCKS': '0',
+}
+sys.dont_write_bytecode = True
+
+
+def directory(path, private=False):
+    if not path.is_absolute() or path.resolve() != path:
+        raise ValueError('canonical non-symlink directory required')
+    current = Path(path.anchor)
+    for part in path.parts[1:]:
+        current /= part
+        info = current.lstat()
+        if not stat.S_ISDIR(info.st_mode):
+            raise ValueError('directory ancestor is not a directory')
+    if private and (info.st_uid != 1000 or info.st_mode & 0o077):
+        raise ValueError('existing scope directory must be owned UID1000 and private')
+    return path
+
+
+def regular(path, limit=None):
+    if not path.is_absolute() or path.resolve() != path:
+        raise ValueError('canonical non-symlink file required')
+    info = path.lstat()
+    if not stat.S_ISREG(info.st_mode) or info.st_nlink != 1 or info.st_mode & 0o022:
+        raise ValueError('protected single-link regular file required')
+    if limit is not None and info.st_size > limit:
+        raise ValueError('bounded file exceeded')
+    return info
+
+
+def digest(path):
+    regular(path)
+    with path.open('rb') as f:
+        return hashlib.file_digest(f, 'sha256').hexdigest()
+
+
+def syncdir(path):
+    directory(path)
+    fd = os.open(path, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+    try:
+        os.fsync(fd)
+    finally:
+        os.close(fd)
+
+
+def mkdir(path):
+    directory(path.parent, private=True)
+    path.mkdir(mode=0o700)
+    syncdir(path)
+    syncdir(path.parent)
+
+
+def write(path, raw):
+    directory(path.parent, private=True)
+    fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
+    with os.fdopen(fd, 'wb') as f:
+        f.write(raw)
+        f.flush()
+        os.fsync(f.fileno())
+    syncdir(path.parent)
+
+
+def save(path, value):
+    write(path, (json.dumps(value, indent=2, sort_keys=True) + '\n').encode())
+
+
+def pairs(items):
+    result = {}
+    for key, value in items:
+        if key in result:
+            raise ValueError('duplicate JSON key')
+        result[key] = value
+    return result
+
+
+def read_json(path):
+    regular(path, 1 << 20)
+    return json.loads(path.read_bytes(), object_pairs_hook=pairs)
+
+
+def metadata(argv, cwd, env, timeout=20):
+    # Metadata-only commands spawn no compilers or build jobs.
+    result = subprocess.run(argv, cwd=cwd, env=env, stdin=subprocess.DEVNULL,
+                            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                            timeout=timeout, check=True)
+    return result.stdout
+
+
+def git(root, env, *args):
+    return metadata(['/usr/bin/git', '-c', 'core.hooksPath=/dev/null', *args], root, env)
+
+
+def assert_clean(root, revision, env):
+    if git(root, env, 'rev-parse', 'HEAD').decode().strip() != revision:
+        raise ValueError('source revision moved')
+    if git(root, env, 'status', '--porcelain', '--untracked-files=all').strip():
+        raise ValueError('source must be clean, including untracked nonignored files')
+
+
+def snapshot(root, revision, env):
+    assert_clean(root, revision, env)
+    result = {}
+    for name in git(root, env, 'ls-files', '-z').decode().split('\0'):
+        if not name or name.startswith('benchmarks/results/'):
+            continue
+        path = root / name
+        regular(path)
+        raw = path.read_bytes()
+        if raw != git(root, env, 'show', revision + ':' + name):
+            raise ValueError('working source differs from exact committed blob: ' + name)
+        result[name] = {'sha256': hashlib.sha256(raw).hexdigest(), 'size': len(raw)}
+    return result
+
+
+def load_bounded(path, revision, env):
+    relative = 'tests/review/run_api_lifecycle.py'
+    if path != REPO / relative or path.read_bytes() != git(REPO, env, 'show', revision + ':' + relative):
+        raise ValueError('bounded build helper differs from reviewed revision')
+    spec = importlib.util.spec_from_file_location('reviewed_bounded_eval_build', path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)  # guarded module main; no lifecycle invocation
+    return module.execute_bounded
+
+
+def sync_new_tree(root):
+    # All paths are newly created under E. Preserve executable bits; normalize
+    # directory privacy and flush files/parent entries before reporting success.
+    directories = [root]
+    for p in root.rglob('*'):
+        st = p.lstat()
+        if stat.S_ISDIR(st.st_mode):
+            p.chmod(0o700)
+            directories.append(p)
+        elif stat.S_ISREG(st.st_mode) and st.st_nlink == 1:
+            fd = os.open(p, os.O_RDONLY | os.O_NOFOLLOW)
+            try:
+                os.fsync(fd)
+            finally:
+                os.close(fd)
+        else:
+            raise ValueError('new tree contains a symlink, special file or hardlink')
+    for p in sorted(directories, key=lambda x: len(x.parts), reverse=True):
+        syncdir(p)
+    syncdir(root.parent)
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--revision', required=True)
+    args = parser.parse_args(argv)
+    revision = args.revision
+    if not re.fullmatch('[0-9a-f]{40}', revision):
+        raise ValueError('full reviewed main revision required')
+    if os.getuid() != os.geteuid() or os.getuid() != 1000 or Path.cwd() != REPO:
+        raise ValueError('ordinary UID1000 in the fixed main checkout required')
+    os.umask(0o077)
+    directory(REPO)
+    directory(SCOPE, private=True)
+    directory(SCOPE / 'runtime', private=True)
+    directory(REPO / 'var/local/go-build-cache')
+    if (REPO / 'var/local/go-build-cache').stat().st_uid != 1000:
+        raise ValueError('existing shared offline build cache must be owned by UID1000')
+    regular(GO)
+    env = dict(BASE_ENV, HOME=str(SCOPE))
+    assert_clean(REPO, revision, env)
+    if git(REPO, env, 'rev-parse', 'refs/heads/main').decode().strip() != revision:
+        raise ValueError('requested revision must be the current reviewed main branch')
+    if metadata([str(GO), 'version'], REPO, env).decode().strip() != 'go version go1.26.8 linux/amd64':
+        raise ValueError('exact local Go1.26.8 Linux/amd64 required')
+    if os.path.lexists(E):
+        raise ValueError('fixed E already exists; preserve partial or previous build, never retry blindly')
+    original = read_json(AUTHORITY)
+    authority_hash = digest(AUTHORITY)
+    registration_hash = digest(REGISTRATION)
+    registration = read_json(REGISTRATION)
+    if registration.get('provider') != 'deepseek' or registration.get('model_id') != 'deepseek-v4-flash' or registration.get('total_budget_microusd') != 2000000 or registration.get('task_budgets_microusd') != {k: 500000 for k in ('py-utf8-chunks', 'py-latest-records', 'go-midpoint', 'go-rune-rle')}:
+        raise ValueError('fixed selected alias and four $0.50 allocations required')
+    # Only JSON path values are used. No open/stat/read/hash of the signing key,
+    # socket, journal, artifact root or volume images is performed here.
+    if original.get('allow_test_backend') is not False or original.get('docker_host') != 'unix:///run/user/1000/forge-runtime-docker.sock' or len(original.get('volume_slots', [])) != 4:
+        raise ValueError('existing four-slot production Docker authority required')
+    for name in ('artifact_root', 'signing_key_file'):
+        value = original.get(name)
+        if not isinstance(value, str) or not value.startswith(str(SCOPE / 'runtime') + '/') or '..' in Path(value).parts:
+            raise ValueError('unchanged dedicated runtime path required')
+    socket_path = original.get('server', {}).get('unix_socket')
+    if not isinstance(socket_path, str) or not socket_path.startswith(str(SCOPE / 'runtime') + '/') or '..' in Path(socket_path).parts:
+        raise ValueError('unchanged dedicated UDS path required')
+    before = snapshot(REPO, revision, env)
+    execute_bounded = load_bounded(REPO / 'tests/review/run_api_lifecycle.py', revision, env)
+    if not os.path.lexists(E.parent):
+        mkdir(E.parent)
+    directory(E.parent, private=True)
+    mkdir(E)
+    for p in (E / 'evidence', E / 'bin', E / 'home', E / 'tmp'):
+        mkdir(p)
+    out = E / 'evidence/build'
+    mkdir(out)
+    env.update(HOME=str(E / 'home'), GOTMPDIR=str(E / 'tmp'))
+    records = []
+    save(out / 'intent.json', {'revision': revision, 'evaluation_root': str(E), 'source': str(E / 'source'), 'environment': env,
+                              'authority_config_path': str(AUTHORITY), 'authority_config_sha256': authority_hash,
+                              'registration_path': str(REGISTRATION), 'registration_sha256': registration_hash,
+                              'go_path': str(GO), 'go_sha256': digest(GO),
+                              'bounded_helper_sha256': digest(REPO / 'tests/review/run_api_lifecycle.py'),
+                              'script_sha256': digest(Path(__file__).absolute()),
+                              'scope': 'local clone/offline build/candidate prepare only; no credentials, provision, seal, PG, Docker or services'})
+    write(out / 'build-script.py.txt', Path(__file__).read_bytes())
+    save(out / 'source-before.json', before)
+
+    def command(label, command_argv, cwd, timeout=300):
+        started = time.time()
+        with (out / (label + '.log')).open('xb') as log:
+            code = execute_bounded(command_argv, cwd, env, log, timeout)
+            log.flush()
+            os.fsync(log.fileno())
+        syncdir(out)
+        row = {'label': label, 'argv': command_argv, 'exit_code': code, 'started_unix': started, 'finished_unix': time.time()}
+        records.append(row)
+        save(out / (label + '-result.json'), row)
+        if code:
+            raise ValueError('bounded local step failed; retain exact E and all preceding files: ' + label)
+
+    try:
+        command('clone', ['/usr/bin/git', '-c', 'core.hooksPath=/dev/null', 'clone', '--local', '--no-hardlinks', '--no-checkout', '--no-tags', '--', str(REPO), str(E / 'source')], REPO)
+        command('checkout', ['/usr/bin/git', '-c', 'core.hooksPath=/dev/null', 'checkout', '--detach', revision], E / 'source', 30)
+        clone_before = snapshot(E / 'source', revision, env)
+        save(out / 'clone-before.json', clone_before)
+        if clone_before != before:
+            raise ValueError('clone source differs from reviewed main source')
+        if (E / 'source/.git/objects/info/alternates').exists():
+            raise ValueError('clone must not borrow object storage')
+        sync_new_tree(E / 'source')
+        binaries = {}
+        for name, package in PACKAGES.items():
+            binary = E / 'bin' / name
+            if os.path.lexists(binary):
+                raise ValueError('binary output already exists')
+            command('build-' + name, [str(GO), 'build', '-buildvcs=true', '-o', str(binary), './' + package], E / 'source')
+            binary.chmod(0o700)
+            info = metadata([str(GO), 'version', '-m', str(binary)], E / 'source', env).decode()
+            write(out / (name + '-buildinfo.txt'), info.encode())
+            fields = {}
+            package_path = None
+            for line in info.splitlines():
+                parts = line.strip().split(None, 1)
+                if len(parts) == 2 and parts[0] == 'build':
+                    key, _, value = parts[1].partition('=')
+                    fields[key] = value
+                if len(parts) == 2 and parts[0] == 'path':
+                    package_path = parts[1]
+            if package_path != 'github.com/JDinSeattle/forge-runtime/' + package or fields.get('vcs.revision') != revision or fields.get('vcs.modified') != 'false' or fields.get('GOOS') != 'linux' or fields.get('GOARCH') != 'amd64' or not info.splitlines()[0].endswith('go1.26.8'):
+                raise ValueError('binary package/toolchain/clean revision differs: ' + name)
+            binaries[name] = {'path': str(binary), 'sha256': digest(binary), 'size': binary.stat().st_size, 'revision': revision, 'package': package_path}
+            save(out / (name + '-identity.json'), binaries[name])
+        platform = {'listen': '127.0.0.1:18097', 'artifact_root': original['artifact_root'], 'signing_key_file': original['signing_key_file'],
+                    'runner_id': 'application-fault-runner', 'runner': {'unix_socket': socket_path},
+                    'worker_id': 'eval-deepseek-flash-20260912-a', 'worker_slots': 1}
+        save(out / 'platform-template.json', platform)
+        command('prepare-candidate', ['/usr/bin/python3', '-I', '-B', str(E / 'source/scripts/evaluation/prepare.py'),
+                '--registration', str(REGISTRATION), '--platform-template', str(out / 'platform-template.json'),
+                '--runner-template', str(AUTHORITY), '--python-image', PYTHON_IMAGE, '--go-image', GO_IMAGE,
+                '--output', str(E / 'candidate')], E / 'source', 180)
+        clone_after = snapshot(E / 'source', revision, env)
+        after = snapshot(REPO, revision, env)
+        save(out / 'clone-after.json', clone_after)
+        save(out / 'source-after.json', after)
+        if before != after or clone_before != clone_after or digest(AUTHORITY) != authority_hash or digest(REGISTRATION) != registration_hash:
+            raise ValueError('frozen source or original nonsecret authority/registration changed during build')
+        sync_new_tree(E)
+        save(out / 'result.json', {'passed': True, 'revision': revision, 'source_files': len(before), 'source_unchanged': True,
+                                  'authority_config_unchanged': True, 'registration_unchanged': True, 'binaries': binaries,
+                                  'candidate_hashes': {p.name: digest(p) for p in sorted((E / 'candidate').iterdir())}, 'commands': records,
+                                  'scope': 'offline local build/candidate only; no provision/seal/host/model execution'})
+        save(out / 'manifest.json', {str(p.relative_to(out)): digest(p) for p in sorted(out.rglob('*')) if p.is_file()})
+    except BaseException as error:
+        save(out / 'failure.json', {'type': type(error).__name__, 'error': str(error), 'commands': records,
+                                   'retained_evaluation_root': str(E), 'automatic_retry': False,
+                                   'authority_config_unchanged': digest(AUTHORITY) == authority_hash,
+                                   'registration_unchanged': digest(REGISTRATION) == registration_hash})
+        raise
+    print(json.dumps({'passed': True, 'evaluation_root': str(E), 'evidence': str(out), 'revision': revision, 'candidate_only': True}))
+    return 0
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())

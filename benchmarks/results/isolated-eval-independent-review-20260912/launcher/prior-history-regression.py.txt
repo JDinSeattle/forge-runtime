@@ -1,0 +1,10 @@
+import importlib.util,unittest
+from pathlib import Path
+ROOT=Path('/home/postedism/Desktop/mini claude code/forge-runtime/var/local/feature-worktrees/logs')
+spec=importlib.util.spec_from_file_location('independent_checks',ROOT/'scripts/evaluation/isolated_checks.py');c=importlib.util.module_from_spec(spec);spec.loader.exec_module(c)
+class ProducerCompatibility(unittest.TestCase):
+ def test_required_e50_input_is_accepted(self):
+  scope=Path('/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a')
+  path=scope/'evidence/sigterm-02/worker-runner-sigterm/acceptance-input.json'
+  self.assertTrue(c.historical_path(scope,path,{}),'slHistoricalAuthority always inserts this exact nonsecret producer input')
+if __name__=='__main__':unittest.main()

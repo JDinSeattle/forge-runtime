@@ -1,0 +1,75 @@
+{
+  "observed_at": "2026-09-12T18:32:57.868222+00:00",
+  "reviewed_commit": "b837b4e40f396af3a3851f6c401598acb007512e",
+  "base_commit": "de29684e4f1e86892422da06aa5722725c94ded7",
+  "result": "PASS_FOR_BOUNDED_BINDING_AND_READONLY_GUARD_DELTA",
+  "production_or_evaluation_acceptance": false,
+  "new_P1_P2": [],
+  "old_history_P2": "closed by exact SHA-pinned E50 acceptance-input in complete material graph",
+  "reviewed_changes": [
+    "577 closed nonsecret prior inputs, including15-member logs02 failure and4-member observer manifests, exact host retry, old faultplan/usedmarker and old executable identities",
+    "Same readonly observer schema/run/tenant/OID; saved queuedversion1epoch0 run snapshot/deadline/history remain exact; no cancellation, lease extension, SQL mutation or worker routing",
+    "Five schema descriptor\u2192public role/run binding and additional same-run immutable history query for unstarted logs02",
+    "SQL oid::bigint plus strict currentint type, only historic numeric OID string converted; all other values compared through JSON serialization so bool/int and history changes reject",
+    "Final logs03 sameUUID+all6cases strict gate retained; failed or missing evidence cannot substitute E50 or prior log acceptance"
+  ],
+  "independent_tests": {
+    "python_tests": 58,
+    "exit_code": 0,
+    "elapsed_seconds": 2.619,
+    "source_unchanged": true,
+    "negative_copy_mutations_rejected": [
+      "schema_oid",
+      "epoch",
+      "owner",
+      "deadline",
+      "new_effect",
+      "status",
+      "pending_commands",
+      "extra_step",
+      "event",
+      "extra_allocation"
+    ],
+    "no_Go_rerun": "Go and isolated.py byte-identical to independently reviewed de29684; previous18race/vet retained"
+  },
+  "recomputed_archive": {
+    "files": 13,
+    "manifest_members": 12,
+    "manifest_sha256": "124a4898bef91622e428f5a19caee6ca3da261772422bdcb856000872634cd72",
+    "four_sources_equal_archive_and_Git_blobs": true
+  },
+  "real_retained_nonsecret_record_checks": {
+    "material_graph_files": 577,
+    "actual_logs03_input_files": 595,
+    "all_required_present": true,
+    "all_whitelisted_and_hashes_equal": true,
+    "actual_failed_acceptance_sha256": "8319cefe795b6b1429bf15381617dc50143393eba50b2c63960042a8b7b677f6",
+    "actual_gate": {
+      "accepted": false,
+      "error_type": "FileNotFoundError",
+      "message": "[Errno 2] No such file or directory: '/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/logs-03/final-journal.json'"
+    },
+    "original_logs02_row_shape_accepts": {
+      "schema": "appfault_strictlogs_ggl4ub23utvo6qnlzlkgroms5n",
+      "run_id": "run_VZZ7CZCKDG65KNL3BW7ZH7F2O4",
+      "status": "queued",
+      "version": 1,
+      "epoch": 0,
+      "unchanged_saved_snapshot_and_history": true,
+      "worker_routed": false
+    }
+  },
+  "changed_source_hashes": {
+    "scripts/evaluation/isolated_checks.py": "1737bb6933db1e8dceca8b3182f69ed22afa85a475ddd3c52133b9e761565c0b",
+    "scripts/evaluation/isolated_state.py": "4b4d659db862e84ad5f5b155ad309a07c4acf53a48d3812742e185b4dfdea614",
+    "scripts/evaluation/test_isolated.py": "0870bbf7ab43670d857f8308bcee3d4161ea105b19e11acec5dc4dac6a6dc7d2",
+    "scripts/evaluation/ISOLATED.md": "cb5f95df17a4fbdc362d1343dc1404aa9b245e6c66ed4ad4f3e87520e9f7287f"
+  },
+  "artifact_root": "/tmp/forge-isolated-launcher-logs03-delta-review",
+  "limits": [
+    "Only source/offline tests and existing nonsecret raw reads; no host, DB connection, Docker, key or provider action.",
+    "second_unstarted exercised on copied original PostgreSQL JSON with SQL boundary mocked, not a fresh live PG proof.",
+    "Actual logs03 acceptance remains false, contains five passed cases and no L4; final-journal missing. This review does not promote it or authorize evaluation.",
+    "Any later composite L4 evidence contract is outside this frozen delta and requires separate review."
+  ]
+}

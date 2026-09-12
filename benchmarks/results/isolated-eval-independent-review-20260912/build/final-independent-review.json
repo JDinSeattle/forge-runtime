@@ -1,0 +1,60 @@
+{
+  "script_sha256": "01c55705a00b5869ecfc2c09c973009cd757e9211137d9822a21b3d15f2592ee",
+  "prior_script_sha256": "c2b76f70545fd8bb57cbcb3521e8edc0060196e0e8367ed3ef0b2c6e955ffae6",
+  "review": "PASS_FOR_THE_BOUNDED_PREPARATION_DELTA",
+  "artifact_root": "/tmp/forge-isolated-eval-build-independent-review-v2",
+  "closed_findings": [
+    "source-only guard accepts real0664 Gitblob-bound owned regularfiles while strict guard remains unchanged; worldwrite/symlink/hardlink reject",
+    "bounded_helper_sha256 uses earlier exactHEAD-verified source-before entry, avoiding strict digest false rejection; load_bounded again checks exactblob before import",
+    "UDS gate retains exact real frozen /tmp/forge-lifecycle-lr20260912_a/runner.sock; no socket operation",
+    "new corpus0755 dirs/0644 nonexec/0755 exec survives both source sync and final E sync; outer/private dirs remain0700/files0600"
+  ],
+  "source_probes": [
+    {
+      "path": "Makefile",
+      "mode": "0o664",
+      "owner_uid": 1000,
+      "git_blob_matches": true,
+      "source_guard_accepts": true,
+      "strict_guard_still_rejects": true,
+      "metadata_unchanged": true
+    },
+    {
+      "path": ".env.example",
+      "mode": "0o664",
+      "owner_uid": 1000,
+      "git_blob_matches": true,
+      "source_guard_accepts": true,
+      "strict_guard_still_rejects": true,
+      "metadata_unchanged": true
+    },
+    {
+      "path": "tests/review/run_api_lifecycle.py",
+      "mode": "0o664",
+      "owner_uid": 1000,
+      "git_blob_matches": true,
+      "source_guard_accepts": true,
+      "strict_guard_still_rejects": true,
+      "metadata_unchanged": true
+    }
+  ],
+  "temp_tree_modes": {
+    "source": "0o700",
+    "source/scripts/evaluation/corpus": "0o755",
+    "source/scripts/evaluation/corpus/graders": "0o755",
+    "source/scripts/evaluation/corpus/graders/grader.py": "0o644",
+    "source/scripts/evaluation/corpus/graders/grader.sh": "0o755",
+    "source/scripts/evaluation/corpus/py-case/source": "0o755",
+    "source/scripts/evaluation/corpus/py-case/source/app.py": "0o644",
+    "private": "0o700",
+    "private/nonsecret.json": "0o600"
+  },
+  "negative_guards": {
+    "worldwrite": true,
+    "symlink": true,
+    "hardlink": true
+  },
+  "syntax_valid": true,
+  "new_blockers": [],
+  "limits": "Code/delta review plus actual bounded main-file stat/blob reads and exclusively new temporary filesystem probes. No E creation, clone, compiler, key, DB, Docker, volume or service operation. Actual launch remains separately gated by future completed evidence and clean integrated source."
+}

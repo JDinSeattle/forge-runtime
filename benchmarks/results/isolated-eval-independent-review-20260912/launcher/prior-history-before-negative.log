@@ -1,0 +1,14 @@
+F
+======================================================================
+FAIL: test_required_e50_input_is_accepted (__main__.ProducerCompatibility.test_required_e50_input_is_accepted)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/forge-isolated-launcher-formal-review/test_required_history.py", line 9, in test_required_e50_input_is_accepted
+    self.assertTrue(c.historical_path(scope,path,{}),'slHistoricalAuthority always inserts this exact nonsecret producer input')
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : slHistoricalAuthority always inserts this exact nonsecret producer input
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+FAILED (failures=1)

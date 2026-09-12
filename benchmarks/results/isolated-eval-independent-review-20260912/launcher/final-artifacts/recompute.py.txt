@@ -1,0 +1,40 @@
+from pathlib import Path
+import hashlib,json,subprocess,importlib.util,copy
+from unittest.mock import patch
+root=Path('/home/postedism/Desktop/mini claude code/forge-runtime/var/local/feature-worktrees/logs');out=Path(__file__).parent;base=root/'benchmarks/results/isolated-eval-launch-logs03-delta-20260912';commit='b837b4e40f396af3a3851f6c401598acb007512e';sha=lambda p:hashlib.sha256(Path(p).read_bytes()).hexdigest()
+manifest=json.loads((base/'manifest.json').read_bytes());files={str(p.relative_to(base)) for p in base.rglob('*') if p.is_file()};assert files==set(manifest)|{'manifest.json'}
+for n,w in manifest.items():assert sha(base/n)==w,n
+summary=json.loads((base/'summary.json').read_bytes());sourcechecks={}
+for n,w in summary['changed_sources'].items():
+ assert sha(root/n)==sha(base/'_source'/n)==w==hashlib.sha256(subprocess.check_output(['git','show',commit+':'+n],cwd=root)).hexdigest();sourcechecks[n]=w
+ p=out/'_source'/n;p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes((root/n).read_bytes())
+for n in ('scripts/evaluation/isolated.py','scripts/evaluation/preflight/main.go','scripts/evaluation/preflight/main_test.go'):
+ assert subprocess.check_output(['git','show',commit+':'+n],cwd=root)==subprocess.check_output(['git','show','de29684:'+n],cwd=root)
+spec=importlib.util.spec_from_file_location('independent_state',root/'scripts/evaluation/isolated_state.py');s=importlib.util.module_from_spec(spec);spec.loader.exec_module(s);c=s.c
+scope=Path('/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a');allowed=c.historical_inputs(scope);assert len(allowed)==577
+required=scope/'evidence/sigterm-02/worker-runner-sigterm/acceptance-input.json';assert str(required) in allowed and c.historical_path(scope,required,allowed)
+material=json.loads((base/'material-proof.json').read_bytes());proof=material.get('proof',material.get('inputs'));assert proof==allowed
+acceptance_path=scope/'evidence/logs-03/acceptance.json';acceptance=c.read_json(acceptance_path);before=acceptance['input_sha256_before'];assert before==acceptance['input_sha256_after'];assert set(allowed).issubset(before)
+for p,w in before.items():assert c.historical_path(scope,Path(p),allowed) and c.sha(p)==w,p
+assert acceptance['passed'] is False and 'L4' not in acceptance['cases']
+try:c.prior_evidence(scope)
+except (ValueError,FileNotFoundError) as error:gate={'accepted':False,'error_type':type(error).__name__,'message':str(error)}
+else:raise AssertionError('failed final logs accepted')
+observation=scope/'evidence/logs-02-before-runner-observation';saved=c.read_json(observation/'postgres.json');history=c.read_json(observation/'history.json');row=copy.deepcopy(saved);row['schema_oid']=int(row['schema_oid'])
+with patch.object(s,'sql_json',return_value=history):positive=s.second_unstarted(scope,row,{})
+negative=[]
+changes=[('schema_oid',lambda x:x.update(schema_oid=x['schema_oid']+1)),('epoch',lambda x:x['runs'][0].update(epoch=1)),('owner',lambda x:x['runs'][0].update(owner='other-worker')),('deadline',lambda x:x['runs'][0]['snapshot']['limits'].update(deadline='2099-01-01T00:00:00Z')),('new_effect',lambda x:x.update(effects=1)),('status',lambda x:x['runs'][0].update(state='cancel_requested'))]
+for name,change in changes:
+ candidate=copy.deepcopy(row);change(candidate)
+ with patch.object(s,'sql_json',return_value=history):
+  try:s.second_unstarted(scope,candidate,{})
+  except ValueError:negative.append(name)
+  else:raise AssertionError(name)
+for name,change in [('pending_commands',lambda x:x['runs'][0].update(pending_commands=['mutated'])),('extra_step',lambda x:x.update(steps=[{'seq':9}])),('event',lambda x:x['events'][0].update(type='mutated')),('extra_allocation',lambda x:x.update(runner_allocations=1))]:
+ candidate=copy.deepcopy(history);change(candidate)
+ with patch.object(s,'sql_json',return_value=candidate):
+  try:s.second_unstarted(scope,row,{})
+  except ValueError:negative.append(name)
+  else:raise AssertionError(name)
+report={'commit':commit,'archive_files':len(files),'archive_manifest_members':len(manifest),'archive_manifest_sha256':sha(base/'manifest.json'),'all_archive_bytes_match':True,'changed_source_hashes':sourcechecks,'changed_source_archive_and_git_match':True,'unchanged_go_and_orchestration':True,'closed_old_p2':{'exact_e50_input':str(required),'sha256':allowed[str(required)],'accepted_via_closed_pinned_material_graph':True},'historical_material_members':len(allowed),'actual_failed_logs03_inputs':len(before),'actual_failed_logs03_input_hashes_match':True,'actual_failed_logs03_acceptance_sha256':sha(acceptance_path),'actual_passed_cases':sorted(acceptance['cases']),'strict_actual_gate':gate,'original_second_fixture_readonly_record_shape_accepts':positive,'negative_mutations_rejected':negative,'scope':'File-only recomputation and copied original PG JSON with SQL boundary mocked. No PostgreSQL query, host service, model, key or resource mutation. Five-schema live preflight remains unexecuted; failed logs03 does not grant acceptance.'}
+(out/'recomputation.json').write_text(json.dumps(report,indent=2)+'\n');print(json.dumps(report,indent=2))
