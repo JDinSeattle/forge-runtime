@@ -1,0 +1,43 @@
+=== RUN   TestNoMountCapturedDockerAcceptance
+    logs_nomount_integration_test.go:235: operator opt-in: standalone no-mount containers, no services or pool
+--- SKIP: TestNoMountCapturedDockerAcceptance (0.00s)
+=== RUN   TestNoMountCaptureSinkBoundAndFinitePrograms
+=== RUN   TestNoMountCaptureSinkBoundAndFinitePrograms/binary
+=== RUN   TestNoMountCaptureSinkBoundAndFinitePrograms/flood
+=== RUN   TestNoMountCaptureSinkBoundAndFinitePrograms/cancel
+=== RUN   TestNoMountCaptureSinkBoundAndFinitePrograms/detach
+--- PASS: TestNoMountCaptureSinkBoundAndFinitePrograms (0.09s)
+    --- PASS: TestNoMountCaptureSinkBoundAndFinitePrograms/binary (0.02s)
+    --- PASS: TestNoMountCaptureSinkBoundAndFinitePrograms/flood (0.02s)
+    --- PASS: TestNoMountCaptureSinkBoundAndFinitePrograms/cancel (0.03s)
+    --- PASS: TestNoMountCaptureSinkBoundAndFinitePrograms/detach (0.02s)
+=== RUN   TestStrictLogDockerMultiplexAlwaysDrainsAfterLimit
+--- PASS: TestStrictLogDockerMultiplexAlwaysDrainsAfterLimit (0.02s)
+=== RUN   TestStrictLogDockerMultiplexRejectsBrokenFrames
+=== RUN   TestStrictLogDockerMultiplexRejectsBrokenFrames/short_header
+=== RUN   TestStrictLogDockerMultiplexRejectsBrokenFrames/invalid_stream
+=== RUN   TestStrictLogDockerMultiplexRejectsBrokenFrames/reserved_bytes
+=== RUN   TestStrictLogDockerMultiplexRejectsBrokenFrames/truncated_body
+=== RUN   TestStrictLogDockerMultiplexRejectsBrokenFrames/huge_length_bounded_reader
+--- PASS: TestStrictLogDockerMultiplexRejectsBrokenFrames (0.00s)
+    --- PASS: TestStrictLogDockerMultiplexRejectsBrokenFrames/short_header (0.00s)
+    --- PASS: TestStrictLogDockerMultiplexRejectsBrokenFrames/invalid_stream (0.00s)
+    --- PASS: TestStrictLogDockerMultiplexRejectsBrokenFrames/reserved_bytes (0.00s)
+    --- PASS: TestStrictLogDockerMultiplexRejectsBrokenFrames/truncated_body (0.00s)
+    --- PASS: TestStrictLogDockerMultiplexRejectsBrokenFrames/huge_length_bounded_reader (0.00s)
+=== RUN   TestStrictLogPolicyHardCeilingsAndVerificationGuard
+--- PASS: TestStrictLogPolicyHardCeilingsAndVerificationGuard (0.00s)
+=== RUN   TestStrictLogAttachUpgradePreservesBufferedFirstFrame
+--- PASS: TestStrictLogAttachUpgradePreservesBufferedFirstFrame (0.00s)
+=== RUN   TestStrictLogAttachHandshakeCancellationAndBounds
+=== RUN   TestStrictLogAttachHandshakeCancellationAndBounds/wrong_token
+=== RUN   TestStrictLogAttachHandshakeCancellationAndBounds/cancel
+=== RUN   TestStrictLogAttachHandshakeCancellationAndBounds/long_header
+=== RUN   TestStrictLogAttachHandshakeCancellationAndBounds/wrong_status
+--- PASS: TestStrictLogAttachHandshakeCancellationAndBounds (0.00s)
+    --- PASS: TestStrictLogAttachHandshakeCancellationAndBounds/wrong_token (0.00s)
+    --- PASS: TestStrictLogAttachHandshakeCancellationAndBounds/cancel (0.00s)
+    --- PASS: TestStrictLogAttachHandshakeCancellationAndBounds/long_header (0.00s)
+    --- PASS: TestStrictLogAttachHandshakeCancellationAndBounds/wrong_status (0.00s)
+PASS
+ok  	github.com/JDinSeattle/forge-runtime/internal/sandbox	1.142s

@@ -1,0 +1,113 @@
+{
+  "command": [
+    "go",
+    "list",
+    "-deps",
+    "-test",
+    "-json",
+    "./internal/sandbox"
+  ],
+  "scope": "all local module files reported by go list -deps -test plus go.mod/go.sum; external dependencies pinned by go.sum",
+  "files": [
+    {
+      "path": "go.mod",
+      "size": 5515,
+      "sha256": "61a96a6dbfdc546edcc7abab472adc49313db486443c47f2272ad75cdae21682"
+    },
+    {
+      "path": "go.sum",
+      "size": 37939,
+      "sha256": "fb95568a8246ed4b2759494d6384e27a57e330b722154046b8160357ed1c7718"
+    },
+    {
+      "path": "internal/artifact/deadline.go",
+      "size": 2231,
+      "sha256": "23f537aa0d41297a71936cc10109b9ab71e77c81c7654880b22048fd68fe4df3"
+    },
+    {
+      "path": "internal/artifact/journals.go",
+      "size": 4664,
+      "sha256": "26d3fa7096f37ba6beb9062ba88a6fee709db92e6ed6c98c481c1e5e8eedddb4"
+    },
+    {
+      "path": "internal/artifact/local.go",
+      "size": 7433,
+      "sha256": "47924f9e6793b6c65e90b5430c60fe80c28a4bf73cf79acda1928169bc4b671f"
+    },
+    {
+      "path": "internal/artifact/retention.go",
+      "size": 5607,
+      "sha256": "45f3a12762a23a8b7134c3c168b47d2e92cc14b91411034dde9808c953c424fe"
+    },
+    {
+      "path": "internal/dependency/context.go",
+      "size": 584,
+      "sha256": "3a98133165102cc963b816d204ad74f10725d1d781a6668185b8792296f4bd94"
+    },
+    {
+      "path": "internal/dependency/transaction.go",
+      "size": 4142,
+      "sha256": "e9ea80b104f471fb8537a29d2e27a19cadd0859f544deefa1bee6a88826a4f3d"
+    },
+    {
+      "path": "internal/domain/canonical.go",
+      "size": 1628,
+      "sha256": "bbe1014f42f02a889acf1db9e6f2dc1d63fdd9a05e56c94cce35637ed0e5bc7e"
+    },
+    {
+      "path": "internal/domain/types.go",
+      "size": 5543,
+      "sha256": "b93bd45fb092186b9c8efe60d8f031f166903c633487002f1a59fc05eaa2d571"
+    },
+    {
+      "path": "internal/sandbox/docker.go",
+      "size": 8888,
+      "sha256": "2799ccd8bcb95fd0ab1d5e72c7502a27f5a74ef6f13550057ac018cf56de371f"
+    },
+    {
+      "path": "internal/sandbox/docker_attach.go",
+      "size": 7892,
+      "sha256": "267e80742e8d636fb7ffa48feaaf1144dfe1b6ce8fcf42fb08ef3bb60fa4983b"
+    },
+    {
+      "path": "internal/sandbox/docker_test.go",
+      "size": 5688,
+      "sha256": "e75c829662cc61c230c7e69779930e91998859b37482cea3b36d911fc8913c31"
+    },
+    {
+      "path": "internal/sandbox/logs.go",
+      "size": 2920,
+      "sha256": "e9f2a28b84fbcbb28a3606e567bb58a5b8c0b27a0c2777009737205e4857bafc"
+    },
+    {
+      "path": "internal/sandbox/logs_nomount_integration_test.go",
+      "size": 20933,
+      "sha256": "804fc65f6347fd31ab94a68614f6bd546709d7d2c162f2421c2bf43e77e74149"
+    },
+    {
+      "path": "internal/sandbox/logs_test.go",
+      "size": 5516,
+      "sha256": "526023cd84695ba08555beb6ad67331127aed60ae3c18f68eb675fe20477b1bb"
+    },
+    {
+      "path": "internal/sandbox/quota_linux.go",
+      "size": 1672,
+      "sha256": "a1dd994b6c8c6839078a3218ff20684410c9adb42b33c1b1dcc037f108415d36"
+    },
+    {
+      "path": "internal/sandbox/quota_linux_test.go",
+      "size": 331,
+      "sha256": "de23ad77d0cb648d8d5a43e15726969b01af372ba7286bcc6ff8dcd6bac86746"
+    },
+    {
+      "path": "internal/sandbox/types.go",
+      "size": 4678,
+      "sha256": "f870713276a0057d07369dd3d39fc2737ffeb280175e1aa907196d0a36a8402a"
+    },
+    {
+      "path": "internal/sandbox/volume_linux.go",
+      "size": 5324,
+      "sha256": "130208395c4ad95012307e1238daafb3faf2b7f19e1c93f7fc31ca43dbc239e2"
+    }
+  ]
+}
