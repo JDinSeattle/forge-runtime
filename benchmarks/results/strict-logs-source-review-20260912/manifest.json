@@ -26,7 +26,7 @@
       "sha256": "df7d92567f8c38324a28fc87fd318ab6a4a26e5741e9c390119a1848e11b7bc4"
     },
     {
-      "path": "l5-before/guards.go",
+      "path": "l5-before/guards.go.txt",
       "bytes": 1959,
       "sha256": "11a3ceebdd52ca4b411abd5f61cf7ab4ef15f0efc54c6708e65f168ec83a541b"
     },
@@ -65,5 +65,6 @@
       "bytes": 0,
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     }
-  ]
+  ],
+  "archive_naming": "The detached guards.go source is archived as guards.go.txt so go test ./... does not discover the reproduction as a product package; bytes unchanged."
 }
