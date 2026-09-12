@@ -4,7 +4,7 @@ This is an evidence consumer, never an execution/recovery or budget authority.
 All paths are admitted before hashing. The failed aggregate is immutable.
 """
 from __future__ import annotations
-import datetime, hashlib, json, os, re, sqlite3, stat, struct, zlib
+import base64, datetime, hashlib, json, os, re, sqlite3, stat, struct, zlib
 from pathlib import Path
 
 FAILED_SHA='8781bba443e5a83da96cb077eb18223facfeee3469de0b23fce6c37529eef97c'
@@ -203,12 +203,72 @@ def operation(c,base,label,*,success):
  require(identity['spool_device']==identity['checkout_device'] and identity['spool_inode']>0,'spool not on workspace filesystem')
  return request,op,log,j,d
 
-def targeted(c,base,final):
+# Exact finite operator fixture: the 20-second oracle is invalid for any other
+# program, even when all caller-controlled copies of that program agree.
+ENOSPC_PROGRAM = r"""import os,time
+os.write(1,b'SL_STDOUT\x00\xff');os.write(2,b'SL_STDERR\x00\xfe')
+time.sleep(8)
+for i in range(300):
+ os.write(1,b'X'*4096);os.write(2,b'Y'*4096);time.sleep(.05)"""
+
+def canonical_args(args):
+ return json.dumps(args,sort_keys=True,separators=(',',':'),ensure_ascii=False).replace('&','\\u0026').replace('<','\\u003c').replace('>','\\u003e').replace('\u2028','\\u2028').replace('\u2029','\\u2029').encode()
+
+def effect_binding(effect,request):
+ exact(effect,{k:request[k] for k in ('tenant_id','run_id','operation_id','kind','args','args_hash','policy_version','expected_revision','epoch')},'PG effect immutable request binding differs')
+ raw=canonical_args(request['args'])
+ require(request['args_hash']==hashlib.sha256(raw).hexdigest() and effect.get('canonical_args')=='\\x'+raw.hex(),'PG canonical argument bytes differ')
+
+def ready_receipt(row,ref,request):
+ exact(row,{k:ref[k] for k in ('tenant_id','run_id','kind','object_key','sha256')},'PG READY receipt identity differs')
+ exact(row,{'state':'ready','byte_size':ref['size']},'PG READY receipt size/state differs')
+ require(row['kind']=='operation_receipt' and row['tenant_id']==request['tenant_id'] and row['run_id']==request['run_id'],'foreign PG receipt')
+
+def health_cleanup(c,base,request,op,final):
+ stop=c.read_json(base/'L4-health-stop.json');snap=c.read_json(base/'L4-health-snapshot.json');release=c.read_json(base/'L4-health-release.json')
+ expected={'tenant_id':request['tenant_id'],'run_id':request['run_id'],'id':request['workspace_id'],'epoch':request['epoch'],'revision':op['after_revision']}
+ for v in (stop['workspace'],snap['workspace']):
+  exact(v,expected,'health workspace tuple differs')
+  require(v.get('active_operation','')=='' and v.get('stopped') is True and v.get('released') is False,'health workspace is not stopped before release')
+ require(stop['workspace']==snap['workspace'] and stop['no_active_operations'] is True,'health stop/snapshot differ')
+ exact(release,{'workspace_id':request['workspace_id'],'released':True},'health release differs')
+ objects={}
+ def read_object(ref,kind):
+  for key in ('tenant_id','run_id'):
+   require(re.fullmatch('[A-Za-z0-9_-]{1,128}',request[key]) is not None,'unsafe artifact identity')
+  c.deployment.sha(ref.get('sha256'))
+  require(ref.get('object_key')==request['tenant_id']+'/'+request['run_id']+'/'+ref['sha256'],'health artifact key differs')
+  path=c.canonical(base.parent.parent/'runtime/artifacts'/ref['object_key'])
+  raw=c.private(path,64<<20).read_bytes();artifact_binding(ref,request,kind,raw)
+  pin=rows(final,'runner_artifacts','object_key',ref['object_key']);bound=json.loads(pin['ref_json'])
+  require(all(bound.get(k)==ref[k] for k in ('tenant_id','run_id','object_key','sha256','size')),'health artifact durable pin differs')
+  objects[str(path)]=ref['sha256']
+  return json.loads(raw,object_pairs_hook=c.deployment.pairs)
+ stopped=read_object(stop['ref'],'workspace_stop')
+ require(stopped.get('workspace')==stop['workspace'] and stopped.get('no_active_operations') is True,'health stop artifact body differs')
+ body=read_object(snap['artifact'],'workspace_snapshot')
+ require(body.get('workspace')==snap['workspace'] and isinstance(body.get('files'),dict),'health snapshot body differs')
+ digest=hashlib.sha256()
+ for name,file in sorted(body['files'].items()):
+  require(safe_relative(name) and type(file.get('executable')) is bool,'invalid snapshot file')
+  raw=base64.b64decode(file['content'],validate=True)
+  require(hashlib.sha256(raw).hexdigest()==file['sha256'],'snapshot file digest differs')
+  digest.update((str(len(name.encode()))+':'+name+':'+file['sha256']+':'+str(file['executable']).lower()+'\n').encode())
+ require(snap.get('hash')==digest.hexdigest(),'snapshot tree hash differs')
+ w=rows(final,'workspaces','id',request['workspace_id'])
+ exact(w,dict(expected,released=1,stopped=1,active_operation=''),'final health workspace differs')
+ lease=rows(final,'volume_leases','workspace_id',request['workspace_id'])
+ exact(lease,{'tenant_id':request['tenant_id'],'run_id':request['run_id'],'released':1},'final health volume lease differs')
+ return objects
+
+def targeted(c,base,final,object_inputs=None):
  a=c.read_json(base/'acceptance.json')
  require(a.get('passed') is True and set(a.get('cases',{}))=={'L4'},'actual targeted L4 must pass alone')
  case=a['cases']['L4']
  exact(case,{'passed':True,'physical_errno':'ENOSPC','actual_spool_failure_observed':True,'pressure_removed_after_actual_stop':True,'same_id_inspection_only':True,'all_four_volume_identities_reverified':True,'fresh_real_health_operation':True},'full targeted L4 proof missing')
  req,op,log,j,d=operation(c,base,'L4-recovered',success=False)
+ expected_args={'command':['python','-I','-B','-c',ENOSPC_PROGRAM]}
+ require(req.get('kind')=='run_command' and req.get('args')==expected_args and req.get('args_hash')==hashlib.sha256(canonical_args(expected_args)).hexdigest(),'early-stop oracle requires exact finite ENOSPC command bytes')
  fixture=c.read_json(base/'L4/fixture.json');require((req['tenant_id'],req['run_id'],req['operation_id'])==(fixture['tenant'],fixture['run_id'],fixture['target_operation']),'target fixture identity differs')
  pressure=c.read_json(base/'L4-pressure.json');stages=pressure.get('stages',[])
  require([x.get('chunk_bytes') for x in stages]==[1<<20,4096,1] and all(x.get('error')=='no space left on device' and x.get('synced') is True and type(x.get('written_bytes')) is int and x['written_bytes']>=0 for x in stages),'actual refined ENOSPC and sync required')
@@ -219,7 +279,7 @@ def targeted(c,base,final):
  removed=c.read_json(base/'L4-pressure-removed.json');exact(removed,{'device':pressure['device'],'inode':pressure['inode'],'only_after_confirmed_job_stop':True},'pressure cleanup identity differs')
  stop=c.read_json(base/'L4-stopped-before-pressure-removal.json');require(len(stop)==1 and stop[0]['Id']==d['Id'],'stop observation changed original container');state=stop[0]['State']
  begin=timestamp(state['StartedAt']);end=timestamp(state['FinishedAt']);pause=c.read_json(base/'L4-worker-pause.json')
- require(state['Running'] is False and state['OOMKilled'] is False and state['ExitCode']!=0 and 0<(end-begin).total_seconds()<23,'natural exit/OOM is not spool-failure stop')
+ require(state['Running'] is False and state['OOMKilled'] is False and state['ExitCode']!=0 and 0<(end-begin).total_seconds()<20,'natural exit/OOM is not spool-failure stop')
  require(timestamp(pause['stopped_confirmed_at'])<end<timestamp(removed['at'])<timestamp(pause['continued_at'])<timestamp(req['deadline']) and pause.get('watchdog') is False and not pause.get('resume_error') and pause['lease_epoch']==req['epoch'],'paused worker/immutable deadline ordering differs')
  full=c.private(base/'L4-physical-full.spool',524288).read_bytes();before=c.private(base/'L4-before-pressure.spool',524288).read_bytes()
  require(full.startswith(before) and len(full)<524288-16384 and frames(full)==c.private(base/'L4-recovered-log.flg',524288).read_bytes(),'retained prefix differs or byte-limit could explain stop')
@@ -244,8 +304,9 @@ def targeted(c,base,final):
  require(len(matched)==1 and all(matched[0].get(k)==v for k,v in art.items() if k!='created_at') and timestamp(matched[0]['created_at'])==timestamp(art['created_at']),'actual PG READY binding differs')
  effect=[x for x in pg['effects'] if x['operation_id']==req['operation_id']]
  require(len(effect)==1 and effect[0]['status']=='failed' and effect[0]['epoch']==req['epoch'],'original PG effect identity/status differs')
+ effect_binding(effect[0],req)
  receipt=[x for x in pg['artifacts'] if x['id']==effect[0]['receipt_ref']]
- require(len(receipt)==1 and receipt[0]['state']=='ready' and receipt[0]['sha256']==op['receipt']['sha256'],'effect receipt not durably published')
+ require(len(receipt)==1,'one PG effect receipt required');ready_receipt(receipt[0],op['receipt'],req)
  closure=c.read_json(base/'L4/closure-oracle.json')
  exact(closure,{'ready_receipt_joined_effects':1,'durable_effect_confirmations':1,'tenant_active':0,'runner_reserved':0,'unreleased_allocations':0,'provider_active_requests':0},'actual PG closure missing')
  clean=c.read_json(base/'L4/cleanup.json');require(clean['tenant_id']==req['tenant_id'] and clean['run_id']==req['run_id'] and clean['phase']=='released' and clean['snapshot_ref'],'target cleanup incomplete')
@@ -254,7 +315,8 @@ def targeted(c,base,final):
  for label,request in [('L4-recovered',req),('L4-health',health)]:
   r=rows(final,'operations','id',request['operation_id']);require(r['status']==('failed' if label=='L4-recovered' else 'succeeded'),'final original operation status changed')
   rows(final,'operation_logs','operation_id',request['operation_id'])
- require(c.read_json(base/'L4-health-stop.json')['no_active_operations'] is True and c.read_json(base/'L4-health-snapshot.json')['artifact']['kind']=='workspace_snapshot' and c.read_json(base/'L4-health-release.json')['released'] is True,'healthy workspace stop/snapshot/release incomplete')
+ health_objects=health_cleanup(c,base,health,h_op,final)
+ if object_inputs is not None:object_inputs.update(health_objects)
  return fixture
 
 
@@ -314,7 +376,7 @@ def prior(c,scope):
    require(inputs.get(acceptance[name+'_binary'])==acceptance[name+'_sha256'],'phase did not bind its actual executable')
  for phase,config_path in [('default','runner.json'),('bytes','runner-byteguard.json'),('count','runner-countguard.json')]:
   require(c.read_json(target/('config-'+phase+'.json'))==c.read_json(scope/'runtime'/config_path),'targeted config artifact differs from original authority')
- targeted(c,target,final)
+ targeted(c,target,final,allowed)
  # This returned report is for observers; the launcher seal binds the complete
  # source and all evidence members, not a mutable summary or inferred PASS.
  return UUID,allowed,{'purpose':'logs03-five-plus-targeted-l4-v1','original_passed':False,'recovery_is_enospc_acceptance':False,'compatibility':compat,'final_journal':str(target/'final-journal.json'),'final_journal_sha256':allowed[str(target/'final-journal.json')]}

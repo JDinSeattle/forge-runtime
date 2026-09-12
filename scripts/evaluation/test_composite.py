@@ -105,10 +105,11 @@ class CompositeTests(unittest.TestCase):
    with patch.object(c,'composite_evidence',side_effect=ValueError('incomplete')) as call,self.assertRaises(ValueError):c.prior_evidence(scope)
    call.assert_called_once_with(scope)
  def operation_fixture(self,base,label,healthy=False):
-  request={'tenant_id':'tenant','run_id':'run','workspace_id':'workspace','operation_id':'op','epoch':2,'grant':'','deadline':'2026-09-12T01:01:00Z'}
+  args={'command':['python','-I','-B','-c',m.ENOSPC_PROGRAM]}
+  request={'tenant_id':'tenant','run_id':'run','workspace_id':'workspace','operation_id':'op','epoch':2,'grant':'','deadline':'2026-09-12T01:01:00Z','kind':'run_command','expected_revision':1,'policy_version':'fixture-v1','args':args,'args_hash':digest(m.canonical_args(args))}
   def ref(kind,raw):return {'tenant_id':'tenant','run_id':'run','kind':kind,'sha256':digest(raw),'size':len(raw),'object_key':'tenant/run/'+digest(raw)}
   log={'complete':healthy,'retained_bytes':len(RAW),'dropped_known':healthy,'dropped_bytes':0,'artifact':ref('operation_log',RAW)}
-  job={'id':'forge-original','log':log};op={'request':request,'status':'succeeded' if healthy else 'failed','job_id':'forge-original','result':job}
+  job={'id':'forge-original','log':log};op={'request':request,'status':'succeeded' if healthy else 'failed','job_id':'forge-original','after_revision':1,'result':job}
   receipt=json.dumps(op).encode();op['receipt']=ref('operation_receipt',receipt)
   j=journal();j['tables']['operations']=[{'id':'op','request_json':json.dumps(request),'status':op['status'],'job_id':'forge-original'}];j['tables']['operation_logs']=[{'operation_id':'op','container_id':'c'*64}]
   docker=[{'Id':'c'*64,'Name':'/forge-original','LogPath':'','State':{'Running':False,'OOMKilled':False},'HostConfig':{'LogConfig':{'Type':'none'},'NetworkMode':'none','ReadonlyRootfs':True},'Config':{'Labels':{'forge.operation_id':'op','forge.runtime':'1'}}}]
@@ -133,11 +134,24 @@ class CompositeTests(unittest.TestCase):
     with self.assertRaises(ValueError):m.targeted(c,base,journal())
    write(base/'acceptance.json',{'passed':True,'cases':{'L4':dict(passed=True,physical_errno='ENOSPC',actual_spool_failure_observed=True,pressure_removed_after_actual_stop=True,same_id_inspection_only=True,all_four_volume_identities_reverified=True,fresh_real_health_operation=True)}})
    with self.assertRaises(FileNotFoundError):m.targeted(c,base,journal())
+ def health_records(self,base,request,final):
+  w=dict(tenant_id=request['tenant_id'],run_id=request['run_id'],id=request['workspace_id'],epoch=request['epoch'],revision=1,stopped=True,released=False)
+  def object(kind,body):
+   raw=json.dumps(body).encode();ref=dict(tenant_id=request['tenant_id'],run_id=request['run_id'],kind=kind,sha256=digest(raw),size=len(raw),object_key=request['tenant_id']+'/'+request['run_id']+'/'+digest(raw))
+   write(base.parent.parent/'runtime/artifacts'/ref['object_key'],raw)
+   final['tables']['runner_artifacts'].append({'object_key':ref['object_key'],'ref_json':json.dumps(ref)})
+   return ref
+  stop={'workspace':w,'no_active_operations':True};stop['ref']=object('workspace_stop',stop)
+  snap={'workspace':w,'hash':digest(b''),'artifact':object('workspace_snapshot',{'workspace':w,'files':{}})}
+  for name,v in [('stop',stop),('snapshot',snap),('release',{'workspace_id':request['workspace_id'],'released':True})]:write(base/('L4-health-'+name+'.json'),v)
+  final['tables']['workspaces'].append(dict(w,released=1,stopped=1,active_operation=''))
+  final['tables']['volume_leases'].append(dict(tenant_id=request['tenant_id'],run_id=request['run_id'],workspace_id=request['workspace_id'],released=1))
+  return stop,snap
  def test_complete_targeted_material_and_cross_layer_counterexamples(self):
   # Synthetic public records exercise the consumer's cross-layer connections;
   # operation() separately verifies real encoded receipt/ref/frame contracts.
   with tempfile.TemporaryDirectory() as tmp:
-   base=Path(tmp);req,op,log,j,dc=self.operation_fixture(base,'L4-recovered');op['job_id']='forge-original'
+   base=Path(tmp)/'evidence/logs-l4-01';base.mkdir(parents=True);req,op,log,j,dc=self.operation_fixture(base,'L4-recovered');op['job_id']='forge-original'
    j['tables']['operations'][0].update(dispatch_started=1,docker_start_intent=1)
    slot={'id':'slot-0','spec_json':json.dumps({'mount_path':'/fixture-slot'})};j['tables']['volume_slots'][0]=slot
    j['tables']['volume_leases']=[{'workspace_id':'workspace','slot_id':'slot-0','released':0}]
@@ -156,14 +170,16 @@ class CompositeTests(unittest.TestCase):
     'L4-before-pressure-journal.json':j,
     'L4/physical-full-postgres.json':{'runs':[{'id':'run','state':'running','lease_epoch':2}]},
     'L4-http-proof.json':dict(artifact=art,status=200,list_status=200,listed_matches=1,cross_tenant_download=404,cross_tenant_list=404,body_sha256=digest(RAW),body_bytes=len(RAW)),
-    'L4/cleanup-postgres.json':{'artifacts':[art,{'id':'receipt','state':'ready','sha256':op['receipt']['sha256']}],'effects':[{'operation_id':'op','status':'failed','epoch':2,'receipt_ref':'receipt'}]},
+    'L4/cleanup-postgres.json':{'artifacts':[art,dict({k:v for k,v in op['receipt'].items() if k!='size'},id='receipt',state='ready',byte_size=op['receipt']['size'])],'effects':[dict({k:req[k] for k in ('tenant_id','run_id','operation_id','kind','args','args_hash','policy_version','expected_revision','epoch')},status='failed',receipt_ref='receipt',canonical_args='\\x'+m.canonical_args(req['args']).hex())]},
     'L4/closure-oracle.json':dict(ready_receipt_joined_effects=1,durable_effect_confirmations=1,tenant_active=0,runner_reserved=0,unreleased_allocations=0,provider_active_requests=0),
     'L4/cleanup.json':dict(tenant_id='tenant',run_id='run',phase='released',snapshot_ref='code'),
     'L4-health-stop.json':{'no_active_operations':True},'L4-health-snapshot.json':{'artifact':{'kind':'workspace_snapshot'}},'L4-health-release.json':{'released':True}}
    failure=copy.deepcopy(j);failure['tables']['operations'][0]['error']='no space left on device';public['L4-spool-failure-journal.json']=failure
+   self.health_records(base,healthy_req,final)
+   for name in ('L4-health-stop.json','L4-health-snapshot.json','L4-health-release.json'):public[name]=c.read_json(base/name)
    for name,body in public.items():write(base/name,body)
    for name in ('L4-before-pressure.spool','L4-physical-full.spool','L4-http.flg'):write(base/name,RAW)
-   def calls(c,b,label,success):return (healthy_req,{}, {},{}, {}) if success else (req,op,log,j,dc[0])
+   def calls(c,b,label,success):return (healthy_req,{'after_revision':1}, {},{}, {}) if success else (req,op,log,j,dc[0])
    with patch.object(m,'operation',side_effect=calls):m.targeted(c,base,final)
    changes=[
     ('L4-pressure.json',lambda x:x['after'].update(Bavail=1)),
@@ -179,11 +195,26 @@ class CompositeTests(unittest.TestCase):
     ('L4-http-proof.json',lambda x:x['artifact'].update(run_id='foreign')),
     ('L4/cleanup-postgres.json',lambda x:x['effects'][0].update(receipt_ref='missing')),
     ('L4/closure-oracle.json',lambda x:x.update(tenant_active=1)),
-    ('L4-health-release.json',lambda x:x.update(released=False))]
+    ('L4-health-release.json',lambda x:x.update(released=False)),
+    ('L4-health-stop.json',lambda x:x['workspace'].update(id='foreign')),
+    ('L4-health-snapshot.json',lambda x:x['workspace'].update(id='foreign')),
+    ('L4-health-release.json',lambda x:x.update(workspace_id='foreign')),
+    ('L4-stopped-before-pressure-removal.json',lambda x:x[0]['State'].update(FinishedAt='2026-09-12T01:00:20Z'))]
+   for field,value in [('tenant_id','foreign'),('run_id','foreign'),('args_hash','a'*64),('canonical_args','\\x7b7d'),('expected_revision',123),('kind','verify'),('policy_version','other')]:
+    changes.append(('L4/cleanup-postgres.json',lambda x,f=field,v=value:x['effects'][0].update({f:v})))
+   for field,value in [('tenant_id','foreign'),('run_id','foreign'),('kind','operation_log'),('byte_size',1),('object_key','foreign/key')]:
+    changes.append(('L4/cleanup-postgres.json',lambda x,f=field,v=value:x['artifacts'][1].update({f:v})))
    for name,change in changes:
     bad=copy.deepcopy(public[name]);change(bad);write(base/name,bad)
     with self.subTest(path=name),patch.object(m,'operation',side_effect=calls),self.assertRaises(ValueError):m.targeted(c,base,final)
     write(base/name,public[name])
+   bad_req=copy.deepcopy(req);bad_req['args']={'command':['python','-c',"import time;time.sleep(5);raise SystemExit(137)"]};bad_req['args_hash']=digest(m.canonical_args(bad_req['args']))
+   def natural(c,b,label,success):return calls(c,b,label,success) if success else (bad_req,op,log,j,dc[0])
+   with patch.object(m,'operation',side_effect=natural),self.assertRaises(ValueError):m.targeted(c,base,final)
+ def test_enospc_program_is_exact_current_go_fixture(self):
+  import re
+  source=(Path(__file__).resolve().parents[2]/'scripts/faults/application/strict_logs_combined_test.go').read_text()
+  self.assertEqual(re.search(r'const slENOSPCProgram = `([^`]+)`',source).group(1),m.ENOSPC_PROGRAM)
  def test_build_info_requires_actual_clean_revision_and_package(self):
   p=Path('/frozen/forge-runner');rev='a'*40
   raw=str(p)+': go1.26.8\n\tpath\tgithub.com/JDinSeattle/forge-runtime/cmd/forge-runner\n'+''.join('\tbuild\t'+k+'='+v+'\n' for k,v in [('GOOS','linux'),('GOARCH','amd64'),('vcs.revision',rev),('vcs.modified','false')])
