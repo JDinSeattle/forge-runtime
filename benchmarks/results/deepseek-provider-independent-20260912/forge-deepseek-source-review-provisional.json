@@ -1,0 +1,73 @@
+{
+  "status": "provisional WIP source-only review; no tests or API requests executed",
+  "base": "a49efa80bf959f5e1e19d1e3e542e2d63c5af390",
+  "sources": [
+    {
+      "path": "internal/provider/deepseek.go",
+      "sha256": "6f8aa0b3bec96399b2ef38755d4b3ac9d9cf8b29ad780f70cb774d23f43d9883"
+    },
+    {
+      "path": "internal/provider/openai.go",
+      "sha256": "2bf36ad51a9a9128bf9542391e693cff24b18bd7c9ee07b0b8ae061b53b5eef3"
+    },
+    {
+      "path": "internal/provider/deepseek_test.go",
+      "sha256": "eb5ebea67634bd2d0634f7b120850af668a44dde39b0faef733bbb255c83b9de"
+    },
+    {
+      "path": "internal/provider/types.go",
+      "sha256": "ba6da9a9aca6a72b3968da85153553ce990be743a825d9de472fc04874ce3314"
+    },
+    {
+      "path": "internal/provider/assembly.go",
+      "sha256": "49e1f03fd5efa541f33756e9404de9ab2e1c8542e980ec87b1b1fb3a391aa5c0"
+    },
+    {
+      "path": "internal/provider/anthropic.go",
+      "sha256": "de402f94167cc309e1c5285d739fef58e6a9fc69fa62c96624fef2a2ed59ff56"
+    },
+    {
+      "path": "internal/application/model.go",
+      "sha256": "2562bc353e59f5d09d014377fe50980fc32724fe63fec56c0586da65cc5ab542"
+    },
+    {
+      "path": "internal/application/pricing.go",
+      "sha256": "91e683a26c4a590d862654d494a8092ad59320b3a04083dea92e5ccdcaba1401"
+    },
+    {
+      "path": "internal/configuration/config.go",
+      "sha256": "7299ccb12fc7dce8e61df7281e261cf0a9317b559058d16201f8268e00b24c60"
+    },
+    {
+      "path": "internal/configuration/deepseek_test.go",
+      "sha256": "762ff5d0e42f7e3710b960f35c8aec83af8d3cb50ae4555483455e08ea9f55c3"
+    },
+    {
+      "path": "internal/telemetry/hooks.go",
+      "sha256": "c8e32cdc46c8d317558ea9e7d61063bd224fab6341532a2f975e4bcad99a0a3a"
+    },
+    {
+      "path": "scripts/evaluation/prepare.py",
+      "sha256": "0de049228420017610fbc77efa30653db679154048ff192c94e6563027e4dedb"
+    },
+    {
+      "path": "scripts/evaluation/test_evaluation.py",
+      "sha256": "e750d9026663c2eb5691cdae1c5cd2fcbe78cd480cd64a04c96ba2cbc7da89bd"
+    }
+  ],
+  "scope": [
+    "shared Responses OpenAI wire behavior",
+    "DeepSeek-only SDK/env/endpoint and redirect policy",
+    "sequence/full turn validation/tool completion",
+    "native provider identity/stateless continuation",
+    "input/cache pricing and unknown reserve",
+    "telemetry provider label",
+    "proposed total/task budget registration"
+  ],
+  "provisional_findings": [],
+  "next": "Wait for author freeze; execute only in-memory transports and offline unit tests.",
+  "official_docs": [
+    "https://api-docs.deepseek.com/guides/responses_api/",
+    "https://api-docs.deepseek.com/quick_start/pricing/"
+  ]
+}

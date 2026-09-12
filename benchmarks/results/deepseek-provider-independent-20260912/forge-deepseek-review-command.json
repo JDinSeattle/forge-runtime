@@ -1,0 +1,16 @@
+{
+  "command": [
+    "/home/postedism/.local/share/mise/installs/go/1.26.8/bin/go",
+    "test",
+    "-race",
+    "-count=1",
+    "-json",
+    "-overlay=/tmp/forge-deepseek-independent-overlay-frozen.json",
+    "./internal/provider",
+    "./internal/configuration",
+    "./internal/application",
+    "-run",
+    "^(TestIndependentDeepSeek|TestIndependentResponses|TestDeepSeek|TestResponsesShared|TestProviderSpecificPricing)"
+  ],
+  "scope": "only in-memory HTTP transports; no PG/network/model endpoints; modules offline"
+}
