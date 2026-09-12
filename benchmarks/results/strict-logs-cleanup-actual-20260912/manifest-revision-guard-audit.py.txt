@@ -1,0 +1,40 @@
+"""Execute only extracted read-only guards with in-memory fake SQL/filesystem values."""
+import ast, collections, copy, hashlib, json, pathlib, types
+D=pathlib.Path(__file__).parent
+source=(D/'revise-unexecuted-logs02-reviewed.py.txt').read_text()
+tree=ast.parse(source)
+functions={n.name:n for n in ast.walk(tree) if isinstance(n,ast.FunctionDef)}
+uid='b010dd7440a54c58601967342f397faf686b7e306061af9f49809ee342b0ec8e'
+expected={'version':(5,), 'uuid':[(uid,)],'workspaces':(4,4),'leases':(4,4),'operations':(44,44),'logs':(42,42)}
+class DB:
+ def __init__(self, values): self.values=values; self.key=None
+ def __enter__(self): return self
+ def __exit__(self,*args): pass
+ def execute(self,query):
+  mapping={'PRAGMA user_version':'version','SELECT id FROM journal_identity WHERE singleton=1':'uuid','FROM workspaces':'workspaces','FROM volume_leases':'leases','FROM operations':'operations','FROM operation_logs':'logs'}
+  self.key=next((v for k,v in mapping.items() if k in query),None)
+  if self.key is None: assert query in ('PRAGMA query_only=ON','BEGIN')
+  return self
+ def fetchone(self): return self.values[self.key]
+ def fetchall(self): return self.values[self.key]
+ns={'base':pathlib.Path('/no-live-fixture'), 'UUID':uid,'ABSENT':('a','b','c'),'p':types.SimpleNamespace(digest=lambda p:None)}
+exec(compile(ast.fix_missing_locations(ast.Module(body=[functions[x] for x in ('require','unexecuted','settled')],type_ignores=[])),'extracted-guards','exec'),ns)
+results=[]
+def case(name,fn,valid):
+ try: fn(); accepted=True
+ except ValueError: accepted=False
+ assert accepted==valid,(name,accepted,valid)
+ results.append({'case':name,'accepted':accepted,'expected':valid})
+def settled(values):
+ ns['sqlite3']=types.SimpleNamespace(connect=lambda *a,**kw:DB(values))
+ return ns['settled']()
+case('exact saved42log baseline',lambda:settled(expected),True)
+for key,value in [('version',(4,)),('uuid',[('replaced',)]),('workspaces',(4,3)),('leases',(4,3)),('operations',(44,43)),('logs',(42,41)),('logs',(44,44))]:
+ changed=copy.deepcopy(expected);changed[key]=value
+ case('reject '+key+' '+str(value),lambda:settled(changed),False)
+for present in (None,'a','b','c'):
+ ns['os']=types.SimpleNamespace(path=types.SimpleNamespace(lexists=lambda p:present is not None and p.name==present))
+ case('absent guard '+str(present),ns['unexecuted'],present is None)
+assert source.index('destination.mkdir(')<source.index('os.fsync(archive_parent)')<source.index("p.create_file(destination / 'original-")<source.index("p.save(destination / 'intent.json'")<source.index('os.replace(temp, target)')<source.index('os.fsync(parent)')
+(D/'script-guards.json').write_text(json.dumps({'source_sha256':hashlib.sha256(source.encode()).hexdigest(),'guard_only_no_main_or_imported_launcher_execution':True,'passed':True,'cases':results,'durability_source_order_checked':True},indent=2)+'\n')
+print(json.dumps({'passed':True,'case_count':len(results),'all_offline':True}))

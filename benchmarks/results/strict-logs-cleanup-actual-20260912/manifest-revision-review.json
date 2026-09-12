@@ -1,0 +1,139 @@
+{
+  "checks": [
+    "Fixed scope, old hash+c99 binding and six binary fields only; new revision/build stages/binary size+hash checked.",
+    "Shared control flock; all3 prospective logs02 paths absent, old exact recorded units absent, UUIDv5/four released/44terminal/42logremoved guarded.",
+    "Original cleanup manifest and19 members, cleanup input, old binaries, host result hashes rechecked before replacement.",
+    "Exclusive fsynced original bytes+intent; same-directory atomic replacement and parent fsync.",
+    "No credential() invocation; no daemon/process mutation; SQLite read-only transaction only.",
+    "Does not claim database whole-object audit; upcoming logs02 prerequisite independently checks actual released full journal."
+  ],
+  "conclusion": "PASS for bounded pending manifest revision scope, subject to all execution-time guards. No proof that revision or logs02 executed.",
+  "fixed_pre_freeze_findings": [
+    {
+      "finding": "Original script required44 operation_logs, actual released archive has42; would refuse valid settled authority.",
+      "fix": "logs:(42,42); operations:(44,44) remains",
+      "priority": "P2"
+    },
+    {
+      "finding": "New archive directory parent was not synced before replacing old preparation; crash could lose backup directory entry.",
+      "fix": "fsync evidence parent immediately after exclusive mkdir, before oldcopy/intent and replace",
+      "priority": "P2"
+    }
+  ],
+  "guard_validation": {
+    "source_extracted_in_memory_v1": {
+      "cases": [
+        {
+          "accepted": true,
+          "case": "exact saved42log baseline",
+          "expected": true
+        },
+        {
+          "accepted": false,
+          "case": "reject version (4,)",
+          "expected": false
+        },
+        {
+          "accepted": false,
+          "case": "reject uuid [('replaced',)]",
+          "expected": false
+        },
+        {
+          "accepted": false,
+          "case": "reject workspaces (4, 3)",
+          "expected": false
+        },
+        {
+          "accepted": false,
+          "case": "reject leases (4, 3)",
+          "expected": false
+        },
+        {
+          "accepted": false,
+          "case": "reject operations (44, 43)",
+          "expected": false
+        },
+        {
+          "accepted": false,
+          "case": "reject logs (42, 41)",
+          "expected": false
+        },
+        {
+          "accepted": false,
+          "case": "reject logs (44, 44)",
+          "expected": false
+        },
+        {
+          "accepted": true,
+          "case": "absent guard None",
+          "expected": true
+        },
+        {
+          "accepted": false,
+          "case": "absent guard a",
+          "expected": false
+        },
+        {
+          "accepted": false,
+          "case": "absent guard b",
+          "expected": false
+        },
+        {
+          "accepted": false,
+          "case": "absent guard c",
+          "expected": false
+        }
+      ],
+      "durability_source_order_checked": true,
+      "guard_only_no_main_or_imported_launcher_execution": true,
+      "passed": true,
+      "source_sha256": "b143c3b872d0dc193e2c61ed2da62cd76985968eb57c8810ae9c9b355dc9edc4"
+    },
+    "v2_build_guard_cases": [
+      {
+        "accepted": true,
+        "case": "privateparent0664"
+      },
+      {
+        "accepted": true,
+        "case": "privateparent0600"
+      },
+      {
+        "accepted": false,
+        "case": "symlink"
+      },
+      {
+        "accepted": false,
+        "case": "otherowner"
+      },
+      {
+        "accepted": false,
+        "case": "hardlinked"
+      },
+      {
+        "accepted": false,
+        "case": "worldwrite"
+      },
+      {
+        "accepted": false,
+        "case": "unbounded"
+      }
+    ],
+    "v2_syntax_passed": true
+  },
+  "limits": [
+    "Root first refused execution is separately retained; this reviewer did not run host script.",
+    "Pre-freeze erroneous script was observed in tool output, not captured byte-for-byte before root corrected it; do not label current capture as that earlier source."
+  ],
+  "p1_p2_remaining": [],
+  "reviewed_at": "2026-09-12T06:04:13.983995+00:00",
+  "reviewed_sha256_v1": "b143c3b872d0dc193e2c61ed2da62cd76985968eb57c8810ae9c9b355dc9edc4",
+  "reviewed_sha256_v2": "b62d958c0da47cc7e7b302c7671cc63f1fa7e98471db0a70cdf80d1f6adabadd",
+  "scope": "Independent read-only source and extracted-guard review; no execution of main, imports of launcher, live SQLite/systemctl/runner/model operations.",
+  "v1_execution_refusal_reported_by_root": {
+    "raw_execution_log": "pending path supplied by executor; do not infer from source alone",
+    "reason": "nonsecret build result0664 rejected by private_json despite0700 parent",
+    "root_reported_no_archive_no_temp_no_manifest_write_no_database_query": true
+  },
+  "v2_delta": "Only build results reader: owned regular single-link max1MiB, no worldwrite, private0700 parent; preserve historical metadata. Existing revision/stage/binary checks retained."
+}

@@ -1,0 +1,68 @@
+import pathlib,json,hashlib,base64,datetime,os,subprocess
+R=pathlib.Path('/home/postedism/Desktop/mini claude code/forge-runtime');S=R/'var/lifecycle-rehearsals/lr20260912_a';P=S/'evidence/logs-01-cleanup';O=pathlib.Path(__file__).parent
+sha=lambda b:hashlib.sha256(b).hexdigest()
+j=lambda n:json.loads((P/n).read_bytes())
+checks=[]
+def check(v,label):
+ if not v:raise AssertionError(label)
+ checks.append(label)
+m=j('manifest.json');check(set(m)|{'manifest.json'}=={str(p.relative_to(P)) for p in P.rglob('*') if p.is_file()},'exact cleanup inventory')
+for n,h in m.items():check(sha((P/n).read_bytes())==h,'cleanup manifest '+n)
+invocations=list(P.glob('invocation-*'));check(len(invocations)==1,'one actual cleanup invocation');inv=invocations[0]
+before=json.loads((inv/'journal-before.json').read_bytes());after=j('released-journal.json');original=json.loads((S/'evidence/logs-01/L3-bytes-op-03-journal.json').read_bytes())
+uid='b010dd7440a54c58601967342f397faf686b7e306061af9f49809ee342b0ec8e';rid='sl-L3-bytes-46djebzw3ifph2ui7nesemhkz6'
+check(original['identity']==before['identity']==after['identity']==uid and original['version']==before['version']==after['version']==5,'same UUID/schema')
+check(before==original,'cleanup starts from exactly retained failed journal observation')
+bt=before['tables'];at=after['tables'];check(len(at['operations'])==44 and bt['operations']==at['operations'],'all 44 complete operation rows unchanged')
+check(all(x['status'] in ('succeeded','failed','cancelled') for x in at['operations']),'all 44 operations terminal')
+for name in ['log_runs','volume_slots']:check(bt[name]==at[name],'immutable '+name)
+changes={}
+for table,key,allowed in [('workspaces','id',{'stopped','adopting','released'}),('volume_leases','workspace_id',{'released'}),('operation_logs','operation_id',{'cleanup_state'})]:
+ a={x[key]:x for x in bt[table]};b={x[key]:x for x in at[table]};check(set(a)==set(b),'row identity '+table);diff=[]
+ for ident,x in a.items():
+  y=b[ident]
+  if x==y:continue
+  check(ident==rid or (table=='operation_logs' and ident in {rid+'-op-%02d'%i for i in range(4)}),'only owned target changes '+table)
+  changed={k:[x.get(k),y.get(k)] for k in x.keys()|y.keys() if x.get(k)!=y.get(k)}
+  check(set(changed)<=allowed,'restricted changed columns '+table)
+  if table=='operation_logs':check(changed=={'cleanup_state':['retained','removed']},'remove acknowledgement '+ident)
+  else:check(all(v==[0,1] for v in changed.values()),'release/stop flags '+table)
+  diff.append({'id':ident,'changes':changed})
+ changes[table]=diff
+check(len(changes['workspaces'])==1 and len(changes['volume_leases'])==1 and len(changes['operation_logs'])==4,'exact target change counts')
+check(len(at['volume_slots'])==len(at['volume_leases'])==len(at['workspaces'])==4,'four slot/workspace/lease records')
+check(all(x['released']==1 for x in at['volume_leases']) and all(x['released']==1 and x['active_operation']=='' for x in at['workspaces']),'all four leased workspaces released and no active operation')
+artifacts={x['object_key']:json.loads(x['ref_json']) for x in at['runner_artifacts']};oldpins={x['object_key']:x for x in bt['runner_artifacts']};newpins={x['object_key']:x for x in at['runner_artifacts']}
+check(all(newpins[k]==v for k,v in oldpins.items()) and len(newpins)-len(oldpins)==2,'old 95 pins unchanged and two added')
+stop=j('stop.json');snap=j('snapshot.json');proofs=[]
+for name,ref in [('stop',stop['ref']),('snapshot',snap['artifact'])]:
+ raw=(P/(name+'.bytes')).read_bytes();check(sha(raw)==ref['sha256'] and len(raw)==ref['size'],'archived '+name+' content address')
+ check(ref['tenant_id']=='strict-log-fixture' and ref['run_id']==rid and ref['object_key']=='strict-log-fixture/'+rid+'/'+ref['sha256'],'ref authority '+name)
+ check(artifacts[ref['object_key']]==ref,'durable '+name+' pin')
+ # Public immutable fixture artifact, no runtime configuration/credential reads.
+ actual=S/'runtime/artifacts'/ref['object_key'];check(actual.read_bytes()==raw,'immutable artifact object bytes '+name)
+ proofs.append({'kind':name,'sha256':ref['sha256'],'bytes':len(raw)})
+state=dict(stop);state['ref']=json.loads((P/'stop.bytes').read_bytes())['ref'];check(state==json.loads((P/'stop.bytes').read_bytes()),'stop payload matches receipt apart from self ref')
+check(stop['no_active_operations'] is True and stop['workspace']==snap['workspace'],'stop and snapshot same workspace')
+snapshot=json.loads((P/'snapshot.bytes').read_bytes());check(snapshot['workspace']==snap['workspace'],'snapshot embedded workspace')
+check(set(snapshot['files'])=={'app.py'},'exact snapshot file inventory');f=snapshot['files']['app.py'];source=base64.b64decode(f['content'],validate=True)
+check(source==b'def clamp(v, lo, hi):\n    return v\n' and f['sha256']==sha(source) and f['executable'] is False,'archived exact source content/hash/mode')
+check(j('release-intent.json')=={'epoch':1,'snapshot_sha256':snap['artifact']['sha256'],'snapshot_verified':True,'stop_sha256':stop['ref']['sha256'],'workspace_id':rid},'release intent binds both saved proofs')
+check(j('release.json')=={'workspace_id':rid,'released':True},'actual typed release ack')
+report=j('report.json');check(report['passed'] and report['released'] and report['snapshot_verified'] and report['workspace_id']==rid and report['journal_uuid']==uid,'stage report retains actual release')
+peer=json.loads((inv/'runner-01-peer.json').read_bytes());sig=json.loads((inv/'runner-01-stop.json').read_bytes());acceptance=j('acceptance-input.json')
+check(peer['peer_pid']==peer['spawned_runner_pid']==sig['pid'] and peer['sha256']==sig['exe_sha256']==acceptance['runner_sha256'],'same actual UDS peer and signalled runner binary')
+check(sig['exe_path']==acceptance['runner_binary'] and sig['args']==[acceptance['runner_binary'],'-config',str(S/'runtime/runner-byteguard.json')] and str(sig['proc_start_ticks']).isdigit() and sig['exit_code']==0,'exact own runner successful signal/exit')
+host=json.loads((S/'evidence/host-logs-cleanup-02/result.json').read_bytes());log=(S/'evidence/host-logs-cleanup-02/execution.log').read_text();check(host['exit_code']==1 and host['after']['LoadState']=='not-found' and host['after']['MainPID']=='0' and 'required existing stage differs:' in log and '/acceptance-input.json' in log,'overall failed at final read-only prerequisite after own unit exit')
+repro=json.loads((O/'key-order-repro.json').read_bytes());check(repro['executed_predicate_accepts'] is False and repro['same_semantic_value'] is True,'original type-order predicate reproduces false rejection')
+next_paths=['evidence/logs-02','runtime/strict-logs-private-02','evidence/host-logs-02-retry'];absent={}
+for n in next_paths:
+ try:os.lstat(S/n)
+ except FileNotFoundError:absent[n]=True
+ else:absent[n]=False
+check(all(absent.values()),'next declared execution paths absent including symlinks')
+next_manifest=S/'acceptance-logs-02.json';next_a=json.loads(next_manifest.read_bytes());check(next_a==acceptance,'prepared but unexecuted logs02 still selects original cleanup c99 input')
+containers=[{k:x[k] for k in ['operation_id','container_id','cleanup_state']} for x in at['operation_logs'] if x['operation_id'].startswith(rid+'-op-')]
+result={'audited_at':datetime.datetime.now(datetime.timezone.utc).isoformat(),'audit_passed':True,'scope':'Historical raw manifests/tables and immutable fixture artifact object bytes only; no live SQLite/PG/Docker/process/service/volume/provider/credential operations. Absence checks read only declared logs02 filesystem entry paths.','executed_revision':'c99a285c85d782d5a3d22a84447371db445c69d1','actual_cleanup_release_confirmed':True,'original_test_overall_passed':False,'go_test_seconds':3.27,'host_elapsed_seconds':host['elapsed_seconds'],'manifest_members':len(m),'manifest_sha256':sha((P/'manifest.json').read_bytes()),'all_44_operation_rows_unchanged':True,'permitted_journal_changes':changes,'released_workspaces_and_leases':4,'original_pin_count':95,'final_pin_count':97,'artifact_proofs':proofs,'container_removal_evidence':{'records':containers,'class':'production RemoveOwned acknowledgement persisted as cleanup_state=removed before typed Release success','limit':'No separate post-removal Docker inspect/events were archived or queried by this reviewer; do not describe this as an independent live daemon absence probe.'},'runner_pid':sig['pid'],'runner_exit_code':sig['exit_code'],'false_rejection':repro,'unexecuted_logs02_paths_absent':absent,'unexecuted_logs02_manifest':{'path':str(next_manifest),'sha256':sha(next_manifest.read_bytes()),'binary_revision':pathlib.Path(next_a['test_binary']).parent.name},'safe_continuation':{'requires_new_execution03':False,'reason':'Existing execution contract only supports01/02;02 has not reached its exclusive evidence/private/host creation. No requirement prohibits a reviewed, explicitly archived revision of its never-executed prepared input. Original c99 cleanup input/proof and all old binaries must remain unchanged.','steps':['Under the same fixture control lock recheck declared logs02 evidence/private/host absence, prior own unit/process exit and idle same-UUID released journal before any change. If any attempted execution or uncertain provenance appears, stop instead of restamping.','Write and fsync an exclusive raw copy of the original unexecuted acceptance-logs-02.json plus an explicit revision intent with old/new hashes, source revision, absence observations and executed=false. Store outside evidence/logs-02 so its exclusive creation contract remains meaningful.','Permit changes only to the six runner/worker/test binary path+SHA fields, all under one newly frozen revision directory. Preserve purpose,fixture,scope,pool,runnerconfig and sigterm02 evidence path exactly. Preserve c99 binaries, acceptance-logs-cleanup-01.json, its report/input map and original cleanup manifest byte-for-byte.','Persist the new prepared input by reviewed atomic same-directory replacement and parent fsync, binding expected old bytes/hash. Do not rerun Stop/Seal/Release or edit a historical passed/failed proof.','The new logs02 test first executes corrected read-only slCleanupPrerequisite against immutable old cleanup proof plus current released authority; only then may its new schema/runner/cases start. A prerequisite failure leaves old released work untouched.']},'checks':checks,'checks_passed':len(checks),'source_and_raw_hashes':{str(p):sha(p.read_bytes()) for p in [P/'manifest.json',P/'report.json',P/'acceptance-input.json',P/'release.json',P/'released-journal.json',inv/'journal-before.json',inv/'runner-01-peer.json',inv/'runner-01-stop.json',S/'evidence/host-logs-cleanup-02/result.json',S/'evidence/host-logs-cleanup-02/execution.log',O/'executed-cleanup.go.txt',O/'executed-combined-helpers.go.txt',O/'key-order-repro.go.txt',O/'key-order-repro.json']}}
+(O/'report.json').write_text(json.dumps(result,indent=2,sort_keys=True)+'\n')
+print(json.dumps({'report':str(O/'report.json'),'sha256':sha((O/'report.json').read_bytes()),'checks':len(checks),'manifest_members':len(m),'actual_release':True,'original_overall_passed':False,'requires_execution03':False},indent=2))

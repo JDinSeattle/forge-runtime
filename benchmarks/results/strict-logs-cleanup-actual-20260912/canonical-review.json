@@ -1,0 +1,38 @@
+{
+  "base_revision": "c99a285c85d782d5a3d22a84447371db445c69d1",
+  "checks": [
+    "Double-sided canonical JSON eliminates actual map/struct key-order mismatch while preserving semantic field equality.",
+    "UseNumber retains distinct integers above IEEE754 exact range; changed SHA and concatenated JSON remain rejected.",
+    "Every current slCleanupExisting input is an object under 256 KiB; largest actual intent is119220 B. The 3.36 MB journal uses another path.",
+    "Only the two frozen files overlaid on clean c99 worktree; no production, live resource, credential or original evidence modification."
+  ],
+  "conclusion": "PASS for reviewed comparator scope; no cleanup execution or acceptance promotion",
+  "findings_p1_p2": [],
+  "overlay_source_sha256": {
+    "scripts/faults/application/strict_logs_cleanup_helpers_test.go": "48dcc6f69f374ffc0f636725dc13c37db73e4518dc059d2787f0085804a2528a",
+    "scripts/faults/application/strict_logs_cleanup_test.go": "2437bf40c57aca58b0fd3d982defb5dae229a98072b829081af80e0a3a48e728"
+  },
+  "review_type": "bounded independent offline canonical comparator delta review",
+  "reviewed_at": "2026-09-12T06:01:01.136130+00:00",
+  "root_fix_revision": "0a5f0f47100941858ae12b07ecd9bb094bdca833",
+  "source_before_after_equal": true,
+  "validation": {
+    "GOMAXPROCS": 2,
+    "GOPROXY": "off",
+    "GOSUMDB": "off",
+    "command": "go test -overlay overlay.json -race ./scripts/faults/application -run ^TestStrictLogs(Cleanup|RetainedCleanup) -count=1 -json",
+    "elapsed_seconds": 1.3639999999999999,
+    "exit_code": 0,
+    "fail": 0,
+    "go": "go1.26.8 linux/amd64",
+    "logs": {
+      "race.jsonl": "f98b3c2d8a46479d994cc379eed49ae8124f3a5151a4af53f01ee3f615396cd9",
+      "vet.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "opt_in_environment": "none",
+    "pass": 41,
+    "skip": 2,
+    "vet_command": "go vet -overlay overlay.json ./scripts/faults/application",
+    "vet_exit_code": 0
+  }
+}

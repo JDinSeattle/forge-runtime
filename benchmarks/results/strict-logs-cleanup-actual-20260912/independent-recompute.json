@@ -1,0 +1,247 @@
+{
+  "actual_cleanup_release_confirmed": true,
+  "all_44_operation_rows_unchanged": true,
+  "artifact_proofs": [
+    {
+      "bytes": 464,
+      "kind": "stop",
+      "sha256": "23235252fcf4af3b977eb2c9009ac5e5af2afb12d692851d22f6cb0b86b06339"
+    },
+    {
+      "bytes": 531,
+      "kind": "snapshot",
+      "sha256": "67dee6e7ad1ab03d38cfdd02655c13065a7ac2a7085a7c846f051e7c0a2e5016"
+    }
+  ],
+  "audit_passed": true,
+  "audited_at": "2026-09-12T05:40:46.796626+00:00",
+  "checks": [
+    "exact cleanup inventory",
+    "cleanup manifest acceptance-input.json",
+    "cleanup manifest intent.json",
+    "cleanup manifest invocation-1075405454/journal-before.json",
+    "cleanup manifest invocation-1075405454/operation-00.json",
+    "cleanup manifest invocation-1075405454/operation-01.json",
+    "cleanup manifest invocation-1075405454/operation-02.json",
+    "cleanup manifest invocation-1075405454/operation-03.json",
+    "cleanup manifest invocation-1075405454/report.json",
+    "cleanup manifest invocation-1075405454/runner-01-bytes.log",
+    "cleanup manifest invocation-1075405454/runner-01-peer.json",
+    "cleanup manifest invocation-1075405454/runner-01-stop.json",
+    "cleanup manifest release-intent.json",
+    "cleanup manifest release.json",
+    "cleanup manifest released-journal.json",
+    "cleanup manifest report.json",
+    "cleanup manifest snapshot.bytes",
+    "cleanup manifest snapshot.json",
+    "cleanup manifest stop.bytes",
+    "cleanup manifest stop.json",
+    "one actual cleanup invocation",
+    "same UUID/schema",
+    "cleanup starts from exactly retained failed journal observation",
+    "all 44 complete operation rows unchanged",
+    "all 44 operations terminal",
+    "immutable log_runs",
+    "immutable volume_slots",
+    "row identity workspaces",
+    "only owned target changes workspaces",
+    "restricted changed columns workspaces",
+    "release/stop flags workspaces",
+    "row identity volume_leases",
+    "only owned target changes volume_leases",
+    "restricted changed columns volume_leases",
+    "release/stop flags volume_leases",
+    "row identity operation_logs",
+    "only owned target changes operation_logs",
+    "restricted changed columns operation_logs",
+    "remove acknowledgement sl-L3-bytes-46djebzw3ifph2ui7nesemhkz6-op-00",
+    "only owned target changes operation_logs",
+    "restricted changed columns operation_logs",
+    "remove acknowledgement sl-L3-bytes-46djebzw3ifph2ui7nesemhkz6-op-01",
+    "only owned target changes operation_logs",
+    "restricted changed columns operation_logs",
+    "remove acknowledgement sl-L3-bytes-46djebzw3ifph2ui7nesemhkz6-op-02",
+    "only owned target changes operation_logs",
+    "restricted changed columns operation_logs",
+    "remove acknowledgement sl-L3-bytes-46djebzw3ifph2ui7nesemhkz6-op-03",
+    "exact target change counts",
+    "four slot/workspace/lease records",
+    "all four leased workspaces released and no active operation",
+    "old 95 pins unchanged and two added",
+    "archived stop content address",
+    "ref authority stop",
+    "durable stop pin",
+    "immutable artifact object bytes stop",
+    "archived snapshot content address",
+    "ref authority snapshot",
+    "durable snapshot pin",
+    "immutable artifact object bytes snapshot",
+    "stop payload matches receipt apart from self ref",
+    "stop and snapshot same workspace",
+    "snapshot embedded workspace",
+    "exact snapshot file inventory",
+    "archived exact source content/hash/mode",
+    "release intent binds both saved proofs",
+    "actual typed release ack",
+    "stage report retains actual release",
+    "same actual UDS peer and signalled runner binary",
+    "exact own runner successful signal/exit",
+    "overall failed at final read-only prerequisite after own unit exit",
+    "original type-order predicate reproduces false rejection",
+    "next declared execution paths absent including symlinks",
+    "prepared but unexecuted logs02 still selects original cleanup c99 input"
+  ],
+  "checks_passed": 74,
+  "container_removal_evidence": {
+    "class": "production RemoveOwned acknowledgement persisted as cleanup_state=removed before typed Release success",
+    "limit": "No separate post-removal Docker inspect/events were archived or queried by this reviewer; do not describe this as an independent live daemon absence probe.",
+    "records": [
+      {
+        "cleanup_state": "removed",
+        "container_id": "e673ffd5b077ae077a25ef0bf9139a386dd2f99774f6714572c5582f8570b181",
+        "operation_id": "sl-L3-bytes-46djebzw3ifph2ui7nesemhkz6-op-00"
+      },
+      {
+        "cleanup_state": "removed",
+        "container_id": "5a407b99f81083fb4c016fe1e44cfd77d2cfb9635961219e8aa4807db0b937b8",
+        "operation_id": "sl-L3-bytes-46djebzw3ifph2ui7nesemhkz6-op-01"
+      },
+      {
+        "cleanup_state": "removed",
+        "container_id": "6287c4c3eb288ccf650691ee3a203c2719950e73c5962b2927fe9068cdf7af3d",
+        "operation_id": "sl-L3-bytes-46djebzw3ifph2ui7nesemhkz6-op-02"
+      },
+      {
+        "cleanup_state": "removed",
+        "container_id": "db96e0746c46aa920accae6b55af41ca92d37fb8217637e1d62cc772c3820b0d",
+        "operation_id": "sl-L3-bytes-46djebzw3ifph2ui7nesemhkz6-op-03"
+      }
+    ]
+  },
+  "executed_revision": "c99a285c85d782d5a3d22a84447371db445c69d1",
+  "false_rejection": {
+    "executed_predicate_accepts": false,
+    "map_prefix": "{\"evidence_dir\":\"/home/postedism/Desktop/mini",
+    "same_semantic_value": true,
+    "scope": "exact original slAcceptance type and original bytes.Equal(json.Marshal(map),json.Marshal(struct)) predicate; raw input read-only, no cleanup call",
+    "struct_prefix": "{\"purpose\":\"worker-runner-sigterm-v1\",\"fixtur"
+  },
+  "final_pin_count": 97,
+  "go_test_seconds": 3.27,
+  "host_elapsed_seconds": 3.575698666041717,
+  "manifest_members": 19,
+  "manifest_sha256": "e7d762c001d1011c03c0569d663f6bd4500990924010d6f26982d521a3d02a7d",
+  "original_pin_count": 95,
+  "original_test_overall_passed": false,
+  "permitted_journal_changes": {
+    "operation_logs": [
+      {
+        "changes": {
+          "cleanup_state": [
+            "retained",
+            "removed"
+          ]
+        },
+        "id": "sl-L3-bytes-46djebzw3ifph2ui7nesemhkz6-op-00"
+      },
+      {
+        "changes": {
+          "cleanup_state": [
+            "retained",
+            "removed"
+          ]
+        },
+        "id": "sl-L3-bytes-46djebzw3ifph2ui7nesemhkz6-op-01"
+      },
+      {
+        "changes": {
+          "cleanup_state": [
+            "retained",
+            "removed"
+          ]
+        },
+        "id": "sl-L3-bytes-46djebzw3ifph2ui7nesemhkz6-op-02"
+      },
+      {
+        "changes": {
+          "cleanup_state": [
+            "retained",
+            "removed"
+          ]
+        },
+        "id": "sl-L3-bytes-46djebzw3ifph2ui7nesemhkz6-op-03"
+      }
+    ],
+    "volume_leases": [
+      {
+        "changes": {
+          "released": [
+            0,
+            1
+          ]
+        },
+        "id": "sl-L3-bytes-46djebzw3ifph2ui7nesemhkz6"
+      }
+    ],
+    "workspaces": [
+      {
+        "changes": {
+          "adopting": [
+            0,
+            1
+          ],
+          "released": [
+            0,
+            1
+          ],
+          "stopped": [
+            0,
+            1
+          ]
+        },
+        "id": "sl-L3-bytes-46djebzw3ifph2ui7nesemhkz6"
+      }
+    ]
+  },
+  "released_workspaces_and_leases": 4,
+  "runner_exit_code": 0,
+  "runner_pid": 1990464,
+  "safe_continuation": {
+    "reason": "Existing execution contract only supports01/02;02 has not reached its exclusive evidence/private/host creation. No requirement prohibits a reviewed, explicitly archived revision of its never-executed prepared input. Original c99 cleanup input/proof and all old binaries must remain unchanged.",
+    "requires_new_execution03": false,
+    "steps": [
+      "Under the same fixture control lock recheck declared logs02 evidence/private/host absence, prior own unit/process exit and idle same-UUID released journal before any change. If any attempted execution or uncertain provenance appears, stop instead of restamping.",
+      "Write and fsync an exclusive raw copy of the original unexecuted acceptance-logs-02.json plus an explicit revision intent with old/new hashes, source revision, absence observations and executed=false. Store outside evidence/logs-02 so its exclusive creation contract remains meaningful.",
+      "Permit changes only to the six runner/worker/test binary path+SHA fields, all under one newly frozen revision directory. Preserve purpose,fixture,scope,pool,runnerconfig and sigterm02 evidence path exactly. Preserve c99 binaries, acceptance-logs-cleanup-01.json, its report/input map and original cleanup manifest byte-for-byte.",
+      "Persist the new prepared input by reviewed atomic same-directory replacement and parent fsync, binding expected old bytes/hash. Do not rerun Stop/Seal/Release or edit a historical passed/failed proof.",
+      "The new logs02 test first executes corrected read-only slCleanupPrerequisite against immutable old cleanup proof plus current released authority; only then may its new schema/runner/cases start. A prerequisite failure leaves old released work untouched."
+    ]
+  },
+  "scope": "Historical raw manifests/tables and immutable fixture artifact object bytes only; no live SQLite/PG/Docker/process/service/volume/provider/credential operations. Absence checks read only declared logs02 filesystem entry paths.",
+  "source_and_raw_hashes": {
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/host-logs-cleanup-02/execution.log": "8314ef6304a4424be9eb4feca387e89dea5222cb977335cb71ef301ae5d5c104",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/host-logs-cleanup-02/result.json": "e9fd6b7f64171b5e6eb4c7cb0f6d0e8393c2e7dde92416e0d54c00f1fee63347",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/logs-01-cleanup/acceptance-input.json": "5a89f7705dc75bb39909f70eddc147ae276960ffe331ae735a16aa3d4c242fb2",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/logs-01-cleanup/invocation-1075405454/journal-before.json": "a1c6e3e0827551d60fc91fe9e81a5f27ffdffadbfed4aa79c82a1a85a7eb0a74",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/logs-01-cleanup/invocation-1075405454/runner-01-peer.json": "a2c1f41e705eee507f21ebef97cef704f768870e84c10b05693ce96cfc021f8d",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/logs-01-cleanup/invocation-1075405454/runner-01-stop.json": "2b2771f0697263d0888011e30a0bf2603208d1db100a5a12e530903efc7db734",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/logs-01-cleanup/manifest.json": "e7d762c001d1011c03c0569d663f6bd4500990924010d6f26982d521a3d02a7d",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/logs-01-cleanup/release.json": "093dcd299f548cb51010facecd20da1e9f8c339e4b4417bd256a6c4a1d3591c4",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/logs-01-cleanup/released-journal.json": "25dd522f2ac7643e9e2964168461f0dc02393c21d066a46829652c75a98311ed",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/logs-01-cleanup/report.json": "48eb620c651aacb867dd26843e27953f774e497bdbb03721e68a66712c77afd5",
+    "/tmp/forge-strict-cleanup-actual-independent/executed-cleanup.go.txt": "b4d0c4cf91509cc98c5bc82a7276ebf941981bd1b937534eb93f02e6416a9c0e",
+    "/tmp/forge-strict-cleanup-actual-independent/executed-combined-helpers.go.txt": "0dc5e23a52c352bc78be2abd0f31da3da27badbc7a849a841beb405803f0b652",
+    "/tmp/forge-strict-cleanup-actual-independent/key-order-repro.go.txt": "9fbe57d52b5fe85f39696a28341d030e78002891f5fe2dad980ad81b6f91d13b",
+    "/tmp/forge-strict-cleanup-actual-independent/key-order-repro.json": "79f6fc9eecf0d5d4d653cee36be63c749b6b19ca6cf11ada3820b235347d853f"
+  },
+  "unexecuted_logs02_manifest": {
+    "binary_revision": "c99a285c85d782d5a3d22a84447371db445c69d1",
+    "path": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/acceptance-logs-02.json",
+    "sha256": "88288ab0d4717365be52396d3bb5ca8121488f65a540c17c27a02f703064cb3b"
+  },
+  "unexecuted_logs02_paths_absent": {
+    "evidence/host-logs-02-retry": true,
+    "evidence/logs-02": true,
+    "runtime/strict-logs-private-02": true
+  }
+}

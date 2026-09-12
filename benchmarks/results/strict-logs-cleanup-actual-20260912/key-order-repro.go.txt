@@ -1,0 +1,27 @@
+package main
+import("bytes";"encoding/json";"os";"fmt";"reflect")
+type slAcceptance struct {
+	Purpose      string `json:"purpose"`
+	FixtureID    string `json:"fixture_id"`
+	ScopeRoot    string `json:"scope_root"`
+	PoolRoot     string `json:"pool_root"`
+	RunnerConfig string `json:"runner_config"`
+	EvidenceDir  string `json:"evidence_dir"`
+	RunnerBinary string `json:"runner_binary"`
+	RunnerSHA    string `json:"runner_sha256"`
+	WorkerBinary string `json:"worker_binary"`
+	WorkerSHA    string `json:"worker_sha256"`
+	TestBinary   string `json:"test_binary"`
+	TestSHA      string `json:"test_sha256"`
+}
+func main(){
+ raw,err:=os.ReadFile(os.Args[1]);if err!=nil{panic(err)}
+ var existing any;var expected slAcceptance
+ if err=json.Unmarshal(raw,&existing);err!=nil{panic(err)}
+ if err=json.Unmarshal(raw,&expected);err!=nil{panic(err)}
+ left,_:=json.Marshal(existing);right,_:=json.Marshal(expected)
+ var normalized any;if err=json.Unmarshal(right,&normalized);err!=nil{panic(err)}
+ result:=map[string]any{"executed_predicate_accepts":bytes.Equal(left,right),"same_semantic_value":reflect.DeepEqual(existing,normalized),"map_prefix":string(left[:45]),"struct_prefix":string(right[:45]),"scope":"exact original slAcceptance type and original bytes.Equal(json.Marshal(map),json.Marshal(struct)) predicate; raw input read-only, no cleanup call"}
+ b,_:=json.MarshalIndent(result,"","  ");fmt.Println(string(b))
+ if bytes.Equal(left,right)||!reflect.DeepEqual(existing,normalized){os.Exit(1)}
+}

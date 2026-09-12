@@ -1,0 +1,68 @@
+{
+  "source_sha256": "b143c3b872d0dc193e2c61ed2da62cd76985968eb57c8810ae9c9b355dc9edc4",
+  "guard_only_no_main_or_imported_launcher_execution": true,
+  "passed": true,
+  "cases": [
+    {
+      "case": "exact saved42log baseline",
+      "accepted": true,
+      "expected": true
+    },
+    {
+      "case": "reject version (4,)",
+      "accepted": false,
+      "expected": false
+    },
+    {
+      "case": "reject uuid [('replaced',)]",
+      "accepted": false,
+      "expected": false
+    },
+    {
+      "case": "reject workspaces (4, 3)",
+      "accepted": false,
+      "expected": false
+    },
+    {
+      "case": "reject leases (4, 3)",
+      "accepted": false,
+      "expected": false
+    },
+    {
+      "case": "reject operations (44, 43)",
+      "accepted": false,
+      "expected": false
+    },
+    {
+      "case": "reject logs (42, 41)",
+      "accepted": false,
+      "expected": false
+    },
+    {
+      "case": "reject logs (44, 44)",
+      "accepted": false,
+      "expected": false
+    },
+    {
+      "case": "absent guard None",
+      "accepted": true,
+      "expected": true
+    },
+    {
+      "case": "absent guard a",
+      "accepted": false,
+      "expected": false
+    },
+    {
+      "case": "absent guard b",
+      "accepted": false,
+      "expected": false
+    },
+    {
+      "case": "absent guard c",
+      "accepted": false,
+      "expected": false
+    }
+  ],
+  "durability_source_order_checked": true
+}

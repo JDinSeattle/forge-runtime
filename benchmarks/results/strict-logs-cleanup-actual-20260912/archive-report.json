@@ -1,0 +1,80 @@
+{
+  "actual_binary_read_only_hash_checks": [
+    {
+      "bytes": 30724422,
+      "label": "runner",
+      "path": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/bin/c99a285c85d782d5a3d22a84447371db445c69d1/forge-runner",
+      "sha256": "6aa8b551a6615748bfa8dcaa8e4d3ce4963bd130825f8e1af9fde0bf5481128e"
+    },
+    {
+      "bytes": 71759865,
+      "label": "worker",
+      "path": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/bin/c99a285c85d782d5a3d22a84447371db445c69d1/forge-worker",
+      "sha256": "935281b9da7ad14f469be1bca4065fb21e8208d110dc8ad3fa7c839639abe438"
+    },
+    {
+      "bytes": 76430073,
+      "label": "test",
+      "path": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/bin/c99a285c85d782d5a3d22a84447371db445c69d1/application-faults.test",
+      "sha256": "7ee69feaf660039b1d54725218e28361e81c13886a8557d960a9dbae2dacb3d0"
+    }
+  ],
+  "all_archived_originals_byte_identical": true,
+  "archived_at": "2026-09-12T06:05:45.519143+00:00",
+  "canonical_fix": {
+    "bounded_race_pass": 41,
+    "opt_in_skip": 2,
+    "revision": "0a5f0f47100941858ae12b07ecd9bb094bdca833",
+    "vet_exit_code": 0
+  },
+  "executed_source_git_checks": [
+    {
+      "revision": "c99a285c85d782d5a3d22a84447371db445c69d1",
+      "sha256": "b4d0c4cf91509cc98c5bc82a7276ebf941981bd1b937534eb93f02e6416a9c0e",
+      "source_path": "scripts/faults/application/strict_logs_cleanup_test.go"
+    },
+    {
+      "revision": "c99a285c85d782d5a3d22a84447371db445c69d1",
+      "sha256": "0dc5e23a52c352bc78be2abd0f31da3da27badbc7a849a841beb405803f0b652",
+      "source_path": "scripts/faults/application/strict_logs_combined_helpers_test.go"
+    }
+  ],
+  "independent_recompute_sha256": "719d26b4d361d109f190f34b2e162fb7305f9154cffcc50e44fbe4455bebada0",
+  "limits": [
+    "Original failed test remains FAIL despite material stage report passedtrue.",
+    "Four cleanup_state=removed records plus typed Release acknowledge production RemoveOwned; no independent post-rm daemon absence probe.",
+    "No S12 combined acceptance completion or status promotion. No paid model calls.",
+    "Historical independent report logs02 absence belongs to its recorded observation time; later prepared manifest revision is separate.",
+    "Actual c99 build result is producer evidence; reviewer separately rehashed stored binaries and compared two executed sources to Git, not a new clean-build attestation."
+  ],
+  "material_release_proof_confirmed": true,
+  "original_cleanup_manifest_members": 19,
+  "original_cleanup_overall_exit_code": 1,
+  "pending_manifest_revision": {
+    "exact_changed_fields": [
+      "runner_binary",
+      "runner_sha256",
+      "test_binary",
+      "test_sha256",
+      "worker_binary",
+      "worker_sha256"
+    ],
+    "execute_semantics": "prepared=true/executed=false is this revision action, not a promise that a later logs02 execution has not started. Root subsequently owns logs02; it is outside this archive.",
+    "v1_root_reported_failure": "private_json rejected nonsecret0664 build report within0700 parent before archive/temp/DB/manifest change; operator exec observation only, no raw log exists",
+    "v1_script_sha256": "b143c3b872d0dc193e2c61ed2da62cd76985968eb57c8810ae9c9b355dc9edc4",
+    "v2_actual_prepared": true,
+    "v2_new_sha256": "5998c98594c5bd466fb58625931ad7ecf8c3a57ed0d26c46b111868e6dd14a3e",
+    "v2_script_sha256": "b62d958c0da47cc7e7b302c7671cc63f1fa7e98471db0a70cdf80d1f6adabadd"
+  },
+  "raw_archive_bytes": 252799,
+  "raw_archive_members": 30,
+  "raw_archive_sha256": "9613525a49a2613255d163021a8efe424931baa5b9b12f2b66fb544afb21fcb4",
+  "raw_bytes": 10709577,
+  "secret_scan": {
+    "empty_grant_fields": 136,
+    "excluded": "runtime configs, keys, credentials, database files, binaries, Docker stdout",
+    "nonempty_credentials_or_credential_digests_copied": false,
+    "projection_required": false,
+    "selected_raw_only": true
+  }
+}
