@@ -386,3 +386,35 @@ func TestStrictLogsCleanupDirectoryDurabilityBeforeExecution(t *testing.T) {
 		})
 	}
 }
+
+func TestStrictLogsCleanupExistingCanonicalStruct(t *testing.T) {
+	p := filepath.Join(t.TempDir(), "stage.json")
+	value := slAcceptance{Purpose: "fixture", FixtureID: "one", ScopeRoot: "/scope", TestBinary: "/test", TestSHA: "hash"}
+	if e := slSave(p, value); e != nil {
+		t.Fatal(e)
+	}
+	if e := slCleanupExisting(p, value); e != nil {
+		t.Fatal("saved struct must compare equal after map decode:", e)
+	}
+	value.TestSHA = "changed"
+	if e := slCleanupExisting(p, value); e == nil {
+		t.Fatal("changed struct authority accepted")
+	}
+	for _, item := range []struct {
+		saved, want string
+		valid       bool
+	}{
+		{`{"z":9007199254740993,"a":true}`, `{"a":true,"z":9007199254740993}`, true},
+		{`{"z":9007199254740993,"a":true}`, `{"a":true,"z":9007199254740992}`, false},
+		{`{"a":true} {"a":false}`, `{"a":true}`, false},
+	} {
+		file := filepath.Join(t.TempDir(), "stage.json")
+		if e := slWrite(file, []byte(item.saved)); e != nil {
+			t.Fatal(e)
+		}
+		err := slCleanupExisting(file, json.RawMessage(item.want))
+		if (err == nil) != item.valid {
+			t.Fatalf("canonical stage comparison valid=%v, got %v", item.valid, err)
+		}
+	}
+}

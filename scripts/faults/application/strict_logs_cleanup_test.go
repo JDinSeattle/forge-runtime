@@ -487,11 +487,18 @@ func slCleanupExisting(path string, v any) error {
 	if e != nil {
 		return e
 	}
-	var existing any
-	if e = json.Unmarshal(b, &existing); e != nil {
+	// JSON object member order is not authority. A saved struct keeps declaration
+	// order, while a decoded map marshals sorted keys. Canonicalize both sides and
+	// retain exact JSON numbers instead of comparing those incidental encodings.
+	existing, e := domain.CanonicalJSON(b)
+	if e != nil {
 		return e
 	}
-	if !bytes.Equal(slJSON(existing), slJSON(v)) {
+	wanted, e := domain.CanonicalJSON(slJSON(v))
+	if e != nil {
+		return e
+	}
+	if !bytes.Equal(existing, wanted) {
 		return fmt.Errorf("required existing stage differs: %s", path)
 	}
 	return nil
