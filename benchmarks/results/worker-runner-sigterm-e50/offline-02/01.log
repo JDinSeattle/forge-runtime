@@ -1,0 +1,34 @@
+=== RUN   TestWorkerRunnerSIGTERMPreflight
+=== RUN   TestWorkerRunnerSIGTERMPreflight/literal_parent_escape
+=== RUN   TestWorkerRunnerSIGTERMPreflight/literal_child_escape
+--- PASS: TestWorkerRunnerSIGTERMPreflight (0.14s)
+    --- PASS: TestWorkerRunnerSIGTERMPreflight/literal_parent_escape (0.07s)
+    --- PASS: TestWorkerRunnerSIGTERMPreflight/literal_child_escape (0.06s)
+=== RUN   TestWorkerRunnerSIGTERMRejectsSharedState
+=== RUN   TestWorkerRunnerSIGTERMRejectsSharedState/demo_pool
+=== RUN   TestWorkerRunnerSIGTERMRejectsSharedState/recovery_pool
+=== RUN   TestWorkerRunnerSIGTERMRejectsSharedState/foreign_journal
+=== RUN   TestWorkerRunnerSIGTERMRejectsSharedState/fake_backend
+=== RUN   TestWorkerRunnerSIGTERMRejectsSharedState/zero_log_cap
+=== RUN   TestWorkerRunnerSIGTERMRejectsSharedState/unbounded_profile
+=== RUN   TestWorkerRunnerSIGTERMRejectsSharedState/wrong_grader
+=== RUN   TestWorkerRunnerSIGTERMRejectsSharedState/tcp_runner
+=== RUN   TestWorkerRunnerSIGTERMRejectsSharedState/wrong_binary_digest
+--- PASS: TestWorkerRunnerSIGTERMRejectsSharedState (0.00s)
+    --- PASS: TestWorkerRunnerSIGTERMRejectsSharedState/demo_pool (0.00s)
+    --- PASS: TestWorkerRunnerSIGTERMRejectsSharedState/recovery_pool (0.00s)
+    --- PASS: TestWorkerRunnerSIGTERMRejectsSharedState/foreign_journal (0.00s)
+    --- PASS: TestWorkerRunnerSIGTERMRejectsSharedState/fake_backend (0.00s)
+    --- PASS: TestWorkerRunnerSIGTERMRejectsSharedState/zero_log_cap (0.00s)
+    --- PASS: TestWorkerRunnerSIGTERMRejectsSharedState/unbounded_profile (0.00s)
+    --- PASS: TestWorkerRunnerSIGTERMRejectsSharedState/wrong_grader (0.00s)
+    --- PASS: TestWorkerRunnerSIGTERMRejectsSharedState/tcp_runner (0.00s)
+    --- PASS: TestWorkerRunnerSIGTERMRejectsSharedState/wrong_binary_digest (0.00s)
+=== RUN   TestRealWorkerRunnerSIGTERM
+    worker_runner_sigterm_test.go:37: operator opt-in: dedicated new lifecycle pool, actual runner/worker executables and private PostgreSQL
+--- SKIP: TestRealWorkerRunnerSIGTERM (0.00s)
+=== RUN   TestRecoverWorkerRunnerSIGTERM
+    worker_runner_sigterm_test.go:483: operator-only recovery of retained lifecycle fixture
+--- SKIP: TestRecoverWorkerRunnerSIGTERM (0.00s)
+PASS
+ok  	github.com/JDinSeattle/forge-runtime/scripts/faults/application	0.154s

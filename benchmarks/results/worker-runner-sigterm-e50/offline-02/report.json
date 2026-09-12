@@ -1,0 +1,61 @@
+{
+  "base_commit": "98d99b767c80a467272613096ed00b9cfb5f7134",
+  "commands": [
+    {
+      "command": [
+        "go",
+        "test",
+        "./scripts/faults/application",
+        "-run",
+        "^(TestWorkerRunnerSIGTERM|TestRealWorkerRunnerSIGTERM$|TestRecoverWorkerRunnerSIGTERM$)",
+        "-count=1",
+        "-v"
+      ],
+      "exit_code": 0,
+      "seconds": 1.404527187347412
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "-race",
+        "./scripts/faults/application",
+        "-run",
+        "^(TestWorkerRunnerSIGTERM|TestRealWorkerRunnerSIGTERM$|TestRecoverWorkerRunnerSIGTERM$)",
+        "-count=1",
+        "-v"
+      ],
+      "exit_code": 0,
+      "seconds": 4.883972883224487
+    },
+    {
+      "command": [
+        "go",
+        "vet",
+        "./scripts/faults/application"
+      ],
+      "exit_code": 0,
+      "seconds": 0.42273831367492676
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "-c",
+        "-o",
+        "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/feature-worktrees/logs/var/local/e50-application.test",
+        "./scripts/faults/application"
+      ],
+      "exit_code": 0,
+      "seconds": 1.369675636291504
+    }
+  ],
+  "same_source": true,
+  "source_count": 281,
+  "scope": "offline only; actual PostgreSQL/Docker lifecycle tests skipped; future integrated binary built by root",
+  "binary": {
+    "path": "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/feature-worktrees/logs/var/local/e50-application.test",
+    "sha256": "7b2605b46413bb0507119b53935a24f245bfb5691cc509f74dae45f457d32dfc",
+    "size": 87183842
+  }
+}

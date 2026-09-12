@@ -1,0 +1,18 @@
+{
+  "command": [
+    "go",
+    "test",
+    "./scripts/faults/application",
+    "-run",
+    "^TestWorkerRunnerSIGTERMPreflight$",
+    "-count=1",
+    "-v"
+  ],
+  "exit_code": 1,
+  "seconds": 1.0565893650054932,
+  "scope": "local AST compiler regression in new fixture, before fix; no Docker/PG",
+  "sources": {
+    "scripts/faults/application/worker_runner_sigterm_test.go": "c56fa2e92fc4e9c78102e5f3431be8bba86b9cd1e0168699195406d90dd498e0",
+    "scripts/faults/application/worker_runner_sigterm_helpers_test.go": "89e75e8a9cbb6d615cfe21258b87389c54db35b29e3be970fbbf1085c81893f0"
+  }
+}

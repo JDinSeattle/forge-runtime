@@ -1,0 +1,684 @@
+//go:build linux
+
+package applicationfaults
+
+import (
+	"bytes"
+	"context"
+	"database/sql"
+	"debug/buildinfo"
+	"encoding/binary"
+	"encoding/hex"
+	"encoding/json"
+	"fmt"
+	"hash/crc32"
+	"io"
+	"net/url"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"strconv"
+	"strings"
+	"syscall"
+	"testing"
+	"time"
+
+	"github.com/JDinSeattle/forge-runtime/internal/domain"
+	"github.com/JDinSeattle/forge-runtime/internal/runner"
+	"github.com/JDinSeattle/forge-runtime/internal/runnerclient"
+	"github.com/JDinSeattle/forge-runtime/internal/sandbox"
+)
+
+const lifecyclePurpose = "worker-runner-sigterm-v1"
+const lifecycleImage = "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36"
+const lifecycleSource = "def clamp(v, lo, hi):\n    return v\n"
+const lifecycleTarget = "import runpy; a=runpy.run_path('/workspace/app.py'); assert a['clamp'](5,0,3)==3"
+const lifecycleRegression = "import runpy; a=runpy.run_path('/workspace/app.py'); assert a['clamp'](2,0,3)==2"
+
+// Both writers have natural bounds; no host shell, network, unlimited flood, or
+// provider call is involved. Only the parent appends the immutable start marker.
+// The child keeps stdout/stderr open, exercising a process tree across detach.
+const lifecycleCommand = `import os,time,json,subprocess,sys
+with open('lifecycle-counter.txt','a') as f:
+ f.write('1\n');f.flush();os.fsync(f.fileno())
+child=subprocess.Popen([sys.executable,'-I','-B','-c',"import os,time; print('LIFECYCLE_CHILD_READY',flush=True); os.write(2,b'child-stderr\\x00\\xff'); time.sleep(70)"])
+print('LIFECYCLE_PARENT_READY',flush=True)
+os.write(2,b'parent-stderr\x00\xff')
+try:
+ with open('lifecycle-writer.txt','a') as f:
+  end=time.monotonic()+70
+  while time.monotonic()<end:
+   n=time.time_ns();f.write(str(n)+'\n');f.flush();os.fsync(f.fileno())
+   print(json.dumps({'writer_ns':n}),flush=True);time.sleep(.2)
+finally:
+ child.terminate();child.wait(timeout=2)
+`
+
+type lifecycleAcceptance struct {
+	Purpose      string `json:"purpose"`
+	FixtureID    string `json:"fixture_id"`
+	ScopeRoot    string `json:"scope_root"`
+	PoolRoot     string `json:"pool_root"`
+	RunnerConfig string `json:"runner_config"`
+	RunnerBinary string `json:"runner_binary"`
+	RunnerSHA256 string `json:"runner_sha256"`
+	WorkerBinary string `json:"worker_binary"`
+	WorkerSHA256 string `json:"worker_sha256"`
+	TestBinary   string `json:"test_binary"`
+	TestSHA256   string `json:"test_sha256"`
+	EvidenceDir  string `json:"evidence_dir"`
+}
+type lifecycleRunnerConfig struct {
+	runnerSettings
+	Server       runnerclient.ServerConfig `json:"server"`
+	Logs         sandbox.LogPolicy         `json:"logs"`
+	DockerBinary string                    `json:"docker_binary"`
+}
+
+func lifecycleInside(root, p string) bool {
+	if !filepath.IsAbs(root) || !filepath.IsAbs(p) || filepath.Clean(p) != p {
+		return false
+	}
+	rel, err := filepath.Rel(root, p)
+	return err == nil && rel != "." && rel != ".." && !strings.HasPrefix(rel, "../") && !filepath.IsAbs(rel)
+}
+func lifecyclePath(p string) error {
+	// For not-yet-created children, resolve the nearest existing ancestor. This
+	// rejects a symlinked runtime parent without requiring creation as preflight.
+	for {
+		_, err := os.Lstat(p)
+		if os.IsNotExist(err) {
+			p = filepath.Dir(p)
+			continue
+		}
+		if err != nil {
+			return err
+		}
+		resolved, err := filepath.EvalSymlinks(p)
+		if err != nil || resolved != p {
+			return fmt.Errorf("symlinked fixture path: %s", p)
+		}
+		return nil
+	}
+}
+func lifecycleShape(a lifecycleAcceptance, c lifecycleRunnerConfig) error {
+	if a.Purpose != lifecyclePurpose || a.FixtureID != "lr20260912_a" || !strings.HasSuffix(a.ScopeRoot, "/var/lifecycle-rehearsals/lr20260912_a") || a.PoolRoot != filepath.Join(a.ScopeRoot, "pool-root") {
+		return fmt.Errorf("explicit independent lifecycle scope required")
+	}
+	for _, p := range []string{a.RunnerConfig, a.RunnerBinary, a.WorkerBinary, a.TestBinary, a.EvidenceDir, c.RootDir, c.JournalPath, c.ArtifactRoot, c.SigningKeyFile} {
+		if !lifecycleInside(a.ScopeRoot, p) {
+			return fmt.Errorf("path outside independent fixture: %s", p)
+		}
+	}
+	if c.JournalPath != filepath.Join(a.ScopeRoot, "runtime", "journal.sqlite") || c.Server.UnixSocket != "/tmp/forge-lifecycle-lr20260912_a/runner.sock" || c.Server.TCPAddress != "" || c.AllowTestBackend || len(c.Sources) != 1 || len(c.Profiles) != 1 || len(c.VolumeSlots) != 4 {
+		return fmt.Errorf("isolated real runner configuration required")
+	}
+	if c.DockerHost != "unix:///run/user/1000/forge-runtime-docker.sock" || (c.DockerBinary != "" && c.DockerBinary != "docker" && c.DockerBinary != "/usr/bin/docker") {
+		return fmt.Errorf("explicit dedicated rootless daemon required")
+	}
+	defaults, _ := (sandbox.LogPolicy{}).Normalize()
+	policy, err := c.Logs.Normalize()
+	if err != nil || policy != defaults {
+		return fmt.Errorf("default strict physical log policy required")
+	}
+	for _, source := range c.Sources {
+		if !lifecycleInside(filepath.Join(a.ScopeRoot, "runtime"), source) {
+			return fmt.Errorf("source outside runtime")
+		}
+	}
+	for id, p := range c.Profiles {
+		if p.ID != id || p.Image != lifecycleImage || p.MemoryBytes != 256<<20 || p.PIDs != 64 || p.CPUs != 1 || p.User != "1000:1000" || p.WorkspaceQuotaBytes != 256<<20 || p.TrustedTestsDir != "" || p.TmpfsExecutable {
+			return fmt.Errorf("fixed baseline isolation profile required")
+		}
+		if !equalStrings(p.TargetCommand, []string{"python", "-I", "-B", "-c", lifecycleTarget}) || !equalStrings(p.VerifyCommand, []string{"python", "-I", "-B", "-c", lifecycleRegression}) {
+			return fmt.Errorf("trusted baseline grader differs")
+		}
+	}
+	seen := map[string]bool{}
+	for _, s := range c.VolumeSlots {
+		if seen[s.ID] || seen[s.MountPath] || !lifecycleInside(a.PoolRoot, s.MountPath) || !lifecycleInside(a.PoolRoot, s.ImagePath) || s.ImageBytes != 256<<20 || s.MaxInodes != 65536 {
+			return fmt.Errorf("independent four-slot pool required")
+		}
+		seen[s.ID] = true
+		seen[s.MountPath] = true
+	}
+	for _, hash := range []string{a.RunnerSHA256, a.WorkerSHA256, a.TestSHA256} {
+		b, err := hex.DecodeString(hash)
+		if err != nil || len(b) != 32 || hex.EncodeToString(b) != hash {
+			return fmt.Errorf("pinned executable digest required")
+		}
+	}
+	return nil
+}
+func equalStrings(a, b []string) bool { return strings.Join(a, "\x00") == strings.Join(b, "\x00") }
+
+func lifecyclePreflight(ctx context.Context, a lifecycleAcceptance, c lifecycleRunnerConfig) (map[string]any, error) {
+	if err := lifecycleShape(a, c); err != nil {
+		return nil, err
+	}
+	for _, p := range []string{a.ScopeRoot, a.PoolRoot, a.RunnerConfig, a.RunnerBinary, a.WorkerBinary, a.TestBinary, a.EvidenceDir, c.RootDir, c.JournalPath, c.ArtifactRoot, c.SigningKeyFile, c.Server.UnixSocket} {
+		if err := lifecyclePath(p); err != nil {
+			return nil, err
+		}
+	}
+	for _, p := range []string{c.RootDir, c.ArtifactRoot} {
+		entries, err := os.ReadDir(p)
+		if err != nil && !os.IsNotExist(err) {
+			return nil, err
+		}
+		if len(entries) != 0 {
+			return nil, fmt.Errorf("first case requires empty runner/artifact directories")
+		}
+	}
+	for _, p := range []string{c.JournalPath, c.JournalPath + "-wal", c.JournalPath + "-shm", c.Server.UnixSocket} {
+		if _, err := os.Lstat(p); !os.IsNotExist(err) {
+			return nil, fmt.Errorf("first case refuses existing journal/socket: %s", p)
+		}
+	}
+	for _, s := range c.VolumeSlots {
+		if err := sandbox.VerifyVolume(ctx, s); err != nil {
+			return nil, err
+		}
+		entries, err := os.ReadDir(s.MountPath)
+		if err != nil {
+			return nil, err
+		}
+		for _, e := range entries {
+			if e.Name() != "lost+found" {
+				return nil, fmt.Errorf("first case refuses occupied/owned slot %s/%s", s.ID, e.Name())
+			}
+		}
+	}
+	for _, source := range c.Sources {
+		if err := lifecyclePath(source); err != nil {
+			return nil, err
+		}
+		entries, err := os.ReadDir(source)
+		if err != nil || len(entries) != 1 || entries[0].Name() != "app.py" {
+			return nil, fmt.Errorf("exact single source file required")
+		}
+		raw, err := os.ReadFile(filepath.Join(source, "app.py"))
+		if err != nil || string(raw) != lifecycleSource {
+			return nil, fmt.Errorf("source oracle mismatch")
+		}
+	}
+	key, err := os.Stat(c.SigningKeyFile)
+	if err != nil || !key.Mode().IsRegular() || key.Mode().Perm() != 0600 || key.Size() < 32 {
+		return nil, fmt.Errorf("private signing key required")
+	}
+	self, err := os.Executable()
+	if err != nil || self != a.TestBinary {
+		return nil, fmt.Errorf("acceptance must name actual test executable")
+	}
+	proof := map[string]any{}
+	for _, b := range []struct{ path, hash, pkg string }{{a.RunnerBinary, a.RunnerSHA256, "github.com/JDinSeattle/forge-runtime/cmd/forge-runner"}, {a.WorkerBinary, a.WorkerSHA256, "github.com/JDinSeattle/forge-runtime/cmd/forge-worker"}, {a.TestBinary, a.TestSHA256, ""}} {
+		digest, err := sigtermDigest(b.path)
+		if err != nil || digest != b.hash {
+			return nil, fmt.Errorf("executable changed: %s", b.path)
+		}
+		info, err := buildinfo.ReadFile(b.path)
+		if err != nil || b.pkg != "" && info.Path != b.pkg {
+			return nil, fmt.Errorf("wrong executable package: %s", b.path)
+		}
+		stat, err := os.Stat(b.path)
+		if err != nil {
+			return nil, err
+		}
+		proof[b.path] = map[string]any{"sha256": digest, "size": stat.Size(), "package": info.Path, "go_version": info.GoVersion, "settings": info.Settings}
+	}
+	uid, err := os.ReadFile("/proc/self/uid_map")
+	if err != nil {
+		return nil, err
+	}
+	gid, err := os.ReadFile("/proc/self/gid_map")
+	if err != nil {
+		return nil, err
+	}
+	if os.Geteuid() != 0 || !lifecycleMapping(uid) || !lifecycleMapping(gid) {
+		return nil, fmt.Errorf("full subordinate UID/GID mapping with namespace root required")
+	}
+	proof["uid_map"], proof["gid_map"], proof["observed_at"] = string(uid), string(gid), time.Now().UTC()
+	return proof, nil
+}
+func lifecycleMapping(raw []byte) bool {
+	zero, task := false, false
+	for _, line := range strings.Split(string(raw), "\n") {
+		f := strings.Fields(line)
+		if len(f) != 3 {
+			continue
+		}
+		a, e1 := strconv.ParseUint(f[0], 10, 32)
+		b, e2 := strconv.ParseUint(f[1], 10, 32)
+		n, e3 := strconv.ParseUint(f[2], 10, 32)
+		if e1 != nil || e2 != nil || e3 != nil {
+			continue
+		}
+		if a == 0 && b == 1000 && n == 1 {
+			zero = true
+		}
+		if a == 1 && n >= 65536 && b >= 100000 {
+			task = true
+		}
+	}
+	return zero && task
+}
+
+// Docker commands are read-only observations. Production runner alone creates,
+// starts, stops, removes containers. This helper cannot accept shell fragments.
+func lifecycleDocker(ctx context.Context, c lifecycleRunnerConfig, args ...string) ([]byte, error) {
+	if len(args) == 0 || (args[0] != "inspect" && args[0] != "events" && args[0] != "top" && args[0] != "info" && args[0] != "ps") {
+		return nil, domain.ErrForbidden
+	}
+	call, end := context.WithTimeout(ctx, 5*time.Second)
+	defer end()
+	binary := c.DockerBinary
+	if binary == "" {
+		binary = "docker"
+	}
+	cmd := exec.CommandContext(call, binary, append([]string{"--host", c.DockerHost}, args...)...)
+	cmd.Env = sigtermEnvironment(os.Environ(), "")
+	var out, stderr bytes.Buffer
+	cmd.Stdout = &out
+	cmd.Stderr = &stderr
+	err := cmd.Run()
+	if err != nil {
+		return nil, fmt.Errorf("Docker observation %s: %w: %s", args[0], err, stderr.String())
+	}
+	if out.Len() > 4<<20 {
+		return nil, fmt.Errorf("bounded Docker evidence exceeded")
+	}
+	return out.Bytes(), nil
+}
+
+type lifecycleContainer struct {
+	ID      string `json:"Id"`
+	Name    string
+	LogPath string
+	Config  struct {
+		Image  string
+		User   string
+		Labels map[string]string
+	}
+	State struct {
+		Running               bool
+		Pid                   int
+		ExitCode              int
+		OOMKilled             bool
+		StartedAt, FinishedAt string
+	}
+	HostConfig struct {
+		ReadonlyRootfs                          bool
+		NetworkMode                             string
+		Memory, MemorySwap, NanoCpus, PidsLimit int64
+		LogConfig                               struct{ Type string }
+		CapDrop, SecurityOpt                    []string
+	}
+	Mounts []struct {
+		Source, Destination string
+		RW                  bool
+	}
+}
+
+func lifecycleObserve(h *harness, c lifecycleRunnerConfig, op runner.Operation, label string) lifecycleContainer {
+	raw, err := lifecycleDocker(h.ctx, c, "inspect", op.JobID)
+	h.fatal(err)
+	var found []lifecycleContainer
+	h.fatal(json.Unmarshal(raw, &found))
+	if len(found) != 1 {
+		h.t.Fatal("container identity absent")
+	}
+	v := found[0]
+	if v.Name != "/"+op.JobID || len(v.ID) != 64 || v.Config.Labels["forge.runtime"] != "1" || v.Config.Labels["forge.operation_id"] != string(op.Request.OperationID) || v.Config.Image != lifecycleImage || v.LogPath != "" || v.HostConfig.LogConfig.Type != "none" || !v.HostConfig.ReadonlyRootfs || v.HostConfig.NetworkMode != "none" || v.Config.User != "1000:1000" || v.HostConfig.Memory != 256<<20 || v.HostConfig.MemorySwap != 256<<20 || v.HostConfig.NanoCpus != 1e9 || v.HostConfig.PidsLimit != 64 {
+		h.t.Fatal("actual Docker identity/isolation mismatch")
+	}
+	base := lifecycleBase(h)
+	if len(v.Mounts) != 1 || v.Mounts[0].Destination != "/workspace" || v.Mounts[0].Source != filepath.Join(base, "checkout") || !v.Mounts[0].RW {
+		h.t.Fatal("task mount is not its own leased checkout")
+	}
+	h.fatal(os.WriteFile(filepath.Join(h.dir, label+"-docker.json"), raw, 0600))
+	h.fatal(save(filepath.Join(h.dir, label+"-clock.json"), map[string]any{"observed_at": time.Now().UTC()}))
+	if v.State.Running {
+		top, err := lifecycleDocker(h.ctx, c, "top", v.ID, "-eo", "pid,ppid,args")
+		h.fatal(err)
+		h.fatal(os.WriteFile(filepath.Join(h.dir, label+"-top.txt"), top, 0600))
+	}
+	return v
+}
+
+func lifecycleCgroup(h *harness, c lifecycleRunnerConfig, containerID, path, label string, running bool) string {
+	if path == "" {
+		top, err := lifecycleDocker(h.ctx, c, "top", containerID, "-eo", "pid,ppid,comm")
+		h.fatal(err)
+		lines := strings.Split(strings.TrimSpace(string(top)), "\n")
+		if len(lines) < 4 {
+			h.t.Fatal("init, parent and child must all be present")
+		}
+		fields := strings.Fields(lines[1])
+		if len(fields) < 3 {
+			h.t.Fatal("malformed container top")
+		}
+		pid, err := strconv.Atoi(fields[0])
+		h.fatal(err)
+		if pid < 1 {
+			h.t.Fatal("invalid container task PID")
+		}
+		raw, err := os.ReadFile(fmt.Sprintf("/proc/%d/cgroup", pid))
+		h.fatal(err)
+		for _, line := range strings.Split(string(raw), "\n") {
+			if strings.HasPrefix(line, "0::/") {
+				path = strings.TrimPrefix(line, "0::")
+			}
+		}
+		if path == "" || path == "/" || !strings.Contains(path, containerID) || filepath.Clean(path) != path {
+			h.t.Fatal("dedicated container cgroup binding absent")
+		}
+	}
+	raw, err := os.ReadFile(filepath.Join("/sys/fs/cgroup", path, "cgroup.procs"))
+	removed := os.IsNotExist(err)
+	if running {
+		h.fatal(err)
+		if len(strings.Fields(string(raw))) < 3 {
+			h.t.Fatal("running container lost its process tree")
+		}
+	} else if !removed && (err != nil || len(strings.Fields(string(raw))) != 0) {
+		h.t.Fatal("stopped writer left container tasks", err)
+	}
+	h.fatal(save(filepath.Join(h.dir, label+"-cgroup.json"), map[string]any{"path": path, "container_id": containerID, "tasks": string(raw), "removed": removed, "observed_at": time.Now().UTC()}))
+	return path
+}
+func lifecycleBase(h *harness) string {
+	var slot string
+	h.fatal(h.journal.QueryRowContext(h.ctx, `SELECT slot_id FROM volume_leases WHERE workspace_id=? AND tenant_id=? AND run_id=?`, h.s.RunID, h.s.Tenant, h.s.RunID).Scan(&slot))
+	for _, s := range h.c.VolumeSlots {
+		if s.ID == slot {
+			return filepath.Join(s.MountPath, "workspace-"+string(h.s.RunID))
+		}
+	}
+	h.t.Fatal("own workspace has no durable slot binding")
+	return ""
+}
+func lifecycleJournal(h *harness, label string) map[string]json.RawMessage {
+	out := map[string]json.RawMessage{}
+	for _, table := range []string{"journal_identity", "workspaces", "operations", "volume_slots", "volume_leases", "log_runs", "operation_logs", "runner_artifacts"} {
+		rows, err := h.journal.QueryContext(h.ctx, "SELECT * FROM "+table)
+		h.fatal(err)
+		cols, err := rows.Columns()
+		h.fatal(err)
+		items := []map[string]any{}
+		for rows.Next() {
+			values := make([]any, len(cols))
+			ptrs := make([]any, len(cols))
+			for i := range values {
+				ptrs[i] = &values[i]
+			}
+			h.fatal(rows.Scan(ptrs...))
+			item := map[string]any{}
+			for i, k := range cols {
+				v := values[i]
+				if b, ok := v.([]byte); ok {
+					v = string(b)
+				}
+				if k == "request_json" {
+					var req runner.OperationRequest
+					h.fatal(json.Unmarshal([]byte(v.(string)), &req))
+					req.Grant = ""
+					v = req
+				}
+				item[k] = v
+			}
+			items = append(items, item)
+		}
+		h.fatal(rows.Err())
+		rows.Close()
+		raw, err := json.Marshal(items)
+		h.fatal(err)
+		out[table] = raw
+	}
+	h.fatal(save(filepath.Join(h.dir, label+"-sqlite.json"), out))
+	return out
+}
+func lifecycleReadOperation(h *harness, id domain.ID) runner.Operation {
+	var o runner.Operation
+	var request, result, receipt string
+	h.fatal(h.journal.QueryRowContext(h.ctx, `SELECT request_json,status,job_id,result_json,receipt_json,error,cancel_requested,after_revision,before_hash,expected_after_hash,after_hash FROM operations WHERE id=? AND tenant_id=? AND run_id=?`, id, h.s.Tenant, h.s.RunID).Scan(&request, &o.Status, &o.JobID, &result, &receipt, &o.Error, &o.CancelRequested, &o.AfterRevision, &o.BeforeHash, &o.ExpectedAfterHash, &o.AfterHash))
+	h.fatal(json.Unmarshal([]byte(request), &o.Request))
+	o.Request.Grant = ""
+	o.Result = json.RawMessage(result)
+	h.fatal(json.Unmarshal([]byte(receipt), &o.Receipt))
+	return o
+}
+func lifecycleSpool(h *harness, label string) sandbox.LogSummary {
+	base := lifecycleBase(h)
+	dir := filepath.Join(base, "logs")
+	name := string(h.s.TargetOp) + ".spool"
+	data, err := os.ReadFile(filepath.Join(dir, name))
+	h.fatal(err)
+	if len(data) > 512<<10 {
+		h.t.Fatal("physical spool exceeds policy")
+	}
+	stdout, stderr, err := lifecycleFrames(data)
+	h.fatal(err)
+	meta, err := os.ReadFile(filepath.Join(dir, name+".meta"))
+	h.fatal(err)
+	var m struct {
+		Summary  sandbox.LogSummary `json:"summary"`
+		DataHash string             `json:"data_hash"`
+	}
+	h.fatal(json.Unmarshal(meta, &m))
+	actual, err := sigtermDigest(filepath.Join(dir, name))
+	h.fatal(err)
+	if actual != m.DataHash || m.Summary.RetainedBytes != int64(len(data)) {
+		h.t.Fatal("spool metadata does not authenticate retained bytes")
+	}
+	h.fatal(os.WriteFile(filepath.Join(h.dir, label+".spool"), data, 0600))
+	h.fatal(os.WriteFile(filepath.Join(h.dir, label+".meta.json"), meta, 0600))
+	h.fatal(os.WriteFile(filepath.Join(h.dir, label+".stdout"), stdout, 0600))
+	h.fatal(os.WriteFile(filepath.Join(h.dir, label+".stderr"), stderr, 0600))
+	var fs syscall.Statfs_t
+	h.fatal(syscall.Statfs(base, &fs))
+	h.fatal(save(filepath.Join(h.dir, label+"-filesystem.json"), map[string]any{"base": base, "type": fs.Type, "blocks": fs.Blocks, "block_size": fs.Bsize, "available_blocks": fs.Bavail, "files": fs.Files, "free_files": fs.Ffree, "spool_sha256": actual, "spool_bytes": len(data)}))
+	return m.Summary
+}
+func lifecycleFrames(data []byte) ([]byte, []byte, error) {
+	var stdout, stderr []byte
+	seq := uint64(0)
+	for len(data) > 0 {
+		if len(data) < 32 {
+			return nil, nil, io.ErrUnexpectedEOF
+		}
+		h := data[:32]
+		n := int(binary.BigEndian.Uint32(h[16:20]))
+		if string(h[:4]) != "FLG1" || h[4] < 1 || h[4] > 2 || !bytes.Equal(h[5:8], make([]byte, 3)) || !bytes.Equal(h[24:32], make([]byte, 8)) || binary.BigEndian.Uint64(h[8:16]) != seq || n < 1 || n > 16<<10-32 || len(data)-32 < n {
+			return nil, nil, domain.ErrInvalid
+		}
+		p := data[32 : 32+n]
+		if crc32.ChecksumIEEE(p) != binary.BigEndian.Uint32(h[20:24]) {
+			return nil, nil, domain.ErrConflict
+		}
+		if h[4] == 1 {
+			stdout = append(stdout, p...)
+		} else {
+			stderr = append(stderr, p...)
+		}
+		seq++
+		data = data[32+n:]
+	}
+	return stdout, stderr, nil
+}
+
+func lifecycleStartRunner(h *harness, a lifecycleAcceptance, c lifecycleRunnerConfig, name string) *process {
+	if h.client != nil {
+		h.client.Close()
+		h.client = nil
+	}
+	// A prior process must have returned Wait before its successor is launched.
+	if h.runner != nil && !h.runner.exited {
+		h.t.Fatal("cannot start a concurrent journal owner")
+	}
+	log, err := os.OpenFile(filepath.Join(h.dir, name+".log"), os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0600)
+	h.fatal(err)
+	cmd := exec.Command(a.RunnerBinary, "-config", a.RunnerConfig)
+	cmd.Env = sigtermEnvironment(os.Environ(), "")
+	cmd.Stdout = log
+	cmd.Stderr = log
+	p := &process{cmd: cmd, done: make(chan error, 1), log: log}
+	h.fatal(cmd.Start())
+	go func() { p.done <- cmd.Wait() }()
+	h.runner = p
+	proof, err := sigtermProcessProof(p, a.RunnerSHA256)
+	h.fatal(err)
+	h.fatal(save(log.Name()+".identity.json", proof))
+	until := time.Now().Add(8 * time.Second)
+	for time.Now().Before(until) {
+		select {
+		case e := <-p.done:
+			p.exited = true
+			raw, _ := os.ReadFile(log.Name())
+			h.t.Fatalf("runner exited before readiness: %v; %s", e, raw)
+		default:
+		}
+		ctx, end := context.WithTimeout(h.ctx, 250*time.Millisecond)
+		client, e := runnerclient.Dial(ctx, runnerclient.ClientConfig{UnixSocket: c.Server.UnixSocket, RPCTimeout: 2 * time.Second})
+		end()
+		if e == nil {
+			h.client = client
+			return p
+		}
+	}
+	h.t.Fatal("runner readiness timed out; own state retained")
+	return nil
+}
+func lifecycleOpenJournal(h *harness) {
+	q := url.Values{"mode": {"ro"}, "_pragma": {"busy_timeout(5000)", "query_only(1)"}}
+	u := url.URL{Scheme: "file", Path: h.c.JournalPath, RawQuery: q.Encode()}
+	var err error
+	h.journal, err = sql.Open("sqlite", u.String())
+	h.fatal(err)
+	h.journal.SetMaxOpenConns(1)
+	var version int
+	h.fatal(h.journal.QueryRow("PRAGMA user_version").Scan(&version))
+	if version != 5 {
+		h.t.Fatal("strict runner journal v5 required")
+	}
+}
+
+func TestWorkerRunnerSIGTERMPreflight(t *testing.T) {
+	if lifecycleInside("/safe/root", "/safe/root/../foreign") || lifecycleInside("/safe/root", "/safe/root-copy/file") || !lifecycleInside("/safe/root", "/safe/root/file") {
+		t.Fatal("scope check")
+	}
+	for _, raw := range []string{"0 0 4294967295", "0 1000 1\n1 100000 1", "0 1001 1\n1 100000 65536"} {
+		if lifecycleMapping([]byte(raw)) {
+			t.Fatal("unsafe uid map accepted")
+		}
+	}
+	if !lifecycleMapping([]byte("0 1000 1\n1 100000 65536\n")) {
+		t.Fatal("valid rootless map rejected")
+	}
+	root := t.TempDir()
+	target := filepath.Join(root, "target")
+	if err := os.Mkdir(target, 0700); err != nil {
+		t.Fatal(err)
+	}
+	link := filepath.Join(root, "link")
+	if err := os.Symlink(target, link); err != nil {
+		t.Fatal(err)
+	}
+	if lifecyclePath(filepath.Join(link, "absent")) == nil {
+		t.Fatal("symlinked ancestor accepted")
+	}
+	// Capture parsing is independently strict about channel, CRC and sequence.
+	frame := make([]byte, 35)
+	copy(frame, "FLG1")
+	frame[4] = 2
+	binary.BigEndian.PutUint32(frame[16:20], 3)
+	copy(frame[32:], []byte{0, 255, 10})
+	binary.BigEndian.PutUint32(frame[20:24], crc32.ChecksumIEEE(frame[32:]))
+	out, errout, err := lifecycleFrames(frame)
+	if err != nil || len(out) != 0 || !bytes.Equal(errout, []byte{0, 255, 10}) {
+		t.Fatal("binary frame lost")
+	}
+	for _, offset := range []int{0, 4, 8, 16, 20, 24, 32} {
+		bad := append([]byte{}, frame...)
+		bad[offset] ^= 255
+		if _, _, err := lifecycleFrames(bad); err == nil {
+			t.Fatalf("bad frame accepted offset%d", offset)
+		}
+	}
+	// Compile the literal outer and nested child program without executing it.
+	parser := `import ast,sys,os
+tree=ast.parse(sys.stdin.read())
+children=[]
+for node in ast.walk(tree):
+ if isinstance(node,ast.Call) and isinstance(node.func,ast.Attribute) and node.func.attr=='Popen':
+  children.append(ast.literal_eval(node.args[0].elts[-1]))
+assert len(children)==1
+ast.parse(children[0])
+assert "time.sleep(70)" in children[0]
+assert "time.monotonic()+70" in ast.unparse(tree).replace(' ','')
+for program,wanted in [(tree,b'parent-stderr\x00\xff'),(ast.parse(children[0]),b'child-stderr\x00\xff')]:
+ calls=[n for n in ast.walk(program) if isinstance(n,ast.Call) and isinstance(n.func,ast.Attribute) and isinstance(n.func.value,ast.Name) and n.func.value.id=='os' and n.func.attr=='write']
+ assert len(calls)==1 and len(calls[0].args)==2 and ast.literal_eval(calls[0].args[0])==2
+ assert ast.literal_eval(calls[0].args[1])==wanted
+ # Execute only the literal os.write statement, never either long program.
+ exec(compile(ast.Module(body=[ast.Expr(value=calls[0])],type_ignores=[]),'<literal-write>','exec'))
+`
+	cmd := exec.Command("python3", "-I", "-B", "-c", parser)
+	cmd.Stdin = strings.NewReader(lifecycleCommand)
+	if out, err := cmd.CombinedOutput(); err != nil || !bytes.Equal(out, []byte("parent-stderr\x00\xffchild-stderr\x00\xff")) {
+		t.Fatalf("bounded fixture binary literal contract: %v %x", err, out)
+	}
+}
+
+func TestWorkerRunnerSIGTERMRejectsSharedState(t *testing.T) {
+	scope := "/fixture/var/lifecycle-rehearsals/lr20260912_a"
+	hash := strings.Repeat("a", 64)
+	a := lifecycleAcceptance{Purpose: lifecyclePurpose, FixtureID: "lr20260912_a", ScopeRoot: scope, PoolRoot: scope + "/pool-root", RunnerConfig: scope + "/runtime/runner.json", RunnerBinary: scope + "/bin/forge-runner", WorkerBinary: scope + "/bin/forge-worker", TestBinary: scope + "/bin/application.test", EvidenceDir: scope + "/evidence/first", RunnerSHA256: hash, WorkerSHA256: hash, TestSHA256: hash}
+	c := lifecycleRunnerConfig{runnerSettings: runnerSettings{RootDir: scope + "/runtime/engine", JournalPath: scope + "/runtime/journal.sqlite", ArtifactRoot: scope + "/runtime/artifacts", SigningKeyFile: scope + "/runtime/runner.key", DockerHost: "unix:///run/user/1000/forge-runtime-docker.sock", Sources: map[string]string{"lifecycle": scope + "/runtime/source"}, Profiles: map[string]sandbox.Profile{"lifecycle-python": {ID: "lifecycle-python", Image: lifecycleImage, User: "1000:1000", MemoryBytes: 256 << 20, PIDs: 64, CPUs: 1, WorkspaceQuotaBytes: 256 << 20, TargetCommand: []string{"python", "-I", "-B", "-c", lifecycleTarget}, VerifyCommand: []string{"python", "-I", "-B", "-c", lifecycleRegression}}}}, Server: runnerclient.ServerConfig{UnixSocket: "/tmp/forge-lifecycle-lr20260912_a/runner.sock"}}
+	for i := 1; i <= 4; i++ {
+		c.VolumeSlots = append(c.VolumeSlots, sandbox.VolumeSpec{ID: fmt.Sprintf("slot-%03d", i), MountPath: fmt.Sprintf("%s/pool-root/slots/slot-%03d", scope, i), ImagePath: fmt.Sprintf("%s/pool-root/images/slot-%03d.img", scope, i), ImageBytes: 256 << 20, MaxInodes: 65536})
+	}
+	if err := lifecycleShape(a, c); err != nil {
+		t.Fatal(err)
+	}
+	for _, test := range []struct {
+		name string
+		edit func(*lifecycleAcceptance, *lifecycleRunnerConfig)
+	}{
+		{"demo_pool", func(a *lifecycleAcceptance, c *lifecycleRunnerConfig) {
+			c.VolumeSlots[0].MountPath = "/fixture/var/storage/slot-001"
+		}},
+		{"recovery_pool", func(a *lifecycleAcceptance, c *lifecycleRunnerConfig) {
+			a.ScopeRoot = "/fixture/var/recovery-rehearsals/r20260911_a"
+		}},
+		{"foreign_journal", func(a *lifecycleAcceptance, c *lifecycleRunnerConfig) {
+			c.JournalPath = "/fixture/var/local/journal.sqlite"
+		}},
+		{"fake_backend", func(a *lifecycleAcceptance, c *lifecycleRunnerConfig) { c.AllowTestBackend = true }},
+		{"zero_log_cap", func(a *lifecycleAcceptance, c *lifecycleRunnerConfig) { c.Logs.OperationBytes = 64 }},
+		{"unbounded_profile", func(a *lifecycleAcceptance, c *lifecycleRunnerConfig) {
+			p := c.Profiles["lifecycle-python"]
+			p.PIDs = 0
+			c.Profiles["lifecycle-python"] = p
+		}},
+		{"wrong_grader", func(a *lifecycleAcceptance, c *lifecycleRunnerConfig) {
+			p := c.Profiles["lifecycle-python"]
+			p.TargetCommand = []string{"false"}
+			c.Profiles["lifecycle-python"] = p
+		}},
+		{"tcp_runner", func(a *lifecycleAcceptance, c *lifecycleRunnerConfig) { c.Server.TCPAddress = "127.0.0.1:1" }},
+		{"wrong_binary_digest", func(a *lifecycleAcceptance, c *lifecycleRunnerConfig) { a.TestSHA256 = "" }},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			raw, _ := json.Marshal(c)
+			var copyC lifecycleRunnerConfig
+			if err := json.Unmarshal(raw, &copyC); err != nil {
+				t.Fatal(err)
+			}
+			copyA := a
+			test.edit(&copyA, &copyC)
+			if lifecycleShape(copyA, copyC) == nil {
+				t.Fatal("unsafe fixture accepted")
+			}
+		})
+	}
+}
