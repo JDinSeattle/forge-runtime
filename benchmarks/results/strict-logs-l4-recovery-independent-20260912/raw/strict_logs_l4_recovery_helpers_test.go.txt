@@ -1,0 +1,537 @@
+//go:build linux
+
+package applicationfaults
+
+import (
+	"bytes"
+	"compress/gzip"
+	"context"
+	"crypto/sha256"
+	"encoding/hex"
+	"encoding/json"
+	"fmt"
+	"io"
+	"os"
+	"path/filepath"
+	"reflect"
+	"sort"
+	"strings"
+
+	"github.com/JDinSeattle/forge-runtime/internal/artifact"
+	"github.com/JDinSeattle/forge-runtime/internal/domain"
+	"github.com/JDinSeattle/forge-runtime/internal/persistence"
+	"github.com/JDinSeattle/forge-runtime/internal/runner"
+	"github.com/jackc/pgx/v5"
+	"golang.org/x/sys/unix"
+)
+
+const (
+	slL4Run            = "run_DKT2OOLEVCKYXHW5NGNS7BKBHJ"
+	slL4Tenant         = "sl-L4-xsra53ckdacsus345hmddtehsj"
+	slL4Op             = slL4Run + "_step_1_op_0"
+	slL4Schema         = "appfault_strictlogs_zg4ub4tnaruvpaojcj5dmmeqpc"
+	slL4Container      = "483c36964c0d87a9b94af7ae44f7a3ac4a1d54191afba1deddb2e6d1515c7bf4"
+	slL4ObservationSHA = "7ace4cab71b3f4fbaba9f8ed58ae73dbfe202ab94d83bb4ecbe85bac6d8ab736"
+	slL4FailedSHA      = "8781bba443e5a83da96cb077eb18223facfeee3469de0b23fce6c37529eef97c"
+	slL4ConfigSHA      = "638beb069eddfbfd8fe12c543be27376386af6036fd83494fd8c644260e3ca0a"
+	slL4AcceptanceSHA  = "8bb31c00ff8966395d0a0428abebdacf86c2d09aae89057990673497abdf2e4f"
+	slL4PressureSize   = int64(228589568)
+)
+
+// Exact inode/size and complete content are checked before the only explicit
+// unlink in this recovery. An open parent fd also confines the final unlink.
+type slL4FileIdentity struct {
+	Device uint64 `json:"device"`
+	Inode  uint64 `json:"inode"`
+	Bytes  int64  `json:"bytes"`
+	UID    uint32 `json:"uid"`
+}
+type slL4Archive struct {
+	Identity  slL4FileIdentity `json:"identity"`
+	RawSHA    string           `json:"raw_sha256"`
+	GzipSHA   string           `json:"gzip_sha256"`
+	GzipBytes int64            `json:"gzip_bytes"`
+}
+
+func slL4Identity(st unix.Stat_t, want slL4FileIdentity) error {
+	if st.Mode&unix.S_IFMT != unix.S_IFREG || st.Nlink != 1 || st.Dev != want.Device || st.Ino != want.Inode || st.Size != want.Bytes || st.Uid != want.UID || want.Bytes < 1 || want.Bytes > 256<<20 {
+		return fmt.Errorf("pressure identity differs")
+	}
+	return nil
+}
+func slL4OpenDir(path string) (int, error) {
+	if !filepath.IsAbs(path) || filepath.Clean(path) != path {
+		return -1, domain.ErrInvalid
+	}
+	fd, e := unix.Open("/", unix.O_RDONLY|unix.O_DIRECTORY|unix.O_CLOEXEC, 0)
+	if e != nil {
+		return -1, e
+	}
+	for _, part := range strings.Split(strings.TrimPrefix(path, "/"), "/") {
+		n, err := unix.Openat(fd, part, unix.O_RDONLY|unix.O_DIRECTORY|unix.O_CLOEXEC|unix.O_NOFOLLOW, 0)
+		unix.Close(fd)
+		if err != nil {
+			return -1, err
+		}
+		fd = n
+	}
+	return fd, nil
+}
+func slL4Pattern(r io.Reader, w io.Writer, size int64) (string, error) {
+	h := sha256.New()
+	b := make([]byte, 64<<10)
+	var n int64
+	for {
+		k, e := r.Read(b)
+		if k > 0 {
+			n += int64(k)
+			if n > size {
+				return "", fmt.Errorf("pressure grew")
+			}
+			for _, v := range b[:k] {
+				if v != 0x5a {
+					return "", fmt.Errorf("non-synthetic pressure content")
+				}
+			}
+			h.Write(b[:k])
+			if w != nil {
+				if _, x := w.Write(b[:k]); x != nil {
+					return "", x
+				}
+			}
+		}
+		if e == io.EOF {
+			break
+		}
+		if e != nil {
+			return "", e
+		}
+	}
+	if n != size {
+		return "", fmt.Errorf("pressure length differs")
+	}
+	return hex.EncodeToString(h.Sum(nil)), nil
+}
+func slL4CheckArchive(path string, a slL4Archive) error {
+	b, e := slRead(path, 2<<20)
+	if e != nil {
+		return e
+	}
+	if int64(len(b)) != a.GzipBytes || slSHA(b) != a.GzipSHA {
+		return fmt.Errorf("pressure archive identity differs")
+	}
+	z, e := gzip.NewReader(bytes.NewReader(b))
+	if e != nil {
+		return e
+	}
+	defer z.Close()
+	sum, e := slL4Pattern(z, nil, a.Identity.Bytes)
+	if e != nil {
+		return e
+	}
+	if sum != a.RawSHA {
+		return fmt.Errorf("pressure archive content differs")
+	}
+	return nil
+}
+func slL4ArchivePressure(dir, name, out string, want slL4FileIdentity) (slL4Archive, error) {
+	var a slL4Archive
+	if name != "strict-logs-enospc-pressure" {
+		return a, domain.ErrInvalid
+	}
+	fd, e := slL4OpenDir(dir)
+	if e != nil {
+		return a, e
+	}
+	defer unix.Close(fd)
+	p, e := unix.Openat(fd, name, unix.O_RDONLY|unix.O_NOFOLLOW|unix.O_CLOEXEC, 0)
+	if e != nil {
+		return a, e
+	}
+	f := os.NewFile(uintptr(p), name)
+	defer f.Close()
+	var st unix.Stat_t
+	if e = unix.Fstat(p, &st); e != nil {
+		return a, e
+	}
+	if e = slL4Identity(st, want); e != nil {
+		return a, e
+	}
+	dst, e := os.OpenFile(out, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0600)
+	if e != nil {
+		return a, e
+	}
+	z := gzip.NewWriter(dst)
+	sum, e := slL4Pattern(f, z, want.Bytes)
+	ze := z.Close()
+	if e == nil {
+		e = ze
+	}
+	if e == nil {
+		e = dst.Sync()
+	}
+	ce := dst.Close()
+	if e == nil {
+		e = ce
+	}
+	if e != nil {
+		return a, e
+	}
+	if e = slCleanupSyncDirectory(filepath.Dir(out)); e != nil {
+		return a, e
+	}
+	b, e := slRead(out, 2<<20)
+	if e != nil {
+		return a, e
+	}
+	a = slL4Archive{want, sum, slSHA(b), int64(len(b))}
+	if e = slL4CheckArchive(out, a); e != nil {
+		return a, e
+	}
+	if e = unix.Fstat(p, &st); e != nil {
+		return a, e
+	}
+	return a, slL4Identity(st, want)
+}
+func slL4RemovePressure(dir, name, archive string, a slL4Archive) error {
+	if name != "strict-logs-enospc-pressure" {
+		return domain.ErrInvalid
+	}
+	if e := slL4CheckArchive(archive, a); e != nil {
+		return e
+	}
+	fd, e := slL4OpenDir(dir)
+	if e != nil {
+		return e
+	}
+	defer unix.Close(fd)
+	p, e := unix.Openat(fd, name, unix.O_RDONLY|unix.O_NOFOLLOW|unix.O_CLOEXEC, 0)
+	if e != nil {
+		return e
+	}
+	f := os.NewFile(uintptr(p), name)
+	defer f.Close()
+	var st unix.Stat_t
+	if e = unix.Fstat(p, &st); e != nil {
+		return e
+	}
+	if e = slL4Identity(st, a.Identity); e != nil {
+		return e
+	}
+	hash, e := slL4Pattern(f, nil, a.Identity.Bytes)
+	if e != nil {
+		return e
+	}
+	if hash != a.RawSHA {
+		return fmt.Errorf("pressure changed after archive")
+	}
+	if e = unix.Fstatat(fd, name, &st, unix.AT_SYMLINK_NOFOLLOW); e != nil {
+		return e
+	}
+	if e = slL4Identity(st, a.Identity); e != nil {
+		return e
+	}
+	if e = unix.Unlinkat(fd, name, 0); e != nil {
+		return e
+	}
+	return unix.Fsync(fd)
+}
+
+// Nested JSON strings in the SQLite projection are semantic JSON, not an
+// incidental Python-vs-Go object-key encoding. Numbers remain exact.
+func slL4Rows(rows []map[string]any) ([]string, error) {
+	out := []string{}
+	for _, r := range rows {
+		copy := map[string]any{}
+		for k, v := range r {
+			if strings.HasSuffix(k, "_json") {
+				if s, ok := v.(string); ok {
+					if k == "request_json" {
+						// Python's retained observation omitted the grant key;
+						// the production Go projection includes grant:"". Only
+						// those credential-free encodings are equivalent.
+						var req map[string]any
+						dec := json.NewDecoder(strings.NewReader(s))
+						dec.UseNumber()
+						if e := dec.Decode(&req); e != nil {
+							return nil, e
+						}
+						if grant, exists := req["grant"]; exists {
+							if grant != "" {
+								return nil, fmt.Errorf("credential in public journal projection")
+							}
+							delete(req, "grant")
+						}
+						s = string(slJSON(req))
+					}
+					b, e := domain.CanonicalJSON([]byte(s))
+					if e != nil {
+						return nil, e
+					}
+					v = string(b)
+				}
+			}
+			copy[k] = v
+		}
+		b, e := domain.CanonicalJSON(slJSON(copy))
+		if e != nil {
+			return nil, e
+		}
+		out = append(out, string(b))
+	}
+	sort.Strings(out)
+	return out, nil
+}
+func slL4JournalEqual(a, b slJournal) bool {
+	if a.Identity != b.Identity || a.Version != b.Version || len(a.Tables) != len(b.Tables) {
+		return false
+	}
+	for name, rows := range a.Tables {
+		x, e := slL4Rows(rows)
+		if e != nil {
+			return false
+		}
+		y, e := slL4Rows(b.Tables[name])
+		if e != nil || !reflect.DeepEqual(x, y) {
+			return false
+		}
+	}
+	return true
+}
+func slL4ProtectedJournal(before, after slJournal) error {
+	if before.Identity != slCleanupUUID || after.Identity != before.Identity || before.Version != 5 || after.Version != 5 {
+		return fmt.Errorf("journal identity differs")
+	}
+	if len(before.Tables["operations"]) != len(after.Tables["operations"]) {
+		return fmt.Errorf("operation count changed")
+	}
+	for _, old := range before.Tables["operations"] {
+		current, e := slRow(after, "operations", "id", old["id"])
+		if e != nil {
+			return e
+		}
+		for _, field := range []string{"request_json", "job_id", "docker_start_intent", "dispatch_started"} {
+			x, y := old[field], current[field]
+			if field == "request_json" {
+				xb, xe := domain.CanonicalJSON([]byte(fmt.Sprint(x)))
+				yb, ye := domain.CanonicalJSON([]byte(fmt.Sprint(y)))
+				if xe != nil || ye != nil || !bytes.Equal(xb, yb) {
+					return fmt.Errorf("immutable execution intent changed")
+				}
+				continue
+			}
+			if fmt.Sprint(x) != fmt.Sprint(y) {
+				return fmt.Errorf("immutable operation %s changed", field)
+			}
+		}
+	}
+	if len(before.Tables["operation_logs"]) != len(after.Tables["operation_logs"]) {
+		return fmt.Errorf("log operation count changed")
+	}
+	for _, old := range before.Tables["operation_logs"] {
+		current, e := slRow(after, "operation_logs", "operation_id", old["operation_id"])
+		if e != nil {
+			return e
+		}
+		if old["container_id"] != current["container_id"] || old["policy_json"] != current["policy_json"] {
+			return fmt.Errorf("original container/log policy changed")
+		}
+	}
+	for table, rows := range before.Tables {
+		filter := func(in []map[string]any) []map[string]any {
+			out := []map[string]any{}
+			for _, r := range in {
+				own := r["run_id"] == slL4Run || r["workspace_id"] == slL4Run || r["operation_id"] == slL4Op || r["operation_id"] == slL4Run+"_0_initial_target" || table == "workspaces" && r["id"] == slL4Run || table == "operations" && (r["id"] == slL4Op || r["id"] == slL4Run+"_0_initial_target")
+				if table == "runner_artifacts" {
+					var ref struct {
+						RunID string `json:"run_id"`
+					}
+					_ = json.Unmarshal([]byte(fmt.Sprint(r["ref_json"])), &ref)
+					own = ref.RunID == slL4Run
+				}
+				if table == "log_runs" {
+					own = false
+				} // Reservations are never refunded by deletion.
+				if !own {
+					out = append(out, r)
+				}
+			}
+			return out
+		}
+		x, e := slL4Rows(filter(rows))
+		if e != nil {
+			return e
+		}
+		y, e := slL4Rows(filter(after.Tables[table]))
+		if e != nil {
+			return e
+		}
+		if !reflect.DeepEqual(x, y) {
+			return fmt.Errorf("unrelated journal rows changed: %s", table)
+		}
+	}
+	return nil
+}
+
+func slL4Snapshot(raw []byte, epoch uint64) error {
+	var b struct {
+		Workspace runner.Workspace `json:"workspace"`
+		Files     map[string]struct {
+			SHA        string `json:"sha256"`
+			Content    []byte `json:"content"`
+			Executable bool   `json:"executable"`
+		} `json:"files"`
+	}
+	if e := json.Unmarshal(raw, &b); e != nil {
+		return e
+	}
+	w := b.Workspace
+	file, ok := b.Files["app.py"]
+	if w.ID != slL4Run || w.RunID != slL4Run || w.TenantID != slL4Tenant || w.Epoch != epoch || w.Revision != 1 || !w.Stopped || w.Released || w.ActiveOperation != "" || w.BaselineHash != slCleanupTree || len(b.Files) != 1 || !ok || file.Executable || string(file.Content) != slCleanupSource || file.SHA != slSHA(file.Content) || slSHA([]byte(fmt.Sprintf("6:app.py:%s:false\n", file.SHA))) != slCleanupTree {
+		return fmt.Errorf("snapshot does not contain the complete original source")
+	}
+	return nil
+}
+
+func slL4Object(c slRunnerConfig, ref artifact.Ref, kind string) ([]byte, error) {
+	if ref.TenantID != slL4Tenant || ref.RunID != slL4Run || ref.Kind != kind || len(ref.SHA256) != 64 || ref.ObjectKey != slL4Tenant+"/"+slL4Run+"/"+ref.SHA256 || ref.Size < 1 || ref.Size > 64<<20 {
+		return nil, fmt.Errorf("artifact ref binding differs")
+	}
+	if _, e := hex.DecodeString(ref.SHA256); e != nil {
+		return nil, e
+	}
+	b, e := slRead(filepath.Join(c.ArtifactRoot, ref.ObjectKey), 64<<20)
+	if e != nil {
+		return nil, e
+	}
+	if slSHA(b) != ref.SHA256 || int64(len(b)) != ref.Size {
+		return nil, fmt.Errorf("artifact bytes differ")
+	}
+	return b, nil
+}
+
+// This wrapper cannot start or adopt any work, including an accidental branch
+// in Driver control flow. Workspace cleanup is the only admitted filesystem
+// mutation after cancellation; every forwarded request is exact-run bound.
+type slL4StopOnly struct {
+	service runner.Service
+	Calls   []string
+}
+
+func (s *slL4StopOnly) bind(r runner.WorkspaceRequest, kind string) error {
+	if r.TenantID != slL4Tenant || r.RunID != slL4Run || r.WorkspaceID != slL4Run || r.Epoch <= 2 {
+		return domain.ErrForbidden
+	}
+	s.Calls = append(s.Calls, kind)
+	return nil
+}
+func (s *slL4StopOnly) PrepareWorkspace(context.Context, runner.PrepareRequest) (runner.Workspace, error) {
+	return runner.Workspace{}, domain.ErrForbidden
+}
+func (s *slL4StopOnly) AdoptWorkspace(context.Context, runner.WorkspaceRequest) (runner.StopReceipt, error) {
+	return runner.StopReceipt{}, domain.ErrForbidden
+}
+func (s *slL4StopOnly) StartOperation(context.Context, runner.OperationRequest) (runner.Operation, error) {
+	return runner.Operation{}, domain.ErrForbidden
+}
+func (s *slL4StopOnly) InspectOperation(c context.Context, r runner.InspectRequest) (runner.Operation, error) {
+	if e := s.bind(r.WorkspaceRequest, "inspect"); e != nil {
+		return runner.Operation{}, e
+	}
+	if r.OperationID != slL4Op {
+		return runner.Operation{}, domain.ErrForbidden
+	}
+	return s.service.InspectOperation(c, r)
+}
+func (s *slL4StopOnly) CancelOperation(context.Context, runner.InspectRequest) (runner.Operation, error) {
+	return runner.Operation{}, domain.ErrForbidden
+}
+func (s *slL4StopOnly) StopWorkspace(c context.Context, r runner.WorkspaceRequest) (runner.StopReceipt, error) {
+	if e := s.bind(r, "stop"); e != nil {
+		return runner.StopReceipt{}, e
+	}
+	return s.service.StopWorkspace(c, r)
+}
+func (s *slL4StopOnly) SealSnapshot(c context.Context, r runner.WorkspaceRequest) (runner.Snapshot, error) {
+	if e := s.bind(r, "snapshot"); e != nil {
+		return runner.Snapshot{}, e
+	}
+	return s.service.SealSnapshot(c, r)
+}
+func (s *slL4StopOnly) ReleaseWorkspace(c context.Context, r runner.WorkspaceRequest) (runner.ReleaseResult, error) {
+	if e := s.bind(r, "release"); e != nil {
+		return runner.ReleaseResult{}, e
+	}
+	return s.service.ReleaseWorkspace(c, r)
+}
+
+// Consistent read-only transaction; only this known schema's noncredential
+// application ledgers. No migrations, grants, configuration or direct writes.
+func slL4PG(ctx context.Context, s *persistence.Store) (map[string]json.RawMessage, error) {
+	tx, e := s.Pool.BeginTx(ctx, pgx.TxOptions{IsoLevel: pgx.RepeatableRead, AccessMode: pgx.ReadOnly})
+	if e != nil {
+		return nil, e
+	}
+	defer tx.Rollback(ctx)
+	var schema, db string
+	var oid int64
+	if e = tx.QueryRow(ctx, "SELECT current_schema(),current_database(),current_schema()::regnamespace::oid::bigint").Scan(&schema, &db, &oid); e != nil {
+		return nil, e
+	}
+	if schema != slL4Schema || db != "forge" || oid != 852843 {
+		return nil, fmt.Errorf("private schema/database identity differs")
+	}
+	out := map[string]json.RawMessage{}
+	for _, table := range []string{"runs", "steps", "effects", "model_attempts", "quota_reservations", "runner_allocations", "run_events", "run_snapshots", "artifacts", "workspace_cleanup", "approvals", "tenant_runtime", "runners", "provider_quotas"} {
+		var b []byte
+		e = tx.QueryRow(ctx, "SELECT coalesce(jsonb_agg(to_jsonb(t)),'[]'::jsonb) FROM "+pgx.Identifier{slL4Schema, table}.Sanitize()+" t").Scan(&b)
+		if e != nil {
+			return nil, e
+		}
+		out[table] = b
+	}
+	return out, tx.Commit(ctx)
+}
+func slL4PGUnchanged(before, after map[string]json.RawMessage) error {
+	for table, b := range before {
+		var x, y []map[string]any
+		if json.Unmarshal(b, &x) != nil || json.Unmarshal(after[table], &y) != nil {
+			return fmt.Errorf("invalid PG ledger")
+		}
+		filter := func(in []map[string]any) []map[string]any {
+			out := []map[string]any{}
+			for _, r := range in {
+				own := r["tenant_id"] == slL4Tenant
+				if table == "model_attempts" || table == "quota_reservations" || table == "provider_quotas" {
+					own = false
+				}
+				if table == "runners" {
+					copy := map[string]any{}
+					for k, v := range r {
+						if k != "reserved_slots" {
+							copy[k] = v
+						}
+					}
+					out = append(out, copy)
+					continue
+				}
+				if !own {
+					out = append(out, r)
+				}
+			}
+			return out
+		}
+		a, e := slL4Rows(filter(x))
+		if e != nil {
+			return e
+		}
+		z, e := slL4Rows(filter(y))
+		if e != nil {
+			return e
+		}
+		if !reflect.DeepEqual(a, z) {
+			return fmt.Errorf("protected PG ledger changed: %s", table)
+		}
+	}
+	return nil
+}

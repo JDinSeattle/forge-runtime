@@ -1,0 +1,31 @@
+"""Copy reviewed offline evidence byte-for-byte; never open runtime or secret files."""
+from pathlib import Path
+import hashlib,json,re,datetime
+W=Path('/home/postedism/Desktop/mini claude code/forge-runtime/var/local/feature-worktrees/progress')
+S=Path('/tmp/forge-l4-recovery-independent-review')
+D=W/'benchmarks/results/strict-logs-l4-recovery-independent-20260912'
+REPORT=Path('/tmp/forge-l4-recovery-independent-review-v2.json')
+M='607d1d7b6c56212f32b8590d76578fcde09a6258dc44f65d258e71fe739a671d'
+H='fd2374794f93c386ea5dd0fdb94dea2e562cefa304dcac5fa83c101d4b139ef0'
+sha=lambda b:hashlib.sha256(b).hexdigest()
+enc=lambda v:(json.dumps(v,indent=2,sort_keys=True)+'\n').encode()
+manifest=json.loads((S/'independent-manifest.json').read_bytes())
+assert sha((S/'independent-manifest.json').read_bytes())==M and len(manifest)==28
+assert {str(p.relative_to(S)) for p in S.rglob('*') if p.is_file()}==set(manifest)|{'independent-manifest.json'}
+for name,h in manifest.items():assert sha((S/name).read_bytes())==h,name
+assert sha(REPORT.read_bytes())==H and REPORT.read_bytes()==(S/'delta-v2/review-v2.json').read_bytes()
+D.mkdir(parents=True,exist_ok=False);rows=[]
+def add(source,relative):
+ assert source.is_file() and not source.is_symlink()
+ b=source.read_bytes()
+ for pattern in [rb'(?:postgres(?:ql)?|https?)://[^\s/"<>]+:[^\s/@"<>]+@',rb'Bearer\s+[A-Za-z0-9._~-]{16,}',rb'-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----',rb'\bsk-[A-Za-z0-9_-]{20,}']:
+  assert re.search(pattern,b) is None,('credential-shaped content',str(source))
+ target=D/relative;target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(b)
+ rows.append({'source_path':str(source),'source_sha256':sha(b),'archived_path':relative,'archived_sha256':sha(b),'bytes':len(b),'projection':None})
+for source in sorted(p for p in S.rglob('*') if p.is_file()):add(source,'raw/'+str(source.relative_to(S)))
+add(REPORT,'review-v2.json')
+helper=W/'benchmarks/results/strict-logs-third-failure-20260912/observed-source-isolated_state.py.txt'
+assert sha(helper.read_bytes())=='4b4d659db862e84ad5f5b155ad309a07c4acf53a48d3812742e185b4dfdea614'
+add(helper,'context/observer-isolated-state.py.txt')
+(D/'archive-manifest.json').write_bytes(enc({'version':1,'created_at':datetime.datetime.now(datetime.timezone.utc).isoformat(),'original_manifest_sha256':M,'original_manifest_members':28,'review_v2_sha256':H,'byte_identical_files':len(rows),'files':rows,'secret_scan':{'pattern_scan_passed':True,'private_or_runtime_files_opened':False,'scope':'Reviewed temporary evidence directory and pinned report only; one exact previously archived nonsecret source helper supplied as context. No credential/private/runtime configuration content or digest opened. Pattern checks are finite.'}}))
+print(json.dumps({'archive':str(D),'files':len(rows),'bytes':sum(x['bytes'] for x in rows),'original_manifest':M,'report':H}))

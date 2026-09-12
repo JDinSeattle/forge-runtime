@@ -1,0 +1,32 @@
+"""Read-only comparison of the one retained L4 SQL lease and saved snapshot."""
+import importlib.util, json, hashlib, os, sys
+from pathlib import Path
+sys.dont_write_bytecode=True
+R=Path('/home/postedism/Desktop/mini claude code/forge-runtime')
+S=R/'var/lifecycle-rehearsals/lr20260912_a'
+p=R/'scripts/evaluation/isolated_state.py'
+spec=importlib.util.spec_from_file_location('l4_lease_state',p)
+m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
+query="""SELECT json_build_object('database',current_database(),'current_user',current_user,
+'superuser',(SELECT rolsuper FROM pg_catalog.pg_roles WHERE rolname=current_user),
+'schema',:'schema','schema_oid',(SELECT oid::bigint FROM pg_catalog.pg_namespace WHERE nspname=:'schema'),
+'observed_at',clock_timestamp(),
+'runs',(SELECT json_agg(json_build_object('id',id,'tenant',tenant_id,'state',state,'version',version,
+'epoch',lease_epoch,'owner',lease_owner,'sql_lease_until',lease_until,'snapshot',snapshot))
+FROM :"schema".runs WHERE id='run_DKT2OOLEVCKYXHW5NGNS7BKBHJ' AND tenant_id='sl-L4-xsra53ckdacsus345hmddtehsj'));
+"""
+sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
+with m.control_lock(S):
+ env,_=m.admin_environment(R)
+ result=m.sql_json(query,env,'appfault_strictlogs_zg4ub4tnaruvpaojcj5dmmeqpc');del env
+ assert result['schema_oid']==852843 and len(result['runs'])==1
+ row=result['runs'][0]
+ out=S/'evidence/logs-03-lease-observation';out.mkdir(mode=0o700)
+ m.c.save(out/'postgres.json',result)
+ report={'source_hashes':{str(p):sha(p),str(Path(__file__)):sha(Path(__file__))},'scope':'Read-only exact L4 lease/snapshot; no control RPC, mutation, runner or provider.',
+ 'sql_lease_until':row['sql_lease_until'],'snapshot_lease_until':row['snapshot']['lease']['until'],'run_id':row['id'],'schema_oid':result['schema_oid']}
+ m.c.save(out/'report.json',report)
+ fd=os.open(out/'observer.py.txt',os.O_CREAT|os.O_EXCL|os.O_WRONLY,0o600)
+ with os.fdopen(fd,'wb') as f:f.write(Path(__file__).read_bytes());f.flush();os.fsync(f.fileno())
+ m.c.save(out/'manifest.json',{p.name:sha(p) for p in out.iterdir()})
+ print(json.dumps(report))

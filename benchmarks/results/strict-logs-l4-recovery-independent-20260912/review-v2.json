@@ -1,0 +1,133 @@
+{
+  "status": "PASS_SCOPED_OFFLINE_REVIEW",
+  "reviewed_commit": "0cc916cdeb9fd6def5ce5dca198924152cf37ce5",
+  "original_reviewed_commit": "e9793ea654d4c2e43d410eca8fab3c1a65e4fe98",
+  "source_sha256": {
+    "scripts/faults/application/strict_logs_l4_recovery_helpers_test.go": "8e81ce9a0bb25baa5edaab8c5db748bc6d78946e1e0c5949d43e22df14fc393b",
+    "scripts/faults/application/strict_logs_l4_recovery_offline_test.go": "82f6a1eb562946ac0bf159293788bd1653ec45ce9e6ae07416b6ee1270167f70",
+    "scripts/faults/application/strict_logs_l4_recovery_test.go": "d8cecbeca7f51ab245f2090a32e8d7e8c16ba3f57dcdc9b7081e6b1e0aa74f91"
+  },
+  "source_unchanged_after_tests": true,
+  "artifact_directory": "/tmp/forge-l4-recovery-independent-review",
+  "delta_artifact_directory": "/tmp/forge-l4-recovery-independent-review/delta-v2",
+  "closed_findings": [
+    {
+      "id": "cleanup-total-vs-unreleased",
+      "priority": "P2",
+      "resolution": "Preflight compares the complete pinned released L1 row, rejects any target cleanup and any unresolved row. Final requires exactly one released target cleanup, unchanged full L1 row and no unresolved rows; SQL count now scopes target tenant/run.",
+      "preserved_before": "review-v1.json; evidence-recompute-v1.json",
+      "negative_coverage": "lost/changed/unfinished L1; unfinished/missing/duplicate/wrong target; missing snapshot; target cleanup present before invocation"
+    },
+    {
+      "id": "sql-lease-overlay-vs-snapshot",
+      "priority": "P2",
+      "resolution": "Pinned new SQL observer validates schema/OID, exact current tenant/run/state/version/owner/epoch/SQL-until and full raw snapshot. GetRun result must match that exact SQL until, then compares full State against old snapshot with only its observed historical Until restored on a local copy. No DB lease/deadline or old record is changed.",
+      "preserved_before": "lease-before-negative.log",
+      "before_negative_sha256": "1212784dc9c5fefc3cb74ee4570166a09a4ea08c06ddcf5c6568c294532b2406",
+      "independent_same_sample_after": "delta-v2/lease-after.log",
+      "after_sha256": "5a37f5aff7d89b8055df0fd9ef963568636221cd2cb804b7da168dab165c5dc0",
+      "negative_coverage": "changed SQL until, snapshot cost/deadline, owner/epoch, schema OID, raw snapshot, missing/duplicate target row"
+    }
+  ],
+  "remaining_confirmed_P1_P2": [],
+  "evidence_recomputed": {
+    "author_delta_manifest_sha256": "dbb6d0ac7c584e3baaa57d0cc16587c099685867c6b350801357e7b82683e16f",
+    "author_delta_members_verified": 13,
+    "new_observer_archive_matches_original_bytes": 4,
+    "L1_archived_row_semantically_equals_original_full_row": true,
+    "production_source_diff_to_original_logs03": "",
+    "production_diff_paths": [
+      "internal",
+      "cmd",
+      "db",
+      "proto",
+      "go.mod",
+      "go.sum"
+    ],
+    "saved_nonsecret_inputs_verified": 614
+  },
+  "tests": [
+    {
+      "name": "ordinary",
+      "args": [
+        "go",
+        "test",
+        "-count=1",
+        "-json",
+        "./scripts/faults/application",
+        "-run",
+        "^TestStrictLogsL4Recovery"
+      ],
+      "code": 0,
+      "seconds": 2.6687828870490193,
+      "sha256": "a4934ee88077700fe059d26311e00fe3bfe41f2d48de425728201412c7721683",
+      "test_pass": 58,
+      "test_skip": [
+        "TestStrictLogsL4Recovery"
+      ]
+    },
+    {
+      "name": "race",
+      "args": [
+        "go",
+        "test",
+        "-race",
+        "-count=1",
+        "-json",
+        "./scripts/faults/application",
+        "-run",
+        "^TestStrictLogsL4Recovery"
+      ],
+      "code": 0,
+      "seconds": 9.079416578053497,
+      "sha256": "6a8fbf93ddda55cf52982fb07098c1ac6b0216fc5fedfbbff676d55813b81133",
+      "test_pass": 58,
+      "test_skip": [
+        "TestStrictLogsL4Recovery"
+      ]
+    },
+    {
+      "name": "lease-after",
+      "args": [
+        "go",
+        "test",
+        "-race",
+        "-count=1",
+        "-v",
+        "-overlay",
+        "/tmp/forge-l4-recovery-independent-review/delta-v2/overlay.json",
+        "./scripts/faults/application",
+        "-run",
+        "^TestIndependentL4UnchangedSQLLeaseProjection$"
+      ],
+      "code": 0,
+      "seconds": 3.820460048969835,
+      "sha256": "5a37f5aff7d89b8055df0fd9ef963568636221cd2cb804b7da168dab165c5dc0"
+    },
+    {
+      "name": "vet",
+      "args": [
+        "go",
+        "vet",
+        "./scripts/faults/application"
+      ],
+      "code": 0,
+      "seconds": 0.31451734295114875,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "reviewed_safety_boundaries": [
+    "All actual authority remains scoped to the original schema OID, tenant, run, operation, journal UUID, original hashes and dedicated fixed volume owner identities.",
+    "Complete synthetic pressure bytes are archived, decompressed and rechecked with fsync before exact device/inode/single-link unlink; malformed/replaced/symlink/hardlink/temp-archive negatives exercised offline only.",
+    "Fresh Store.Cancel/Claim/stop-only Driver path rejects prepare/adopt/start/cancel-operation; original deadline, epoch-2 operation, fees and unknown/incomplete log interpretation remain protected.",
+    "Production workspace cleanup publishes and pins snapshot/stop artifacts before release; closure checks ready receipt/log refs and complete snapshot bytes, capacity/quotas, original operation identity and unrelated PG/journal records.",
+    "Intermediate failure preserves original failed inputs plus new stage report; fixture is exclusive and does not silently retry/reset."
+  ],
+  "limits": [
+    "This is source and offline validation, not an actual recovery or ENOSPC acceptance.",
+    "No live PG, SQLite, Docker, services, provider, secret, mapped volume or actual pressure file was opened or modified by this review.",
+    "Temporary ordinary files used by offline pressure tests were intentionally created/archived/unlinked under the test temporary directory.",
+    "Actual recovery must still execute the reviewed opt-in fixture under the separate reviewed launcher and produce final live closure evidence.",
+    "The original logs03 L4 failure remains a failure; successful recovery alone cannot promote S12.9 or unlock the paid evaluation gate."
+  ]
+}

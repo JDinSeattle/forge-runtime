@@ -1,0 +1,82 @@
+{
+  "current_user": "forge_admin",
+  "database": "forge",
+  "observed_at": "2026-09-12T19:10:27.631829+00:00",
+  "runs": [
+    {
+      "epoch": 2,
+      "id": "run_DKT2OOLEVCKYXHW5NGNS7BKBHJ",
+      "owner": "sl-L4-0",
+      "snapshot": {
+        "approval": {
+          "args_hash": "ef77c8bf901c5eb227484966ea93b183018290a713d4f2b3dc8d41e77f090af1",
+          "effect_id": "run_DKT2OOLEVCKYXHW5NGNS7BKBHJ_step_1_op_0",
+          "granted": true,
+          "policy_version": "workspace-v1",
+          "version": 2,
+          "workspace_revision": 1
+        },
+        "cost_microusd": 150,
+        "lease": {
+          "epoch": 2,
+          "owner": "sl-L4-0",
+          "until": "2026-09-12T11:24:46.778095-07:00"
+        },
+        "limits": {
+          "deadline": "2026-09-12T11:28:15.823102-07:00",
+          "max_cost_microusd": 1000000,
+          "max_model_rounds": 8,
+          "max_no_progress_batches": 3,
+          "max_tool_calls": 20
+        },
+        "model_rounds": 1,
+        "output_ref": "artifact_e384ee07474be68efcb1fd84900fe012d43036a1b88fd95ec9629db14f7bfbc4",
+        "pending_effect": {
+          "args": {
+            "command": [
+              "python",
+              "-I",
+              "-B",
+              "-c",
+              "import os,time\nos.write(1,b'SL_STDOUT\\x00\\xff');os.write(2,b'SL_STDERR\\x00\\xfe')\ntime.sleep(8)\nfor i in range(300):\n os.write(1,b'X'*128);os.write(2,b'Y'*128);time.sleep(.05)"
+            ]
+          },
+          "args_hash": "ef77c8bf901c5eb227484966ea93b183018290a713d4f2b3dc8d41e77f090af1",
+          "dispatch_epoch": 2,
+          "expected_revision": 1,
+          "kind": "run_command",
+          "operation_id": "run_DKT2OOLEVCKYXHW5NGNS7BKBHJ_step_1_op_0",
+          "policy_version": "workspace-v1",
+          "requires_approval": true,
+          "status": "in_flight"
+        },
+        "progress": {
+          "classification": "initial",
+          "last_checked_step": 0,
+          "message_seq": 0,
+          "recent_evidence": [],
+          "recent_trees": [],
+          "repeated_batches": 0
+        },
+        "run_id": "run_DKT2OOLEVCKYXHW5NGNS7BKBHJ",
+        "schema_version": 2,
+        "stage": "execute_effects",
+        "status": "running",
+        "step_seq": 1,
+        "tenant_id": "sl-L4-xsra53ckdacsus345hmddtehsj",
+        "tool_calls": 1,
+        "verification_revision": 0,
+        "verification_status": "unverified",
+        "version": 9,
+        "workspace_revision": 1
+      },
+      "sql_lease_until": "2026-09-12T18:24:59.737432+00:00",
+      "state": "running",
+      "tenant": "sl-L4-xsra53ckdacsus345hmddtehsj",
+      "version": 9
+    }
+  ],
+  "schema": "appfault_strictlogs_zg4ub4tnaruvpaojcj5dmmeqpc",
+  "schema_oid": 852843,
+  "superuser": true
+}

@@ -1,0 +1,319 @@
+//go:build linux
+
+package applicationfaults
+
+import (
+	"bytes"
+	"context"
+	"encoding/json"
+	"errors"
+	"os"
+	"path/filepath"
+	"testing"
+	"time"
+
+	"github.com/JDinSeattle/forge-runtime/internal/configuration"
+	"github.com/JDinSeattle/forge-runtime/internal/domain"
+	"github.com/JDinSeattle/forge-runtime/internal/persistence"
+	"github.com/JDinSeattle/forge-runtime/internal/runner"
+	flow "github.com/JDinSeattle/forge-runtime/internal/runtime"
+	"golang.org/x/sys/unix"
+)
+
+// Saved evidence only: no live SQLite, database secret, network, Docker, or
+// pressure access. Allows preflight of historical Go-vs-Python JSON contracts.
+func TestStrictLogsL4RecoverySavedInputs(t *testing.T) {
+	scope := os.Getenv("FORGE_STRICT_LOGS_L4_SAVED_SCOPE")
+	if scope == "" {
+		t.Skip("optional immutable saved evidence preflight")
+	}
+	old := filepath.Join(scope, "evidence", "logs-03")
+	obs := filepath.Join(scope, "evidence", "logs-03-retained-observation")
+	hashes := map[string]string{}
+	if e := slCleanupManifest(old, slL4FailedSHA, hashes); e != nil {
+		t.Fatal(e)
+	}
+	if e := slCleanupManifest(obs, slL4ObservationSHA, hashes); e != nil {
+		t.Fatal(e)
+	}
+	var j slJournal
+	if e := slReadJSON(filepath.Join(obs, "journal.json"), &j); e != nil {
+		t.Fatal(e)
+	}
+	var projected slJournal
+	_ = json.Unmarshal(slJSON(j), &projected)
+	for _, r := range projected.Tables["operations"] {
+		var req runner.OperationRequest
+		if e := json.Unmarshal([]byte(r["request_json"].(string)), &req); e != nil {
+			t.Fatal(e)
+		}
+		req.Grant = ""
+		r["request_json"] = string(slJSON(req))
+	}
+	if !slL4JournalEqual(j, projected) {
+		t.Fatal("saved Python journal does not match production Go projection")
+	}
+	var worker configuration.Config
+	if e := slReadJSON(filepath.Join(scope, "runtime", "strict-logs-private-03", "L4-worker.json"), &worker); e != nil {
+		t.Fatal(e)
+	}
+	var fixture struct {
+		SHA string `json:"worker_config_sha256"`
+	}
+	if e := slReadJSON(filepath.Join(old, "L4", "fixture.json"), &fixture); e != nil {
+		t.Fatal(e)
+	}
+	if slSHA(slJSON(worker)) != fixture.SHA {
+		t.Fatal("canonical worker fixture source contract changed")
+	}
+	var record struct {
+		Runs []struct {
+			ID       string     `json:"id"`
+			Snapshot flow.State `json:"snapshot"`
+		} `json:"runs"`
+	}
+	if e := slReadJSON(filepath.Join(obs, "postgres.json"), &record); e != nil {
+		t.Fatal(e)
+	}
+	for _, r := range record.Runs {
+		if r.ID == slL4Run {
+			run := persistence.Run{ID: slL4Run, TenantID: slL4Tenant, RunnerID: "application-fault-runner", State: r.Snapshot}
+			if e := slL4InitialRun(run, r.Snapshot); e != nil {
+				t.Fatal(e)
+			}
+		}
+	}
+	t.Logf("%d immutable saved nonsecret inputs verified; no live state accessed", len(hashes))
+}
+
+func slL4PressureFixture(t *testing.T) (string, string, slL4FileIdentity) {
+	t.Helper()
+	dir := t.TempDir()
+	name := filepath.Join(dir, "strict-logs-enospc-pressure")
+	if e := os.WriteFile(name, bytes.Repeat([]byte{0x5a}, 131073), 0600); e != nil {
+		t.Fatal(e)
+	}
+	var st unix.Stat_t
+	if e := unix.Lstat(name, &st); e != nil {
+		t.Fatal(e)
+	}
+	return dir, name, slL4FileIdentity{st.Dev, st.Ino, st.Size, st.Uid}
+}
+func TestStrictLogsL4RecoveryOfflinePressureArchive(t *testing.T) {
+	dir, name, id := slL4PressureFixture(t)
+	archive := filepath.Join(t.TempDir(), "pressure.gz")
+	a, e := slL4ArchivePressure(dir, filepath.Base(name), archive, id)
+	if e != nil {
+		t.Fatal(e)
+	}
+	if _, e = os.Stat(name); e != nil {
+		t.Fatal("archival itself deleted input")
+	}
+	if a.GzipBytes > 4096 || a.RawSHA != slSHA(bytes.Repeat([]byte{0x5a}, int(id.Bytes))) {
+		t.Fatal("complete content not independently reconstructed")
+	}
+	if e = slL4RemovePressure(dir, filepath.Base(name), archive, a); e != nil {
+		t.Fatal(e)
+	}
+	if _, e = os.Lstat(name); !os.IsNotExist(e) {
+		t.Fatal("validated input not removed")
+	}
+	if e = slL4CheckArchive(archive, a); e != nil {
+		t.Fatal("archive lost after deletion", e)
+	}
+}
+func TestStrictLogsL4RecoveryOfflinePressureRefusals(t *testing.T) {
+	for _, kind := range []string{"inode", "device", "uid", "size", "content", "hardlink", "file_symlink", "ancestor_symlink", "corrupt_archive", "changed_after_archive", "replaced_after_archive", "partial_archive", "wrong_name"} {
+		t.Run(kind, func(t *testing.T) {
+			dir, name, id := slL4PressureFixture(t)
+			out := filepath.Join(t.TempDir(), "pressure.gz")
+			original := id
+			switch kind {
+			case "inode":
+				id.Inode++
+			case "device":
+				id.Device++
+			case "uid":
+				id.UID++
+			case "size":
+				id.Bytes--
+			case "content":
+				f, _ := os.OpenFile(name, os.O_WRONLY, 0)
+				_, _ = f.WriteAt([]byte{0}, 5)
+				f.Close()
+			case "hardlink":
+				if e := os.Link(name, name+".link"); e != nil {
+					t.Fatal(e)
+				}
+			case "file_symlink":
+				if e := os.Rename(name, name+".original"); e != nil {
+					t.Fatal(e)
+				}
+				if e := os.Symlink(name+".original", name); e != nil {
+					t.Fatal(e)
+				}
+			case "ancestor_symlink":
+				link := filepath.Join(t.TempDir(), "link")
+				if e := os.Symlink(dir, link); e != nil {
+					t.Fatal(e)
+				}
+				dir = link
+			case "partial_archive":
+				if e := os.WriteFile(out, []byte("partial previous attempt"), 0600); e != nil {
+					t.Fatal(e)
+				}
+			case "wrong_name":
+				name = filepath.Join(dir, "other")
+			}
+			a, e := slL4ArchivePressure(dir, filepath.Base(name), out, id)
+			if kind == "corrupt_archive" || kind == "changed_after_archive" || kind == "replaced_after_archive" {
+				if e != nil {
+					t.Fatal(e)
+				}
+				switch kind {
+				case "corrupt_archive":
+					f, _ := os.OpenFile(out, os.O_WRONLY, 0)
+					_, _ = f.WriteAt([]byte{0}, 10)
+					f.Close()
+				case "changed_after_archive":
+					f, _ := os.OpenFile(name, os.O_WRONLY, 0)
+					_, _ = f.WriteAt([]byte{1}, 11)
+					f.Close()
+				case "replaced_after_archive":
+					if e := os.Rename(name, name+".old"); e != nil {
+						t.Fatal(e)
+					}
+					if e := os.WriteFile(name, bytes.Repeat([]byte{0x5a}, int(original.Bytes)), 0600); e != nil {
+						t.Fatal(e)
+					}
+				}
+				e = slL4RemovePressure(dir, filepath.Base(name), out, a)
+			}
+			if e == nil {
+				t.Fatal("unsafe pressure accepted")
+			}
+			if kind != "wrong_name" {
+				if _, e = os.Lstat(name); e != nil {
+					t.Fatal("failure removed evidence", e)
+				}
+			}
+		})
+	}
+}
+func TestStrictLogsL4RecoveryOfflineRPCFence(t *testing.T) {
+	s := &slL4StopOnly{}
+	ctx := context.Background()
+	r := runner.WorkspaceRequest{TenantID: slL4Tenant, RunID: slL4Run, WorkspaceID: slL4Run, Epoch: 3}
+	if _, e := s.StartOperation(ctx, runner.OperationRequest{WorkspaceRequest: r, OperationID: slL4Op}); !errors.Is(e, domain.ErrForbidden) {
+		t.Fatal(e)
+	}
+	if _, e := s.PrepareWorkspace(ctx, runner.PrepareRequest{WorkspaceRequest: r}); !errors.Is(e, domain.ErrForbidden) {
+		t.Fatal(e)
+	}
+	if _, e := s.AdoptWorkspace(ctx, r); !errors.Is(e, domain.ErrForbidden) {
+		t.Fatal(e)
+	}
+	if _, e := s.CancelOperation(ctx, runner.InspectRequest{WorkspaceRequest: r, OperationID: slL4Op}); !errors.Is(e, domain.ErrForbidden) {
+		t.Fatal(e)
+	}
+	for _, mutate := range []func(*runner.WorkspaceRequest){func(r *runner.WorkspaceRequest) { r.Epoch = 2 }, func(r *runner.WorkspaceRequest) { r.RunID = "another" }, func(r *runner.WorkspaceRequest) { r.TenantID = "another" }, func(r *runner.WorkspaceRequest) { r.WorkspaceID = "another" }} {
+		bad := r
+		mutate(&bad)
+		if e := s.bind(bad, "stop"); !errors.Is(e, domain.ErrForbidden) {
+			t.Fatal("foreign/old authority accepted")
+		}
+	}
+	if len(s.Calls) != 0 {
+		t.Fatal("disallowed RPC reached service")
+	}
+}
+func slL4JournalFixture() slJournal {
+	return slJournal{Identity: slCleanupUUID, Version: 5, Tables: map[string][]map[string]any{
+		"operations":     {{"id": slL4Op, "workspace_id": slL4Run, "request_json": "{\"a\":1,\"b\":2}", "job_id": "original", "status": "unknown", "dispatch_started": int64(1), "docker_start_intent": int64(1)}, {"id": "foreign", "workspace_id": "foreign", "request_json": "{}", "job_id": "other", "status": "failed"}},
+		"operation_logs": {{"operation_id": slL4Op, "container_id": slL4Container, "cleanup_state": "retained"}},
+		"log_runs":       {{"tenant_id": slL4Tenant, "run_id": slL4Run, "operations": int64(2), "reserved_bytes": int64(1048576)}},
+		"workspaces":     {{"id": slL4Run, "active_operation": slL4Op, "released": int64(0)}}, "runner_artifacts": {},
+	}}
+}
+func TestStrictLogsL4RecoveryOfflineJournalContract(t *testing.T) {
+	j := slL4JournalFixture()
+	copy := func() slJournal { var c slJournal; _ = json.Unmarshal(slJSON(j), &c); return c }
+	same := copy()
+	same.Tables["operations"][0]["request_json"] = "{ \"b\":2,\"a\":1 }"
+	if !slL4JournalEqual(j, same) {
+		t.Fatal("encoding order is not authority")
+	}
+	if e := slL4ProtectedJournal(j, same); e != nil {
+		t.Fatal(e)
+	}
+	empty := copy()
+	empty.Tables["operations"][0]["request_json"] = `{"a":1,"b":2,"grant":""}`
+	if !slL4JournalEqual(j, empty) {
+		t.Fatal("empty projected grant is not equivalent to omission")
+	}
+	secret := copy()
+	secret.Tables["operations"][0]["request_json"] = `{"a":1,"b":2,"grant":"never-publish"}`
+	if slL4JournalEqual(j, secret) {
+		t.Fatal("nonempty capability accepted in public projection")
+	}
+	for kind, mutate := range map[string]func(*slJournal){"new_operation": func(c *slJournal) {
+		c.Tables["operations"] = append(c.Tables["operations"], map[string]any{"id": "new"})
+	}, "replaced_id": func(c *slJournal) { c.Tables["operations"][0]["id"] = "new" }, "rebound_intent": func(c *slJournal) { c.Tables["operations"][0]["request_json"] = "{\"epoch\":3}" }, "new_job": func(c *slJournal) { c.Tables["operations"][0]["job_id"] = "new" }, "foreign_change": func(c *slJournal) { c.Tables["operations"][1]["status"] = "succeeded" }, "refund": func(c *slJournal) { c.Tables["log_runs"][0]["reserved_bytes"] = int64(0) }, "uuid": func(c *slJournal) { c.Identity = "new" }} {
+		t.Run(kind, func(t *testing.T) {
+			c := copy()
+			mutate(&c)
+			if slL4ProtectedJournal(j, c) == nil {
+				t.Fatal("changed authority accepted")
+			}
+		})
+	}
+}
+func TestStrictLogsL4RecoveryOfflineSnapshotContract(t *testing.T) {
+	body := map[string]any{"workspace": runner.Workspace{TenantID: slL4Tenant, RunID: slL4Run, ID: slL4Run, Epoch: 4, Revision: 1, Stopped: true, BaselineHash: slCleanupTree}, "files": map[string]any{"app.py": map[string]any{"sha256": slSHA([]byte(slCleanupSource)), "content": []byte(slCleanupSource), "executable": false}}}
+	if e := slL4Snapshot(slJSON(body), 4); e != nil {
+		t.Fatal(e)
+	}
+	for _, kind := range []string{"foreign", "epoch", "content", "extra", "executable"} {
+		t.Run(kind, func(t *testing.T) {
+			var c map[string]any
+			_ = json.Unmarshal(slJSON(body), &c)
+			w := c["workspace"].(map[string]any)
+			f := c["files"].(map[string]any)
+			a := f["app.py"].(map[string]any)
+			switch kind {
+			case "foreign":
+				w["run_id"] = "other"
+			case "epoch":
+				w["epoch"] = 3
+			case "content":
+				a["content"] = "eA=="
+			case "extra":
+				f["extra"] = a
+			case "executable":
+				a["executable"] = true
+			}
+			if slL4Snapshot(slJSON(c), 4) == nil {
+				t.Fatal("incomplete/foreign snapshot accepted")
+			}
+		})
+	}
+}
+func TestStrictLogsL4RecoveryOfflineTerminalContract(t *testing.T) {
+	old := persistence.Run{ID: slL4Run, TenantID: slL4Tenant, State: flow.State{WorkspaceRevision: 1, Limits: flow.Limits{Deadline: time.Unix(100, 0)}, Cost: 150, ToolCalls: 1, ModelRounds: 1}}
+	done := old
+	done.State.Status = domain.StatusCancelled
+	done.State.Lease.Epoch = 3
+	done.State.PendingEffect = &flow.Effect{ID: slL4Op, Status: flow.EffectFailed, DispatchEpoch: 2, ReceiptRef: "original-receipt"}
+	if e := slL4Terminal(done, old); e != nil {
+		t.Fatal(e)
+	}
+	for kind, mutate := range map[string]func(*persistence.Run){"deadline": func(r *persistence.Run) { r.State.Limits.Deadline = r.State.Limits.Deadline.Add(time.Hour) }, "fees": func(r *persistence.Run) { r.State.Cost++ }, "retry": func(r *persistence.Run) { r.State.ToolCalls++ }, "trusted": func(r *persistence.Run) { r.State.Verification = domain.VerificationVerified }, "unknown": func(r *persistence.Run) { r.State.PendingEffect = &flow.Effect{ID: slL4Op} }, "not_terminal": func(r *persistence.Run) { r.State.Status = domain.StatusCancelRequested }} {
+		t.Run(kind, func(t *testing.T) {
+			c := done
+			mutate(&c)
+			if slL4Terminal(c, old) == nil {
+				t.Fatal("invalid recovery result accepted")
+			}
+		})
+	}
+}

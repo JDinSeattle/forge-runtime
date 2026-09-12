@@ -1,0 +1,88 @@
+{
+  "env": {
+    "PATH": "/home/postedism/.local/share/mise/installs/go/1.26.8/bin:/usr/local/bin:/usr/bin:/bin",
+    "LC_ALL": "C",
+    "TMPDIR": "/tmp",
+    "GOCACHE": "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/go-build-cache",
+    "GOPROXY": "off",
+    "GOSUMDB": "off",
+    "GOENV": "off",
+    "GOTOOLCHAIN": "local",
+    "GOMAXPROCS": "2",
+    "GOTMPDIR": "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/feature-worktrees/log-cleanup/var/local/l4-independent-review-tmp",
+    "GOPATH": "/home/postedism/go",
+    "GOMODCACHE": "/home/postedism/go/pkg/mod",
+    "FORGE_STRICT_LOGS_L4_SAVED_SCOPE": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a"
+  },
+  "commands": [
+    {
+      "name": "ordinary",
+      "args": [
+        "go",
+        "test",
+        "-count=1",
+        "-json",
+        "./scripts/faults/application",
+        "-run",
+        "^TestStrictLogsL4Recovery"
+      ],
+      "code": 0,
+      "seconds": 2.6687828870490193,
+      "sha256": "a4934ee88077700fe059d26311e00fe3bfe41f2d48de425728201412c7721683",
+      "test_pass": 58,
+      "test_skip": [
+        "TestStrictLogsL4Recovery"
+      ]
+    },
+    {
+      "name": "race",
+      "args": [
+        "go",
+        "test",
+        "-race",
+        "-count=1",
+        "-json",
+        "./scripts/faults/application",
+        "-run",
+        "^TestStrictLogsL4Recovery"
+      ],
+      "code": 0,
+      "seconds": 9.079416578053497,
+      "sha256": "6a8fbf93ddda55cf52982fb07098c1ac6b0216fc5fedfbbff676d55813b81133",
+      "test_pass": 58,
+      "test_skip": [
+        "TestStrictLogsL4Recovery"
+      ]
+    },
+    {
+      "name": "lease-after",
+      "args": [
+        "go",
+        "test",
+        "-race",
+        "-count=1",
+        "-v",
+        "-overlay",
+        "/tmp/forge-l4-recovery-independent-review/delta-v2/overlay.json",
+        "./scripts/faults/application",
+        "-run",
+        "^TestIndependentL4UnchangedSQLLeaseProjection$"
+      ],
+      "code": 0,
+      "seconds": 3.820460048969835,
+      "sha256": "5a37f5aff7d89b8055df0fd9ef963568636221cd2cb804b7da168dab165c5dc0"
+    },
+    {
+      "name": "vet",
+      "args": [
+        "go",
+        "vet",
+        "./scripts/faults/application"
+      ],
+      "code": 0,
+      "seconds": 0.31451734295114875,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "sources_unchanged": true
+}

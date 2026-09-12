@@ -1,0 +1,7 @@
+=== RUN   TestIndependentL4UnchangedSQLLeaseProjection
+    strict_logs_l4_recovery_offline_test.go:337: Actual saved SQL lease=2026-09-12T18:24:59.737432Z, raw snapshot lease=2026-09-12T11:24:46.778095-07:00
+    strict_logs_l4_recovery_offline_test.go:338: P2 unchanged stored snapshot with legitimate GetRun SQL lease projection is rejected: original snapshot changed since retained observation
+--- FAIL: TestIndependentL4UnchangedSQLLeaseProjection (0.00s)
+FAIL
+FAIL	github.com/JDinSeattle/forge-runtime/scripts/faults/application	0.027s
+FAIL

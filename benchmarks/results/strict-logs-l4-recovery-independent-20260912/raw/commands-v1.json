@@ -1,0 +1,79 @@
+{
+  "env": {
+    "PATH": "/home/postedism/.local/share/mise/installs/go/1.26.8/bin:/usr/local/bin:/usr/bin:/bin",
+    "LC_ALL": "C",
+    "TMPDIR": "/tmp",
+    "GOCACHE": "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/go-build-cache",
+    "GOPROXY": "off",
+    "GOSUMDB": "off",
+    "GOENV": "off",
+    "GOTOOLCHAIN": "local",
+    "GOMAXPROCS": "2",
+    "GOTMPDIR": "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/feature-worktrees/log-cleanup/var/local/l4-independent-review-tmp",
+    "GOPATH": "/home/postedism/go",
+    "GOMODCACHE": "/home/postedism/go/pkg/mod",
+    "FORGE_STRICT_LOGS_L4_SAVED_SCOPE": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a"
+  },
+  "commands": [
+    {
+      "name": "ordinary",
+      "args": [
+        "go",
+        "test",
+        "-count=1",
+        "-json",
+        "./scripts/faults/application",
+        "-run",
+        "^TestStrictLogsL4Recovery"
+      ],
+      "code": 0,
+      "seconds": 2.6682495950954035,
+      "sha256": "959e6671e5892722c74b2d8ec9e4f4398673340bbe84789983d790a6b61e0a8d"
+    },
+    {
+      "name": "race",
+      "args": [
+        "go",
+        "test",
+        "-race",
+        "-count=1",
+        "-json",
+        "./scripts/faults/application",
+        "-run",
+        "^TestStrictLogsL4Recovery"
+      ],
+      "code": 0,
+      "seconds": 9.229756100918166,
+      "sha256": "30baa38586f9966f451e01883bf045394f1c03b9f2eedd1310b5a16aea5efbc7"
+    },
+    {
+      "name": "lease-before-negative",
+      "args": [
+        "go",
+        "test",
+        "-race",
+        "-count=1",
+        "-v",
+        "-overlay",
+        "/tmp/forge-l4-recovery-independent-review/overlay-v1.json",
+        "./scripts/faults/application",
+        "-run",
+        "^TestIndependentL4UnchangedSQLLeaseProjection$"
+      ],
+      "code": 1,
+      "seconds": 2.8187146179843694,
+      "sha256": "1212784dc9c5fefc3cb74ee4570166a09a4ea08c06ddcf5c6568c294532b2406"
+    },
+    {
+      "name": "vet",
+      "args": [
+        "go",
+        "vet",
+        "./scripts/faults/application"
+      ],
+      "code": 0,
+      "seconds": 0.3144193560583517,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

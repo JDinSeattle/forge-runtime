@@ -1,0 +1,90 @@
+{
+  "status": "TWO_CONFIRMED_P2_BEFORE_FIX",
+  "commit": "e9793ea654d4c2e43d410eca8fab3c1a65e4fe98",
+  "scope": "Independent read-only source, immutable saved records and offline temp-file tests only; no host/DB/Docker/provider operations.",
+  "findings": [
+    {
+      "priority": "P2",
+      "id": "cleanup-total-vs-unreleased",
+      "source": "strict_logs_l4_recovery_test.go:262,543",
+      "evidence": "evidence-recompute-v1.json",
+      "reason": "Existing released L1 row makes total cleanup count 1 before and at least 2 after target release; old preflight/final expected 0/1. Old observer cleanup=0 means no unreleased rows."
+    },
+    {
+      "priority": "P2",
+      "id": "sql-lease-overlay-vs-snapshot",
+      "source": "strict_logs_l4_recovery_test.go:86; internal/persistence/store.go:288-309",
+      "evidence": "lease-before-negative.log",
+      "reason": "Unchanged raw snapshot until 18:24:46.778095Z and legitimate SQL heartbeat until 18:24:59.737432Z are distinct; GetRun overwrites State.Lease from SQL. Real saved SQL projection rejected by old full State equality."
+    }
+  ],
+  "commands": [
+    {
+      "name": "ordinary",
+      "args": [
+        "go",
+        "test",
+        "-count=1",
+        "-json",
+        "./scripts/faults/application",
+        "-run",
+        "^TestStrictLogsL4Recovery"
+      ],
+      "code": 0,
+      "seconds": 2.6682495950954035,
+      "sha256": "959e6671e5892722c74b2d8ec9e4f4398673340bbe84789983d790a6b61e0a8d"
+    },
+    {
+      "name": "race",
+      "args": [
+        "go",
+        "test",
+        "-race",
+        "-count=1",
+        "-json",
+        "./scripts/faults/application",
+        "-run",
+        "^TestStrictLogsL4Recovery"
+      ],
+      "code": 0,
+      "seconds": 9.229756100918166,
+      "sha256": "30baa38586f9966f451e01883bf045394f1c03b9f2eedd1310b5a16aea5efbc7"
+    },
+    {
+      "name": "lease-before-negative",
+      "args": [
+        "go",
+        "test",
+        "-race",
+        "-count=1",
+        "-v",
+        "-overlay",
+        "/tmp/forge-l4-recovery-independent-review/overlay-v1.json",
+        "./scripts/faults/application",
+        "-run",
+        "^TestIndependentL4UnchangedSQLLeaseProjection$"
+      ],
+      "code": 1,
+      "seconds": 2.8187146179843694,
+      "sha256": "1212784dc9c5fefc3cb74ee4570166a09a4ea08c06ddcf5c6568c294532b2406"
+    },
+    {
+      "name": "vet",
+      "args": [
+        "go",
+        "vet",
+        "./scripts/faults/application"
+      ],
+      "code": 0,
+      "seconds": 0.3144193560583517,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "source_sha256": {
+    "scripts/faults/application/strict_logs_l4_recovery_helpers_test.go": "4f2a8584fff40205b9f63939a600300dc8e37d9724c4b9a290aec134e827d6fa",
+    "scripts/faults/application/strict_logs_l4_recovery_offline_test.go": "79c9dea72f92384c8a0451ca60802d2d1d8e26576ba2423e3328aff4c4fd22c6",
+    "scripts/faults/application/strict_logs_l4_recovery_test.go": "fd2ee2b88070f767fdb455996f8fb82d684474886d826333920a795611e972af"
+  },
+  "other_confirmed_P1_P2": [],
+  "artifact_directory": "/tmp/forge-l4-recovery-independent-review"
+}

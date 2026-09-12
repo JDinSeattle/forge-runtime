@@ -1,0 +1,34 @@
+{
+  "author_commit": "e9793ea654d4c2e43d410eca8fab3c1a65e4fe98",
+  "source_sha256": {
+    "scripts/faults/application/strict_logs_l4_recovery_helpers_test.go": "4f2a8584fff40205b9f63939a600300dc8e37d9724c4b9a290aec134e827d6fa",
+    "scripts/faults/application/strict_logs_l4_recovery_offline_test.go": "79c9dea72f92384c8a0451ca60802d2d1d8e26576ba2423e3328aff4c4fd22c6",
+    "scripts/faults/application/strict_logs_l4_recovery_test.go": "fd2ee2b88070f767fdb455996f8fb82d684474886d826333920a795611e972af"
+  },
+  "author_archive_members_verified": 12,
+  "author_archive_manifest_sha256": "5b28c41abc0bc9f0e61713ddcae67ab2b03edb901d4952506b4c9bf38fa213e0",
+  "lease_observer_members_verified": 3,
+  "lease_observer_manifest_sha256": "5277e3980f434163dddb5dbfa45d7b19446b4a0f95b2b496cb0a5b33c5c8679c",
+  "retained_old_unreleased_cleanup_count": 0,
+  "actual_l1_cleanup_rows": [
+    {
+      "id": "cleanup_5KYQX4PMAUBB4JTRQDNOSSSF6P",
+      "phase": "released",
+      "run_id": "run_FSOSGYSAML5QZCYDZOP3TER3JI",
+      "runner_id": "application-fault-runner",
+      "tenant_id": "sl-L1-ssdvxhtn2ur6zrqn4dlhqqqez7",
+      "created_at": "2026-09-12T18:23:30.930723+00:00",
+      "lease_owner": "sl-explicit-cleanup",
+      "lease_until": "2026-09-12T18:24:00.931573+00:00",
+      "released_at": "2026-09-12T18:23:31.427489+00:00",
+      "runner_epoch": 3,
+      "snapshot_ref": "artifact_9cf25e27b9d639e564cbe7edfa39336e9c46962395a22da0bfabd99b5a596027",
+      "terminal_version": 20,
+      "workspace_revision": 2
+    }
+  ],
+  "preflight_expected_total_cleanup_count": 0,
+  "actual_prior_total_at_least": 1,
+  "final_expected_total_released_count": 1,
+  "actual_final_with_target_released_at_least": 2
+}
