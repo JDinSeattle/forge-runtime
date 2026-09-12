@@ -1,10 +1,12 @@
 # E48 — Actual worker SIGTERM and successor acceptance
 
-Status: the first actual worker/private PostgreSQL/gRPC run reached both completed
-and cleaned-up runs, then **failed** its final confirmation assertion in 46.64 s.
-The fixture queried only `effect_completed`, while the successor correctly
-committed `reconciled`. The corrected fixture still awaits a fresh frozen-source
-operator run. Neither recording acceptance nor Docker acceptance is claimed passed.
+Status: **PASS for the integrated recording-backend acceptance**, 47.24 s on
+commit `0c796c744b90bd08a26513a3586a475387ba775d`. Actual production worker OS
+processes received SIGTERM and recovered through private PostgreSQL, real gRPC
+and the production Engine/SQLite journal. The runner backend records jobs; it
+executes no command subprocess or Docker container. The original 46.64 s run
+remains **FAIL** because its confirmation query omitted `reconciled`; that raw
+record is preserved separately and is not relabeled.
 
 The new entry point is `TestRealWorkerSIGTERMRecording` in
 `scripts/faults/application/worker_sigterm_test.go`. It launches the supplied
@@ -20,6 +22,71 @@ records jobs and remains running for twelve seconds. Its verification reads the
 actual fixture file but executes no Python, shell or container. Provider scripts
 are deterministic and indexed by durable model step. Their usage and prices are
 synthetic; no paid provider or model-quality assertion is involved.
+
+## Integrated host result
+
+Raw evidence is in
+`benchmarks/results/worker-sigterm-e48-integrated-20260912/`. Independent review
+recomputed the observations below from the phase captures, RPC records, archived
+receipt bytes and a read-only connection to the closed, private SQLite journal.
+It verified all 81 files named by the raw manifest. No demonstration service was stopped or
+shared workspace used by this recording acceptance.
+
+| Observation | Actual result |
+| --- | --- |
+| Original / successor worker PIDs | `3383176` / `3383524` |
+| SIGTERM exit codes | `0` / `0` |
+| Signal send to observed/reaped exit | Approximately `1.576 ms` / `1.537 ms`; two individual samples, not an SLO |
+| Original / successor worker lease | Epoch `2` / epoch `3`; worker IDs `signal-original-0` / `signal-successor-0` |
+| Original SQL lease expiry | `2026-09-12T00:26:24.190562Z` |
+| Successor committed claim timestamp | `2026-09-12T00:26:24.282880Z`, `92.318 ms` after expiry |
+| Target operation Start | One RPC and one recording-backend Start; successor Start zero |
+| Successor target Inspect / workspace Adopt | One / one |
+| Target confirmation | Exactly one `reconciled`, event epoch `3`, receipt dispatch epoch `2`, succeeded and settled |
+| Main / probe completion | Both completed, snapshot published and allocation released |
+| Final tenant active / runner reserved slots / provider active requests | `0` / `0` / `0` |
+| Final token / money reservations | `0` / `0`; committed synthetic usage and cost remain recorded |
+| Main durable event sequence | 53 contiguous events |
+
+The main run is `run_4KRCRAJNVBN2KYUSW5XEBTQTYF`, with target operation
+`run_4KRCRAJNVBN2KYUSW5XEBTQTYF_step_1_op_0` and recording job
+`forge-0b03b92c53517b32e4fc0ef80401314768b427e9`. Its full captured operation is
+unchanged before the first signal and after the original worker exits, and still
+reports running at that boundary. The recovered receipt, SQL effect and SQLite
+operation row retain that ID, job ID, argument hash and dispatch epoch. The
+archived receipt's bytes match the PostgreSQL artifact SHA and size. Cleanup
+advances its own runner epoch after terminal completion; it does not rewrite the
+original dispatch identity.
+
+The queued probe was created after the original PID exited and remained version
+1 / epoch 0 under its fixture admission gate until main cleanup. All captured
+claim leases are 30 seconds. There are no original-worker claim events after the
+post-signal database-clock sample, no business cancellation events and no Cancel
+RPC. The final shared quota capture records 840 committed synthetic micro-USD
+across the two runs and zero reserved cost/tokens. No actual provider charge is
+involved.
+
+All 318 captured code/configuration/script inputs match before and after the run
+and were independently compared, byte for byte by SHA-256, with their Git blobs
+at the stated commit. The preserved executable identities are:
+
+- Worker SHA-256: `1e06ec9213fa50a98c296ee5f17fa99d28e244d300d379f706467d2a18b6365c`.
+- Race test executable SHA-256: `7da90f279433c918b960f789a50bc7c0d523557df40e5d79e6687d8363e8f0a7`.
+
+Both on-disk binaries still matched those hashes at independent review. Each
+worker's launch and pre-signal `/proc` samples agree on executable SHA, PID and
+start ticks. The Go build records `vcs.modified=true`: this was a working-tree
+build, not an independently reproduced clean build or complete transitive
+compiler/toolchain attestation. The launcher freezes the 318 selected inputs;
+it does not attest every host or toolchain input.
+
+The manifest excludes live object/workspace trees and SQLite; archived receipt
+bytes are covered, and the private journal was separately hashed and inspected
+read-only at review (schema version 5, zero unsettled operations). Table captures
+and process identities are sampled separately, not an atomic distributed
+snapshot. The recording job lasts twelve seconds and completes before the
+30-second takeover, so this result does not prove adoption of a still-running
+real container. The later Docker combination remains unverified by E48.
 
 ## Frozen acceptance sequence
 
@@ -92,7 +159,7 @@ FORGE_WORKER_SIGTERM_EVIDENCE=<absolute fresh owner-only evidence directory>
 ```
 
 Run the preserved executable with a three-minute test timeout. Expected normal
-duration is about 45–65 seconds; no duration is claimed until actual execution.
+duration is about 45–65 seconds; the integrated sample above took 47.24 seconds.
 
 ```sh
 var/e48-build/application-faults.test -test.v \
@@ -125,7 +192,7 @@ failure (missing import/incorrect signer call), corrected preflight race passes,
 vet output and the source snapshot/hash. The preflight tests credential filtering,
 fixed command-script binding and recording-job running/inspect/cancel behavior
 without sockets, PostgreSQL or subprocess execution. It does not stand in for the
-pending opt-in run above.
+separate host acceptance above.
 
 ## First actual run and fixture correction
 
@@ -151,4 +218,5 @@ status. A duplicate of either kind cannot be hidden by selecting only one kind.
 `benchmarks/results/worker-sigterm-diagnosis-20260912/` preserves the old query
 source and failing stdout, an offline audit with copy-only negative cases, and
 compile/race preflight/vet logs for the correction. The audit diagnoses the old
-failure; it does not substitute for running the corrected SQL on fresh PostgreSQL.
+failure; the later integrated run above separately executes the corrected SQL
+on a fresh private PostgreSQL schema.
