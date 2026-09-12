@@ -1196,6 +1196,8 @@ func (f *slFixture) l4() {
 
 func (f *slFixture) l5() {
 	dir := filepath.Join(f.a.EvidenceDir, "worker-runner-sigterm")
+	privateDir, err := lifecyclePrivate(f.a.ScopeRoot, f.a.EvidenceDir)
+	f.check(err)
 	var historical slAcceptance
 	f.check(slReadJSON(filepath.Join(dir, "acceptance-input.json"), &historical))
 	if !reflect.DeepEqual(historical, f.a) {
@@ -1274,9 +1276,9 @@ func (f *slFixture) l5() {
 		label, launchName, path, hash string
 		args                          []string
 	}{
-		{"worker-original", "lifecycle-original", f.a.WorkerBinary, f.a.WorkerSHA, []string{f.a.WorkerBinary, "-config", filepath.Join(f.a.ScopeRoot, "runtime", "sigterm-private", "worker.json"), "-id", "lifecycle-original"}},
+		{"worker-original", "lifecycle-original", f.a.WorkerBinary, f.a.WorkerSHA, []string{f.a.WorkerBinary, "-config", filepath.Join(privateDir, "worker.json"), "-id", "lifecycle-original"}},
 		{"runner-original", "runner-original", f.a.RunnerBinary, f.a.RunnerSHA, []string{f.a.RunnerBinary, "-config", f.a.RunnerConfig}},
-		{"worker-successor", "lifecycle-successor", f.a.WorkerBinary, f.a.WorkerSHA, []string{f.a.WorkerBinary, "-config", filepath.Join(f.a.ScopeRoot, "runtime", "sigterm-private", "worker.json"), "-id", "lifecycle-successor"}},
+		{"worker-successor", "lifecycle-successor", f.a.WorkerBinary, f.a.WorkerSHA, []string{f.a.WorkerBinary, "-config", filepath.Join(privateDir, "worker.json"), "-id", "lifecycle-successor"}},
 		{"runner-successor", "runner-successor", f.a.RunnerBinary, f.a.RunnerSHA, []string{f.a.RunnerBinary, "-config", f.a.RunnerConfig}},
 	} {
 		launchRaw, e := slRead(filepath.Join(dir, spec.launchName+".log.identity.json"), 64<<10)
@@ -1325,7 +1327,7 @@ func (f *slFixture) l5() {
 		WorkerDSN string `json:"worker_dsn"`
 		Schema    string `json:"schema"`
 	}
-	f.check(slReadJSON(filepath.Join(f.a.ScopeRoot, "runtime", "sigterm-private", "database.json"), &private))
+	f.check(slReadJSON(filepath.Join(privateDir, "database.json"), &private))
 	u, e := url.Parse(private.WorkerDSN)
 	f.check(e)
 	if u.Hostname() != "127.0.0.1" || u.Port() != "32773" || u.Path != "/forge" || !strings.HasPrefix(private.Schema, "appfault_lifecycle_") || u.Query().Get("search_path") != private.Schema {

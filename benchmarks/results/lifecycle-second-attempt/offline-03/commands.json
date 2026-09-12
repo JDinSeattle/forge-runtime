@@ -1,0 +1,54 @@
+[
+  {
+    "name": "ordinary",
+    "command": [
+      "go",
+      "test",
+      "./scripts/faults/application",
+      "-run",
+      "^(TestLifecycleAbort|TestLifecycleExplicit|TestLifecycleOriginalDatabase|TestWorkerRunnerSIGTERM|TestStrictLogsOffline|TestStrictLogsDurable|TestStrictLogsSignalHistory|TestStrictLogsClaimHistory|TestStrictLogsPause)",
+      "-count=1",
+      "-json"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 1.498117208480835
+  },
+  {
+    "name": "race",
+    "command": [
+      "go",
+      "test",
+      "-race",
+      "./scripts/faults/application",
+      "-run",
+      "^(TestLifecycleAbort|TestLifecycleExplicit|TestLifecycleOriginalDatabase|TestWorkerRunnerSIGTERM|TestStrictLogsOffline|TestStrictLogsDurable|TestStrictLogsSignalHistory|TestStrictLogsClaimHistory|TestStrictLogsPause)",
+      "-count=1",
+      "-json"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 3.6648433208465576
+  },
+  {
+    "name": "vet",
+    "command": [
+      "go",
+      "vet",
+      "./scripts/faults/application"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 0.29271578788757324
+  },
+  {
+    "name": "compile",
+    "command": [
+      "go",
+      "test",
+      "-c",
+      "-o",
+      "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/feature-worktrees/logs/var/local/lifecycle-abort/application-faults-final.test",
+      "./scripts/faults/application"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 1.4297561645507812
+  }
+]

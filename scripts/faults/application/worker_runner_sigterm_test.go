@@ -50,9 +50,31 @@ func TestRealWorkerRunnerSIGTERM(t *testing.T) {
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Minute)
 	defer cancel()
+	if err := lifecycleShape(a, c); err != nil {
+		t.Fatal(err)
+	}
+	unlock, err := lifecycleControlLock(a.ScopeRoot)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer unlock()
 	preflight, err := lifecyclePreflight(ctx, a, c)
 	if err != nil {
 		t.Fatal("no process or schema started; preflight:", err)
+	}
+	attempt, err := lifecycleAttempt(a.ScopeRoot, a.EvidenceDir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var prior map[string]any
+	if attempt == "02" {
+		if path != filepath.Join(a.ScopeRoot, "acceptance-02.json") || filepath.Dir(a.TestBinary) == filepath.Join(a.ScopeRoot, "bin") {
+			t.Fatal("second attempt requires acceptance-02 and preserved revision binaries")
+		}
+		prior, err = lifecycleVerifyAbortedFirst(ctx, a, c)
+		if err != nil {
+			t.Fatal("second acceptance requires the live unstarted first-run cancellation intent:", err)
+		}
 	}
 	u, err := url.Parse(os.Getenv("FORGE_TEST_DATABASE_URL"))
 	if err != nil || u.Hostname() != "127.0.0.1" || u.Port() != "32773" || u.Path != "/forge" || u.Query().Get("search_path") != "" {
@@ -68,7 +90,10 @@ func TestRealWorkerRunnerSIGTERM(t *testing.T) {
 	if err = os.Mkdir(dir, 0700); err != nil {
 		t.Fatal("fresh case directory required; previous evidence retained:", err)
 	}
-	private := filepath.Join(a.ScopeRoot, "runtime", "sigterm-private")
+	private, err := lifecyclePrivate(a.ScopeRoot, a.EvidenceDir)
+	if err != nil {
+		t.Fatal(err)
+	}
 	if err = os.Mkdir(private, 0700); err != nil {
 		t.Fatal("fresh private fixture settings required:", err)
 	}
@@ -81,9 +106,15 @@ func TestRealWorkerRunnerSIGTERM(t *testing.T) {
 	h := &harness{t: t, ctx: ctx, c: c.runnerSettings, dir: dir, private: private, binary: a.RunnerBinary, localRunner: a.RunnerConfig}
 	h.fatal(save(filepath.Join(dir, "preflight.json"), preflight))
 	h.fatal(save(filepath.Join(dir, "acceptance-input.json"), a))
+	if attempt == "02" {
+		h.fatal(save(filepath.Join(dir, "independent-attempt.json"), prior))
+	}
 	runnerConfigHash, err := sigtermDigest(a.RunnerConfig)
 	h.fatal(err)
 	h.schema = "appfault_lifecycle_" + strings.ToLower(rand.Text())
+	if attempt == "02" && h.schema == prior["original_schema"] {
+		t.Fatal("second schema cannot equal original")
+	}
 	recovery := map[string]any{"purpose": lifecyclePurpose, "schema": h.schema, "runner_config": a.RunnerConfig, "runner_config_sha256": runnerConfigHash, "journal": c.JournalPath, "artifact_root": c.ArtifactRoot, "private_settings": private, "phase": "before_schema", "scope": "same dedicated journal/owner only; no lease/deadline edits, no unknown workspace deletion"}
 	defer func() {
 		// Parent process exit is not business cancellation. On any failed assert,
@@ -109,6 +140,9 @@ func TestRealWorkerRunnerSIGTERM(t *testing.T) {
 	defer h.db.Close()
 	h.workerDSN, h.workerRole, err = restrictedWorker(ctx, h.db, *u, h.schema)
 	h.fatal(err)
+	if attempt == "02" && h.workerRole == prior["original_worker_role"] {
+		t.Fatal("second worker cannot reuse original role")
+	}
 	role, err := preflightWorkerRole(ctx, h.workerDSN, h.workerRole, h.schema)
 	h.fatal(err)
 	h.fatal(save(filepath.Join(dir, "worker-role-preflight.json"), role))
@@ -137,6 +171,9 @@ func TestRealWorkerRunnerSIGTERM(t *testing.T) {
 	cfg := persistence.Config{Provider: "fake", Model: "fake", MaxModelRounds: 4, MaxToolCalls: 4, MaxCost: 1_000_000, MaxRuntimeSeconds: 170}
 	run, _, err := h.db.Submit(ctx, persistence.SubmitRequest{TenantID: tenant, PrincipalID: "fixture-operator", ProjectID: project.ID, Task: "Explicit finite SIGTERM lifecycle fixture; no model-quality or successful-repair claim", BaseCommit: hash, Config: cfg}, "worker-runner-sigterm")
 	h.fatal(err)
+	if attempt == "02" && run.ID == prior["original_run_id"] {
+		t.Fatal("second run must be independent")
+	}
 	scripts := []provider.Script{tool("lifecycle-original", "run_command", runner.CommandArgs{Command: []string{"python", "-I", "-B", "-c", lifecycleCommand}}), tool("unapproved-next", "run_command", runner.CommandArgs{Command: []string{"python", "-I", "-B", "-c", "raise RuntimeError('must remain unapproved')"}})}
 	h.s = settings{RunnerConfig: a.RunnerConfig, Socket: c.Server.UnixSocket, Evidence: dir, SourceHash: hash, Mode: lifecyclePurpose, RunID: run.ID, Tenant: tenant, TargetOp: domain.ID(string(run.ID) + "_step_1_op_0"), Scripts: scripts}
 	workerConfig := configuration.Config{ArtifactRoot: c.ArtifactRoot, SigningKeyFile: c.SigningKeyFile, WorkerID: "lifecycle-worker", WorkerSlots: 1, RunnerID: "application-fault-runner", Runner: runnerclient.ClientConfig{UnixSocket: c.Server.UnixSocket}, Sources: map[string]configuration.Source{sourceID: {Path: source, Hash: hash, ProfileID: profileID, HasTarget: true}}, Configs: map[string]persistence.Config{"fixture": cfg}, Models: map[string]application.ModelSpec{"fake/fake": modelSpec()}, Providers: map[string]provider.Registry{"fake": {"fake": {ToolCalling: true, ContextWindow: 32768, MaxOutputTokens: 1024}}}, FakeScripts: map[string][]provider.Script{sourceID: scripts}}
@@ -402,6 +439,12 @@ func TestRealWorkerRunnerSIGTERM(t *testing.T) {
 	if lastHash != runnerConfigHash {
 		t.Fatal("operator config was changed")
 	}
+	if attempt == "02" {
+		retained, e := lifecycleVerifyAbortedFirst(ctx, a, c)
+		h.fatal(e)
+		h.fatal(save(filepath.Join(dir, "original-after-second.json"), retained))
+		proof["original_after_second"] = retained
+	}
 	recovery["phase"] = "released"
 	proof["scope"] = "actual production worker and runner OS SIGTERM; private PostgreSQL; production Docker.Start and fixed ext4 volume, SQLite v5 and physical strict spool; synthetic model/fees"
 	proof["capture"] = "PostgreSQL/SQLite/Docker observations are sequential, not an atomic cross-system snapshot"
@@ -547,7 +590,10 @@ func TestRecoverWorkerRunnerSIGTERM(t *testing.T) {
 			t.Fatal("pool owner differs; recovery cannot rebind")
 		}
 	}
-	private := filepath.Join(a.ScopeRoot, "runtime", "sigterm-private")
+	private, err := lifecyclePrivate(a.ScopeRoot, a.EvidenceDir)
+	if err != nil {
+		t.Fatal(err)
+	}
 	for _, path := range []string{private, filepath.Join(private, "database.json"), filepath.Join(private, "worker.json")} {
 		if err := lifecyclePath(path); err != nil {
 			t.Fatal(err)

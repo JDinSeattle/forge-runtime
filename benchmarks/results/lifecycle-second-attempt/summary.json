@@ -1,0 +1,91 @@
+{
+  "scope": "offline fixture oracles only; no PostgreSQL, Cancel, Docker, service, mount or original evidence mutation",
+  "base_revision": "2b0e33c7bf69c3aa13ef989060dcdd76da1eae52",
+  "test_source_before_after_equal": true,
+  "commands": [
+    {
+      "name": "ordinary",
+      "command": [
+        "go",
+        "test",
+        "./scripts/faults/application",
+        "-run",
+        "^(TestLifecycleAbort|TestLifecycleExplicit|TestLifecycleOriginalDatabase|TestWorkerRunnerSIGTERM|TestStrictLogsOffline|TestStrictLogsDurable|TestStrictLogsSignalHistory|TestStrictLogsClaimHistory|TestStrictLogsPause)",
+        "-count=1",
+        "-json"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 1.498117208480835
+    },
+    {
+      "name": "race",
+      "command": [
+        "go",
+        "test",
+        "-race",
+        "./scripts/faults/application",
+        "-run",
+        "^(TestLifecycleAbort|TestLifecycleExplicit|TestLifecycleOriginalDatabase|TestWorkerRunnerSIGTERM|TestStrictLogsOffline|TestStrictLogsDurable|TestStrictLogsSignalHistory|TestStrictLogsClaimHistory|TestStrictLogsPause)",
+        "-count=1",
+        "-json"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 3.6648433208465576
+    },
+    {
+      "name": "vet",
+      "command": [
+        "go",
+        "vet",
+        "./scripts/faults/application"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.29271578788757324
+    },
+    {
+      "name": "compile",
+      "command": [
+        "go",
+        "test",
+        "-c",
+        "-o",
+        "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/feature-worktrees/logs/var/local/lifecycle-abort/application-faults-final.test",
+        "./scripts/faults/application"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 1.4297561645507812
+    }
+  ],
+  "test_counts": {
+    "ordinary": {
+      "pass_entries": 103,
+      "top_level_pass": 14,
+      "fail_entries": 0
+    },
+    "race": {
+      "pass_entries": 103,
+      "top_level_pass": 14,
+      "fail_entries": 0
+    }
+  },
+  "binaries": [
+    {
+      "path": "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/feature-worktrees/logs/var/local/lifecycle-abort/application-faults-final.test",
+      "size": 87832921,
+      "sha256": "220c762182e44dbba99cae834720070ab2b83710f069a1b5d46795f0e4690615"
+    },
+    {
+      "path": "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/feature-worktrees/logs/var/local/lifecycle-abort/application-faults.test",
+      "size": 87832609,
+      "sha256": "d1a1bbd5db93f1d682a731e0fb9406026d339127db2f2e758eab94dbed6a293c"
+    }
+  ],
+  "owned_source": {
+    "scripts/faults/application/worker_runner_abort_test.go": "7e18527a62c34b93b70f7cd715b891f19d1067b4f730dd09ea6ba1cc122145dd",
+    "scripts/faults/application/worker_runner_abort_offline_test.go": "29e891bd2d9b64ec7eb8cca40f5048c29065119212a24cea2ec89e3feb94d16b",
+    "scripts/faults/application/worker_runner_sigterm_test.go": "e9558aede70e9602a8261d7eb7cbbc5ef8b995b1801eae0e7d6dacd5673082a8",
+    "scripts/faults/application/worker_runner_sigterm_helpers_test.go": "abec35658b1394d0c636d7010b92dbfc7ea3e1052427c2340e9663ae49ca089c",
+    "scripts/faults/application/strict_logs_combined_test.go": "55d4507ab03152cb546b88f29332ee00e7e08b3560632ee71e26ee511713efc6",
+    "scripts/faults/application/strict_logs_combined_helpers_test.go": "75f77bb0b7c08693bc2cd385f3fab912fa0aa884d77c3ed6622fb45d7f1ec15b"
+  }
+}

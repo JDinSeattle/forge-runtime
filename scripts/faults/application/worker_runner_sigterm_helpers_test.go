@@ -17,6 +17,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"strconv"
 	"strings"
 	"syscall"
@@ -101,9 +102,57 @@ func lifecyclePath(p string) error {
 		return nil
 	}
 }
+
+func lifecycleAttempt(scope, evidence string) (string, error) {
+	for _, attempt := range []string{"01", "02"} {
+		if evidence == filepath.Join(scope, "evidence", "sigterm-"+attempt) {
+			return attempt, nil
+		}
+	}
+	return "", fmt.Errorf("explicit sigterm-01 or sigterm-02 evidence directory required")
+}
+
+func lifecyclePrivate(scope, evidence string) (string, error) {
+	attempt, err := lifecycleAttempt(scope, evidence)
+	if err != nil {
+		return "", err
+	}
+	name := "sigterm-private"
+	if attempt == "02" {
+		name += "-02"
+	}
+	return filepath.Join(scope, "runtime", name), nil
+}
+
+func lifecycleBinaryPath(scope, path, name string) bool {
+	base := filepath.Join(scope, "bin")
+	if path == filepath.Join(base, name) {
+		return true
+	}
+	parent := filepath.Dir(path)
+	return filepath.Base(path) == name && filepath.Dir(parent) == base &&
+		regexp.MustCompile(`^[0-9a-f]{40}$`).MatchString(filepath.Base(parent))
+}
+
+func lifecycleBinarySet(a lifecycleAcceptance) bool {
+	return filepath.Dir(a.RunnerBinary) == filepath.Dir(a.WorkerBinary) && filepath.Dir(a.RunnerBinary) == filepath.Dir(a.TestBinary) &&
+		lifecycleBinaryPath(a.ScopeRoot, a.RunnerBinary, "forge-runner") && lifecycleBinaryPath(a.ScopeRoot, a.WorkerBinary, "forge-worker") && lifecycleBinaryPath(a.ScopeRoot, a.TestBinary, "application-faults.test")
+}
+
 func lifecycleShape(a lifecycleAcceptance, c lifecycleRunnerConfig) error {
 	if a.Purpose != lifecyclePurpose || a.FixtureID != "lr20260912_a" || !strings.HasSuffix(a.ScopeRoot, "/var/lifecycle-rehearsals/lr20260912_a") || a.PoolRoot != filepath.Join(a.ScopeRoot, "pool-root") {
 		return fmt.Errorf("explicit independent lifecycle scope required")
+	}
+	if _, err := lifecycleAttempt(a.ScopeRoot, a.EvidenceDir); err != nil {
+		return err
+	}
+	if !lifecycleBinarySet(a) {
+		return fmt.Errorf("all three binaries must share bin or one full revision directory")
+	}
+	for _, b := range []struct{ path, name string }{{a.RunnerBinary, "forge-runner"}, {a.WorkerBinary, "forge-worker"}, {a.TestBinary, "application-faults.test"}} {
+		if !lifecycleBinaryPath(a.ScopeRoot, b.path, b.name) {
+			return fmt.Errorf("fixed binary name under bin or bin/<revision> required")
+		}
 	}
 	for _, p := range []string{a.RunnerConfig, a.RunnerBinary, a.WorkerBinary, a.TestBinary, a.EvidenceDir, c.RootDir, c.JournalPath, c.ArtifactRoot, c.SigningKeyFile} {
 		if !lifecycleInside(a.ScopeRoot, p) {
@@ -648,7 +697,7 @@ for program,wanted in [(tree,b'parent-stderr\x00\xff'),(ast.parse(children[0]),b
 func TestWorkerRunnerSIGTERMRejectsSharedState(t *testing.T) {
 	scope := "/fixture/var/lifecycle-rehearsals/lr20260912_a"
 	hash := strings.Repeat("a", 64)
-	a := lifecycleAcceptance{Purpose: lifecyclePurpose, FixtureID: "lr20260912_a", ScopeRoot: scope, PoolRoot: scope + "/pool-root", RunnerConfig: scope + "/runtime/runner.json", RunnerBinary: scope + "/bin/forge-runner", WorkerBinary: scope + "/bin/forge-worker", TestBinary: scope + "/bin/application.test", EvidenceDir: scope + "/evidence/first", RunnerSHA256: hash, WorkerSHA256: hash, TestSHA256: hash}
+	a := lifecycleAcceptance{Purpose: lifecyclePurpose, FixtureID: "lr20260912_a", ScopeRoot: scope, PoolRoot: scope + "/pool-root", RunnerConfig: scope + "/runtime/runner.json", RunnerBinary: scope + "/bin/forge-runner", WorkerBinary: scope + "/bin/forge-worker", TestBinary: scope + "/bin/application-faults.test", EvidenceDir: scope + "/evidence/sigterm-01", RunnerSHA256: hash, WorkerSHA256: hash, TestSHA256: hash}
 	c := lifecycleRunnerConfig{runnerSettings: runnerSettings{RootDir: scope + "/runtime/engine", JournalPath: scope + "/runtime/journal.sqlite", ArtifactRoot: scope + "/runtime/artifacts", SigningKeyFile: scope + "/runtime/runner.key", DockerHost: "unix:///run/user/1000/forge-runtime-docker.sock", Sources: map[string]string{"lifecycle": scope + "/runtime/source"}, Profiles: map[string]sandbox.Profile{"lifecycle-python": {ID: "lifecycle-python", Image: lifecycleImage, User: "1000:1000", MemoryBytes: 256 << 20, PIDs: 64, CPUs: 1, WorkspaceQuotaBytes: 256 << 20, TargetCommand: []string{"python", "-I", "-B", "-c", lifecycleTarget}, VerifyCommand: []string{"python", "-I", "-B", "-c", lifecycleRegression}}}}, Server: runnerclient.ServerConfig{UnixSocket: "/tmp/forge-lifecycle-lr20260912_a/runner.sock"}}
 	for i := 1; i <= 4; i++ {
 		c.VolumeSlots = append(c.VolumeSlots, sandbox.VolumeSpec{ID: fmt.Sprintf("slot-%03d", i), MountPath: fmt.Sprintf("%s/pool-root/slots/slot-%03d", scope, i), ImagePath: fmt.Sprintf("%s/pool-root/images/slot-%03d.img", scope, i), ImageBytes: 256 << 20, MaxInodes: 65536})

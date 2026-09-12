@@ -157,11 +157,15 @@ func slValidateContract(a slAcceptance, c slRunnerConfig) error {
 		return fmt.Errorf("fixture scope mismatch")
 	}
 	rt := filepath.Join(a.ScopeRoot, "runtime")
-	if a.PoolRoot != filepath.Join(a.ScopeRoot, "pool-root") || a.RunnerConfig != filepath.Join(rt, "runner.json") || a.EvidenceDir != filepath.Join(a.ScopeRoot, "evidence", "sigterm-01") {
+	_, attemptErr := lifecycleAttempt(a.ScopeRoot, a.EvidenceDir)
+	if a.PoolRoot != filepath.Join(a.ScopeRoot, "pool-root") || a.RunnerConfig != filepath.Join(rt, "runner.json") || attemptErr != nil {
 		return fmt.Errorf("acceptance paths mismatch")
 	}
+	if filepath.Dir(a.RunnerBinary) != filepath.Dir(a.WorkerBinary) || filepath.Dir(a.RunnerBinary) != filepath.Dir(a.TestBinary) {
+		return fmt.Errorf("binary revision directories differ")
+	}
 	for _, x := range []struct{ path, name, hash string }{{a.RunnerBinary, "forge-runner", a.RunnerSHA}, {a.WorkerBinary, "forge-worker", a.WorkerSHA}, {a.TestBinary, "application-faults.test", a.TestSHA}} {
-		if x.path != filepath.Join(a.ScopeRoot, "bin", x.name) || len(x.hash) != 64 {
+		if !lifecycleBinaryPath(a.ScopeRoot, x.path, x.name) || len(x.hash) != 64 {
 			return fmt.Errorf("binary binding mismatch")
 		}
 		if _, e := hex.DecodeString(x.hash); e != nil {
