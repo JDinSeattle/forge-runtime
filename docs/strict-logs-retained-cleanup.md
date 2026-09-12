@@ -23,7 +23,7 @@ The target was created by the original direct-RPC fixture; there is no correspon
 
 ## Durable sequence and failure boundary
 
-1. Validate every original manifest member and frozen input. Record a new immutable intent and a read-only journal observation in `evidence/logs-01-cleanup`.
+1. Validate every original manifest member and frozen input. Create `evidence/logs-01-cleanup` and sync its parent directory; create the invocation directory and sync the cleanup directory. Either sync failure aborts before key loading, runner startup or RPC. Then record a new immutable intent and a read-only journal observation.
 2. Inspect the four exact terminal operation IDs through the new runner. Compare returned operations, actual published receipt bytes and log bytes with the original archive; verify log framing/loss and durable artifact pins.
 3. Call production `StopWorkspace`. Validate the exact stopped workspace tuple, `NoActiveOperations`, immutable stop bytes and object identity.
 4. Call production `SealSnapshot`. Read the actual snapshot object, validate its workspace tuple and the complete original `app.py` bytes, executable bit and independently recomputed source-tree hash. Fsync the archived bytes and metadata, including their parent directory, and verify the two SQLite pins.
@@ -47,3 +47,5 @@ The helper tests cover accepted crash-stage shapes, changed UUID/epoch/revision/
 An optional `TestStrictLogsCleanupArchivedInputs` with `FORGE_STRICT_LOGS_READONLY_SCOPE` reads the retained fixture files and four published receipt objects. It does not read the signing key, open SQLite, connect to a socket or start a process. On the retained originals it verified 535 distinct input paths, including all 524 manifest members and the original eight execution inputs after deduplication.
 
 No actual Stop, Seal, Release, volume cleanup or new full logs acceptance is claimed by these offline results.
+
+Independent pre-execution review found that the initial fixture synced archive files and their directory but omitted the newly created directory entry in its parent. The v1 source/checks are preserved; v2 adds both parent syncs and failure-injection checks for this gate. No actual cleanup ran on v1.

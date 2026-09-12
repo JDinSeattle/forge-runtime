@@ -346,3 +346,43 @@ func TestStrictLogsCleanupArchivedInputs(t *testing.T) {
 	}
 	t.Logf("verified %d immutable source/evidence files; UUID %s; no live operations", len(in.Hashes), in.Before.Identity)
 }
+
+func TestStrictLogsCleanupDirectoryDurabilityBeforeExecution(t *testing.T) {
+	for _, failure := range []string{"cleanup-parent", "invocation-parent", "none"} {
+		t.Run(failure, func(t *testing.T) {
+			parent := t.TempDir()
+			dir := filepath.Join(parent, "cleanup")
+			calls := []string{}
+			attempt, e := slCleanupPrepareDirectory(dir, func(p string) error {
+				calls = append(calls, p)
+				if (failure == "cleanup-parent" && p == parent) || (failure == "invocation-parent" && p == dir) {
+					return fmt.Errorf("injected fsync failure")
+				}
+				return slCleanupSyncDirectory(p)
+			})
+			// The helper is the gate before key loading/process/RPC setup. Neither
+			// failed sync may return an executable invocation path to that setup.
+			if failure != "none" {
+				if e == nil || attempt != "" {
+					t.Fatal("failed sync admitted execution")
+				}
+			} else if e != nil || attempt == "" {
+				t.Fatal("durable directory preparation failed", e)
+			}
+			if len(calls) == 0 || calls[0] != parent {
+				t.Fatal("cleanup parent must be synced first")
+			}
+			entries, err := os.ReadDir(dir)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if failure == "cleanup-parent" {
+				if len(calls) != 1 || len(entries) != 0 {
+					t.Fatal("invocation created before parent durability")
+				}
+			} else if len(calls) != 2 || calls[1] != dir || len(entries) != 1 {
+				t.Fatal("invocation directory entry was not synced")
+			}
+		})
+	}
+}

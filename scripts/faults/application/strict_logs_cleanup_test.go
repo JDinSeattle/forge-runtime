@@ -689,23 +689,9 @@ func TestStrictLogsRetainedCleanup(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), 150*time.Second)
 	defer cancel()
 	dir := filepath.Join(a.ScopeRoot, "evidence", "logs-01-cleanup")
-	check(lifecyclePath(dir))
-	if e = os.Mkdir(dir, 0700); e != nil && !os.IsExist(e) {
-		check(e)
-	}
-	info, e := os.Stat(dir)
-	check(e)
-	if !info.IsDir() || info.Mode().Perm() != 0700 {
-		t.Fatal("private cleanup directory required")
-	}
-	// One immutable invocation per execution; even a crash/retry never overwrites
-	// the original failed report, raw log, stage proof or runner identity.
-	if _, err := os.Lstat(filepath.Join(dir, "manifest.json")); err == nil {
-		t.Fatal("cleanup already finalized; use read-only prerequisite verification")
-	} else if !os.IsNotExist(err) {
-		check(err)
-	}
-	attempt, e := os.MkdirTemp(dir, "invocation-")
+	// Persist both newly-created directory entries before intent, key loading,
+	// process launch, or any RPC. A sync error preserves files but aborts here.
+	attempt, e := slCleanupPrepareDirectory(dir, slCleanupSyncDirectory)
 	check(e)
 	passed := false
 	invocationSaved := false
@@ -884,6 +870,49 @@ func TestStrictLogsRetainedCleanup(t *testing.T) {
 	check(slCleanupMakeManifest(dir))
 	_, e = slCleanupPrerequisite(a, c, j)
 	check(e)
+}
+
+// The enclosing directory's entry is a separate durability boundary from
+// fsync of files and of the newly-created directory itself.
+func slCleanupSyncDirectory(path string) error {
+	fd, e := unix.Open(path, unix.O_DIRECTORY|unix.O_RDONLY|unix.O_NOFOLLOW|unix.O_CLOEXEC, 0)
+	if e != nil {
+		return e
+	}
+	defer unix.Close(fd)
+	return unix.Fsync(fd)
+}
+func slCleanupPrepareDirectory(dir string, syncDirectory func(string) error) (string, error) {
+	if e := lifecyclePath(dir); e != nil {
+		return "", e
+	}
+	if e := os.Mkdir(dir, 0700); e != nil && !os.IsExist(e) {
+		return "", e
+	}
+	// Also sync an existing parent entry after a crash between mkdir and fsync.
+	if e := syncDirectory(filepath.Dir(dir)); e != nil {
+		return "", fmt.Errorf("cleanup parent sync before execution: %w", e)
+	}
+	info, e := os.Stat(dir)
+	if e != nil {
+		return "", e
+	}
+	if !info.IsDir() || info.Mode().Perm() != 0700 {
+		return "", fmt.Errorf("private cleanup directory required")
+	}
+	if _, e = os.Lstat(filepath.Join(dir, "manifest.json")); e == nil {
+		return "", fmt.Errorf("cleanup already finalized; use read-only prerequisite verification")
+	} else if !os.IsNotExist(e) {
+		return "", e
+	}
+	attempt, e := os.MkdirTemp(dir, "invocation-")
+	if e != nil {
+		return "", e
+	}
+	if e = syncDirectory(dir); e != nil {
+		return "", fmt.Errorf("invocation parent sync before execution: %w", e)
+	}
+	return attempt, nil
 }
 func slCleanupStorageGone(c slRunnerConfig) error {
 	if len(c.VolumeSlots) != 4 || c.VolumeSlots[0].ID != "slot-001" {
