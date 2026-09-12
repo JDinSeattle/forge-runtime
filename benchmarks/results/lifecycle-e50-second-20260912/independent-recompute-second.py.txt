@@ -1,0 +1,125 @@
+from pathlib import Path
+import hashlib,json,subprocess,io,collections,re,datetime,copy,shutil
+R=Path('/home/postedism/Desktop/mini claude code/forge-runtime')
+W=R/'var/local/feature-worktrees/progress'
+S=R/'var/lifecycle-rehearsals/lr20260912_a'
+E=S/'evidence'
+D=E/'sigterm-02/worker-runner-sigterm'
+V='c9414210b58124aa7c9dd25edd3f18c89004cf10'
+B=E/('build-'+V)
+O=W/'benchmarks/results/lifecycle-e50-second-20260912'
+def j(p):return json.loads(p.read_text())
+def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+def dt(x):return datetime.datetime.fromisoformat(x.replace('Z','+00:00'))
+def ns(x):return int(dt(x).timestamp()*1000000000)
+def save(p,v):p.write_text(json.dumps(v,indent=2,sort_keys=True)+'\n')
+checks={}
+def check(name,value):
+ checks[name]=bool(value)
+ if not value:raise AssertionError(name)
+a=j(D/'acceptance.json');pg=j(D/'cleanup-released-postgres.json');sq=j(D/'cleanup-released-sqlite.json');before=j(D/'after-both-signals-postgres.json');adopt=j(D/'after-adoption-postgres.json');settled=j(D/'original-operation-settled.json');input_=j(D/'acceptance-input.json');build=j(B/'results.json');intent=j(B/'intent.json')
+run='run_4B2L5YVPJSHMQSNEBGGPSEVSFB';tenant='lifecycle-b6qty6f6cjxb5ckmty5n225jwi';op=run+'_step_1_op_0';cid=a['original_container_id']
+check('actual_case_pass',a['passed'] is True)
+check('exact_run_tenant_uuid',a['final_state']['run_id']==run and a['final_state']['tenant_id']==tenant and a['journal_uuid']=='b010dd7440a54c58601967342f397faf686b7e306061af9f49809ee342b0ec8e')
+check('sqlite_identity_matches',sq['journal_identity']==[{'singleton':1,'id':a['journal_uuid']}])
+signals={}
+for who,launch in [('worker-original','lifecycle-original'),('worker-successor','lifecycle-successor'),('runner-original','runner-original'),('runner-successor','runner-successor')]:
+ s=j(D/(who+'-signal.json'));i=j(D/(launch+'.log.identity.json'))
+ check(who+'_identity',all(s[k]==i[k] for k in ['pid','proc_start_ticks','exe_path','exe_sha256','args']) and type(s['pid']) is int and s['pid']>0 and s['proc_start_ticks'].isdecimal())
+ check(who+'_binary',s['exe_sha256']==build['binaries']['forge-'+who.split('-')[0]]['sha256'])
+ check(who+'_exit_and_time',s['exit_code']==0 and dt(s['observed_at'])<=dt(s['signal_sent_at'])<=dt(s['exited_at']) and dt(s['db_before_signal'])<=dt(s['signal_sent_at'])<=dt(s['db_after_signal_return']))
+ signals[who]={k:s[k] for k in ['pid','proc_start_ticks','signal_sent_at','exited_at','exit_code']}
+old=before['runs'][0];claims=[x for x in adopt['run_snapshots'] if (x['input_event'] or {}).get('kind')=='claimed' and x['body']['lease']['owner']=='lifecycle-successor-0'];check('unique_successor_claim_before_adoption',len(claims)==1)
+claim=claims[0]['input_event'];check('natural_expiry_from_raw_sql',dt(old['lease_until'])==dt(a['old_lease_until']) and dt(claim['at'])==dt(a['successor_claim_db_time']) and dt(claim['at'])>=dt(old['lease_until']) and claim['epoch']==old['lease_epoch']+1==a['successor_epoch'])
+for snap in adopt['run_snapshots']:
+ e=snap['input_event']
+ if e:check('snapshot_version_'+str(snap['version']),e['expected_version']==snap['version']-1 and snap['input_state']['version']==e['expected_version'])
+confirm=[x for x in pg['run_snapshots'] if (x['input_event'] or {}).get('receipt',{}).get('effect_id')==op and (x['input_event'] or {}).get('kind')=='reconciled']
+check('one_original_effect_confirmation',len(confirm)==1==a['original_effect_confirmations'])
+check('no_cancel_during_signal_recovery',not any(x['type']=='run.cancel_requested' for x in adopt['run_events']))
+check('later_explicit_fixture_cancel',sum(x['type']=='run.cancel_requested' for x in pg['run_events'])==1==a['cancel_events'] and a['final_state']['status']=='cancelled')
+for phase in ['before-signals','after-worker-sigterm','after-runner-sigterm','after-runner-successor-inspect']:
+ d=j(D/(phase+'-docker.json'))[0]
+ check(phase+'_same_live_container',d['Id']==cid and d['State']['Running'] is True and d['Config']['Labels']['forge.operation_id']==op)
+ env=d['Config']['Env'];check(phase+'_env_is_image_metadata',set(x.split('=',1)[0] for x in env)=={'PATH','LANG','GPG_KEY','PYTHON_VERSION','PYTHON_SHA256'})
+finaldocker=j(D/'after-successor-adoption-docker.json')[0];check('adoption_stopped_same_container',finaldocker['Id']==cid and finaldocker['State']['Running'] is False)
+events=[json.loads(x) for x in (D/'original-container-events.jsonl').read_text().splitlines()];counts=collections.Counter(x['Action'] for x in events)
+check('one_create_start_die',all(x['Actor']['ID']==cid for x in events) and counts['create']==counts['start']==counts['die']==1)
+check('process_start_counter_once',(D/'start-counter.txt').read_text()=='1\n')
+writer=[int(x) for x in (D/'writer-timestamps.txt').read_text().splitlines()];check('writer_continued_after_signals',all(x<y for x,y in zip(writer,writer[1:])) and any(x>ns(signals['runner-original']['exited_at']) for x in writer) and any(x>ns(signals['worker-original']['exited_at']) for x in writer))
+check('writer_stopped_before_natural_end',(dt(finaldocker['State']['FinishedAt'])-dt(finaldocker['State']['StartedAt'])).total_seconds()<70)
+same=j(D/'successor-same-epoch-inspection.json');check('typed_same_epoch_identity',same['request']==settled['request'] and same['job_id']==settled['job_id']==a['original_job_id'] and settled['request']['operation_id']==op and settled['request']['epoch']==old['lease_epoch']==a['original_epoch'])
+artifacts={x['id']:x for x in pg['artifacts']};check('all_artifacts_exported',len(artifacts)==len(list((D/'artifacts').iterdir()))==17)
+for aid,row in artifacts.items():
+ p=D/'artifacts'/(aid+'.json');check('artifact_'+aid,p.stat().st_size==row['byte_size'] and sha(p)==row['sha256'] and row['tenant_id']==tenant and row['run_id']==run and row['state']=='ready')
+effect=next(x for x in pg['effects'] if x['operation_id']==op);receipt=j(D/'artifacts'/(effect['receipt_ref']+'.json'))
+check('receipt_reference_binding',settled['receipt']['sha256']==artifacts[effect['receipt_ref']]['sha256'] and effect['status']==settled['status']==receipt['status']=='cancelled' and receipt['request']==settled['request'])
+check('reconciled_receipt_binding',confirm[0]['input_event']['receipt']['ref']==effect['receipt_ref'] and confirm[0]['input_event']['receipt']['epoch']==settled['request']['epoch'])
+jop=next(x for x in sq['operations'] if x['id']==op);check('sqlite_operation_receipt_request_binding',jop['job_id']==settled['job_id'] and jop['request_json']==settled['request'] and jop['receipt_json']==settled['receipt'] and jop['status']==settled['status'])
+log=a['log_gap'];check('physical_log_gap_and_hash',not log['complete'] and log['reason']=='runner_shutdown' and log['truncated'] and not log['dropped_known'] and log['retained_bytes']==336 and sha(D/'runner-shutdown.spool')==sha(D/'after-adoption.spool')==log['artifact']['sha256'])
+check('same_log_in_receipt',settled['result']['log']==log and sha(D/'artifacts'/'artifact_a46398481114c3590dec89c11ee883a64f5e17275bffd1de5f228460f823923d.json')==log['artifact']['sha256'])
+check('released_pg_and_sqlite',all(x['released']==1 for x in sq['volume_leases']) and all(x['released']==1 and not x['active_operation'] for x in sq['workspaces']) and len(sq['volume_slots'])==4 and all(x['state']=='released' for x in pg['runner_allocations']) and all(x['phase']=='released' for x in pg['workspace_cleanup']))
+check('all_journal_operations_terminal',all(x['status'] in ['completed','failed','cancelled'] for x in sq['operations']))
+check('resource_counters_zero',all(x['active_count']==0 for x in pg['tenant_runtime']) and all(x['reserved_slots']==0 for x in pg['runners']) and all(x['active_requests']==0 for x in pg['provider_quotas']))
+check('synthetic_costs_only',len(pg['model_attempts'])==2 and all(x['provider']=='fake' and x['model_id']=='fake' for x in pg['model_attempts']) and sum(x['actual_microusd'] for x in pg['quota_reservations'])==300 and all(x['status']=='settled' and x['request_slot_released'] for x in pg['quota_reservations']))
+abort=j(E/'sigterm-01/abort-before-runner/report.json');original=a['original_after_second']['original_live'];check('old_abort_no_execution',abort['passed'] is True and abort['terminal'] is False and abort['before']['state_column']=='queued' and abort['after']['state_column']==original['state_column']=='cancel_requested' and abort['after']['lease_epoch']==original['lease_epoch']==0 and abort['after']['counts']==original['counts'] and original['counts']['steps']==1 and original['counts']['effects']==original['counts']['model_attempts']==original['counts']['runner_allocations']==0)
+check('old_deadline_and_immutable_unchanged',abort['before']['immutable_run_columns']==abort['after']['immutable_run_columns']==original['immutable_run_columns'] and original['state']['limits']['deadline']==abort['original_deadline'])
+check('old_abort_reference',a['original_after_second']['abort_report_sha256']==sha(E/'sigterm-01/abort-before-runner/report.json'))
+inputs=j(B/'inputs-before.json');check('build_424_equal_inputs',inputs==j(B/'inputs-after.json') and len(inputs)==424 and build['unchanged_inputs']==424)
+# Read immutable Git blobs, never the moving checkout or any private runtime file.
+request=''.join(V+':'+p+'\n' for p in inputs).encode();stream=io.BytesIO(subprocess.check_output(['git','cat-file','--batch'],cwd=W,input=request))
+for p,want in inputs.items():
+ header=stream.readline().decode().split();raw=stream.read(int(header[2]));stream.read(1);check('git_blob_'+p,hashlib.sha256(raw).hexdigest()==want)
+check('build_script_identity',sha(B/'build.py.txt')==intent['build_script_sha256']==sha(Path('/tmp/forge-lifecycle-continuation-build-reviewed-v2.py')))
+check('all_build_commands_pass',all(x['exit_code']==0 for x in build['commands']) and build['source_revision']==V)
+newbins={}
+for label,row in build['binaries'].items():
+ check('binary_'+label,sha(Path(row['path']))==row['sha256'])
+ prefix={'forge-worker':'worker','forge-runner':'runner','application-faults.test':'test'}[label];check('input_binary_'+label,input_[prefix+'_binary']==row['path'] and input_[prefix+'_sha256']==row['sha256'])
+ newbins[label]=row['sha256']
+for name,want in intent['old_binaries'].items():check('old_binary_retained_'+name,sha(S/'bin'/name)==want)
+for name in ['forge-runner','forge-worker']:
+ info=(B/(name+'.buildinfo.txt')).read_text();check('vcs_'+name,'vcs.revision='+V in info and 'vcs.modified=false' in info)
+counts_test={}
+for name in ['offline','race']:
+ rows=[json.loads(x) for x in (B/(name+'.log')).read_text().splitlines() if x.startswith('{')];c=collections.Counter(x.get('Action') for x in rows if 'Test' in x);counts_test[name]=dict(c);check(name+'_test_counts',c['pass']==297 and c['skip']==56 and not c['fail'])
+for name in ['host-abort','host-sigterm-02']:
+ host=j(E/name/'result.json');check(name+'_exited',host['exit_code']==0 and host['after']['MainPID']=='0' and host['after']['ActiveState']=='inactive')
+O.mkdir(parents=True)
+manifest=[]
+def copy_file(src,rel,projection=None):
+ dst=O/rel;dst.parent.mkdir(parents=True,exist_ok=True)
+ row={'path':rel,'source':str(src),'source_bytes':src.stat().st_size,'source_sha256':sha(src),'mode':'byte-identical'}
+ if projection is None:shutil.copyfile(src,dst)
+ else:
+  v=j(src);removed=[]
+  if projection=='abort':
+   for k in list(v['inputs_sha256']):
+    if '/runtime/sigterm-private/' in k:removed.append('inputs_sha256.'+k);del v['inputs_sha256'][k]
+  elif projection=='recovery':
+   for k in ['private_settings','worker_config','worker_config_sha256','runner_config_sha256']:
+    if k in v:removed.append(k);del v[k]
+  v['_archive_projection']={'source_sha256':row['source_sha256'],'removed_paths':removed,'reason':'private configuration/credential-file paths and their digests excluded; original source retained untouched','not_byte_identical':True};save(dst,v);row.update(mode='explicit projection',removed_paths=removed)
+ row.update(bytes=dst.stat().st_size,sha256=sha(dst));manifest.append(row)
+areas=['host-abort','sigterm-01/abort-before-runner','host-sigterm-02','sigterm-02','build-'+V]
+for area in areas:
+ for p in sorted((E/area).rglob('*')):
+  if not p.is_file():continue
+  rel=str(p.relative_to(E));projection=None
+  if area=='sigterm-01/abort-before-runner':projection='abort'
+  if p.name=='recovery.json':projection='recovery'
+  if projection:rel=rel.removesuffix('.json')+'.projected.json'
+  copy_file(p,rel,projection)
+for name in ['forge-lifecycle-second-attempt-independent-review.json','forge-lifecycle-continuation-build-review-v1.json','forge-lifecycle-continuation-build-review-v2.json','forge-lifecycle-continuation-build-reviewed-v1.py','forge-lifecycle-continuation-build-reviewed-v2.py']:
+ copy_file(Path('/tmp')/name,'independent-reviews/'+name+('.txt' if name.endswith('.py') else ''))
+copy_file(Path('/tmp/forge-e50-second-archive.py'),'independent-recompute.py.txt')
+copy_file(Path('/tmp/forge-e50-second-archive-initial.py.txt'),'independent-recompute-initial.py.txt')
+copy_file(Path('/tmp/forge-e50-second-recompute-initial.log'),'independent-recompute-initial.log')
+# Plaintext credential scan of the archive: public Python image GPG fingerprint
+# and synthetic token accounting are intentionally not credential contents.
+for row in manifest:
+ raw=(O/row['path']).read_bytes().decode(errors='replace');check('secret_scan_'+row['path'],not re.search(r'postgres(?:ql)?://|(?:DEEPSEEK_API_KEY|OPENAI_API_KEY|ANTHROPIC_API_KEY|FORGE_TOKEN|PGPASSWORD)\s*=\s*[^\s\n]+',raw))
+report={'passed':True,'scope':'independent offline recomputation of recorded E50 attempt02, original before-runner abort, and combined frozen build; no DB/Docker/process/credential calls','source_revision':V,'run_id':run,'tenant_id':tenant,'journal_uuid':a['journal_uuid'],'actual_test_seconds':34.45,'host_elapsed_seconds':j(E/'host-sigterm-02/result.json')['elapsed_seconds'],'container':{'id':cid,'create':counts['create'],'start':counts['start'],'die':counts['die'],'writer_samples':len(writer),'effect_confirmations':len(confirm)},'signals':signals,'lease':{'original_epoch':old['lease_epoch'],'old_until':old['lease_until'],'successor_epoch':claim['epoch'],'successor_claim_at':claim['at'],'seconds_after_expiry':(dt(claim['at'])-dt(old['lease_until'])).total_seconds()},'final_status':'cancelled','cleanup_phase':'released','log_complete':False,'log_reason':'runner_shutdown','retained_log_bytes':336,'artifact_hashes_verified':17,'synthetic_microusd':300,'paid_calls':0,'old_run':{'id':abort['run_id'],'status':abort['status'],'terminal':False,'epoch':0,'steps':1,'effects':0,'deadline':abort['original_deadline']},'build':{'stable_inputs':424,'new_binary_sha256':newbins,'test_counts':counts_test,'scope':'five affected packages, not whole repository; test binary lacks embedded VCS stamp'},'checks':checks,'archive':{'raw_source_files':len(manifest),'projections':sum(x['mode']=='explicit projection' for x in manifest)},'limits':['Observations are sequential cross-system snapshots, not atomic.','E50 uses deterministic FakeProvider and synthetic fees; no DeepSeek or model quality result.','Original failed before-runner attempt remains nonterminal cancel_requested, never relabeled successful.','One explicit fixture business cancellation occurs after recovery; no cancellation was observed during signal/recovery window.','Strict log capture retains an explicitly incomplete prefix; no complete-log or full S12 acceptance claim.','Complete ordered API shutdown is a separate acceptance boundary.','Current live journal/mount/process state was not re-read; strict logs was running independently and is excluded.','Old/new binaries were hashed read-only; no builds or process launches were performed.']}
+save(O/'independent-recompute.json',report)
+save(O/'manifest.json',{'files':manifest,'generated_report':{'path':'independent-recompute.json','sha256':sha(O/'independent-recompute.json')},'excluded':['all runtime private/config/key/credential files and their content/digests','host-logs-02 and all running S12 logs evidence','original first failure evidence remains in prior lifecycle-pre-runner-failure-20260912 archive']})
+print(json.dumps({'passed':True,'archive':str(O),'files':len(manifest),'projections':report['archive']['projections'],'checks':len(checks),'report_sha256':sha(O/'independent-recompute.json'),'manifest_sha256':sha(O/'manifest.json')}))

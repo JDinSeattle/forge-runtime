@@ -1,0 +1,39 @@
+{
+  "request": {
+    "tenant_id": "lifecycle-b6qty6f6cjxb5ckmty5n225jwi",
+    "run_id": "run_4B2L5YVPJSHMQSNEBGGPSEVSFB",
+    "workspace_id": "run_4B2L5YVPJSHMQSNEBGGPSEVSFB",
+    "epoch": 2,
+    "grant": "",
+    "operation_id": "run_4B2L5YVPJSHMQSNEBGGPSEVSFB_step_1_op_0",
+    "expected_revision": 1,
+    "kind": "run_command",
+    "args": {
+      "command": [
+        "python",
+        "-I",
+        "-B",
+        "-c",
+        "import os,time,json,subprocess,sys\nwith open('lifecycle-counter.txt','a') as f:\n f.write('1\\n');f.flush();os.fsync(f.fileno())\nchild=subprocess.Popen([sys.executable,'-I','-B','-c',\"import os,time; print('LIFECYCLE_CHILD_READY',flush=True); os.write(2,b'child-stderr\\\\x00\\\\xff'); time.sleep(70)\"])\nprint('LIFECYCLE_PARENT_READY',flush=True)\nos.write(2,b'parent-stderr\\x00\\xff')\ntry:\n with open('lifecycle-writer.txt','a') as f:\n  end=time.monotonic()+70\n  while time.monotonic()\u003cend:\n   n=time.time_ns();f.write(str(n)+'\\n');f.flush();os.fsync(f.fileno())\n   print(json.dumps({'writer_ns':n}),flush=True);time.sleep(.2)\nfinally:\n child.terminate();child.wait(timeout=2)\n"
+      ]
+    },
+    "args_hash": "dbd42c80aa7384da8f3c6b43ca02a8fe9a04f83c77c15d8a4244d34b1112413a",
+    "policy_version": "workspace-v1",
+    "deadline": "2026-09-12T04:48:22.15026Z"
+  },
+  "status": "unknown",
+  "job_id": "forge-4bf5fc9e273e3cd9fb97a15a09a966bfb96914b1",
+  "before_hash": "8b0fc272ee30b0c4aa6f0b1d286033c5b1519ff2d6f019e3c962c45dc4123357",
+  "after_revision": 0,
+  "result": {},
+  "receipt": {
+    "tenant_id": "",
+    "run_id": "",
+    "kind": "",
+    "object_key": "",
+    "sha256": "",
+    "size": 0
+  },
+  "error": "log_capture_incomplete",
+  "cancel_requested": false
+}

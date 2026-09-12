@@ -1,0 +1,272 @@
+[
+    {
+        "Id": "197dd6788f9662bf00695df11f3957482f5875a02f97ffbc3c66ea6c13e0fa8a",
+        "Created": "2026-09-12T04:45:34.258934678Z",
+        "Path": "python",
+        "Args": [
+            "-I",
+            "-B",
+            "-c",
+            "import os,time,json,subprocess,sys\nwith open('lifecycle-counter.txt','a') as f:\n f.write('1\\n');f.flush();os.fsync(f.fileno())\nchild=subprocess.Popen([sys.executable,'-I','-B','-c',\"import os,time; print('LIFECYCLE_CHILD_READY',flush=True); os.write(2,b'child-stderr\\\\x00\\\\xff'); time.sleep(70)\"])\nprint('LIFECYCLE_PARENT_READY',flush=True)\nos.write(2,b'parent-stderr\\x00\\xff')\ntry:\n with open('lifecycle-writer.txt','a') as f:\n  end=time.monotonic()+70\n  while time.monotonic()<end:\n   n=time.time_ns();f.write(str(n)+'\\n');f.flush();os.fsync(f.fileno())\n   print(json.dumps({'writer_ns':n}),flush=True);time.sleep(.2)\nfinally:\n child.terminate();child.wait(timeout=2)\n"
+        ],
+        "State": {
+            "Status": "running",
+            "Running": true,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 1498774,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-12T04:45:34.415528031Z",
+            "FinishedAt": "0001-01-01T00:00:00Z"
+        },
+        "Image": "sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+        "ResolvConfPath": "/home/postedism/Desktop/mini claude code/forge-runtime/var/docker-data/containers/197dd6788f9662bf00695df11f3957482f5875a02f97ffbc3c66ea6c13e0fa8a/resolv.conf",
+        "HostnamePath": "/home/postedism/Desktop/mini claude code/forge-runtime/var/docker-data/containers/197dd6788f9662bf00695df11f3957482f5875a02f97ffbc3c66ea6c13e0fa8a/hostname",
+        "HostsPath": "/home/postedism/Desktop/mini claude code/forge-runtime/var/docker-data/containers/197dd6788f9662bf00695df11f3957482f5875a02f97ffbc3c66ea6c13e0fa8a/hosts",
+        "LogPath": "",
+        "Name": "/forge-4bf5fc9e273e3cd9fb97a15a09a966bfb96914b1",
+        "RestartCount": 0,
+        "Driver": "overlayfs",
+        "Platform": "linux",
+        "MountLabel": "",
+        "ProcessLabel": "",
+        "AppArmorProfile": "",
+        "ExecIDs": null,
+        "HostConfig": {
+            "Binds": null,
+            "ContainerIDFile": "",
+            "LogConfig": {
+                "Type": "none",
+                "Config": {}
+            },
+            "NetworkMode": "none",
+            "PortBindings": {},
+            "RestartPolicy": {
+                "Name": "no",
+                "MaximumRetryCount": 0
+            },
+            "AutoRemove": false,
+            "VolumeDriver": "",
+            "VolumesFrom": null,
+            "ConsoleSize": [
+                0,
+                0
+            ],
+            "CapAdd": null,
+            "CapDrop": [
+                "ALL"
+            ],
+            "CgroupnsMode": "private",
+            "Dns": null,
+            "DnsOptions": [],
+            "DnsSearch": [],
+            "ExtraHosts": null,
+            "GroupAdd": null,
+            "IpcMode": "private",
+            "Cgroup": "",
+            "Links": null,
+            "OomScoreAdj": 200,
+            "PidMode": "",
+            "Privileged": false,
+            "PublishAllPorts": false,
+            "ReadonlyRootfs": true,
+            "SecurityOpt": [
+                "no-new-privileges"
+            ],
+            "Tmpfs": {
+                "/tmp": "rw,nosuid,nodev,noexec,size=67108864"
+            },
+            "UTSMode": "",
+            "UsernsMode": "",
+            "ShmSize": 67108864,
+            "Runtime": "runc",
+            "Isolation": "",
+            "CpuShares": 0,
+            "Memory": 268435456,
+            "NanoCpus": 1000000000,
+            "CgroupParent": "",
+            "BlkioWeight": 0,
+            "BlkioWeightDevice": [],
+            "BlkioDeviceReadBps": [],
+            "BlkioDeviceWriteBps": [],
+            "BlkioDeviceReadIOps": [],
+            "BlkioDeviceWriteIOps": [],
+            "CpuPeriod": 0,
+            "CpuQuota": 0,
+            "CpuRealtimePeriod": 0,
+            "CpuRealtimeRuntime": 0,
+            "CpusetCpus": "",
+            "CpusetMems": "",
+            "Devices": [],
+            "DeviceCgroupRules": null,
+            "DeviceRequests": null,
+            "MemoryReservation": 0,
+            "MemorySwap": 268435456,
+            "MemorySwappiness": null,
+            "OomKillDisable": null,
+            "PidsLimit": 64,
+            "Ulimits": null,
+            "CpuCount": 0,
+            "CpuPercent": 0,
+            "IOMaximumIOps": 0,
+            "IOMaximumBandwidth": 0,
+            "Mounts": [
+                {
+                    "Type": "bind",
+                    "Source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/pool-root/var/workspace-storage/mounts/slot-001/workspace-run_4B2L5YVPJSHMQSNEBGGPSEVSFB/checkout",
+                    "Target": "/workspace"
+                }
+            ],
+            "MaskedPaths": [
+                "/proc/acpi",
+                "/proc/asound",
+                "/proc/interrupts",
+                "/proc/kcore",
+                "/proc/keys",
+                "/proc/latency_stats",
+                "/proc/sched_debug",
+                "/proc/scsi",
+                "/proc/timer_list",
+                "/proc/timer_stats",
+                "/sys/devices/virtual/powercap",
+                "/sys/firmware",
+                "/sys/devices/system/cpu/cpu0/thermal_throttle",
+                "/sys/devices/system/cpu/cpu1/thermal_throttle",
+                "/sys/devices/system/cpu/cpu2/thermal_throttle",
+                "/sys/devices/system/cpu/cpu3/thermal_throttle",
+                "/sys/devices/system/cpu/cpu4/thermal_throttle",
+                "/sys/devices/system/cpu/cpu5/thermal_throttle",
+                "/sys/devices/system/cpu/cpu6/thermal_throttle",
+                "/sys/devices/system/cpu/cpu7/thermal_throttle",
+                "/sys/devices/system/cpu/cpu8/thermal_throttle",
+                "/sys/devices/system/cpu/cpu9/thermal_throttle",
+                "/sys/devices/system/cpu/cpu10/thermal_throttle",
+                "/sys/devices/system/cpu/cpu11/thermal_throttle",
+                "/sys/devices/system/cpu/cpu12/thermal_throttle",
+                "/sys/devices/system/cpu/cpu13/thermal_throttle",
+                "/sys/devices/system/cpu/cpu14/thermal_throttle",
+                "/sys/devices/system/cpu/cpu15/thermal_throttle",
+                "/sys/devices/system/cpu/cpu16/thermal_throttle",
+                "/sys/devices/system/cpu/cpu17/thermal_throttle",
+                "/sys/devices/system/cpu/cpu18/thermal_throttle",
+                "/sys/devices/system/cpu/cpu19/thermal_throttle",
+                "/sys/devices/system/cpu/cpu20/thermal_throttle",
+                "/sys/devices/system/cpu/cpu21/thermal_throttle",
+                "/sys/devices/system/cpu/cpu22/thermal_throttle",
+                "/sys/devices/system/cpu/cpu23/thermal_throttle",
+                "/sys/devices/system/cpu/cpu24/thermal_throttle",
+                "/sys/devices/system/cpu/cpu25/thermal_throttle",
+                "/sys/devices/system/cpu/cpu26/thermal_throttle",
+                "/sys/devices/system/cpu/cpu27/thermal_throttle",
+                "/sys/devices/system/cpu/cpu28/thermal_throttle",
+                "/sys/devices/system/cpu/cpu29/thermal_throttle",
+                "/sys/devices/system/cpu/cpu30/thermal_throttle",
+                "/sys/devices/system/cpu/cpu31/thermal_throttle"
+            ],
+            "ReadonlyPaths": [
+                "/proc/bus",
+                "/proc/fs",
+                "/proc/irq",
+                "/proc/sys",
+                "/proc/sysrq-trigger"
+            ],
+            "Init": true
+        },
+        "Storage": {
+            "RootFS": {
+                "Snapshot": {
+                    "Name": "overlayfs"
+                }
+            }
+        },
+        "Mounts": [
+            {
+                "Type": "bind",
+                "Source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/pool-root/var/workspace-storage/mounts/slot-001/workspace-run_4B2L5YVPJSHMQSNEBGGPSEVSFB/checkout",
+                "Destination": "/workspace",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+            }
+        ],
+        "Config": {
+            "Hostname": "197dd6788f96",
+            "Domainname": "",
+            "User": "1000:1000",
+            "AttachStdin": false,
+            "AttachStdout": true,
+            "AttachStderr": true,
+            "Tty": false,
+            "OpenStdin": false,
+            "StdinOnce": false,
+            "Env": [
+                "PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "LANG=C.UTF-8",
+                "GPG_KEY=7169605F62C751356D054A26A821E680E5FA6305",
+                "PYTHON_VERSION=3.12.13",
+                "PYTHON_SHA256=c08bc65a81971c1dd5783182826503369466c7e67374d1646519adf05207b684"
+            ],
+            "Cmd": [
+                "python",
+                "-I",
+                "-B",
+                "-c",
+                "import os,time,json,subprocess,sys\nwith open('lifecycle-counter.txt','a') as f:\n f.write('1\\n');f.flush();os.fsync(f.fileno())\nchild=subprocess.Popen([sys.executable,'-I','-B','-c',\"import os,time; print('LIFECYCLE_CHILD_READY',flush=True); os.write(2,b'child-stderr\\\\x00\\\\xff'); time.sleep(70)\"])\nprint('LIFECYCLE_PARENT_READY',flush=True)\nos.write(2,b'parent-stderr\\x00\\xff')\ntry:\n with open('lifecycle-writer.txt','a') as f:\n  end=time.monotonic()+70\n  while time.monotonic()<end:\n   n=time.time_ns();f.write(str(n)+'\\n');f.flush();os.fsync(f.fileno())\n   print(json.dumps({'writer_ns':n}),flush=True);time.sleep(.2)\nfinally:\n child.terminate();child.wait(timeout=2)\n"
+            ],
+            "Image": "python@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36",
+            "Volumes": null,
+            "WorkingDir": "/workspace",
+            "Entrypoint": null,
+            "Labels": {
+                "forge.operation_id": "run_4B2L5YVPJSHMQSNEBGGPSEVSFB_step_1_op_0",
+                "forge.runtime": "1"
+            }
+        },
+        "NetworkSettings": {
+            "SandboxID": "de85df55cce39ab791e4e11f62451abd76aa3b7f46ee87713d7e9c260321b8c7",
+            "SandboxKey": "/run/user/1000/forge-runtime-docker-exec/netns/de85df55cce3",
+            "Ports": {},
+            "Networks": {
+                "none": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": null,
+                    "DriverOpts": null,
+                    "GwPriority": 0,
+                    "NetworkID": "0c9f4e0aea6baaaa4e632711b8d9e0742c71b5983b3c937d1d9f1d5f8d535a8b",
+                    "EndpointID": "460ab0f6f3059ea4a0b210026f50b0ec649bdb7d83c713a91ac40969f716547c",
+                    "Gateway": "",
+                    "IPAddress": "",
+                    "MacAddress": "",
+                    "IPPrefixLen": 0,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "DNSNames": null
+                }
+            }
+        },
+        "ImageManifestDescriptor": {
+            "mediaType": "application/vnd.oci.image.manifest.v1+json",
+            "digest": "sha256:d657ab0ade19f404a6ccc883ab399540de667aff751748ce23c07330c5a89e64",
+            "size": 1746,
+            "annotations": {
+                "com.docker.official-images.bashbrew.arch": "amd64",
+                "org.opencontainers.image.base.digest": "sha256:38a76d01668772e381ad2826d876627c89e7133e2f8a0f5d567306798b0f2a16",
+                "org.opencontainers.image.base.name": "debian:trixie-slim",
+                "org.opencontainers.image.created": "2026-08-05T01:04:00Z",
+                "org.opencontainers.image.revision": "3362634339580d3232e65a66dd5a36c47ae7ff14",
+                "org.opencontainers.image.source": "https://github.com/docker-library/python.git#3362634339580d3232e65a66dd5a36c47ae7ff14:3.12/slim-trixie",
+                "org.opencontainers.image.url": "https://hub.docker.com/_/python",
+                "org.opencontainers.image.version": "3.12.13-slim-trixie"
+            },
+            "platform": {
+                "architecture": "amd64",
+                "os": "linux"
+            }
+        }
+    }
+]

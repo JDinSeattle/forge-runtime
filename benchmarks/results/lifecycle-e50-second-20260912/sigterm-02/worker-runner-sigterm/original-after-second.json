@@ -1,0 +1,290 @@
+{
+  "abort_report": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-01/abort-before-runner/report.json",
+  "abort_report_sha256": "d6d0646ab130fc84943089fe64cc032ba64c133da6a5d5c82facc5831023b633",
+  "original_live": {
+    "state": {
+      "schema_version": 2,
+      "run_id": "run_OAZ33S3LRG5O7EOUL6GDQ5QB4N",
+      "tenant_id": "lifecycle-n5yz43ws7vos67f4hzxdujv6sf",
+      "version": 2,
+      "status": "cancel_requested",
+      "stage": "initialize",
+      "lease": {
+        "owner": "",
+        "epoch": 0,
+        "until": "0001-01-01T00:00:00Z"
+      },
+      "step_seq": 0,
+      "workspace_revision": 0,
+      "verification_status": "unverified",
+      "verification_revision": 0,
+      "model_rounds": 0,
+      "tool_calls": 0,
+      "cost_microusd": 0,
+      "limits": {
+        "max_no_progress_batches": 3,
+        "max_model_rounds": 4,
+        "max_tool_calls": 4,
+        "max_cost_microusd": 1000000,
+        "deadline": "2026-09-11T21:04:17.356217-07:00"
+      },
+      "failure_reason": "cancellation requested",
+      "stop_target": "cancelled"
+    },
+    "commands": [
+      {
+        "kind": "stop_execution"
+      }
+    ],
+    "workspace_id": "",
+    "lease_owner": "",
+    "lease_epoch": 0,
+    "lease_until": null,
+    "runner_id": "",
+    "state_column": "cancel_requested",
+    "version_column": 2,
+    "counts": {
+      "approvals": 0,
+      "artifacts": 0,
+      "effects": 0,
+      "model_attempts": 0,
+      "quota_active": 0,
+      "quota_cost": 0,
+      "quota_reservations": 0,
+      "quota_tokens": 0,
+      "run_messages": 0,
+      "runner_allocations": 0,
+      "runner_reserved": 0,
+      "runs": 1,
+      "steps": 1,
+      "tenant_active": 0,
+      "workspace_cleanup": 0
+    },
+    "immutable_run_columns": {
+      "id": "run_OAZ33S3LRG5O7EOUL6GDQ5QB4N",
+      "task": "Explicit finite SIGTERM lifecycle fixture; no model-quality or successful-repair claim",
+      "priority": 0,
+      "runner_id": null,
+      "tenant_id": "lifecycle-n5yz43ws7vos67f4hzxdujv6sf",
+      "created_at": "2026-09-12T04:01:27.357345+00:00",
+      "not_before": "-infinity",
+      "project_id": "project_BJ6DDLOAJVZWBF3FMPREVPE6U4",
+      "base_commit": "8b0fc272ee30b0c4aa6f0b1d286033c5b1519ff2d6f019e3c962c45dc4123357",
+      "lease_epoch": 0,
+      "lease_owner": "",
+      "lease_until": null,
+      "runnable_at": "2026-09-12T04:01:27.356217+00:00",
+      "traceparent": "",
+      "principal_id": "fixture-operator",
+      "workspace_id": "",
+      "lease_yielded": false,
+      "parent_run_id": null,
+      "input_snapshot": "{\"schema_version\":1,\"project_id\":\"project_BJ6DDLOAJVZWBF3FMPREVPE6U4\",\"task\":\"Explicit finite SIGTERM lifecycle fixture; no model-quality or successful-repair claim\",\"base_commit\":\"8b0fc272ee30b0c4aa6f0b1d286033c5b1519ff2d6f019e3c962c45dc4123357\",\"source_id\":\"lifecycle\",\"profile_id\":\"lifecycle-python\"}",
+      "config_snapshot": {
+        "model": "fake",
+        "provider": "fake",
+        "max_tool_calls": 4,
+        "max_model_rounds": 4,
+        "max_cost_microusd": 1000000,
+        "max_runtime_seconds": 170,
+        "max_no_progress_batches": 3
+      },
+      "snapshot_hold_at": null,
+      "retained_from_seq": 1,
+      "snapshot_hold_reason": null,
+      "snapshot_hold_schema": null,
+      "snapshot_hold_sha256": null,
+      "last_claim_traceparent": null
+    },
+    "snapshots": [
+      {
+        "body": {
+          "lease": {
+            "epoch": 0,
+            "owner": "",
+            "until": "0001-01-01T00:00:00Z"
+          },
+          "stage": "initialize",
+          "limits": {
+            "deadline": "2026-09-11T21:04:17.356217-07:00",
+            "max_tool_calls": 4,
+            "max_model_rounds": 4,
+            "max_cost_microusd": 1000000,
+            "max_no_progress_batches": 3
+          },
+          "run_id": "run_OAZ33S3LRG5O7EOUL6GDQ5QB4N",
+          "status": "queued",
+          "version": 1,
+          "step_seq": 0,
+          "tenant_id": "lifecycle-n5yz43ws7vos67f4hzxdujv6sf",
+          "tool_calls": 0,
+          "model_rounds": 0,
+          "cost_microusd": 0,
+          "schema_version": 2,
+          "workspace_revision": 0,
+          "verification_status": "unverified",
+          "verification_revision": 0
+        },
+        "run_id": "run_OAZ33S3LRG5O7EOUL6GDQ5QB4N",
+        "version": 1,
+        "step_seq": 0,
+        "tenant_id": "lifecycle-n5yz43ws7vos67f4hzxdujv6sf",
+        "created_at": "2026-09-12T04:01:27.357972+00:00",
+        "input_event": null,
+        "input_state": null,
+        "schema_version": 2
+      },
+      {
+        "body": {
+          "lease": {
+            "epoch": 0,
+            "owner": "",
+            "until": "0001-01-01T00:00:00Z"
+          },
+          "stage": "initialize",
+          "limits": {
+            "deadline": "2026-09-11T21:04:17.356217-07:00",
+            "max_tool_calls": 4,
+            "max_model_rounds": 4,
+            "max_cost_microusd": 1000000,
+            "max_no_progress_batches": 3
+          },
+          "run_id": "run_OAZ33S3LRG5O7EOUL6GDQ5QB4N",
+          "status": "cancel_requested",
+          "version": 2,
+          "step_seq": 0,
+          "tenant_id": "lifecycle-n5yz43ws7vos67f4hzxdujv6sf",
+          "tool_calls": 0,
+          "stop_target": "cancelled",
+          "model_rounds": 0,
+          "cost_microusd": 0,
+          "failure_reason": "cancellation requested",
+          "schema_version": 2,
+          "workspace_revision": 0,
+          "verification_status": "unverified",
+          "verification_revision": 0
+        },
+        "run_id": "run_OAZ33S3LRG5O7EOUL6GDQ5QB4N",
+        "version": 2,
+        "step_seq": 0,
+        "tenant_id": "lifecycle-n5yz43ws7vos67f4hzxdujv6sf",
+        "created_at": "2026-09-12T04:44:59.055456+00:00",
+        "input_event": {
+          "at": "2026-09-11T21:44:59.053123-07:00",
+          "kind": "cancel_requested",
+          "epoch": 0,
+          "owner": "",
+          "expected_version": 1
+        },
+        "input_state": {
+          "lease": {
+            "epoch": 0,
+            "owner": "",
+            "until": "0001-01-01T00:00:00Z"
+          },
+          "stage": "initialize",
+          "limits": {
+            "deadline": "2026-09-11T21:04:17.356217-07:00",
+            "max_tool_calls": 4,
+            "max_model_rounds": 4,
+            "max_cost_microusd": 1000000,
+            "max_no_progress_batches": 3
+          },
+          "run_id": "run_OAZ33S3LRG5O7EOUL6GDQ5QB4N",
+          "status": "queued",
+          "version": 1,
+          "step_seq": 0,
+          "tenant_id": "lifecycle-n5yz43ws7vos67f4hzxdujv6sf",
+          "tool_calls": 0,
+          "model_rounds": 0,
+          "cost_microusd": 0,
+          "schema_version": 2,
+          "workspace_revision": 0,
+          "verification_status": "unverified",
+          "verification_revision": 0
+        },
+        "schema_version": 2
+      }
+    ],
+    "steps": [
+      {
+        "seq": 0,
+        "kind": "initialize",
+        "run_id": "run_OAZ33S3LRG5O7EOUL6GDQ5QB4N",
+        "status": "committed",
+        "tenant_id": "lifecycle-n5yz43ws7vos67f4hzxdujv6sf",
+        "input_hash": "",
+        "output_ref": ""
+      }
+    ],
+    "events": [
+      {
+        "seq": 1,
+        "type": "run.created",
+        "run_id": "run_OAZ33S3LRG5O7EOUL6GDQ5QB4N",
+        "payload": {
+          "lease": {
+            "epoch": 0,
+            "owner": "",
+            "until": "0001-01-01T00:00:00Z"
+          },
+          "stage": "initialize",
+          "limits": {
+            "deadline": "2026-09-11T21:04:17.356217-07:00",
+            "max_tool_calls": 4,
+            "max_model_rounds": 4,
+            "max_cost_microusd": 1000000,
+            "max_no_progress_batches": 3
+          },
+          "run_id": "run_OAZ33S3LRG5O7EOUL6GDQ5QB4N",
+          "status": "queued",
+          "version": 1,
+          "step_seq": 0,
+          "tenant_id": "lifecycle-n5yz43ws7vos67f4hzxdujv6sf",
+          "tool_calls": 0,
+          "model_rounds": 0,
+          "cost_microusd": 0,
+          "schema_version": 2,
+          "workspace_revision": 0,
+          "verification_status": "unverified",
+          "verification_revision": 0
+        },
+        "step_seq": null,
+        "tenant_id": "lifecycle-n5yz43ws7vos67f4hzxdujv6sf",
+        "attempt_id": null,
+        "created_at": "2026-09-12T04:01:27.358972+00:00",
+        "schema_version": 1
+      },
+      {
+        "seq": 2,
+        "type": "run.cancel_requested",
+        "run_id": "run_OAZ33S3LRG5O7EOUL6GDQ5QB4N",
+        "payload": {
+          "stage": "initialize",
+          "state": "cancel_requested",
+          "reason": "cancellation requested",
+          "version": 2,
+          "step_seq": 0,
+          "output_ref": "",
+          "tool_calls": 0,
+          "model_rounds": 0,
+          "cost_microusd": 0,
+          "workspace_revision": 0,
+          "verification_status": "unverified",
+          "verification_report_ref": ""
+        },
+        "step_seq": null,
+        "tenant_id": "lifecycle-n5yz43ws7vos67f4hzxdujv6sf",
+        "attempt_id": null,
+        "created_at": "2026-09-12T04:44:59.056994+00:00",
+        "schema_version": 1
+      }
+    ],
+    "observed_at": "2026-09-11T21:46:05.825045-07:00"
+  },
+  "original_run_id": "run_OAZ33S3LRG5O7EOUL6GDQ5QB4N",
+  "original_schema": "appfault_lifecycle_v5tmt66sh5a2fyvssj5rubdbqe",
+  "original_terminal": false,
+  "original_worker_role": "appfault_worker_mx7cuo75d44nar3sucv4c4g3sb",
+  "scope": "second independent acceptance; never resume, extend, or route original worker credentials"
+}

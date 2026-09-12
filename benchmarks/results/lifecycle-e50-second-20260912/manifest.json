@@ -1,0 +1,1062 @@
+{
+  "excluded": [
+    "all runtime private/config/key/credential files and their content/digests",
+    "host-logs-02 and all running S12 logs evidence",
+    "original first failure evidence remains in prior lifecycle-pre-runner-failure-20260912 archive"
+  ],
+  "files": [
+    {
+      "bytes": 582,
+      "mode": "byte-identical",
+      "path": "host-abort/execution.log",
+      "sha256": "3e4bd9d746b9c191c71bae9560af38e7f4e8e8b47573ac62e6c97d20ca272ad9",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/host-abort/execution.log",
+      "source_bytes": 582,
+      "source_sha256": "3e4bd9d746b9c191c71bae9560af38e7f4e8e8b47573ac62e6c97d20ca272ad9"
+    },
+    {
+      "bytes": 1632,
+      "mode": "byte-identical",
+      "path": "host-abort/intent.json",
+      "sha256": "babc1531b8455b2a2b3a7eb49dfe6d8376eacee97721ef9fc36b8d9f545dd77b",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/host-abort/intent.json",
+      "source_bytes": 1632,
+      "source_sha256": "babc1531b8455b2a2b3a7eb49dfe6d8376eacee97721ef9fc36b8d9f545dd77b"
+    },
+    {
+      "bytes": 410,
+      "mode": "byte-identical",
+      "path": "host-abort/result.json",
+      "sha256": "262ed71abdfafd98aa83ab0e11351e5ce2116384a4dc86cf4e2ba0d460ef55b3",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/host-abort/result.json",
+      "source_bytes": 410,
+      "source_sha256": "262ed71abdfafd98aa83ab0e11351e5ce2116384a4dc86cf4e2ba0d460ef55b3"
+    },
+    {
+      "bytes": 8253,
+      "mode": "explicit projection",
+      "path": "sigterm-01/abort-before-runner/intent.projected.json",
+      "removed_paths": [
+        "inputs_sha256./home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/runtime/sigterm-private/database.json",
+        "inputs_sha256./home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/runtime/sigterm-private/worker.json"
+      ],
+      "sha256": "814a5cbaa921af17cf0e5f375530093ba142597d8a080a98668fe1a2ba075672",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-01/abort-before-runner/intent.json",
+      "source_bytes": 8052,
+      "source_sha256": "cb7fe6fd287c198cac6204dc5381bb9d24aa3c0d9c3aed927872395458641a4b"
+    },
+    {
+      "bytes": 19436,
+      "mode": "explicit projection",
+      "path": "sigterm-01/abort-before-runner/report.projected.json",
+      "removed_paths": [
+        "inputs_sha256./home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/runtime/sigterm-private/database.json",
+        "inputs_sha256./home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/runtime/sigterm-private/worker.json"
+      ],
+      "sha256": "8887abcdeb4ae15393c3f7f00b9fc8ca7ed7af6706e0d53d9496151b9dd389a1",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-01/abort-before-runner/report.json",
+      "source_bytes": 19235,
+      "source_sha256": "d6d0646ab130fc84943089fe64cc032ba64c133da6a5d5c82facc5831023b633"
+    },
+    {
+      "bytes": 660,
+      "mode": "byte-identical",
+      "path": "host-sigterm-02/execution.log",
+      "sha256": "cfc78449a87368729fa641ddba02d28df229e314c1b97cbe8e5fb87636420559",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/host-sigterm-02/execution.log",
+      "source_bytes": 660,
+      "source_sha256": "cfc78449a87368729fa641ddba02d28df229e314c1b97cbe8e5fb87636420559"
+    },
+    {
+      "bytes": 1636,
+      "mode": "byte-identical",
+      "path": "host-sigterm-02/intent.json",
+      "sha256": "2481d46c35f95860d81362c84569e48f46714eb0c645853f56912d438c82ef61",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/host-sigterm-02/intent.json",
+      "source_bytes": 1636,
+      "source_sha256": "2481d46c35f95860d81362c84569e48f46714eb0c645853f56912d438c82ef61"
+    },
+    {
+      "bytes": 410,
+      "mode": "byte-identical",
+      "path": "host-sigterm-02/result.json",
+      "sha256": "a62ed5a37beb660d5ec3e2e387a7377e8295092141bf23242f824f978d8f614c",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/host-sigterm-02/result.json",
+      "source_bytes": 410,
+      "source_sha256": "a62ed5a37beb660d5ec3e2e387a7377e8295092141bf23242f824f978d8f614c"
+    },
+    {
+      "bytes": 1365,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/acceptance-input.json",
+      "sha256": "993e5f618144f008c88730f76e4294fbafca1c978477b24bfe49cdc0ad8320c3",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/acceptance-input.json",
+      "source_bytes": 1365,
+      "source_sha256": "993e5f618144f008c88730f76e4294fbafca1c978477b24bfe49cdc0ad8320c3"
+    },
+    {
+      "bytes": 15715,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/acceptance.json",
+      "sha256": "0ad82df7d304a9aa42a53ca056becda4d99aac8c1e4735a70d55ffa99abbb59b",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/acceptance.json",
+      "source_bytes": 15715,
+      "source_sha256": "0ad82df7d304a9aa42a53ca056becda4d99aac8c1e4735a70d55ffa99abbb59b"
+    },
+    {
+      "bytes": 434,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/after-adoption-filesystem.json",
+      "sha256": "5d3cb553ef13025bc43a712a49c015a9e4ab4a7a50b917cf65f7efa1b0374b9c",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/after-adoption-filesystem.json",
+      "source_bytes": 434,
+      "source_sha256": "5d3cb553ef13025bc43a712a49c015a9e4ab4a7a50b917cf65f7efa1b0374b9c"
+    },
+    {
+      "bytes": 125212,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/after-adoption-postgres.json",
+      "sha256": "dd9692723cfed5176281490e430429b214639b96e18ef1a65c56b453162e4aed",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/after-adoption-postgres.json",
+      "source_bytes": 125212,
+      "source_sha256": "dd9692723cfed5176281490e430429b214639b96e18ef1a65c56b453162e4aed"
+    },
+    {
+      "bytes": 15095,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/after-adoption-sqlite.json",
+      "sha256": "1522a2711cd6391ba8fec9b9ff52b09847c65c4b276d441dfd5c179665824e04",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/after-adoption-sqlite.json",
+      "source_bytes": 15095,
+      "source_sha256": "1522a2711cd6391ba8fec9b9ff52b09847c65c4b276d441dfd5c179665824e04"
+    },
+    {
+      "bytes": 915,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/after-adoption.meta.json",
+      "sha256": "2207324696ca29e9e1aa4a8c4e575be55a19d22ee40ddf0ec11e10b57e10afa9",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/after-adoption.meta.json",
+      "source_bytes": 915,
+      "source_sha256": "2207324696ca29e9e1aa4a8c4e575be55a19d22ee40ddf0ec11e10b57e10afa9"
+    },
+    {
+      "bytes": 336,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/after-adoption.spool",
+      "sha256": "7a701556f37944bd8d1c50ba0d5ff2f099ce1e5b8c7f5010aa85a446a96226b4",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/after-adoption.spool",
+      "source_bytes": 336,
+      "source_sha256": "7a701556f37944bd8d1c50ba0d5ff2f099ce1e5b8c7f5010aa85a446a96226b4"
+    },
+    {
+      "bytes": 29,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/after-adoption.stderr",
+      "sha256": "b54cccf87e04e7dc328302fff1bd24de7b51c2deb4ebd83bafe824cbe9af1237",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/after-adoption.stderr",
+      "source_bytes": 29,
+      "source_sha256": "b54cccf87e04e7dc328302fff1bd24de7b51c2deb4ebd83bafe824cbe9af1237"
+    },
+    {
+      "bytes": 115,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/after-adoption.stdout",
+      "sha256": "2be4580e8ccf45a1e7dda6f2244fc4e711c381e1911093a43ef632e96852967b",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/after-adoption.stdout",
+      "source_bytes": 115,
+      "source_sha256": "2be4580e8ccf45a1e7dda6f2244fc4e711c381e1911093a43ef632e96852967b"
+    },
+    {
+      "bytes": 70679,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/after-both-signals-postgres.json",
+      "sha256": "83d4af5b65d319438718a39fe2cff006de255d1d4131e149964b32bf76a5df0c",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/after-both-signals-postgres.json",
+      "source_bytes": 70679,
+      "source_sha256": "83d4af5b65d319438718a39fe2cff006de255d1d4131e149964b32bf76a5df0c"
+    },
+    {
+      "bytes": 11483,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/after-both-signals-sqlite.json",
+      "sha256": "f438ba2e7b3ac484985b3261ff67185cf940e2bce866ca255f6d451079eba775",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/after-both-signals-sqlite.json",
+      "source_bytes": 11483,
+      "source_sha256": "f438ba2e7b3ac484985b3261ff67185cf940e2bce866ca255f6d451079eba775"
+    },
+    {
+      "bytes": 350,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/after-runner-sigterm-cgroup.json",
+      "sha256": "7b185f19a8ed6b25c1e817c567ba783dd5b0886c05ad8a48473d1dda5708654b",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/after-runner-sigterm-cgroup.json",
+      "source_bytes": 350,
+      "source_sha256": "7b185f19a8ed6b25c1e817c567ba783dd5b0886c05ad8a48473d1dda5708654b"
+    },
+    {
+      "bytes": 54,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/after-runner-sigterm-clock.json",
+      "sha256": "aab1c4860319139e1f38c4d3e55034e710c2bde5c08020ebe0bdf8e6a6cfa2f1",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/after-runner-sigterm-clock.json",
+      "source_bytes": 54,
+      "source_sha256": "aab1c4860319139e1f38c4d3e55034e710c2bde5c08020ebe0bdf8e6a6cfa2f1"
+    },
+    {
+      "bytes": 12570,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/after-runner-sigterm-docker.json",
+      "sha256": "66aba9cf20295e74ca6f10fe13fbddcda63aec784b26c3fe4876ddb2e385a4d4",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/after-runner-sigterm-docker.json",
+      "source_bytes": 12570,
+      "source_sha256": "66aba9cf20295e74ca6f10fe13fbddcda63aec784b26c3fe4876ddb2e385a4d4"
+    },
+    {
+      "bytes": 1677,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/after-runner-sigterm-top.txt",
+      "sha256": "71b34648c24c4b026f58495d9a6f35092586ab56f6d30724abadd1a906fe66b0",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/after-runner-sigterm-top.txt",
+      "source_bytes": 1677,
+      "source_sha256": "71b34648c24c4b026f58495d9a6f35092586ab56f6d30724abadd1a906fe66b0"
+    },
+    {
+      "bytes": 350,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/after-runner-successor-inspect-cgroup.json",
+      "sha256": "3075743c8890edaff10e906510f5698b11e4d20b634346438b213ba06bd02393",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/after-runner-successor-inspect-cgroup.json",
+      "source_bytes": 350,
+      "source_sha256": "3075743c8890edaff10e906510f5698b11e4d20b634346438b213ba06bd02393"
+    },
+    {
+      "bytes": 53,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/after-runner-successor-inspect-clock.json",
+      "sha256": "a337b0293302d38d0bb6dc1636d85b600491376284618d390c71b5154e860ff1",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/after-runner-successor-inspect-clock.json",
+      "source_bytes": 53,
+      "source_sha256": "a337b0293302d38d0bb6dc1636d85b600491376284618d390c71b5154e860ff1"
+    },
+    {
+      "bytes": 12570,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/after-runner-successor-inspect-docker.json",
+      "sha256": "66aba9cf20295e74ca6f10fe13fbddcda63aec784b26c3fe4876ddb2e385a4d4",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/after-runner-successor-inspect-docker.json",
+      "source_bytes": 12570,
+      "source_sha256": "66aba9cf20295e74ca6f10fe13fbddcda63aec784b26c3fe4876ddb2e385a4d4"
+    },
+    {
+      "bytes": 1677,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/after-runner-successor-inspect-top.txt",
+      "sha256": "71b34648c24c4b026f58495d9a6f35092586ab56f6d30724abadd1a906fe66b0",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/after-runner-successor-inspect-top.txt",
+      "source_bytes": 1677,
+      "source_sha256": "71b34648c24c4b026f58495d9a6f35092586ab56f6d30724abadd1a906fe66b0"
+    },
+    {
+      "bytes": 322,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/after-successor-adoption-cgroup.json",
+      "sha256": "62ab2ba92074e07bd4cfa7e8d6359fb94af076d28b9c7a228b1359db7c35597c",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/after-successor-adoption-cgroup.json",
+      "source_bytes": 322,
+      "source_sha256": "62ab2ba92074e07bd4cfa7e8d6359fb94af076d28b9c7a228b1359db7c35597c"
+    },
+    {
+      "bytes": 54,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/after-successor-adoption-clock.json",
+      "sha256": "5afb4f5ac047e6ec7d15778a96b9b47bc62f66d0f4c74f88da8f88ad4308336d",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/after-successor-adoption-clock.json",
+      "source_bytes": 54,
+      "source_sha256": "5afb4f5ac047e6ec7d15778a96b9b47bc62f66d0f4c74f88da8f88ad4308336d"
+    },
+    {
+      "bytes": 12389,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/after-successor-adoption-docker.json",
+      "sha256": "1b94d64dda35c2720c99148f188cbd156f7064a2e1887179b66656ab6c51e3c5",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/after-successor-adoption-docker.json",
+      "source_bytes": 12389,
+      "source_sha256": "1b94d64dda35c2720c99148f188cbd156f7064a2e1887179b66656ab6c51e3c5"
+    },
+    {
+      "bytes": 350,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/after-worker-sigterm-cgroup.json",
+      "sha256": "6ddb5c9dee69c9a739869ff010e46142d8ff098f605ac17afb9eea61b41cce1a",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/after-worker-sigterm-cgroup.json",
+      "source_bytes": 350,
+      "source_sha256": "6ddb5c9dee69c9a739869ff010e46142d8ff098f605ac17afb9eea61b41cce1a"
+    },
+    {
+      "bytes": 54,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/after-worker-sigterm-clock.json",
+      "sha256": "691b94c4d319b7e3a78738898542ca39ac1b28d922d03c486cfda0a7b06d63fb",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/after-worker-sigterm-clock.json",
+      "source_bytes": 54,
+      "source_sha256": "691b94c4d319b7e3a78738898542ca39ac1b28d922d03c486cfda0a7b06d63fb"
+    },
+    {
+      "bytes": 12570,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/after-worker-sigterm-docker.json",
+      "sha256": "66aba9cf20295e74ca6f10fe13fbddcda63aec784b26c3fe4876ddb2e385a4d4",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/after-worker-sigterm-docker.json",
+      "source_bytes": 12570,
+      "source_sha256": "66aba9cf20295e74ca6f10fe13fbddcda63aec784b26c3fe4876ddb2e385a4d4"
+    },
+    {
+      "bytes": 1677,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/after-worker-sigterm-top.txt",
+      "sha256": "71b34648c24c4b026f58495d9a6f35092586ab56f6d30724abadd1a906fe66b0",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/after-worker-sigterm-top.txt",
+      "source_bytes": 1677,
+      "source_sha256": "71b34648c24c4b026f58495d9a6f35092586ab56f6d30724abadd1a906fe66b0"
+    },
+    {
+      "bytes": 468,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/artifacts/artifact_0cfc1680aa260941422794fd24fd92cfa5a9fed1c565b056b62598da16514bf7.json",
+      "sha256": "caac7b935c516aae5b9b1a2dc62b84b467a04905a15de0e0dd758f345414f9ed",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/artifacts/artifact_0cfc1680aa260941422794fd24fd92cfa5a9fed1c565b056b62598da16514bf7.json",
+      "source_bytes": 468,
+      "source_sha256": "caac7b935c516aae5b9b1a2dc62b84b467a04905a15de0e0dd758f345414f9ed"
+    },
+    {
+      "bytes": 121,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/artifacts/artifact_3ea2e9ca1cbe6d1e0985b8ba769288b451a6bd0d2ac400afa967d23551f34de2.json",
+      "sha256": "763d4e93f72cf787b1a4dbd670efbe63f957fb0f771bb2741a77ff8f15b8452d",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/artifacts/artifact_3ea2e9ca1cbe6d1e0985b8ba769288b451a6bd0d2ac400afa967d23551f34de2.json",
+      "source_bytes": 121,
+      "source_sha256": "763d4e93f72cf787b1a4dbd670efbe63f957fb0f771bb2741a77ff8f15b8452d"
+    },
+    {
+      "bytes": 1134,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/artifacts/artifact_41c5a4aa6f36bc916acfb0536974ca5f07b1f796a025f318b9200bb39bdc1030.json",
+      "sha256": "445ad1ae56e135aa1b9a4796aa9f62bf3a1515367cbafc9111d6f9b917905ede",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/artifacts/artifact_41c5a4aa6f36bc916acfb0536974ca5f07b1f796a025f318b9200bb39bdc1030.json",
+      "source_bytes": 1134,
+      "source_sha256": "445ad1ae56e135aa1b9a4796aa9f62bf3a1515367cbafc9111d6f9b917905ede"
+    },
+    {
+      "bytes": 3001,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/artifacts/artifact_4cba9c85bbb526626160f77341bdd35665ee7ef87d098a4dd5ed34735b679c61.json",
+      "sha256": "4a63298aac0de6e1150cb5641f093575e2f7d8addc28982bb2dec404197d2c40",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/artifacts/artifact_4cba9c85bbb526626160f77341bdd35665ee7ef87d098a4dd5ed34735b679c61.json",
+      "source_bytes": 3001,
+      "source_sha256": "4a63298aac0de6e1150cb5641f093575e2f7d8addc28982bb2dec404197d2c40"
+    },
+    {
+      "bytes": 466,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/artifacts/artifact_5f51809ab2e29c9ccd4c889005510052ce935599b0057b1538e84bb7609eb04c.json",
+      "sha256": "f94c0444d5c4c765b39a45f3126287a928d9c06156f1d646ee80662b1ca42078",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/artifacts/artifact_5f51809ab2e29c9ccd4c889005510052ce935599b0057b1538e84bb7609eb04c.json",
+      "source_bytes": 466,
+      "source_sha256": "f94c0444d5c4c765b39a45f3126287a928d9c06156f1d646ee80662b1ca42078"
+    },
+    {
+      "bytes": 468,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/artifacts/artifact_6e7149a9611a79690a3a59aa74defdae1aa75ca166dd840729be63f592d46741.json",
+      "sha256": "9b48cfbca7d9d38e2623f7edbf2130078a9a7106b1986ebf7496a2fbf1a3efa5",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/artifacts/artifact_6e7149a9611a79690a3a59aa74defdae1aa75ca166dd840729be63f592d46741.json",
+      "source_bytes": 468,
+      "source_sha256": "9b48cfbca7d9d38e2623f7edbf2130078a9a7106b1986ebf7496a2fbf1a3efa5"
+    },
+    {
+      "bytes": 206,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/artifacts/artifact_71570c2b9e6b21006ea5fc0a82138e4f02dd7041e43c296e3c659be4fa5b6cae.json",
+      "sha256": "78cc44fbbe8ce4bc61984468f1f0ab149390fee5f626db5f25ace1b56d803255",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/artifacts/artifact_71570c2b9e6b21006ea5fc0a82138e4f02dd7041e43c296e3c659be4fa5b6cae.json",
+      "source_bytes": 206,
+      "source_sha256": "78cc44fbbe8ce4bc61984468f1f0ab149390fee5f626db5f25ace1b56d803255"
+    },
+    {
+      "bytes": 476,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/artifacts/artifact_725ff1752596fe55cb752d3394934fad769f52fa360a8c5231ac5af8f2507423.json",
+      "sha256": "af19bb36354e82bff22fe232078e7974002a11a17db5da59c75d1f7b8fa4765e",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/artifacts/artifact_725ff1752596fe55cb752d3394934fad769f52fa360a8c5231ac5af8f2507423.json",
+      "source_bytes": 476,
+      "source_sha256": "af19bb36354e82bff22fe232078e7974002a11a17db5da59c75d1f7b8fa4765e"
+    },
+    {
+      "bytes": 2130,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/artifacts/artifact_759cf64a2039e111b07548407eef470b53d2eedd74a01cc387f85b5657250664.json",
+      "sha256": "08008d48764a4f9258ef0d4097dfd79ae01091b4cc21d6cbc9d257cf2670a096",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/artifacts/artifact_759cf64a2039e111b07548407eef470b53d2eedd74a01cc387f85b5657250664.json",
+      "source_bytes": 2130,
+      "source_sha256": "08008d48764a4f9258ef0d4097dfd79ae01091b4cc21d6cbc9d257cf2670a096"
+    },
+    {
+      "bytes": 5094,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/artifacts/artifact_95a28771cc2d6ef0c09b672b697d056009a3751eb986c9a5e39a2e3db9701596.json",
+      "sha256": "08f79411199f3bf0162403a19dc36d7235a5582d53d4ffb382f61c8c00f13208",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/artifacts/artifact_95a28771cc2d6ef0c09b672b697d056009a3751eb986c9a5e39a2e3db9701596.json",
+      "source_bytes": 5094,
+      "source_sha256": "08f79411199f3bf0162403a19dc36d7235a5582d53d4ffb382f61c8c00f13208"
+    },
+    {
+      "bytes": 23,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/artifacts/artifact_9aa72728878877e07d701822727c1180bf75f6eed5f9a02026e4ade09b19a972.json",
+      "sha256": "a00c9ebc35ac47cb6f43d86682215d9e1bacc84d530ec6a37bf02914cf2b9975",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/artifacts/artifact_9aa72728878877e07d701822727c1180bf75f6eed5f9a02026e4ade09b19a972.json",
+      "source_bytes": 23,
+      "source_sha256": "a00c9ebc35ac47cb6f43d86682215d9e1bacc84d530ec6a37bf02914cf2b9975"
+    },
+    {
+      "bytes": 4512,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/artifacts/artifact_a2bedb3f9ba3d115ac213c9167ffbecbc45d0af2df72321e3f016f1f9b9e9f51.json",
+      "sha256": "8513bc7d25d3d2da4a36b307d68bc92814659890fc285ec53339737f8d3e0a45",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/artifacts/artifact_a2bedb3f9ba3d115ac213c9167ffbecbc45d0af2df72321e3f016f1f9b9e9f51.json",
+      "source_bytes": 4512,
+      "source_sha256": "8513bc7d25d3d2da4a36b307d68bc92814659890fc285ec53339737f8d3e0a45"
+    },
+    {
+      "bytes": 336,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/artifacts/artifact_a46398481114c3590dec89c11ee883a64f5e17275bffd1de5f228460f823923d.json",
+      "sha256": "7a701556f37944bd8d1c50ba0d5ff2f099ce1e5b8c7f5010aa85a446a96226b4",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/artifacts/artifact_a46398481114c3590dec89c11ee883a64f5e17275bffd1de5f228460f823923d.json",
+      "source_bytes": 336,
+      "source_sha256": "7a701556f37944bd8d1c50ba0d5ff2f099ce1e5b8c7f5010aa85a446a96226b4"
+    },
+    {
+      "bytes": 2633,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/artifacts/artifact_b3d5784500d9f7eb3ce59d803c6df182a075b3cb04153c2bbccddf5b6f45025c.json",
+      "sha256": "75a2dce5eeb73459c089a1e68a9f4129e613a047908560601407f0ad2de1be56",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/artifacts/artifact_b3d5784500d9f7eb3ce59d803c6df182a075b3cb04153c2bbccddf5b6f45025c.json",
+      "source_bytes": 2633,
+      "source_sha256": "75a2dce5eeb73459c089a1e68a9f4129e613a047908560601407f0ad2de1be56"
+    },
+    {
+      "bytes": 537,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/artifacts/artifact_ed023cc324c82db9959d7c1233a8ba0326f4e3ef61a590404cebe0f7371cf130.json",
+      "sha256": "13289498cfb0a924e568652bd50a0bd9dee2ca11c410e2e0fddd8763c5a0ced1",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/artifacts/artifact_ed023cc324c82db9959d7c1233a8ba0326f4e3ef61a590404cebe0f7371cf130.json",
+      "source_bytes": 537,
+      "source_sha256": "13289498cfb0a924e568652bd50a0bd9dee2ca11c410e2e0fddd8763c5a0ced1"
+    },
+    {
+      "bytes": 157,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/artifacts/artifact_ee767cdc99f8b9f7580859150dd829e3b290859c066471b4d4f35e5f7202ecf9.json",
+      "sha256": "57b26fbee526d79453387b8d73e78929da729a964cfcacd62dc0ef3e683506c3",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/artifacts/artifact_ee767cdc99f8b9f7580859150dd829e3b290859c066471b4d4f35e5f7202ecf9.json",
+      "source_bytes": 157,
+      "source_sha256": "57b26fbee526d79453387b8d73e78929da729a964cfcacd62dc0ef3e683506c3"
+    },
+    {
+      "bytes": 466,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/artifacts/artifact_fec75d178ad00ccee55c3cf53dd6526cf02a933356092536a111bddf00b1ca32.json",
+      "sha256": "a041092516768696fcbd902e8e3f541545e5728eb32d7abe395a8dc342cdb9a7",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/artifacts/artifact_fec75d178ad00ccee55c3cf53dd6526cf02a933356092536a111bddf00b1ca32.json",
+      "source_bytes": 466,
+      "source_sha256": "a041092516768696fcbd902e8e3f541545e5728eb32d7abe395a8dc342cdb9a7"
+    },
+    {
+      "bytes": 2897,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/baseline-target.json",
+      "sha256": "3a980b0e23f8b548ab601bf75f700bf5d56555d2d67c7683ec8cac2faaf16aa7",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/baseline-target.json",
+      "source_bytes": 2897,
+      "source_sha256": "3a980b0e23f8b548ab601bf75f700bf5d56555d2d67c7683ec8cac2faaf16aa7"
+    },
+    {
+      "bytes": 144582,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/before-cleanup-postgres.json",
+      "sha256": "2761f350e3fe3b7ce8fd8739fa6892a6d5143b49ad8422e8a46940febbffbc43",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/before-cleanup-postgres.json",
+      "source_bytes": 144582,
+      "source_sha256": "2761f350e3fe3b7ce8fd8739fa6892a6d5143b49ad8422e8a46940febbffbc43"
+    },
+    {
+      "bytes": 15660,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/before-cleanup-sqlite.json",
+      "sha256": "83ca15c929f33a34b918c06853867c82b254b08f4aa0484cfa000f1d10a90a67",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/before-cleanup-sqlite.json",
+      "source_bytes": 15660,
+      "source_sha256": "83ca15c929f33a34b918c06853867c82b254b08f4aa0484cfa000f1d10a90a67"
+    },
+    {
+      "bytes": 350,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/before-signals-cgroup.json",
+      "sha256": "81781c21776eb6ddcc556de6528eae19b9a1510e91ef920c75ed6b3a0cb5bf97",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/before-signals-cgroup.json",
+      "source_bytes": 350,
+      "source_sha256": "81781c21776eb6ddcc556de6528eae19b9a1510e91ef920c75ed6b3a0cb5bf97"
+    },
+    {
+      "bytes": 54,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/before-signals-clock.json",
+      "sha256": "c572d3e2fe50744f3d12233ed544b6536bb2ac6f0503060ec0d0663d0fc0bc67",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/before-signals-clock.json",
+      "source_bytes": 54,
+      "source_sha256": "c572d3e2fe50744f3d12233ed544b6536bb2ac6f0503060ec0d0663d0fc0bc67"
+    },
+    {
+      "bytes": 12570,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/before-signals-docker.json",
+      "sha256": "66aba9cf20295e74ca6f10fe13fbddcda63aec784b26c3fe4876ddb2e385a4d4",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/before-signals-docker.json",
+      "source_bytes": 12570,
+      "source_sha256": "66aba9cf20295e74ca6f10fe13fbddcda63aec784b26c3fe4876ddb2e385a4d4"
+    },
+    {
+      "bytes": 70679,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/before-signals-postgres.json",
+      "sha256": "83d4af5b65d319438718a39fe2cff006de255d1d4131e149964b32bf76a5df0c",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/before-signals-postgres.json",
+      "source_bytes": 70679,
+      "source_sha256": "83d4af5b65d319438718a39fe2cff006de255d1d4131e149964b32bf76a5df0c"
+    },
+    {
+      "bytes": 11461,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/before-signals-sqlite.json",
+      "sha256": "95e5ff5a1218cc6b11eb24358ce361ef6807302a096dec2278fe9dd3ea45c371",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/before-signals-sqlite.json",
+      "source_bytes": 11461,
+      "source_sha256": "95e5ff5a1218cc6b11eb24358ce361ef6807302a096dec2278fe9dd3ea45c371"
+    },
+    {
+      "bytes": 1677,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/before-signals-top.txt",
+      "sha256": "71b34648c24c4b026f58495d9a6f35092586ab56f6d30724abadd1a906fe66b0",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/before-signals-top.txt",
+      "source_bytes": 1677,
+      "source_sha256": "71b34648c24c4b026f58495d9a6f35092586ab56f6d30724abadd1a906fe66b0"
+    },
+    {
+      "bytes": 148731,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/cleanup-released-postgres.json",
+      "sha256": "75c98ad87964dfc2b66674d4f021f36328ca78a1a6ec9e7fe255f82e926fafea",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/cleanup-released-postgres.json",
+      "source_bytes": 148731,
+      "source_sha256": "75c98ad87964dfc2b66674d4f021f36328ca78a1a6ec9e7fe255f82e926fafea"
+    },
+    {
+      "bytes": 16793,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/cleanup-released-sqlite.json",
+      "sha256": "745a9b18533521bc289686567fb0e7bce38fe2c0bc321ff2ce6b6847c0fcd4a9",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/cleanup-released-sqlite.json",
+      "source_bytes": 16793,
+      "source_sha256": "745a9b18533521bc289686567fb0e7bce38fe2c0bc321ff2ce6b6847c0fcd4a9"
+    },
+    {
+      "bytes": 0,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/container-after-release.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/container-after-release.txt",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 3197,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/fixture.json",
+      "sha256": "5e3306b979a2de28b9240df27d1490e57955fa69085c65ae5ab3e5a21b784c88",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/fixture.json",
+      "source_bytes": 3197,
+      "source_sha256": "5e3306b979a2de28b9240df27d1490e57955fa69085c65ae5ab3e5a21b784c88"
+    },
+    {
+      "bytes": 9580,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/independent-attempt.json",
+      "sha256": "1b5deda408b7f678df3c49d98cd383f7b40a93fbb7f33744550bb7463a142438",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/independent-attempt.json",
+      "source_bytes": 9580,
+      "source_sha256": "1b5deda408b7f678df3c49d98cd383f7b40a93fbb7f33744550bb7463a142438"
+    },
+    {
+      "bytes": 184,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/lifecycle-original.log",
+      "sha256": "4aca74acee501a445808586a693c01a3f4993f254117320c02647a7dd41569a5",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/lifecycle-original.log",
+      "source_bytes": 184,
+      "source_sha256": "4aca74acee501a445808586a693c01a3f4993f254117320c02647a7dd41569a5"
+    },
+    {
+      "bytes": 723,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/lifecycle-original.log.identity.json",
+      "sha256": "ddb179606d1dc78c7df793dd58c18d8484b6691fc6aab3473b130767df11ba61",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/lifecycle-original.log.identity.json",
+      "source_bytes": 723,
+      "source_sha256": "ddb179606d1dc78c7df793dd58c18d8484b6691fc6aab3473b130767df11ba61"
+    },
+    {
+      "bytes": 185,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/lifecycle-successor.log",
+      "sha256": "254e43f8b9a77c8755f77e33a844cc415b1532526de4faefb9b93ceb7e2b904f",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/lifecycle-successor.log",
+      "source_bytes": 185,
+      "source_sha256": "254e43f8b9a77c8755f77e33a844cc415b1532526de4faefb9b93ceb7e2b904f"
+    },
+    {
+      "bytes": 724,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/lifecycle-successor.log.identity.json",
+      "sha256": "4fde39bda65e03225fe0eaf535faafefb345ba0bff7e949d6926fcba624cae77",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/lifecycle-successor.log.identity.json",
+      "source_bytes": 724,
+      "source_sha256": "4fde39bda65e03225fe0eaf535faafefb345ba0bff7e949d6926fcba624cae77"
+    },
+    {
+      "bytes": 9580,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/original-after-second.json",
+      "sha256": "3f47743ee2b844119e01eddcb05a9e2edb980454a99799b764adbb9d83c3304c",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/original-after-second.json",
+      "source_bytes": 9580,
+      "source_sha256": "3f47743ee2b844119e01eddcb05a9e2edb980454a99799b764adbb9d83c3304c"
+    },
+    {
+      "bytes": 4349,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/original-container-events.jsonl",
+      "sha256": "61c39366e799958c6e8e895f9c234d64465993f97d479fd3c09040a4f37c98cc",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/original-container-events.jsonl",
+      "source_bytes": 4349,
+      "source_sha256": "61c39366e799958c6e8e895f9c234d64465993f97d479fd3c09040a4f37c98cc"
+    },
+    {
+      "bytes": 3838,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/original-operation-settled.json",
+      "sha256": "1dcb9dd1113507f9f2b41fcdfa16b76b6a51413de9946a170c76b19ce845e564",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/original-operation-settled.json",
+      "source_bytes": 3838,
+      "source_sha256": "1dcb9dd1113507f9f2b41fcdfa16b76b6a51413de9946a170c76b19ce845e564"
+    },
+    {
+      "bytes": 3838,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/preflight.json",
+      "sha256": "b371e4737db7ee4e900883381f7a7df59f6f3fd07c5fa270dca0746f9fe0f628",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/preflight.json",
+      "source_bytes": 3838,
+      "source_sha256": "b371e4737db7ee4e900883381f7a7df59f6f3fd07c5fa270dca0746f9fe0f628"
+    },
+    {
+      "bytes": 2936,
+      "mode": "explicit projection",
+      "path": "sigterm-02/worker-runner-sigterm/recovery.projected.json",
+      "removed_paths": [
+        "private_settings",
+        "worker_config",
+        "worker_config_sha256",
+        "runner_config_sha256"
+      ],
+      "sha256": "992ec2ce2022ecd9791e5fd2788ca106e64731ea54f929abaf4c52a89005e34c",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/recovery.json",
+      "source_bytes": 3014,
+      "source_sha256": "9531c16a4609d84297256c1a20d94ea9d344e6d39a367b3056733359038d8819"
+    },
+    {
+      "bytes": 909,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/runner-original-signal.json",
+      "sha256": "bd1ff2dd0aabe66d41b781fdf8e1bec3589cde66ee0961d54150986b5991914b",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/runner-original-signal.json",
+      "source_bytes": 909,
+      "source_sha256": "bd1ff2dd0aabe66d41b781fdf8e1bec3589cde66ee0961d54150986b5991914b"
+    },
+    {
+      "bytes": 201,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/runner-original.log",
+      "sha256": "b2b1568fc8ed9b896bba9b178e5dc134693648506ab5415371de3edfa3460940",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/runner-original.log",
+      "source_bytes": 201,
+      "source_sha256": "b2b1568fc8ed9b896bba9b178e5dc134693648506ab5415371de3edfa3460940"
+    },
+    {
+      "bytes": 667,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/runner-original.log.identity.json",
+      "sha256": "294a97536770b95bcc7fa96cab96a419d7adc51b7df2d9b173a1e4c4da3d6b5d",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/runner-original.log.identity.json",
+      "source_bytes": 667,
+      "source_sha256": "294a97536770b95bcc7fa96cab96a419d7adc51b7df2d9b173a1e4c4da3d6b5d"
+    },
+    {
+      "bytes": 434,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/runner-shutdown-filesystem.json",
+      "sha256": "5d3cb553ef13025bc43a712a49c015a9e4ab4a7a50b917cf65f7efa1b0374b9c",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/runner-shutdown-filesystem.json",
+      "source_bytes": 434,
+      "source_sha256": "5d3cb553ef13025bc43a712a49c015a9e4ab4a7a50b917cf65f7efa1b0374b9c"
+    },
+    {
+      "bytes": 915,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/runner-shutdown.meta.json",
+      "sha256": "2207324696ca29e9e1aa4a8c4e575be55a19d22ee40ddf0ec11e10b57e10afa9",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/runner-shutdown.meta.json",
+      "source_bytes": 915,
+      "source_sha256": "2207324696ca29e9e1aa4a8c4e575be55a19d22ee40ddf0ec11e10b57e10afa9"
+    },
+    {
+      "bytes": 336,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/runner-shutdown.spool",
+      "sha256": "7a701556f37944bd8d1c50ba0d5ff2f099ce1e5b8c7f5010aa85a446a96226b4",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/runner-shutdown.spool",
+      "source_bytes": 336,
+      "source_sha256": "7a701556f37944bd8d1c50ba0d5ff2f099ce1e5b8c7f5010aa85a446a96226b4"
+    },
+    {
+      "bytes": 29,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/runner-shutdown.stderr",
+      "sha256": "b54cccf87e04e7dc328302fff1bd24de7b51c2deb4ebd83bafe824cbe9af1237",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/runner-shutdown.stderr",
+      "source_bytes": 29,
+      "source_sha256": "b54cccf87e04e7dc328302fff1bd24de7b51c2deb4ebd83bafe824cbe9af1237"
+    },
+    {
+      "bytes": 115,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/runner-shutdown.stdout",
+      "sha256": "2be4580e8ccf45a1e7dda6f2244fc4e711c381e1911093a43ef632e96852967b",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/runner-shutdown.stdout",
+      "source_bytes": 115,
+      "source_sha256": "2be4580e8ccf45a1e7dda6f2244fc4e711c381e1911093a43ef632e96852967b"
+    },
+    {
+      "bytes": 909,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/runner-successor-signal.json",
+      "sha256": "9e482199cb5f671727909bcb7f5d931646c519771e366c76d4c36e044f2a3c9a",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/runner-successor-signal.json",
+      "source_bytes": 909,
+      "source_sha256": "9e482199cb5f671727909bcb7f5d931646c519771e366c76d4c36e044f2a3c9a"
+    },
+    {
+      "bytes": 201,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/runner-successor.log",
+      "sha256": "2d79ac5e2decd6c61bb49e59f6a94f67af1b79a8693734d0e9709abfb8eb6b4a",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/runner-successor.log",
+      "source_bytes": 201,
+      "source_sha256": "2d79ac5e2decd6c61bb49e59f6a94f67af1b79a8693734d0e9709abfb8eb6b4a"
+    },
+    {
+      "bytes": 667,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/runner-successor.log.identity.json",
+      "sha256": "52b47dfd9bc4e855e1c7a4178503866e26b439198a39b80e080ef22744aae34d",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/runner-successor.log.identity.json",
+      "source_bytes": 667,
+      "source_sha256": "52b47dfd9bc4e855e1c7a4178503866e26b439198a39b80e080ef22744aae34d"
+    },
+    {
+      "bytes": 2,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/start-counter.txt",
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/start-counter.txt",
+      "source_bytes": 2,
+      "source_sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+    },
+    {
+      "bytes": 1726,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/successor-same-epoch-inspection.json",
+      "sha256": "92119bebb937f361b943ed73540cb4a5ad6d4a35d63e994bc14faeafbd7bb38e",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/successor-same-epoch-inspection.json",
+      "source_bytes": 1726,
+      "source_sha256": "92119bebb937f361b943ed73540cb4a5ad6d4a35d63e994bc14faeafbd7bb38e"
+    },
+    {
+      "bytes": 966,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/worker-original-signal.json",
+      "sha256": "cebc42c3420176c046c606396fea8363e75ea5b8ee079c6406694015b2814832",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/worker-original-signal.json",
+      "source_bytes": 966,
+      "source_sha256": "cebc42c3420176c046c606396fea8363e75ea5b8ee079c6406694015b2814832"
+    },
+    {
+      "bytes": 420,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/worker-role-preflight.json",
+      "sha256": "8f0e34b4ab60fbda277d03bc5afb61de0d61c5d3e4b920fb6b6e6c53d6f143a6",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/worker-role-preflight.json",
+      "source_bytes": 420,
+      "source_sha256": "8f0e34b4ab60fbda277d03bc5afb61de0d61c5d3e4b920fb6b6e6c53d6f143a6"
+    },
+    {
+      "bytes": 967,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/worker-successor-signal.json",
+      "sha256": "a04eb4f37c29cca65fcfe387209afd97db13a7cfb24636f3a878c69f8b7d8f28",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/worker-successor-signal.json",
+      "source_bytes": 967,
+      "source_sha256": "a04eb4f37c29cca65fcfe387209afd97db13a7cfb24636f3a878c69f8b7d8f28"
+    },
+    {
+      "bytes": 2780,
+      "mode": "byte-identical",
+      "path": "sigterm-02/worker-runner-sigterm/writer-timestamps.txt",
+      "sha256": "8795e9c0ab23725c88414c05d5af77b7c41562b3cb6861bff6b926f708baef28",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-02/worker-runner-sigterm/writer-timestamps.txt",
+      "source_bytes": 2780,
+      "source_sha256": "8795e9c0ab23725c88414c05d5af77b7c41562b3cb6861bff6b926f708baef28"
+    },
+    {
+      "bytes": 498,
+      "mode": "byte-identical",
+      "path": "build-c9414210b58124aa7c9dd25edd3f18c89004cf10/application-faults.test.buildinfo.txt",
+      "sha256": "1f80aa611e30b952debbc1294ec46a968d21daca58b0d06e4759e57f4da1d4f3",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/build-c9414210b58124aa7c9dd25edd3f18c89004cf10/application-faults.test.buildinfo.txt",
+      "source_bytes": 498,
+      "source_sha256": "1f80aa611e30b952debbc1294ec46a968d21daca58b0d06e4759e57f4da1d4f3"
+    },
+    {
+      "bytes": 5417,
+      "mode": "byte-identical",
+      "path": "build-c9414210b58124aa7c9dd25edd3f18c89004cf10/build.py.txt",
+      "sha256": "78aa68776744be337f4a000d97b08f16d4d6cb9e9966414f79790d66ae7bef52",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/build-c9414210b58124aa7c9dd25edd3f18c89004cf10/build.py.txt",
+      "source_bytes": 5417,
+      "source_sha256": "78aa68776744be337f4a000d97b08f16d4d6cb9e9966414f79790d66ae7bef52"
+    },
+    {
+      "bytes": 4098,
+      "mode": "byte-identical",
+      "path": "build-c9414210b58124aa7c9dd25edd3f18c89004cf10/forge-runner.buildinfo.txt",
+      "sha256": "d0474a004583954f1a15a260fdd6def3198144fdcdeac01a58065b5653fb90ab",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/build-c9414210b58124aa7c9dd25edd3f18c89004cf10/forge-runner.buildinfo.txt",
+      "source_bytes": 4098,
+      "source_sha256": "d0474a004583954f1a15a260fdd6def3198144fdcdeac01a58065b5653fb90ab"
+    },
+    {
+      "bytes": 5464,
+      "mode": "byte-identical",
+      "path": "build-c9414210b58124aa7c9dd25edd3f18c89004cf10/forge-worker.buildinfo.txt",
+      "sha256": "533b26559f0c64a9648128e095b37e736a22adb41ac9777ac914cddb3e22fb90",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/build-c9414210b58124aa7c9dd25edd3f18c89004cf10/forge-worker.buildinfo.txt",
+      "source_bytes": 5464,
+      "source_sha256": "533b26559f0c64a9648128e095b37e736a22adb41ac9777ac914cddb3e22fb90"
+    },
+    {
+      "bytes": 45437,
+      "mode": "byte-identical",
+      "path": "build-c9414210b58124aa7c9dd25edd3f18c89004cf10/inputs-after.json",
+      "sha256": "2297da9f6c57def989a6eb7fc0f88e0b28ca2a5dc8d6ae984d073c6f9a196ad2",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/build-c9414210b58124aa7c9dd25edd3f18c89004cf10/inputs-after.json",
+      "source_bytes": 45437,
+      "source_sha256": "2297da9f6c57def989a6eb7fc0f88e0b28ca2a5dc8d6ae984d073c6f9a196ad2"
+    },
+    {
+      "bytes": 45437,
+      "mode": "byte-identical",
+      "path": "build-c9414210b58124aa7c9dd25edd3f18c89004cf10/inputs-before.json",
+      "sha256": "2297da9f6c57def989a6eb7fc0f88e0b28ca2a5dc8d6ae984d073c6f9a196ad2",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/build-c9414210b58124aa7c9dd25edd3f18c89004cf10/inputs-before.json",
+      "source_bytes": 45437,
+      "source_sha256": "2297da9f6c57def989a6eb7fc0f88e0b28ca2a5dc8d6ae984d073c6f9a196ad2"
+    },
+    {
+      "bytes": 1358,
+      "mode": "byte-identical",
+      "path": "build-c9414210b58124aa7c9dd25edd3f18c89004cf10/intent.json",
+      "sha256": "881b1289c1cbe8b00a0ab36d5f2f005f2611562e9db7753641cdfac893044897",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/build-c9414210b58124aa7c9dd25edd3f18c89004cf10/intent.json",
+      "source_bytes": 1358,
+      "source_sha256": "881b1289c1cbe8b00a0ab36d5f2f005f2611562e9db7753641cdfac893044897"
+    },
+    {
+      "bytes": 355142,
+      "mode": "byte-identical",
+      "path": "build-c9414210b58124aa7c9dd25edd3f18c89004cf10/offline.log",
+      "sha256": "aedeec5b8fc77a3c9157a6f8ab88149426fc32f1b3c84fbaf9a0e9ebba8f05d2",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/build-c9414210b58124aa7c9dd25edd3f18c89004cf10/offline.log",
+      "source_bytes": 355142,
+      "source_sha256": "aedeec5b8fc77a3c9157a6f8ab88149426fc32f1b3c84fbaf9a0e9ebba8f05d2"
+    },
+    {
+      "bytes": 355184,
+      "mode": "byte-identical",
+      "path": "build-c9414210b58124aa7c9dd25edd3f18c89004cf10/race.log",
+      "sha256": "987c88218827bcd102407c4d4ea2f5964c05135dc38f8f1e9bd10173819477fe",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/build-c9414210b58124aa7c9dd25edd3f18c89004cf10/race.log",
+      "source_bytes": 355184,
+      "source_sha256": "987c88218827bcd102407c4d4ea2f5964c05135dc38f8f1e9bd10173819477fe"
+    },
+    {
+      "bytes": 3801,
+      "mode": "byte-identical",
+      "path": "build-c9414210b58124aa7c9dd25edd3f18c89004cf10/results.json",
+      "sha256": "c766380a875693130dd3331c28d606bdc2682efb4185790c7a25d963d14d229c",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/build-c9414210b58124aa7c9dd25edd3f18c89004cf10/results.json",
+      "source_bytes": 3801,
+      "source_sha256": "c766380a875693130dd3331c28d606bdc2682efb4185790c7a25d963d14d229c"
+    },
+    {
+      "bytes": 0,
+      "mode": "byte-identical",
+      "path": "build-c9414210b58124aa7c9dd25edd3f18c89004cf10/runner.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/build-c9414210b58124aa7c9dd25edd3f18c89004cf10/runner.log",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 0,
+      "mode": "byte-identical",
+      "path": "build-c9414210b58124aa7c9dd25edd3f18c89004cf10/test.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/build-c9414210b58124aa7c9dd25edd3f18c89004cf10/test.log",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 0,
+      "mode": "byte-identical",
+      "path": "build-c9414210b58124aa7c9dd25edd3f18c89004cf10/vet.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/build-c9414210b58124aa7c9dd25edd3f18c89004cf10/vet.log",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 0,
+      "mode": "byte-identical",
+      "path": "build-c9414210b58124aa7c9dd25edd3f18c89004cf10/worker.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/build-c9414210b58124aa7c9dd25edd3f18c89004cf10/worker.log",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 7796,
+      "mode": "byte-identical",
+      "path": "independent-reviews/forge-lifecycle-second-attempt-independent-review.json",
+      "sha256": "236f29dcb5eabc969ef228090d52732ef829858da17f914a7c9f6b850fa14fbd",
+      "source": "/tmp/forge-lifecycle-second-attempt-independent-review.json",
+      "source_bytes": 7796,
+      "source_sha256": "236f29dcb5eabc969ef228090d52732ef829858da17f914a7c9f6b850fa14fbd"
+    },
+    {
+      "bytes": 2270,
+      "mode": "byte-identical",
+      "path": "independent-reviews/forge-lifecycle-continuation-build-review-v1.json",
+      "sha256": "9d6e9c2beb5e53ae84d7ed34347208311122e4066105c68d844f8379ef72b779",
+      "source": "/tmp/forge-lifecycle-continuation-build-review-v1.json",
+      "source_bytes": 2270,
+      "source_sha256": "9d6e9c2beb5e53ae84d7ed34347208311122e4066105c68d844f8379ef72b779"
+    },
+    {
+      "bytes": 3263,
+      "mode": "byte-identical",
+      "path": "independent-reviews/forge-lifecycle-continuation-build-review-v2.json",
+      "sha256": "0d5a831ce8f3c927928a658a0aa479c659f6df6d79e248b1f2aebb91ef46f9d9",
+      "source": "/tmp/forge-lifecycle-continuation-build-review-v2.json",
+      "source_bytes": 3263,
+      "source_sha256": "0d5a831ce8f3c927928a658a0aa479c659f6df6d79e248b1f2aebb91ef46f9d9"
+    },
+    {
+      "bytes": 3819,
+      "mode": "byte-identical",
+      "path": "independent-reviews/forge-lifecycle-continuation-build-reviewed-v1.py.txt",
+      "sha256": "3e7026d51260992b2412140c156328c67e6405aa42dc1ca769279d251ed28a3d",
+      "source": "/tmp/forge-lifecycle-continuation-build-reviewed-v1.py",
+      "source_bytes": 3819,
+      "source_sha256": "3e7026d51260992b2412140c156328c67e6405aa42dc1ca769279d251ed28a3d"
+    },
+    {
+      "bytes": 5417,
+      "mode": "byte-identical",
+      "path": "independent-reviews/forge-lifecycle-continuation-build-reviewed-v2.py.txt",
+      "sha256": "78aa68776744be337f4a000d97b08f16d4d6cb9e9966414f79790d66ae7bef52",
+      "source": "/tmp/forge-lifecycle-continuation-build-reviewed-v2.py",
+      "source_bytes": 5417,
+      "source_sha256": "78aa68776744be337f4a000d97b08f16d4d6cb9e9966414f79790d66ae7bef52"
+    },
+    {
+      "bytes": 16590,
+      "mode": "byte-identical",
+      "path": "independent-recompute.py.txt",
+      "sha256": "1807cf4f48ed71d1cbabd9658343bebb30fcdb784a3ee649e84e5593839bd31f",
+      "source": "/tmp/forge-e50-second-archive.py",
+      "source_bytes": 16590,
+      "source_sha256": "1807cf4f48ed71d1cbabd9658343bebb30fcdb784a3ee649e84e5593839bd31f"
+    },
+    {
+      "bytes": 16202,
+      "mode": "byte-identical",
+      "path": "independent-recompute-initial.py.txt",
+      "sha256": "96535be87adccacfe15a9443ff53ce79aa89bc9cce415c6ed78a84ac70f9ddff",
+      "source": "/tmp/forge-e50-second-archive-initial.py.txt",
+      "source_bytes": 16202,
+      "source_sha256": "96535be87adccacfe15a9443ff53ce79aa89bc9cce415c6ed78a84ac70f9ddff"
+    },
+    {
+      "bytes": 822,
+      "mode": "byte-identical",
+      "path": "independent-recompute-initial.log",
+      "sha256": "53b6b807a30fe59f684bfdabd476d50c9f339fce4d996d73d241c5b421ff8e7e",
+      "source": "/tmp/forge-e50-second-recompute-initial.log",
+      "source_bytes": 822,
+      "source_sha256": "53b6b807a30fe59f684bfdabd476d50c9f339fce4d996d73d241c5b421ff8e7e"
+    },
+    {
+      "bytes": 16380,
+      "mode": "byte-identical",
+      "path": "independent-recompute-second.py.txt",
+      "sha256": "74fc1794fa19c3806c0252150a15ee0f496ab9f0578cee76bd43ea9ca586c0a0",
+      "source": "/tmp/forge-e50-second-archive-second.py.txt",
+      "source_bytes": 16380,
+      "source_sha256": "74fc1794fa19c3806c0252150a15ee0f496ab9f0578cee76bd43ea9ca586c0a0"
+    },
+    {
+      "bytes": 835,
+      "mode": "byte-identical",
+      "path": "independent-recompute-second.log",
+      "sha256": "23a42630a1fcf331b12c13de127ed341325e6fe50459e0f25996f1f5ab781c6a",
+      "source": "/tmp/forge-e50-second-recompute-second.log",
+      "source_bytes": 835,
+      "source_sha256": "23a42630a1fcf331b12c13de127ed341325e6fe50459e0f25996f1f5ab781c6a"
+    }
+  ],
+  "generated_report": {
+    "path": "independent-recompute.json",
+    "sha256": "603def6a5c823d2ab93af3aed4a6ee2d288acbca300192ba283ccaee951ab320"
+  }
+}

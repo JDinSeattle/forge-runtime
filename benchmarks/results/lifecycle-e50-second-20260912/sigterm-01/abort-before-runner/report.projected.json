@@ -1,0 +1,509 @@
+{
+  "_archive_projection": {
+    "not_byte_identical": true,
+    "reason": "private configuration/credential-file paths and their digests excluded; original source retained untouched",
+    "removed_paths": [
+      "inputs_sha256./home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/runtime/sigterm-private/database.json",
+      "inputs_sha256./home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/runtime/sigterm-private/worker.json"
+    ],
+    "source_sha256": "d6d0646ab130fc84943089fe64cc032ba64c133da6a5d5c82facc5831023b633"
+  },
+  "after": {
+    "commands": [
+      {
+        "kind": "stop_execution"
+      }
+    ],
+    "counts": {
+      "approvals": 0,
+      "artifacts": 0,
+      "effects": 0,
+      "model_attempts": 0,
+      "quota_active": 0,
+      "quota_cost": 0,
+      "quota_reservations": 0,
+      "quota_tokens": 0,
+      "run_messages": 0,
+      "runner_allocations": 0,
+      "runner_reserved": 0,
+      "runs": 1,
+      "steps": 1,
+      "tenant_active": 0,
+      "workspace_cleanup": 0
+    },
+    "events": [
+      {
+        "attempt_id": null,
+        "created_at": "2026-09-12T04:01:27.358972+00:00",
+        "payload": {
+          "cost_microusd": 0,
+          "lease": {
+            "epoch": 0,
+            "owner": "",
+            "until": "0001-01-01T00:00:00Z"
+          },
+          "limits": {
+            "deadline": "2026-09-11T21:04:17.356217-07:00",
+            "max_cost_microusd": 1000000,
+            "max_model_rounds": 4,
+            "max_no_progress_batches": 3,
+            "max_tool_calls": 4
+          },
+          "model_rounds": 0,
+          "run_id": "run_OAZ33S3LRG5O7EOUL6GDQ5QB4N",
+          "schema_version": 2,
+          "stage": "initialize",
+          "status": "queued",
+          "step_seq": 0,
+          "tenant_id": "lifecycle-n5yz43ws7vos67f4hzxdujv6sf",
+          "tool_calls": 0,
+          "verification_revision": 0,
+          "verification_status": "unverified",
+          "version": 1,
+          "workspace_revision": 0
+        },
+        "run_id": "run_OAZ33S3LRG5O7EOUL6GDQ5QB4N",
+        "schema_version": 1,
+        "seq": 1,
+        "step_seq": null,
+        "tenant_id": "lifecycle-n5yz43ws7vos67f4hzxdujv6sf",
+        "type": "run.created"
+      },
+      {
+        "attempt_id": null,
+        "created_at": "2026-09-12T04:44:59.056994+00:00",
+        "payload": {
+          "cost_microusd": 0,
+          "model_rounds": 0,
+          "output_ref": "",
+          "reason": "cancellation requested",
+          "stage": "initialize",
+          "state": "cancel_requested",
+          "step_seq": 0,
+          "tool_calls": 0,
+          "verification_report_ref": "",
+          "verification_status": "unverified",
+          "version": 2,
+          "workspace_revision": 0
+        },
+        "run_id": "run_OAZ33S3LRG5O7EOUL6GDQ5QB4N",
+        "schema_version": 1,
+        "seq": 2,
+        "step_seq": null,
+        "tenant_id": "lifecycle-n5yz43ws7vos67f4hzxdujv6sf",
+        "type": "run.cancel_requested"
+      }
+    ],
+    "immutable_run_columns": {
+      "base_commit": "8b0fc272ee30b0c4aa6f0b1d286033c5b1519ff2d6f019e3c962c45dc4123357",
+      "config_snapshot": {
+        "max_cost_microusd": 1000000,
+        "max_model_rounds": 4,
+        "max_no_progress_batches": 3,
+        "max_runtime_seconds": 170,
+        "max_tool_calls": 4,
+        "model": "fake",
+        "provider": "fake"
+      },
+      "created_at": "2026-09-12T04:01:27.357345+00:00",
+      "id": "run_OAZ33S3LRG5O7EOUL6GDQ5QB4N",
+      "input_snapshot": "{\"schema_version\":1,\"project_id\":\"project_BJ6DDLOAJVZWBF3FMPREVPE6U4\",\"task\":\"Explicit finite SIGTERM lifecycle fixture; no model-quality or successful-repair claim\",\"base_commit\":\"8b0fc272ee30b0c4aa6f0b1d286033c5b1519ff2d6f019e3c962c45dc4123357\",\"source_id\":\"lifecycle\",\"profile_id\":\"lifecycle-python\"}",
+      "last_claim_traceparent": null,
+      "lease_epoch": 0,
+      "lease_owner": "",
+      "lease_until": null,
+      "lease_yielded": false,
+      "not_before": "-infinity",
+      "parent_run_id": null,
+      "principal_id": "fixture-operator",
+      "priority": 0,
+      "project_id": "project_BJ6DDLOAJVZWBF3FMPREVPE6U4",
+      "retained_from_seq": 1,
+      "runnable_at": "2026-09-12T04:01:27.356217+00:00",
+      "runner_id": null,
+      "snapshot_hold_at": null,
+      "snapshot_hold_reason": null,
+      "snapshot_hold_schema": null,
+      "snapshot_hold_sha256": null,
+      "task": "Explicit finite SIGTERM lifecycle fixture; no model-quality or successful-repair claim",
+      "tenant_id": "lifecycle-n5yz43ws7vos67f4hzxdujv6sf",
+      "traceparent": "",
+      "workspace_id": ""
+    },
+    "lease_epoch": 0,
+    "lease_owner": "",
+    "lease_until": null,
+    "observed_at": "2026-09-11T21:44:59.060167-07:00",
+    "runner_id": "",
+    "snapshots": [
+      {
+        "body": {
+          "cost_microusd": 0,
+          "lease": {
+            "epoch": 0,
+            "owner": "",
+            "until": "0001-01-01T00:00:00Z"
+          },
+          "limits": {
+            "deadline": "2026-09-11T21:04:17.356217-07:00",
+            "max_cost_microusd": 1000000,
+            "max_model_rounds": 4,
+            "max_no_progress_batches": 3,
+            "max_tool_calls": 4
+          },
+          "model_rounds": 0,
+          "run_id": "run_OAZ33S3LRG5O7EOUL6GDQ5QB4N",
+          "schema_version": 2,
+          "stage": "initialize",
+          "status": "queued",
+          "step_seq": 0,
+          "tenant_id": "lifecycle-n5yz43ws7vos67f4hzxdujv6sf",
+          "tool_calls": 0,
+          "verification_revision": 0,
+          "verification_status": "unverified",
+          "version": 1,
+          "workspace_revision": 0
+        },
+        "created_at": "2026-09-12T04:01:27.357972+00:00",
+        "input_event": null,
+        "input_state": null,
+        "run_id": "run_OAZ33S3LRG5O7EOUL6GDQ5QB4N",
+        "schema_version": 2,
+        "step_seq": 0,
+        "tenant_id": "lifecycle-n5yz43ws7vos67f4hzxdujv6sf",
+        "version": 1
+      },
+      {
+        "body": {
+          "cost_microusd": 0,
+          "failure_reason": "cancellation requested",
+          "lease": {
+            "epoch": 0,
+            "owner": "",
+            "until": "0001-01-01T00:00:00Z"
+          },
+          "limits": {
+            "deadline": "2026-09-11T21:04:17.356217-07:00",
+            "max_cost_microusd": 1000000,
+            "max_model_rounds": 4,
+            "max_no_progress_batches": 3,
+            "max_tool_calls": 4
+          },
+          "model_rounds": 0,
+          "run_id": "run_OAZ33S3LRG5O7EOUL6GDQ5QB4N",
+          "schema_version": 2,
+          "stage": "initialize",
+          "status": "cancel_requested",
+          "step_seq": 0,
+          "stop_target": "cancelled",
+          "tenant_id": "lifecycle-n5yz43ws7vos67f4hzxdujv6sf",
+          "tool_calls": 0,
+          "verification_revision": 0,
+          "verification_status": "unverified",
+          "version": 2,
+          "workspace_revision": 0
+        },
+        "created_at": "2026-09-12T04:44:59.055456+00:00",
+        "input_event": {
+          "at": "2026-09-11T21:44:59.053123-07:00",
+          "epoch": 0,
+          "expected_version": 1,
+          "kind": "cancel_requested",
+          "owner": ""
+        },
+        "input_state": {
+          "cost_microusd": 0,
+          "lease": {
+            "epoch": 0,
+            "owner": "",
+            "until": "0001-01-01T00:00:00Z"
+          },
+          "limits": {
+            "deadline": "2026-09-11T21:04:17.356217-07:00",
+            "max_cost_microusd": 1000000,
+            "max_model_rounds": 4,
+            "max_no_progress_batches": 3,
+            "max_tool_calls": 4
+          },
+          "model_rounds": 0,
+          "run_id": "run_OAZ33S3LRG5O7EOUL6GDQ5QB4N",
+          "schema_version": 2,
+          "stage": "initialize",
+          "status": "queued",
+          "step_seq": 0,
+          "tenant_id": "lifecycle-n5yz43ws7vos67f4hzxdujv6sf",
+          "tool_calls": 0,
+          "verification_revision": 0,
+          "verification_status": "unverified",
+          "version": 1,
+          "workspace_revision": 0
+        },
+        "run_id": "run_OAZ33S3LRG5O7EOUL6GDQ5QB4N",
+        "schema_version": 2,
+        "step_seq": 0,
+        "tenant_id": "lifecycle-n5yz43ws7vos67f4hzxdujv6sf",
+        "version": 2
+      }
+    ],
+    "state": {
+      "cost_microusd": 0,
+      "failure_reason": "cancellation requested",
+      "lease": {
+        "epoch": 0,
+        "owner": "",
+        "until": "0001-01-01T00:00:00Z"
+      },
+      "limits": {
+        "deadline": "2026-09-11T21:04:17.356217-07:00",
+        "max_cost_microusd": 1000000,
+        "max_model_rounds": 4,
+        "max_no_progress_batches": 3,
+        "max_tool_calls": 4
+      },
+      "model_rounds": 0,
+      "run_id": "run_OAZ33S3LRG5O7EOUL6GDQ5QB4N",
+      "schema_version": 2,
+      "stage": "initialize",
+      "status": "cancel_requested",
+      "step_seq": 0,
+      "stop_target": "cancelled",
+      "tenant_id": "lifecycle-n5yz43ws7vos67f4hzxdujv6sf",
+      "tool_calls": 0,
+      "verification_revision": 0,
+      "verification_status": "unverified",
+      "version": 2,
+      "workspace_revision": 0
+    },
+    "state_column": "cancel_requested",
+    "steps": [
+      {
+        "input_hash": "",
+        "kind": "initialize",
+        "output_ref": "",
+        "run_id": "run_OAZ33S3LRG5O7EOUL6GDQ5QB4N",
+        "seq": 0,
+        "status": "committed",
+        "tenant_id": "lifecycle-n5yz43ws7vos67f4hzxdujv6sf"
+      }
+    ],
+    "version_column": 2,
+    "workspace_id": ""
+  },
+  "before": {
+    "commands": [],
+    "counts": {
+      "approvals": 0,
+      "artifacts": 0,
+      "effects": 0,
+      "model_attempts": 0,
+      "quota_active": 0,
+      "quota_cost": 0,
+      "quota_reservations": 0,
+      "quota_tokens": 0,
+      "run_messages": 0,
+      "runner_allocations": 0,
+      "runner_reserved": 0,
+      "runs": 1,
+      "steps": 0,
+      "tenant_active": 0,
+      "workspace_cleanup": 0
+    },
+    "events": [
+      {
+        "attempt_id": null,
+        "created_at": "2026-09-12T04:01:27.358972+00:00",
+        "payload": {
+          "cost_microusd": 0,
+          "lease": {
+            "epoch": 0,
+            "owner": "",
+            "until": "0001-01-01T00:00:00Z"
+          },
+          "limits": {
+            "deadline": "2026-09-11T21:04:17.356217-07:00",
+            "max_cost_microusd": 1000000,
+            "max_model_rounds": 4,
+            "max_no_progress_batches": 3,
+            "max_tool_calls": 4
+          },
+          "model_rounds": 0,
+          "run_id": "run_OAZ33S3LRG5O7EOUL6GDQ5QB4N",
+          "schema_version": 2,
+          "stage": "initialize",
+          "status": "queued",
+          "step_seq": 0,
+          "tenant_id": "lifecycle-n5yz43ws7vos67f4hzxdujv6sf",
+          "tool_calls": 0,
+          "verification_revision": 0,
+          "verification_status": "unverified",
+          "version": 1,
+          "workspace_revision": 0
+        },
+        "run_id": "run_OAZ33S3LRG5O7EOUL6GDQ5QB4N",
+        "schema_version": 1,
+        "seq": 1,
+        "step_seq": null,
+        "tenant_id": "lifecycle-n5yz43ws7vos67f4hzxdujv6sf",
+        "type": "run.created"
+      }
+    ],
+    "immutable_run_columns": {
+      "base_commit": "8b0fc272ee30b0c4aa6f0b1d286033c5b1519ff2d6f019e3c962c45dc4123357",
+      "config_snapshot": {
+        "max_cost_microusd": 1000000,
+        "max_model_rounds": 4,
+        "max_no_progress_batches": 3,
+        "max_runtime_seconds": 170,
+        "max_tool_calls": 4,
+        "model": "fake",
+        "provider": "fake"
+      },
+      "created_at": "2026-09-12T04:01:27.357345+00:00",
+      "id": "run_OAZ33S3LRG5O7EOUL6GDQ5QB4N",
+      "input_snapshot": "{\"schema_version\":1,\"project_id\":\"project_BJ6DDLOAJVZWBF3FMPREVPE6U4\",\"task\":\"Explicit finite SIGTERM lifecycle fixture; no model-quality or successful-repair claim\",\"base_commit\":\"8b0fc272ee30b0c4aa6f0b1d286033c5b1519ff2d6f019e3c962c45dc4123357\",\"source_id\":\"lifecycle\",\"profile_id\":\"lifecycle-python\"}",
+      "last_claim_traceparent": null,
+      "lease_epoch": 0,
+      "lease_owner": "",
+      "lease_until": null,
+      "lease_yielded": false,
+      "not_before": "-infinity",
+      "parent_run_id": null,
+      "principal_id": "fixture-operator",
+      "priority": 0,
+      "project_id": "project_BJ6DDLOAJVZWBF3FMPREVPE6U4",
+      "retained_from_seq": 1,
+      "runnable_at": "2026-09-12T04:01:27.356217+00:00",
+      "runner_id": null,
+      "snapshot_hold_at": null,
+      "snapshot_hold_reason": null,
+      "snapshot_hold_schema": null,
+      "snapshot_hold_sha256": null,
+      "task": "Explicit finite SIGTERM lifecycle fixture; no model-quality or successful-repair claim",
+      "tenant_id": "lifecycle-n5yz43ws7vos67f4hzxdujv6sf",
+      "traceparent": "",
+      "workspace_id": ""
+    },
+    "lease_epoch": 0,
+    "lease_owner": "",
+    "lease_until": null,
+    "observed_at": "2026-09-11T21:44:58.897465-07:00",
+    "runner_id": "",
+    "snapshots": [
+      {
+        "body": {
+          "cost_microusd": 0,
+          "lease": {
+            "epoch": 0,
+            "owner": "",
+            "until": "0001-01-01T00:00:00Z"
+          },
+          "limits": {
+            "deadline": "2026-09-11T21:04:17.356217-07:00",
+            "max_cost_microusd": 1000000,
+            "max_model_rounds": 4,
+            "max_no_progress_batches": 3,
+            "max_tool_calls": 4
+          },
+          "model_rounds": 0,
+          "run_id": "run_OAZ33S3LRG5O7EOUL6GDQ5QB4N",
+          "schema_version": 2,
+          "stage": "initialize",
+          "status": "queued",
+          "step_seq": 0,
+          "tenant_id": "lifecycle-n5yz43ws7vos67f4hzxdujv6sf",
+          "tool_calls": 0,
+          "verification_revision": 0,
+          "verification_status": "unverified",
+          "version": 1,
+          "workspace_revision": 0
+        },
+        "created_at": "2026-09-12T04:01:27.357972+00:00",
+        "input_event": null,
+        "input_state": null,
+        "run_id": "run_OAZ33S3LRG5O7EOUL6GDQ5QB4N",
+        "schema_version": 2,
+        "step_seq": 0,
+        "tenant_id": "lifecycle-n5yz43ws7vos67f4hzxdujv6sf",
+        "version": 1
+      }
+    ],
+    "state": {
+      "cost_microusd": 0,
+      "lease": {
+        "epoch": 0,
+        "owner": "",
+        "until": "0001-01-01T00:00:00Z"
+      },
+      "limits": {
+        "deadline": "2026-09-11T21:04:17.356217-07:00",
+        "max_cost_microusd": 1000000,
+        "max_model_rounds": 4,
+        "max_no_progress_batches": 3,
+        "max_tool_calls": 4
+      },
+      "model_rounds": 0,
+      "run_id": "run_OAZ33S3LRG5O7EOUL6GDQ5QB4N",
+      "schema_version": 2,
+      "stage": "initialize",
+      "status": "queued",
+      "step_seq": 0,
+      "tenant_id": "lifecycle-n5yz43ws7vos67f4hzxdujv6sf",
+      "tool_calls": 0,
+      "verification_revision": 0,
+      "verification_status": "unverified",
+      "version": 1,
+      "workspace_revision": 0
+    },
+    "state_column": "queued",
+    "steps": null,
+    "version_column": 1,
+    "workspace_id": ""
+  },
+  "execution": {
+    "evidence_dir": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-01",
+    "fixture_id": "lr20260912_a",
+    "pool_root": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/pool-root",
+    "purpose": "worker-runner-sigterm-v1",
+    "runner_binary": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/bin/c9414210b58124aa7c9dd25edd3f18c89004cf10/forge-runner",
+    "runner_config": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/runtime/runner.json",
+    "runner_sha256": "33038601c91e0b516acb02c493c4f5df2089bbd09bfca887b4e456fc2dc9d229",
+    "scope_root": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a",
+    "test_binary": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/bin/c9414210b58124aa7c9dd25edd3f18c89004cf10/application-faults.test",
+    "test_sha256": "67d19c03d8625c41179808ae1a2553c203393d6dd7834d1db7b16c1baf26ac79",
+    "worker_binary": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/bin/c9414210b58124aa7c9dd25edd3f18c89004cf10/forge-worker",
+    "worker_sha256": "213e619d6bbbfe57381561dc8ba3813bf40a3018c8755ca5e385f5f5376d194a"
+  },
+  "inputs_sha256": {
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/acceptance.json": "516fb15ff9883552ef107ebc7b3caf182dee46e523f659a427cdeb23b9c51f29",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/bin/application-faults.test": "ed4a8de874f25a8a7f595fefff6d4631305270464752bc9a9a0fbec734dcde94",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/bin/forge-runner": "d10fe509adfcdee44f129e6aa39f25c794bb21bcc8602ad6e0fe478203ef14fd",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/bin/forge-worker": "de9c7fac40c1eb4d9df2830f44f6c8c916d5225951b7a61e5f581550ede26b5e",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-01/before-runner-readonly-audit.json": "ed3711e47e2eb860add3fdea4f24a9d6e71f9be668683ccc7691b5b80fbc6876",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-01/worker-runner-sigterm/acceptance-input.json": "1d2c1bdf3195045f2e13da2d9c51e9e1e3f3715d3197897ec20094e82f18ea35",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-01/worker-runner-sigterm/fixture.json": "6dd13682be9789265b08f97bceb6b832c41f6bc736c114c9fad707a671b7e144",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-01/worker-runner-sigterm/recovery.json": "b474bac36c6df8fa23b5c63a7af4e3a60fe5152ed4f02e26c4591653e8f2965d",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/sigterm-01/worker-runner-sigterm/runner-original.log.identity.json": "31d4112080aaae1d37eb4bcf6ccd57c0af736b4f368da6613c8485f9129c1e1d",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/runtime/runner.json": "638beb069eddfbfd8fe12c543be27376386af6036fd83494fd8c644260e3ca0a"
+  },
+  "lease_epoch": 0,
+  "observed_at": "2026-09-12T04:44:59.307415148Z",
+  "original_deadline": "2026-09-11T21:04:17.356217-07:00",
+  "passed": true,
+  "physical": {
+    "docker_read_only_query": "ps --all --filter label=forge.runtime=1",
+    "observed_at": "2026-09-12T04:44:59.307411887Z",
+    "original_pid": 1059206,
+    "original_process_absent": true,
+    "original_run_containers": 0,
+    "original_start_ticks": "47004358",
+    "same_owner_processes_read": 475
+  },
+  "run_id": "run_OAZ33S3LRG5O7EOUL6GDQ5QB4N",
+  "schema": "appfault_lifecycle_v5tmt66sh5a2fyvssj5rubdbqe",
+  "scope": "cancellation intent only; no stop acknowledgment or lifecycle acceptance; original schema must never be routed to a worker",
+  "status": "cancel_requested",
+  "stop_target": "cancelled",
+  "terminal": false,
+  "test_pid": 1492663,
+  "version": 2
+}

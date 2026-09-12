@@ -1,0 +1,29 @@
+{
+  "reviewed_at": "2026-09-12T04:31:49.560313+00:00",
+  "passed": false,
+  "source_sha256": "3e7026d51260992b2412140c156328c67e6405aa42dc1ca769279d251ed28a3d",
+  "source_copy": "/tmp/forge-lifecycle-continuation-build-reviewed-v1.py",
+  "scope": "Read-only script review. No build, service, PG, Docker or mount execution.",
+  "findings": [
+    {
+      "priority": "P2",
+      "issue": "Go subprocess timeout leaves compiler descendants unmanaged",
+      "code": "subprocess.run(... timeout=240)",
+      "reproduction": "A go-like parent launches an executing child and then exceeds timeout. subprocess.run kills/waits only the parent; no own process group is established or cleaned. A child surviving timeout can continue writing the new binary output after the wrapper has failed.",
+      "fix": "Reuse the previously reviewed execute_bounded helper with start_new_session and unconditional finally TERM then KILL of only the owned PGID, including parent normal/abnormal exit."
+    },
+    {
+      "priority": "P2",
+      "issue": "New output parents are not checked against prepared no-symlink private scope",
+      "code": "out.mkdir(...) and binary_dir.mkdir(...) before any p.read_preparation or p.directory checks",
+      "reproduction": "If existing scope/bin or scope/evidence is a symlink, mkdir follows its parent and writes outputs outside the intended scope. The old-binary dictionary uses is_file, which follows symlinks and accepts any current set instead of requiring the original fixed three files and manifest hashes.",
+      "fix": "Reuse prepare.read_preparation, validate all bin/evidence directory chains nofollow/private, pin original three executable names and hashes to original acceptance before writing versioned output."
+    }
+  ],
+  "provenance_gap": {
+    "issue": "No fixed revision Git blob comparison or persisted after input manifest",
+    "code": "before={path:sha(...)}; before==after plus clean status",
+    "explanation": "Git status can hide assume-unchanged/skip-worktree changes; stable hashes alone do not prove source equals declared revision. Script should compare all intended source bytes with the initial revision blobs and preserve after inputs as in the earlier reviewed build helper."
+  },
+  "tests_not_executed": true
+}

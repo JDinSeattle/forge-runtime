@@ -1,0 +1,52 @@
+{
+  "_archive_projection": {
+    "not_byte_identical": true,
+    "reason": "private configuration/credential-file paths and their digests excluded; original source retained untouched",
+    "removed_paths": [
+      "private_settings",
+      "worker_config",
+      "worker_config_sha256",
+      "runner_config_sha256"
+    ],
+    "source_sha256": "9531c16a4609d84297256c1a20d94ea9d344e6d39a367b3056733359038d8819"
+  },
+  "artifact_root": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/runtime/artifacts",
+  "container_id": "197dd6788f9662bf00695df11f3957482f5875a02f97ffbc3c66ea6c13e0fa8a",
+  "container_name": "forge-4bf5fc9e273e3cd9fb97a15a09a966bfb96914b1",
+  "epoch": 2,
+  "harness_finished_at": "2026-09-12T04:46:05.855153478Z",
+  "journal": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/runtime/journal.sqlite",
+  "journal_uuid": "b010dd7440a54c58601967342f397faf686b7e306061af9f49809ee342b0ec8e",
+  "operation_id": "run_4B2L5YVPJSHMQSNEBGGPSEVSFB_step_1_op_0",
+  "original_request": {
+    "args": {
+      "command": [
+        "python",
+        "-I",
+        "-B",
+        "-c",
+        "import os,time,json,subprocess,sys\nwith open('lifecycle-counter.txt','a') as f:\n f.write('1\\n');f.flush();os.fsync(f.fileno())\nchild=subprocess.Popen([sys.executable,'-I','-B','-c',\"import os,time; print('LIFECYCLE_CHILD_READY',flush=True); os.write(2,b'child-stderr\\\\x00\\\\xff'); time.sleep(70)\"])\nprint('LIFECYCLE_PARENT_READY',flush=True)\nos.write(2,b'parent-stderr\\x00\\xff')\ntry:\n with open('lifecycle-writer.txt','a') as f:\n  end=time.monotonic()+70\n  while time.monotonic()<end:\n   n=time.time_ns();f.write(str(n)+'\\n');f.flush();os.fsync(f.fileno())\n   print(json.dumps({'writer_ns':n}),flush=True);time.sleep(.2)\nfinally:\n child.terminate();child.wait(timeout=2)\n"
+      ]
+    },
+    "args_hash": "dbd42c80aa7384da8f3c6b43ca02a8fe9a04f83c77c15d8a4244d34b1112413a",
+    "deadline": "2026-09-12T04:48:22.15026Z",
+    "epoch": 2,
+    "expected_revision": 1,
+    "grant": "",
+    "kind": "run_command",
+    "operation_id": "run_4B2L5YVPJSHMQSNEBGGPSEVSFB_step_1_op_0",
+    "policy_version": "workspace-v1",
+    "run_id": "run_4B2L5YVPJSHMQSNEBGGPSEVSFB",
+    "tenant_id": "lifecycle-b6qty6f6cjxb5ckmty5n225jwi",
+    "workspace_id": "run_4B2L5YVPJSHMQSNEBGGPSEVSFB"
+  },
+  "phase": "released",
+  "purpose": "worker-runner-sigterm-v1",
+  "run_id": "run_4B2L5YVPJSHMQSNEBGGPSEVSFB",
+  "runner_config": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/runtime/runner.json",
+  "schema": "appfault_lifecycle_mx5umup4g32wust75xbuomne72",
+  "scope": "same dedicated journal/owner only; no lease/deadline edits, no unknown workspace deletion",
+  "tenant_id": "lifecycle-b6qty6f6cjxb5ckmty5n225jwi",
+  "test_failed": false,
+  "worker_role": "appfault_worker_x5wszrwifpjgah5rlsmtneau7f"
+}

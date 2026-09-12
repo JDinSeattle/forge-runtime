@@ -1,0 +1,100 @@
+{
+  "passed": true,
+  "remaining_p1_p2": [],
+  "reviewed_at": "2026-09-12T04:44:04.274253+00:00",
+  "author_commit": "4f852896bd71666d6e61ed9c67372d519e06c1e5",
+  "integrated_commit": "c9414210b58124aa7c9dd25edd3f18c89004cf10",
+  "source_sha256": {
+    "scripts/faults/application/worker_runner_abort_test.go": "7e18527a62c34b93b70f7cd715b891f19d1067b4f730dd09ea6ba1cc122145dd",
+    "scripts/faults/application/worker_runner_abort_offline_test.go": "29e891bd2d9b64ec7eb8cca40f5048c29065119212a24cea2ec89e3feb94d16b",
+    "scripts/faults/application/worker_runner_sigterm_test.go": "e9558aede70e9602a8261d7eb7cbbc5ef8b995b1801eae0e7d6dacd5673082a8",
+    "scripts/faults/application/worker_runner_sigterm_helpers_test.go": "abec35658b1394d0c636d7010b92dbfc7ea3e1052427c2340e9663ae49ca089c",
+    "scripts/faults/application/strict_logs_combined_test.go": "55d4507ab03152cb546b88f29332ee00e7e08b3560632ee71e26ee511713efc6",
+    "scripts/faults/application/strict_logs_combined_helpers_test.go": "75f77bb0b7c08693bc2cd385f3fab912fa0aa884d77c3ed6622fb45d7f1ec15b"
+  },
+  "scope": "Read-only independent review of six fixture files and production Cancel/transition contracts. Author offline logs independently recounted; retained original inputs and binary hashes read-only rechecked. No Go test, PostgreSQL query/write, Docker query/mutation, service, mount, key read, or acceptance execution was performed in this review.",
+  "author_offline_log_recomputation": {
+    "ordinary.log": {
+      "pass": 103,
+      "fail": 0,
+      "skip": 0,
+      "top_level_pass": 14
+    },
+    "race.log": {
+      "pass": 103,
+      "fail": 0,
+      "skip": 0,
+      "top_level_pass": 14
+    }
+  },
+  "author_commands_exit_zero": true,
+  "author_before_after_match": true,
+  "original_retained_inputs": {
+    "hashes": {
+      "acceptance.json": "516fb15ff9883552ef107ebc7b3caf182dee46e523f659a427cdeb23b9c51f29",
+      "evidence/sigterm-01/worker-runner-sigterm/acceptance-input.json": "1d2c1bdf3195045f2e13da2d9c51e9e1e3f3715d3197897ec20094e82f18ea35",
+      "evidence/sigterm-01/worker-runner-sigterm/recovery.json": "b474bac36c6df8fa23b5c63a7af4e3a60fe5152ed4f02e26c4591653e8f2965d",
+      "runtime/sigterm-private/worker.json": "806e0897ceb3e8380a6f076f07e36daac392738bf4303eea1d671cb6a1ab93a7",
+      "runtime/runner.json": "638beb069eddfbfd8fe12c543be27376386af6036fd83494fd8c644260e3ca0a",
+      "evidence/sigterm-01/worker-runner-sigterm/fixture.json": "6dd13682be9789265b08f97bceb6b832c41f6bc736c114c9fad707a671b7e144",
+      "runtime/sigterm-private/database.json": "b9d4295a8da9f49103cb8c96bf5e2b6cd33e78a5f84c2a4f6f9dfeb6f0da8b8d",
+      "evidence/sigterm-01/before-runner-readonly-audit.json": "ed3711e47e2eb860add3fdea4f24a9d6e71f9be668683ccc7691b5b80fbc6876",
+      "evidence/sigterm-01/worker-runner-sigterm/runner-original.log.identity.json": "31d4112080aaae1d37eb4bcf6ccd57c0af736b4f368da6613c8485f9129c1e1d"
+    },
+    "database_route": "exact restricted original role/private schema/loopback validated without disclosing credential",
+    "old_binary_hashes": {
+      "runner": {
+        "sha256": "d10fe509adfcdee44f129e6aa39f25c794bb21bcc8602ad6e0fe478203ef14fd",
+        "bytes": 30727937
+      },
+      "worker": {
+        "sha256": "de9c7fac40c1eb4d9df2830f44f6c8c916d5225951b7a61e5f581550ede26b5e",
+        "bytes": 83406368
+      },
+      "test": {
+        "sha256": "ed4a8de874f25a8a7f595fefff6d4631305270464752bc9a9a0fbec734dcde94",
+        "bytes": 87669097
+      }
+    },
+    "run_id": "run_OAZ33S3LRG5O7EOUL6GDQ5QB4N",
+    "schema": "appfault_lifecycle_v5tmt66sh5a2fyvssj5rubdbqe",
+    "state": "queued",
+    "version": 1,
+    "lease_epoch": 0,
+    "deadline_utc": "2026-09-12T04:04:17.356217Z",
+    "original_file_inventory_exact": true,
+    "physical_readonly_observations": {
+      "journal_absent": true,
+      "journal_wal_absent": true,
+      "journal_shm_absent": true,
+      "engine_absent_or_empty": true,
+      "artifact_root_empty": true
+    }
+  },
+  "reviewed_boundaries": [
+    "A dedicated fixture control flock serializes abort and new SIGTERM entry. It neither creates nor rebinds pool owners. Fresh physical preflight requires exact verified slots, no owner, empty engine/artifacts and absent journal/WAL/SHM/socket before any abort or new schema/process.",
+    "Original authority binds current/archived acceptance, old executable bytes, recovery phase/run/schema/role/config hashes, private credential route, fixture source and original read-only audit. Original PID/config/binary processes and original-run managed Docker containers are rejected by runtime read-only checks.",
+    "Before observation uses repeatable-read and requires the original queued v1/no lease/no workspace/single run and zero work/fee/capacity. Only production Store.Cancel persists the control transition; no SQL state, deadline, lease, migration or synthetic receipt shortcut exists.",
+    "After oracle requires cancel_requested v2/terminal=false/target cancelled, exactly one pending stop command and one seq0 initialize committed empty-input/output control step. All model/effect/allocation/quota/artifact/cleanup/message/approval work remains zero; immutable run columns and original event/snapshot rows remain equal.",
+    "Exclusive durable intent permits explicit same-intent observation after an ambiguous Cancel result, preserving old evidence. An existing report is revalidated against current database history without repeating the transaction. Partial malformed evidence fails closed.",
+    "Attempt02 requires its exact manifest and new revision binary directory. Before new schema/process it revalidates old abort against live restricted original PG. New evidence/private paths, schema, role and run are separate; children receive only new worker credentials. At completion old database/history is revalidated again after new worker and runner exit.",
+    "Recovery and S12 L5 derive private paths from the selected SIGTERM attempt. L5 compares archived manifest/binary/config/process/claim evidence against the selected sigterm02 schema. Earlier lifecycle assertions, default lease and production cleanup remain unchanged."
+  ],
+  "limits": [
+    "No actual abort or SIGTERM success is established by this review. Final execution still requires the new binary build attestation and the runtime live checks, followed by raw evidence audit.",
+    "The original nonterminal cancel_requested run remains schedulable; retain its schema without any worker. Fixture abandonment does not claim terminal business cancellation or journal recovery.",
+    "Read-only database transactions and filesystem/process/Docker checks are separate observations, not atomic cross-system proof. The private operator scope must remain quiescent; the fixture flock does not fence an unrelated manually launched worker.",
+    "Historical audit counts are not substituted for live checks. This report did not reconnect to PostgreSQL or resample daemon/process identities.",
+    "Original control-step count is one after Cancel, while snapshot step_seq and effect/model execution remain zero."
+  ],
+  "artifacts_base": "/tmp/forge-lifecycle-second-attempt-independent",
+  "artifacts_sha256": {
+    "before.json": "94d41108877517e64c61b8927f4c0a8fb8442b32d99ad32da6fde3ae588f87eb",
+    "after.json": "94d41108877517e64c61b8927f4c0a8fb8442b32d99ad32da6fde3ae588f87eb",
+    "commands.json": "071d67a5e37963112549e782f0e9aaf3849810a8d59a08514c32de65cb4e9051",
+    "ordinary.log": "5c706bc5c0dcff88453196d42a74b5374b633de80566b8f576a1038fcad7c408",
+    "race.log": "affdaac231441896320a1f74830d3352cb8a5919c8098d602d5874d4d8212ffb",
+    "vet.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "compile.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

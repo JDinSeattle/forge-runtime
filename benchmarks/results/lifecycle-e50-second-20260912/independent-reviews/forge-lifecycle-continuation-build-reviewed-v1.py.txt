@@ -1,0 +1,64 @@
+import hashlib
+import json
+import os
+from pathlib import Path
+import re
+import subprocess
+import sys
+import time
+
+repo = Path('/home/postedism/Desktop/mini claude code/forge-runtime')
+scope = repo / 'var/lifecycle-rehearsals/lr20260912_a'
+go = Path('/home/postedism/.local/share/mise/installs/go/1.26.8/bin/go')
+revision = sys.argv[1]
+assert re.fullmatch('[a-f0-9]{40}', revision)
+def git(*args):
+    return subprocess.check_output(['git', *args], cwd=repo).decode().strip()
+assert git('rev-parse', 'HEAD') == revision
+assert not git('status', '--porcelain')
+def sha(path):
+    return hashlib.file_digest(path.open('rb'), 'sha256').hexdigest()
+paths = [Path(p) for p in git('ls-files').splitlines() if not p.startswith('benchmarks/results/')]
+before = {str(p): sha(repo/p) for p in paths}
+old = {p.name: sha(p) for p in (scope/'bin').iterdir() if p.is_file()}
+out = scope/'evidence'/('build-'+revision)
+out.mkdir(mode=0o700)
+binary_dir = scope/'bin'/revision
+binary_dir.mkdir(mode=0o700)
+env = {'PATH':str(go.parent)+':/usr/bin:/bin','HOME':str(scope),'LC_ALL':'C','TMPDIR':'/tmp',
+       'GOPROXY':'off','GOSUMDB':'off','GOENV':'off','GOTOOLCHAIN':'local','CGO_ENABLED':'1',
+       'GOCACHE':str(repo/'var/local/go-build-cache'),'GOTMPDIR':str(repo/'var/local/integration-go-tmp'),
+       'GOPATH':'/home/postedism/go','GOMODCACHE':'/home/postedism/go/pkg/mod'}
+def save(name,data):
+    with (out/name).open('x') as f:json.dump(data,f,indent=2);f.write('\n')
+save('inputs-before.json',before)
+save('intent.json',{'source_revision':revision,'old_binaries':old,'environment':env,'scope':'new versioned binaries and offline integration only; no service, DB, Docker or model calls'})
+results=[]
+packages=['./internal/provider','./internal/configuration','./internal/application','./internal/sandbox','./scripts/faults/application']
+commands=[('offline',[str(go),'test','-count=1','-json',*packages]),('race',[str(go),'test','-race','-count=1','-json',*packages]),
+          ('vet',[str(go),'vet',*packages]),
+          ('runner',[str(go),'build','-buildvcs=true','-o',str(binary_dir/'forge-runner'),'./cmd/forge-runner']),
+          ('worker',[str(go),'build','-buildvcs=true','-o',str(binary_dir/'forge-worker'),'./cmd/forge-worker']),
+          ('test',[str(go),'test','-c','-o',str(binary_dir/'application-faults.test'),'./scripts/faults/application'])]
+for label,argv in commands:
+    started=time.monotonic()
+    with (out/(label+'.log')).open('xb') as log:
+        r=subprocess.run(argv,cwd=repo,env=env,stdout=log,stderr=subprocess.STDOUT,timeout=240)
+    results.append({'label':label,'argv':argv,'exit_code':r.returncode,'elapsed_seconds':time.monotonic()-started})
+    print(json.dumps(results[-1]),flush=True)
+    if r.returncode:
+        save('failed-results.json',results)
+        sys.exit(r.returncode)
+binaries={}
+for path in binary_dir.iterdir():
+    path.chmod(0o700)
+    metadata=subprocess.check_output([str(go),'version','-m',str(path)],env=env,cwd=repo).decode()
+    (out/(path.name+'.buildinfo.txt')).write_text(metadata)
+    if path.name!='application-faults.test':
+        assert 'vcs.revision='+revision in metadata and 'vcs.modified=false' in metadata
+    binaries[path.name]={'sha256':sha(path),'bytes':path.stat().st_size,'path':str(path)}
+after={str(p):sha(repo/p) for p in paths}
+assert before==after and not git('status','--porcelain') and git('rev-parse','HEAD')==revision
+assert old=={p.name:sha(p) for p in (scope/'bin').iterdir() if p.is_file()}
+save('results.json',{'passed':True,'source_revision':revision,'unchanged_inputs':len(before),'original_binaries_unchanged':True,'commands':results,'binaries':binaries,'scope':'offline integration and build only; actual acceptance not executed'})
+print(json.dumps({'passed':True,'evidence':str(out),'binary_dir':str(binary_dir)}),flush=True)

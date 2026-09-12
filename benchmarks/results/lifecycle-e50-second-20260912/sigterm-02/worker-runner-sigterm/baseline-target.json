@@ -1,0 +1,74 @@
+{
+  "request": {
+    "tenant_id": "lifecycle-b6qty6f6cjxb5ckmty5n225jwi",
+    "run_id": "run_4B2L5YVPJSHMQSNEBGGPSEVSFB",
+    "workspace_id": "run_4B2L5YVPJSHMQSNEBGGPSEVSFB",
+    "epoch": 1,
+    "grant": "",
+    "operation_id": "run_4B2L5YVPJSHMQSNEBGGPSEVSFB_0_initial_target",
+    "expected_revision": 1,
+    "kind": "verify",
+    "args": {
+      "target": true
+    },
+    "args_hash": "c56810ebca495ac55b599570ff113f60c83411e488cefe803421335131ab0944",
+    "policy_version": "trusted-profile-v1",
+    "deadline": "2026-09-12T04:48:22.15026Z"
+  },
+  "status": "failed",
+  "job_id": "forge-2278d29f73861c5e70df28004930d918487658e0",
+  "before_hash": "8b0fc272ee30b0c4aa6f0b1d286033c5b1519ff2d6f019e3c962c45dc4123357",
+  "after_hash": "8b0fc272ee30b0c4aa6f0b1d286033c5b1519ff2d6f019e3c962c45dc4123357",
+  "after_revision": 1,
+  "result": {
+    "container_id": "616eb28f7152183412d09efe5d236f2ff3465108506e533e3a8a3791932c27df",
+    "container_name": "/forge-2278d29f73861c5e70df28004930d918487658e0",
+    "strict_logs": true,
+    "log": {
+      "schema_version": 1,
+      "policy": {
+        "entry_bytes": 16384,
+        "operation_bytes": 524288,
+        "run_bytes": 16777216,
+        "max_operations": 32,
+        "preview_bytes": 65536
+      },
+      "operation_id": "run_4B2L5YVPJSHMQSNEBGGPSEVSFB_0_initial_target",
+      "binding_hash": "89925f495a5e661e991bb87c134c373da0729bd241989fdcfd0e4f5c9c72efa5",
+      "stdout_seen": 0,
+      "stderr_seen": 89,
+      "retained_bytes": 121,
+      "retained_payload": 89,
+      "records": 1,
+      "complete": true,
+      "dropped_known": true,
+      "dropped_bytes": 0,
+      "truncated": false,
+      "termination_requested": false,
+      "termination_observed": false,
+      "artifact": {
+        "tenant_id": "lifecycle-b6qty6f6cjxb5ckmty5n225jwi",
+        "run_id": "run_4B2L5YVPJSHMQSNEBGGPSEVSFB",
+        "kind": "operation_log",
+        "object_key": "lifecycle-b6qty6f6cjxb5ckmty5n225jwi/run_4B2L5YVPJSHMQSNEBGGPSEVSFB/763d4e93f72cf787b1a4dbd670efbe63f957fb0f771bb2741a77ff8f15b8452d",
+        "sha256": "763d4e93f72cf787b1a4dbd670efbe63f957fb0f771bb2741a77ff8f15b8452d",
+        "size": 121
+      }
+    },
+    "id": "forge-2278d29f73861c5e70df28004930d918487658e0",
+    "running": false,
+    "exit_code": 1,
+    "started": true,
+    "output": "VHJhY2ViYWNrIChtb3N0IHJlY2VudCBjYWxsIGxhc3QpOgogIEZpbGUgIjxzdHJpbmc+IiwgbGluZSAxLCBpbiA8bW9kdWxlPgpBc3NlcnRpb25FcnJvcgo=",
+    "truncated": false
+  },
+  "receipt": {
+    "tenant_id": "lifecycle-b6qty6f6cjxb5ckmty5n225jwi",
+    "run_id": "run_4B2L5YVPJSHMQSNEBGGPSEVSFB",
+    "kind": "operation_receipt",
+    "object_key": "lifecycle-b6qty6f6cjxb5ckmty5n225jwi/run_4B2L5YVPJSHMQSNEBGGPSEVSFB/08008d48764a4f9258ef0d4097dfd79ae01091b4cc21d6cbc9d257cf2670a096",
+    "sha256": "08008d48764a4f9258ef0d4097dfd79ae01091b4cc21d6cbc9d257cf2670a096",
+    "size": 2130
+  },
+  "cancel_requested": false
+}

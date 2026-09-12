@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/tmp/forge-e50-second-archive.py", line 58, in <module>
+    jop=next(x for x in sq['operations'] if x['id']==op);check('sqlite_operation_receipt_request_binding',jop['job_id']==settled['job_id'] and jop['request_json']==settled['request'] and jop['receipt_json']==settled['receipt'] and jop['status']==settled['status'])
+                                                         ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/forge-e50-second-archive.py", line 19, in check
+    if not value:raise AssertionError(name)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: sqlite_operation_receipt_request_binding

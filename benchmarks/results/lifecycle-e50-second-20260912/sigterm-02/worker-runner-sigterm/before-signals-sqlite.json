@@ -1,0 +1,168 @@
+{
+  "journal_identity": [
+    {
+      "id": "b010dd7440a54c58601967342f397faf686b7e306061af9f49809ee342b0ec8e",
+      "singleton": 1
+    }
+  ],
+  "log_runs": [
+    {
+      "operations": 2,
+      "policy_json": "{\"entry_bytes\":16384,\"operation_bytes\":524288,\"run_bytes\":16777216,\"max_operations\":32,\"preview_bytes\":65536}",
+      "reserved_bytes": 1048576,
+      "run_id": "run_4B2L5YVPJSHMQSNEBGGPSEVSFB",
+      "tenant_id": "lifecycle-b6qty6f6cjxb5ckmty5n225jwi"
+    }
+  ],
+  "operation_logs": [
+    {
+      "cleanup_state": "retained",
+      "container_id": "616eb28f7152183412d09efe5d236f2ff3465108506e533e3a8a3791932c27df",
+      "operation_id": "run_4B2L5YVPJSHMQSNEBGGPSEVSFB_0_initial_target",
+      "policy_json": "{\"entry_bytes\":16384,\"operation_bytes\":524288,\"run_bytes\":16777216,\"max_operations\":32,\"preview_bytes\":65536}"
+    },
+    {
+      "cleanup_state": "retained",
+      "container_id": "197dd6788f9662bf00695df11f3957482f5875a02f97ffbc3c66ea6c13e0fa8a",
+      "operation_id": "run_4B2L5YVPJSHMQSNEBGGPSEVSFB_step_1_op_0",
+      "policy_json": "{\"entry_bytes\":16384,\"operation_bytes\":524288,\"run_bytes\":16777216,\"max_operations\":32,\"preview_bytes\":65536}"
+    }
+  ],
+  "operations": [
+    {
+      "after_hash": "8b0fc272ee30b0c4aa6f0b1d286033c5b1519ff2d6f019e3c962c45dc4123357",
+      "after_revision": 1,
+      "before_hash": "8b0fc272ee30b0c4aa6f0b1d286033c5b1519ff2d6f019e3c962c45dc4123357",
+      "cancel_requested": 0,
+      "dispatch_started": 1,
+      "docker_start_intent": 1,
+      "error": "",
+      "expected_after_hash": "",
+      "id": "run_4B2L5YVPJSHMQSNEBGGPSEVSFB_0_initial_target",
+      "job_id": "forge-2278d29f73861c5e70df28004930d918487658e0",
+      "receipt_json": "{\"tenant_id\":\"lifecycle-b6qty6f6cjxb5ckmty5n225jwi\",\"run_id\":\"run_4B2L5YVPJSHMQSNEBGGPSEVSFB\",\"kind\":\"operation_receipt\",\"object_key\":\"lifecycle-b6qty6f6cjxb5ckmty5n225jwi/run_4B2L5YVPJSHMQSNEBGGPSEVSFB/08008d48764a4f9258ef0d4097dfd79ae01091b4cc21d6cbc9d257cf2670a096\",\"sha256\":\"08008d48764a4f9258ef0d4097dfd79ae01091b4cc21d6cbc9d257cf2670a096\",\"size\":2130}",
+      "request_json": {
+        "tenant_id": "lifecycle-b6qty6f6cjxb5ckmty5n225jwi",
+        "run_id": "run_4B2L5YVPJSHMQSNEBGGPSEVSFB",
+        "workspace_id": "run_4B2L5YVPJSHMQSNEBGGPSEVSFB",
+        "epoch": 1,
+        "grant": "",
+        "operation_id": "run_4B2L5YVPJSHMQSNEBGGPSEVSFB_0_initial_target",
+        "expected_revision": 1,
+        "kind": "verify",
+        "args": {
+          "target": true
+        },
+        "args_hash": "c56810ebca495ac55b599570ff113f60c83411e488cefe803421335131ab0944",
+        "policy_version": "trusted-profile-v1",
+        "deadline": "2026-09-12T04:48:22.15026Z"
+      },
+      "result_json": "{\"container_id\":\"616eb28f7152183412d09efe5d236f2ff3465108506e533e3a8a3791932c27df\",\"container_name\":\"/forge-2278d29f73861c5e70df28004930d918487658e0\",\"strict_logs\":true,\"log\":{\"schema_version\":1,\"policy\":{\"entry_bytes\":16384,\"operation_bytes\":524288,\"run_bytes\":16777216,\"max_operations\":32,\"preview_bytes\":65536},\"operation_id\":\"run_4B2L5YVPJSHMQSNEBGGPSEVSFB_0_initial_target\",\"binding_hash\":\"89925f495a5e661e991bb87c134c373da0729bd241989fdcfd0e4f5c9c72efa5\",\"stdout_seen\":0,\"stderr_seen\":89,\"retained_bytes\":121,\"retained_payload\":89,\"records\":1,\"complete\":true,\"dropped_known\":true,\"dropped_bytes\":0,\"truncated\":false,\"termination_requested\":false,\"termination_observed\":false,\"artifact\":{\"tenant_id\":\"lifecycle-b6qty6f6cjxb5ckmty5n225jwi\",\"run_id\":\"run_4B2L5YVPJSHMQSNEBGGPSEVSFB\",\"kind\":\"operation_log\",\"object_key\":\"lifecycle-b6qty6f6cjxb5ckmty5n225jwi/run_4B2L5YVPJSHMQSNEBGGPSEVSFB/763d4e93f72cf787b1a4dbd670efbe63f957fb0f771bb2741a77ff8f15b8452d\",\"sha256\":\"763d4e93f72cf787b1a4dbd670efbe63f957fb0f771bb2741a77ff8f15b8452d\",\"size\":121}},\"id\":\"forge-2278d29f73861c5e70df28004930d918487658e0\",\"running\":false,\"exit_code\":1,\"started\":true,\"output\":\"VHJhY2ViYWNrIChtb3N0IHJlY2VudCBjYWxsIGxhc3QpOgogIEZpbGUgIjxzdHJpbmc+IiwgbGluZSAxLCBpbiA8bW9kdWxlPgpBc3NlcnRpb25FcnJvcgo=\",\"truncated\":false}",
+      "run_id": "run_4B2L5YVPJSHMQSNEBGGPSEVSFB",
+      "status": "failed",
+      "tenant_id": "lifecycle-b6qty6f6cjxb5ckmty5n225jwi",
+      "workspace_id": "run_4B2L5YVPJSHMQSNEBGGPSEVSFB"
+    },
+    {
+      "after_hash": "",
+      "after_revision": 0,
+      "before_hash": "8b0fc272ee30b0c4aa6f0b1d286033c5b1519ff2d6f019e3c962c45dc4123357",
+      "cancel_requested": 0,
+      "dispatch_started": 1,
+      "docker_start_intent": 1,
+      "error": "",
+      "expected_after_hash": "",
+      "id": "run_4B2L5YVPJSHMQSNEBGGPSEVSFB_step_1_op_0",
+      "job_id": "forge-4bf5fc9e273e3cd9fb97a15a09a966bfb96914b1",
+      "receipt_json": "{}",
+      "request_json": {
+        "tenant_id": "lifecycle-b6qty6f6cjxb5ckmty5n225jwi",
+        "run_id": "run_4B2L5YVPJSHMQSNEBGGPSEVSFB",
+        "workspace_id": "run_4B2L5YVPJSHMQSNEBGGPSEVSFB",
+        "epoch": 2,
+        "grant": "",
+        "operation_id": "run_4B2L5YVPJSHMQSNEBGGPSEVSFB_step_1_op_0",
+        "expected_revision": 1,
+        "kind": "run_command",
+        "args": {
+          "command": [
+            "python",
+            "-I",
+            "-B",
+            "-c",
+            "import os,time,json,subprocess,sys\nwith open('lifecycle-counter.txt','a') as f:\n f.write('1\\n');f.flush();os.fsync(f.fileno())\nchild=subprocess.Popen([sys.executable,'-I','-B','-c',\"import os,time; print('LIFECYCLE_CHILD_READY',flush=True); os.write(2,b'child-stderr\\\\x00\\\\xff'); time.sleep(70)\"])\nprint('LIFECYCLE_PARENT_READY',flush=True)\nos.write(2,b'parent-stderr\\x00\\xff')\ntry:\n with open('lifecycle-writer.txt','a') as f:\n  end=time.monotonic()+70\n  while time.monotonic()\u003cend:\n   n=time.time_ns();f.write(str(n)+'\\n');f.flush();os.fsync(f.fileno())\n   print(json.dumps({'writer_ns':n}),flush=True);time.sleep(.2)\nfinally:\n child.terminate();child.wait(timeout=2)\n"
+          ]
+        },
+        "args_hash": "dbd42c80aa7384da8f3c6b43ca02a8fe9a04f83c77c15d8a4244d34b1112413a",
+        "policy_version": "workspace-v1",
+        "deadline": "2026-09-12T04:48:22.15026Z"
+      },
+      "result_json": "{}",
+      "run_id": "run_4B2L5YVPJSHMQSNEBGGPSEVSFB",
+      "status": "running",
+      "tenant_id": "lifecycle-b6qty6f6cjxb5ckmty5n225jwi",
+      "workspace_id": "run_4B2L5YVPJSHMQSNEBGGPSEVSFB"
+    }
+  ],
+  "runner_artifacts": [
+    {
+      "object_key": "lifecycle-b6qty6f6cjxb5ckmty5n225jwi/run_4B2L5YVPJSHMQSNEBGGPSEVSFB/763d4e93f72cf787b1a4dbd670efbe63f957fb0f771bb2741a77ff8f15b8452d",
+      "ref_json": "{\"tenant_id\":\"lifecycle-b6qty6f6cjxb5ckmty5n225jwi\",\"run_id\":\"run_4B2L5YVPJSHMQSNEBGGPSEVSFB\",\"kind\":\"operation_log\",\"object_key\":\"lifecycle-b6qty6f6cjxb5ckmty5n225jwi/run_4B2L5YVPJSHMQSNEBGGPSEVSFB/763d4e93f72cf787b1a4dbd670efbe63f957fb0f771bb2741a77ff8f15b8452d\",\"sha256\":\"763d4e93f72cf787b1a4dbd670efbe63f957fb0f771bb2741a77ff8f15b8452d\",\"size\":121}"
+    },
+    {
+      "object_key": "lifecycle-b6qty6f6cjxb5ckmty5n225jwi/run_4B2L5YVPJSHMQSNEBGGPSEVSFB/08008d48764a4f9258ef0d4097dfd79ae01091b4cc21d6cbc9d257cf2670a096",
+      "ref_json": "{\"tenant_id\":\"lifecycle-b6qty6f6cjxb5ckmty5n225jwi\",\"run_id\":\"run_4B2L5YVPJSHMQSNEBGGPSEVSFB\",\"kind\":\"operation_receipt\",\"object_key\":\"lifecycle-b6qty6f6cjxb5ckmty5n225jwi/run_4B2L5YVPJSHMQSNEBGGPSEVSFB/08008d48764a4f9258ef0d4097dfd79ae01091b4cc21d6cbc9d257cf2670a096\",\"sha256\":\"08008d48764a4f9258ef0d4097dfd79ae01091b4cc21d6cbc9d257cf2670a096\",\"size\":2130}"
+    },
+    {
+      "object_key": "lifecycle-b6qty6f6cjxb5ckmty5n225jwi/run_4B2L5YVPJSHMQSNEBGGPSEVSFB/9b48cfbca7d9d38e2623f7edbf2130078a9a7106b1986ebf7496a2fbf1a3efa5",
+      "ref_json": "{\"tenant_id\":\"lifecycle-b6qty6f6cjxb5ckmty5n225jwi\",\"run_id\":\"run_4B2L5YVPJSHMQSNEBGGPSEVSFB\",\"kind\":\"workspace_stop\",\"object_key\":\"lifecycle-b6qty6f6cjxb5ckmty5n225jwi/run_4B2L5YVPJSHMQSNEBGGPSEVSFB/9b48cfbca7d9d38e2623f7edbf2130078a9a7106b1986ebf7496a2fbf1a3efa5\",\"sha256\":\"9b48cfbca7d9d38e2623f7edbf2130078a9a7106b1986ebf7496a2fbf1a3efa5\",\"size\":468}"
+    }
+  ],
+  "volume_leases": [
+    {
+      "epoch": 1,
+      "profile_id": "lifecycle-python",
+      "released": 0,
+      "run_id": "run_4B2L5YVPJSHMQSNEBGGPSEVSFB",
+      "slot_id": "slot-001",
+      "source_hash": "8b0fc272ee30b0c4aa6f0b1d286033c5b1519ff2d6f019e3c962c45dc4123357",
+      "source_id": "lifecycle",
+      "tenant_id": "lifecycle-b6qty6f6cjxb5ckmty5n225jwi",
+      "workspace_id": "run_4B2L5YVPJSHMQSNEBGGPSEVSFB"
+    }
+  ],
+  "volume_slots": [
+    {
+      "id": "slot-001",
+      "spec_json": "{\"id\":\"slot-001\",\"mount_path\":\"/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/pool-root/var/workspace-storage/mounts/slot-001\",\"image_path\":\"/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/pool-root/var/workspace-storage/images/slot-001.ext4\",\"image_device\":66307,\"image_inode\":75120869,\"image_bytes\":268435456,\"device\":\"7:10\",\"filesystem_uuid\":\"a56bfa92-eef4-40bd-8dcf-6d0c457e45bb\",\"max_inodes\":65536}"
+    },
+    {
+      "id": "slot-002",
+      "spec_json": "{\"id\":\"slot-002\",\"mount_path\":\"/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/pool-root/var/workspace-storage/mounts/slot-002\",\"image_path\":\"/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/pool-root/var/workspace-storage/images/slot-002.ext4\",\"image_device\":66307,\"image_inode\":75120871,\"image_bytes\":268435456,\"device\":\"7:36\",\"filesystem_uuid\":\"dab0eb89-c8df-4115-a01e-ad9b98a2b683\",\"max_inodes\":65536}"
+    },
+    {
+      "id": "slot-003",
+      "spec_json": "{\"id\":\"slot-003\",\"mount_path\":\"/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/pool-root/var/workspace-storage/mounts/slot-003\",\"image_path\":\"/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/pool-root/var/workspace-storage/images/slot-003.ext4\",\"image_device\":66307,\"image_inode\":75120873,\"image_bytes\":268435456,\"device\":\"7:37\",\"filesystem_uuid\":\"9e94242d-72af-4c18-bc12-f16070909733\",\"max_inodes\":65536}"
+    },
+    {
+      "id": "slot-004",
+      "spec_json": "{\"id\":\"slot-004\",\"mount_path\":\"/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/pool-root/var/workspace-storage/mounts/slot-004\",\"image_path\":\"/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/pool-root/var/workspace-storage/images/slot-004.ext4\",\"image_device\":66307,\"image_inode\":75120875,\"image_bytes\":268435456,\"device\":\"7:38\",\"filesystem_uuid\":\"fcb32202-7ad3-4172-a746-ac2330b1baf7\",\"max_inodes\":65536}"
+    }
+  ],
+  "workspaces": [
+    {
+      "active_operation": "run_4B2L5YVPJSHMQSNEBGGPSEVSFB_step_1_op_0",
+      "adopting": 0,
+      "baseline_hash": "8b0fc272ee30b0c4aa6f0b1d286033c5b1519ff2d6f019e3c962c45dc4123357",
+      "epoch": 2,
+      "id": "run_4B2L5YVPJSHMQSNEBGGPSEVSFB",
+      "profile_id": "lifecycle-python",
+      "released": 0,
+      "revision": 1,
+      "run_id": "run_4B2L5YVPJSHMQSNEBGGPSEVSFB",
+      "source_id": "lifecycle",
+      "stopped": 0,
+      "tenant_id": "lifecycle-b6qty6f6cjxb5ckmty5n225jwi"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/tmp/forge-e50-second-archive.py", line 58, in <module>
+    jop=next(x for x in sq['operations'] if x['id']==op);check('sqlite_operation_receipt_request_binding',jop['job_id']==settled['job_id'] and json.loads(jop['request_json'])==settled['request'] and json.loads(jop['receipt_json'])==settled['receipt'] and jop['status']==settled['status'])
+                                                                                                                                               ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/json/__init__.py", line 345, in loads
+    raise TypeError(f'the JSON object must be str, bytes or bytearray, '
+                    f'not {s.__class__.__name__}')
+TypeError: the JSON object must be str, bytes or bytearray, not dict

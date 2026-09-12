@@ -1,0 +1,39 @@
+{
+  "passed": true,
+  "reviewed_at": "2026-09-12T04:34:03.695431+00:00",
+  "remaining_p1_p2": [],
+  "source_sha256": "78aa68776744be337f4a000d97b08f16d4d6cb9e9966414f79790d66ae7bef52",
+  "source_copy": "/tmp/forge-lifecycle-continuation-build-reviewed-v2.py",
+  "scope": "Read-only delta review and AST parse only. This script was not executed: no build, test suite, namespace, database, Docker, service or mount action.",
+  "closed_findings": [
+    {
+      "previous": "Unmanaged compiler descendants",
+      "resolution": "All test/race/vet/build commands now use the existing execute_bounded helper, which starts a new session and always TERM/KILLs only its process group before returning, even on a successful parent exit."
+    },
+    {
+      "previous": "Output parent symlink/identity gap",
+      "resolution": "The exact prepared scope and original acceptance/config/binary hashes are validated through launcher.inputs(); bin/evidence/new output directory chains use private nofollow validation. Both new directories use exclusive mkdir. The original fixed three regular single-link binaries are recorded and checked unchanged afterward."
+    },
+    {
+      "previous": "Source stable but not proven equal to fixed revision",
+      "resolution": "Before any repository Python import, all tracked non-evidence regular single-link bytes are compared against the immutable revision Git blobs. After commands a second full blob comparison and stored manifest, HEAD equality and clean status are required."
+    }
+  ],
+  "other_boundaries": [
+    "Minimal explicit Go environment has no FORGE or provider key variables, and Go module/proxy/sumdb/toolchain network fetch is disabled. HOME is the private child scope only.",
+    "New binaries are written only under bin/<full revision>; old binary paths are never build targets. Existing partial output causes a hard failure without deletion or retry.",
+    "Intent saves script/go hashes, version, source revision and original hashes; runner and worker embedded build metadata must report exact revision and vcs.modified=false before final passed=true.",
+    "A command nonzero/timeout saves failed results and leaves logs/partial files. Build metadata or final invariant failure leaves the evidence directory without passed=true."
+  ],
+  "limits": [
+    "Read-only review does not constitute actual build or runtime acceptance.",
+    "The acceptance test binary has no equivalent embedded VCS assertion; its provenance is the recorded fixed input hashes, exact go test -c command, and resulting byte hash.",
+    "This build helper does not run test-list. The already reviewed mapped launcher still requires the exact selected test entry and final report before considering a real phase successful.",
+    "The owned private checkout and scope must remain quiescent during the operation; this is an operator fixture, not a hostile same-UID race boundary."
+  ],
+  "dependency_sha256": {
+    "tests/review/run_api_lifecycle.py": "5d2d6c181cf93d9003a58f857dedf56a79dc93f64b8a0a5deef2a78a55f8f07b",
+    "scripts/faults/sigterm/run.py": "f3bb028397ac615dc26294c6d06ad6035f9164b8a475bf49f7d07ebf245c6803",
+    "scripts/faults/sigterm/prepare.py": "6cb0af3805dfaeae3bf3e1b03df7b5daf46f36127e1c7c278247d3193543d1c9"
+  }
+}
