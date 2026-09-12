@@ -1,0 +1,56 @@
+"""Read-only diagnosis and copied-event negative controls; never relabel the failed run."""
+import copy, hashlib, json, pathlib, sys
+raw = pathlib.Path(sys.argv[1])
+out = pathlib.Path(sys.argv[2])
+def digest(p): return hashlib.sha256(p.read_bytes()).hexdigest()
+before = {str(p.relative_to(raw)): digest(p) for p in sorted(raw.rglob('*')) if p.is_file()}
+fixture = json.loads((raw/'run/fixture.json').read_text())
+pg = json.loads((raw/'run/main-completed-postgres.json').read_text())
+exit_pg = json.loads((raw/'run/after-worker-exit-postgres.json').read_text())
+operation = json.loads((raw/'run/operation-before-signal.json').read_text())
+target = fixture['target_operation']
+old_epoch = exit_pg['runs'][0]['lease_epoch']
+effects = [e for e in pg['effects'] if e['operation_id'] == target]
+assert len(effects) == 1 and effects[0]['status'] == 'succeeded'
+effect = effects[0]
+events = [s['input_event'] for s in pg['run_snapshots'] if s.get('input_event')]
+def counts(items):
+    confirmations = [e for e in items if e['kind'] in ('effect_completed', 'reconciled') and e.get('receipt', {}).get('effect_id') == target]
+    recovered = [e for e in confirmations if e['kind'] == 'reconciled' and e['owner'] == 'signal-successor-0' and e['epoch'] == old_epoch + 1 and e['receipt']['epoch'] == effect['epoch'] and e['receipt']['status'] == 'succeeded' and e['receipt']['settled'] is True]
+    return len(confirmations), len(recovered)
+original_query_count = sum(e['kind'] == 'effect_completed' and e.get('receipt', {}).get('effect_id') == target for e in events)
+assert original_query_count == 0 and counts(events) == (1, 1)
+matched = next(e for e in events if e.get('receipt', {}).get('effect_id') == target)
+assert matched['receipt']['ref'] == effect['receipt_ref'] and matched['receipt']['args_hash'] == effect['args_hash']
+checks = {}
+for name in ['duplicate_reconciled', 'duplicate_effect_completed', 'wrong_owner', 'wrong_recovery_epoch', 'wrong_dispatch_epoch', 'unsettled', 'failed_status', 'completed_instead_of_reconciled']:
+    changed = copy.deepcopy(events)
+    e = next(e for e in changed if e.get('receipt', {}).get('effect_id') == target)
+    if name.startswith('duplicate_'):
+        duplicate = copy.deepcopy(e)
+        duplicate['kind'] = name.removeprefix('duplicate_')
+        changed.append(duplicate)
+    elif name == 'wrong_owner': e['owner'] = 'signal-original-0'
+    elif name == 'wrong_recovery_epoch': e['epoch'] += 1
+    elif name == 'wrong_dispatch_epoch': e['receipt']['epoch'] += 1
+    elif name == 'unsettled': e['receipt']['settled'] = False
+    elif name == 'failed_status': e['receipt']['status'] = 'failed'
+    elif name == 'completed_instead_of_reconciled': e['kind'] = 'effect_completed'
+    checks[name] = {'observed_counts': counts(changed), 'rejected': counts(changed) != (1, 1)}
+    assert checks[name]['rejected'], name
+# Audit remaining immutable observations without claiming the unexecuted Go assertions passed.
+rpcs = json.loads((raw/'run/rpc-observer.json').read_text())
+main_rpc = [e for e in rpcs if e['run_id'] == fixture['main_run']]
+starts = [e for e in main_rpc if e['method'] == 'Start.request' and e['operation_id'] == target]
+successor_starts = [e for e in starts if e['epoch'] > old_epoch]
+successor_inspects = [e for e in main_rpc if e['method'] == 'Inspect.return' and e['operation_id'] == target and e['epoch'] > old_epoch]
+successor_adopts = [e for e in main_rpc if e['method'] == 'Adopt.request' and e['epoch'] > old_epoch]
+assert len(starts) == 1 and not successor_starts and successor_inspects and successor_adopts
+assert not [e for e in main_rpc if e['method'] == 'Cancel.request']
+seqs = sorted(e['seq'] for e in pg['run_events'])
+assert seqs == list(range(1, len(seqs) + 1))
+after = {str(p.relative_to(raw)): digest(p) for p in sorted(raw.rglob('*')) if p.is_file()}
+assert after == before
+report = {'original_execution_status': 'FAIL; retained unchanged, no retrospective PASS', 'raw_root': str(raw), 'original_identity': json.loads((raw/'identity.json').read_text()), 'raw_files_sha256': before, 'original_query_count': original_query_count, 'corrected_predicate_counts': counts(events), 'target_reconciled_event': matched, 'matching_sql_effect': {k: effect[k] for k in ['operation_id','epoch','status','args_hash','receipt_ref']}, 'copy_only_negative_controls': checks, 'other_raw_observations': {'target_Start_requests': len(starts), 'successor_target_Start_requests': len(successor_starts), 'successor_target_Inspect_returns': len(successor_inspects), 'successor_Adopt_requests': len(successor_adopts), 'contiguous_main_events': len(seqs)}, 'old_raw_unchanged': before == after, 'limitation': 'Python independently recomputes retained JSON. It does not execute corrected PostgreSQL SQL or substitute for a fresh frozen-source host run.'}
+out.write_text(json.dumps(report, indent=2, sort_keys=True) + '\n')
+print(json.dumps({'diagnosis': 'PASS', 'old_run_status': 'FAIL', 'raw_files_unchanged':len(before), 'corrected_counts':counts(events), 'negative_controls_rejected':len(checks), 'report':str(out)}))

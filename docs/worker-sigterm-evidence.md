@@ -1,8 +1,10 @@
 # E48 — Actual worker SIGTERM and successor acceptance
 
-Status: harness implemented; no-network preflight and vet passed. Actual worker,
-private PostgreSQL and gRPC execution is **pending operator execution**. This
-document does not claim the recording backend or Docker acceptance has passed.
+Status: the first actual worker/private PostgreSQL/gRPC run reached both completed
+and cleaned-up runs, then **failed** its final confirmation assertion in 46.64 s.
+The fixture queried only `effect_completed`, while the successor correctly
+committed `reconciled`. The corrected fixture still awaits a fresh frozen-source
+operator run. Neither recording acceptance nor Docker acceptance is claimed passed.
 
 The new entry point is `TestRealWorkerSIGTERMRecording` in
 `scripts/faults/application/worker_sigterm_test.go`. It launches the supplied
@@ -52,7 +54,10 @@ synthetic; no paid provider or model-quality assertion is involved.
    successor with SIGTERM and require clean exit as well.
 
 Assertions bind the final SQL effect to its original dispatch epoch, exactly one
-effect confirmation, one observed target Start RPC, one recording-backend Start,
+effect confirmation across `effect_completed` and `reconciled`; that single
+confirmation must be a successful settled `reconciled` event from the successor
+epoch, with the original dispatch epoch in its receipt. It also requires one
+observed target Start RPC, one recording-backend Start,
 successor Inspect/Adopt and zero successor Start for that operation. All observed
 claim durations must be exactly 30 seconds. Original-worker claim events strictly
 after the post-signal database-clock sample must be zero. Claims inside the tiny
@@ -121,3 +126,29 @@ vet output and the source snapshot/hash. The preflight tests credential filterin
 fixed command-script binding and recording-job running/inspect/cancel behavior
 without sockets, PostgreSQL or subprocess execution. It does not stand in for the
 pending opt-in run above.
+
+## First actual run and fixture correction
+
+The original failed execution is preserved at
+`benchmarks/results/worker-sigterm-e48-20260912/`, including its sealed manifest
+and original source/binary identities. It is not rewritten or relabeled passed.
+The isolated schema and both runs remain available; this correction performs no
+SQL or workspace mutations against that run.
+
+In `run/main-completed-postgres.json`, version 12 contains the target receipt:
+`kind=reconciled`, owner `signal-successor-0`, event epoch 3, receipt epoch 2,
+status `succeeded`, and `settled=true`. Its receipt reference and argument hash
+match the one durable SQL effect. Version 17's `effect_completed` is the later
+patch operation. Production `Driver` intentionally emits `reconciled` when
+`CommandInspectEffect` recovers an earlier dispatch; both settlement events map
+to the durable `tool.finished` stream event. The original query therefore counted
+zero despite the recovery receipt being present.
+
+The correction counts both terminal confirmation kinds, requires their total to
+be exactly one, and additionally requires that unique confirmation to match the
+successor owner/epoch and the original dispatch epoch with successful settled
+status. A duplicate of either kind cannot be hidden by selecting only one kind.
+`benchmarks/results/worker-sigterm-diagnosis-20260912/` preserves the old query
+source and failing stdout, an offline audit with copy-only negative cases, and
+compile/race preflight/vet logs for the correction. The audit diagnoses the old
+failure; it does not substitute for running the corrected SQL on fresh PostgreSQL.

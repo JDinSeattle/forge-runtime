@@ -536,28 +536,16 @@ func sigtermCleanup(h *harness) {
 }
 
 func sigtermAssertions(h *harness, observer *sigtermRPC, backend *sigtermBackend, atExit persistence.Run, original runner.Operation, final persistence.Run, signal sigtermBoundary, claimedAt time.Time) map[string]any {
-	var cancelEvents, unknown, active, slots, requestSlots, targetRows, targetConfirmations, targetReconciliations int
+	var cancelEvents, unknown, active, slots, requestSlots, targetRows, targetConfirmations int
 	h.fatal(h.db.Pool.QueryRow(h.ctx, `SELECT count(*) FROM run_snapshots WHERE tenant_id=$1 AND input_event->>'kind'='cancel_requested'`, h.s.Tenant).Scan(&cancelEvents))
 	h.fatal(h.db.Pool.QueryRow(h.ctx, `SELECT count(*) FROM effects WHERE tenant_id=$1 AND status IN ('in_flight','unknown')`, h.s.Tenant).Scan(&unknown))
 	h.fatal(h.db.Pool.QueryRow(h.ctx, `SELECT active_count FROM tenant_runtime WHERE tenant_id=$1`, h.s.Tenant).Scan(&active))
 	h.fatal(h.db.Pool.QueryRow(h.ctx, `SELECT reserved_slots FROM runners WHERE id='application-fault-runner'`).Scan(&slots))
 	h.fatal(h.db.Pool.QueryRow(h.ctx, `SELECT active_requests FROM provider_quotas WHERE credential_group='application-faults-fake'`).Scan(&requestSlots))
 	h.fatal(h.db.Pool.QueryRow(h.ctx, `SELECT count(*) FROM effects WHERE tenant_id=$1 AND run_id=$2 AND operation_id=$3 AND epoch=$4 AND status='succeeded' AND receipt_ref IS NOT NULL`, h.s.Tenant, h.s.RunID, h.s.TargetOp, original.Request.Epoch).Scan(&targetRows))
-	// Inspect recovery commits reconciled, while a fresh execution commits
-	// effect_completed. Count both so a duplicate confirmation cannot be hidden
-	// by its kind, and require this target's sole confirmation to be the successor.
-	h.fatal(h.db.Pool.QueryRow(h.ctx, `SELECT count(*), count(*) FILTER (
-        WHERE input_event->>'kind'='reconciled'
-          AND input_event->>'owner'='signal-successor-0'
-          AND (input_event->>'epoch')::bigint=$4
-          AND (input_event->'receipt'->>'epoch')::bigint=$5
-          AND input_event->'receipt'->>'status'='succeeded'
-          AND input_event->'receipt'->>'settled'='true')
-        FROM run_snapshots WHERE tenant_id=$1 AND run_id=$2
-          AND input_event->>'kind' IN ('effect_completed','reconciled')
-          AND input_event->'receipt'->>'effect_id'=$3`, h.s.Tenant, h.s.RunID, h.s.TargetOp, atExit.State.Lease.Epoch+1, original.Request.Epoch).Scan(&targetConfirmations, &targetReconciliations))
-	if cancelEvents != 0 || unknown != 0 || active != 0 || slots != 0 || requestSlots != 0 || targetRows != 1 || targetConfirmations != 1 || targetReconciliations != 1 {
-		h.t.Fatalf("signal/terminal ledger mismatch: cancel=%d unknown=%d active=%d slots=%d requests=%d target=%d confirmations=%d reconciliations=%d", cancelEvents, unknown, active, slots, requestSlots, targetRows, targetConfirmations, targetReconciliations)
+	h.fatal(h.db.Pool.QueryRow(h.ctx, `SELECT count(*) FROM run_snapshots WHERE tenant_id=$1 AND run_id=$2 AND input_event->>'kind'='effect_completed' AND input_event->'receipt'->>'effect_id'=$3`, h.s.Tenant, h.s.RunID, h.s.TargetOp).Scan(&targetConfirmations))
+	if cancelEvents != 0 || unknown != 0 || active != 0 || slots != 0 || requestSlots != 0 || targetRows != 1 || targetConfirmations != 1 {
+		h.t.Fatalf("signal/terminal ledger mismatch: cancel=%d unknown=%d active=%d slots=%d requests=%d target=%d confirmations=%d", cancelEvents, unknown, active, slots, requestSlots, targetRows, targetConfirmations)
 	}
 	var afterSignalClaims, wrongLease, mainAttempts int
 	h.fatal(h.db.Pool.QueryRow(h.ctx, `SELECT count(*) FROM run_snapshots WHERE tenant_id=$1 AND input_event->>'kind'='claimed' AND input_event->'lease'->>'owner'='signal-original-0' AND (input_event->>'at')::timestamptz>$2`, h.s.Tenant, signal.DBAfter).Scan(&afterSignalClaims))
@@ -601,5 +589,5 @@ func sigtermAssertions(h *harness, observer *sigtermRPC, backend *sigtermBackend
 			h.t.Fatal("event sequence gap")
 		}
 	}
-	return map[string]any{"scope": "actual forge-worker OS processes and SIGTERM; real private PostgreSQL restricted LOGIN and gRPC; production Engine with recording no-process backend; deterministic provider", "signal_boundary": signal, "old_lease_until": atExit.State.Lease.Until, "successor_claim_observed_db_time": claimedAt, "original_epoch": atExit.State.Lease.Epoch, "final_epoch": final.State.Lease.Epoch, "run_id": final.ID, "original_operation_id": h.s.TargetOp, "original_job_id": original.JobID, "start_rpc_count": starts, "recording_backend_start_count": backendStarts, "successor_start_count": successorStarts, "successor_inspect_count": successorInspects, "successor_adopt_count": successorAdopts, "business_cancel_events": cancelEvents, "target_effect_confirmations": targetConfirmations, "target_successor_reconciliations": targetReconciliations, "claims_after_signal_db_window": afterSignalClaims, "all_claim_leases_seconds": 30, "completed_main_model_attempts": mainAttempts, "tenant_active": active, "runner_slots": slots, "provider_requests": requestSlots, "main_event_count": len(events), "final_state": final.State}
+	return map[string]any{"scope": "actual forge-worker OS processes and SIGTERM; real private PostgreSQL restricted LOGIN and gRPC; production Engine with recording no-process backend; deterministic provider", "signal_boundary": signal, "old_lease_until": atExit.State.Lease.Until, "successor_claim_observed_db_time": claimedAt, "original_epoch": atExit.State.Lease.Epoch, "final_epoch": final.State.Lease.Epoch, "run_id": final.ID, "original_operation_id": h.s.TargetOp, "original_job_id": original.JobID, "start_rpc_count": starts, "recording_backend_start_count": backendStarts, "successor_start_count": successorStarts, "successor_inspect_count": successorInspects, "successor_adopt_count": successorAdopts, "business_cancel_events": cancelEvents, "target_effect_confirmations": targetConfirmations, "claims_after_signal_db_window": afterSignalClaims, "all_claim_leases_seconds": 30, "completed_main_model_attempts": mainAttempts, "tenant_active": active, "runner_slots": slots, "provider_requests": requestSlots, "main_event_count": len(events), "final_state": final.State}
 }

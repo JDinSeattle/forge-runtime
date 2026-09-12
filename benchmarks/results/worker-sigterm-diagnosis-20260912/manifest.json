@@ -1,0 +1,21 @@
+{
+  "base_commit": "24481089ac69b3eb9d8b083b432e851ac04cb13d",
+  "files": {
+    "audit.log": "93b153cbb85737140b41712033441b392ce2a68baec64e6dd6db60c0aa032b8c",
+    "audit.py.txt": "9635f5bf2a6754613e246bfa179aa5310e6027f8905d61b18c0dd0e60f0e9173",
+    "original-failed-execution.log": "ae84165f886c8c5480c68b5c4cc6aef815cc9c15e549e7462775416ee303b018",
+    "preflight-race.log": "1e0da3064238c8e93d825821168b482722e88dc3553d27a7b62d3f1af5548018",
+    "report.json": "89b7061145f69f408467a1b43a2b0bf42fcdb5b3cd51096a42984b923dca6b5e",
+    "vet.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "worker_sigterm_after.go.txt": "96c3da3fe17cae12a9d92006a17e8b74487250ddef6df616eeac00920b51c661",
+    "worker_sigterm_before.go.txt": "f66ab54860b743f584ba994281f43047eb2b278cf5b9c5ad513d0524c371f494"
+  },
+  "source": "scripts/faults/application/worker_sigterm_test.go",
+  "source_sha256": "96c3da3fe17cae12a9d92006a17e8b74487250ddef6df616eeac00920b51c661",
+  "validation": {
+    "actual_corrected_PostgreSQL_run": "pending parent execution",
+    "offline_negative_controls": 8,
+    "race_preflight": "PASS; one no-network preflight; package 1.033 s",
+    "vet_exit_code": 0
+  }
+}
