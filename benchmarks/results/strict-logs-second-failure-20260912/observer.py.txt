@@ -1,0 +1,66 @@
+"""Read only the exact failed logs02 schema, journal and exited service."""
+import fcntl, hashlib, importlib.util, json, os, sqlite3, stat, sys
+from pathlib import Path
+sys.dont_write_bytecode=True
+R=Path('/home/postedism/Desktop/mini claude code/forge-runtime')
+S=R/'var/lifecycle-rehearsals/lr20260912_a'
+W=R/'var/local/feature-worktrees/logs/scripts/evaluation/isolated_state.py'
+spec=importlib.util.spec_from_file_location('readonly_isolated_state',W)
+m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
+def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+def norm(rows):
+    result=[]
+    for old in rows:
+        row=dict(old)
+        for k,v in row.items():
+            if isinstance(v,bytes):row[k]=v.decode()
+        if 'request_json' in row:
+            row['request_json']=json.loads(row['request_json']);row['request_json'].pop('grant',None)
+        result.append(json.dumps(row,sort_keys=True,separators=(',',':')))
+    return sorted(result)
+
+with open(S/'runtime/.sigterm-control.lock','rb') as lock:
+    st=os.fstat(lock.fileno())
+    assert stat.S_ISREG(st.st_mode) and st.st_uid==os.getuid()==1000 and st.st_nlink==1 and stat.S_IMODE(st.st_mode)==0o600
+    fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
+    out=S/'evidence/logs-02-before-runner-observation'
+    assert not os.path.lexists(out)
+    original=json.loads((S/'evidence/logs-02/manifest.json').read_bytes())
+    for path,digest in original.items():
+        assert '..' not in Path(path).parts and not Path(path).is_absolute()
+        assert m.c.sha(S/'evidence/logs-02'/path)==digest
+    fixed=json.loads((S/'evidence/logs-02/private-schema.json').read_bytes())
+    schema='appfault_strictlogs_ggl4ub23utvo6qnlzlkgroms5n'
+    assert fixed['schema']==schema
+    fixture=json.loads((S/'evidence/logs-02/L1/fixture.json').read_bytes())
+    assert fixture['run_id']=='run_VZZ7CZCKDG65KNL3BW7ZH7F2O4' and fixture['tenant']=='sl-L1-d7wtgoelviiujwjs3rrqiragqp'
+    env,_=m.admin_environment(R)
+    pg=m.sql_json(m.QUERIES,env,schema)
+    assert len(pg['runs'])==1
+    row=pg['runs'][0]
+    assert (row['id'],row['tenant'],row['state'],row['version'],row['epoch'],row['owner'],row['workspace'])==(fixture['run_id'],fixture['tenant'],'queued',1,0,'','')
+    assert all(pg[k]==0 for k in ('effects','unsettled_effects','attempts','artifacts','active','runner_reserved','allocations','requests','unsettled_reservations','cleanup'))
+    history=m.sql_json('''SELECT json_build_object('database',current_database(),'current_user',current_user,'superuser',(SELECT rolsuper FROM pg_catalog.pg_roles WHERE rolname=current_user), 'runs',(SELECT json_agg(to_jsonb(r)) FROM :"schema".runs r),'events',(SELECT json_agg(to_jsonb(r) ORDER BY seq) FROM :"schema".run_events r),'snapshots',(SELECT json_agg(to_jsonb(r) ORDER BY version) FROM :"schema".run_snapshots r),'steps',(SELECT json_agg(to_jsonb(r) ORDER BY seq) FROM :"schema".steps r),'quota_reservations',(SELECT count(*) FROM :"schema".quota_reservations),'runner_allocations',(SELECT count(*) FROM :"schema".runner_allocations));''',env,schema)
+    del env
+    assert history['quota_reservations']==history['runner_allocations']==0
+    before=json.loads((S/'evidence/logs-02/preflight.json').read_bytes())['journal']
+    db=sqlite3.connect((S/'runtime/journal.sqlite').as_uri()+'?mode=ro',uri=True,timeout=3)
+    db.row_factory=sqlite3.Row;db.execute('PRAGMA query_only=ON');db.execute('BEGIN')
+    live={'identity':db.execute('SELECT id FROM journal_identity WHERE singleton=1').fetchone()[0],'version':db.execute('PRAGMA user_version').fetchone()[0],'tables':{}}
+    assert live['identity']==before['identity'] and live['version']==before['version']==5
+    for table in ('volume_slots','volume_leases','workspaces','operations','operation_logs','log_runs','runner_artifacts'):
+        rows=[{k:(v.decode() if isinstance(v,bytes) else v) for k,v in dict(row).items()} for row in db.execute('SELECT * FROM '+table)]
+        assert norm(rows)==norm(before['tables'][table]),table
+        # Store the equivalent original normalized rows; raw capabilities are
+        # never copied from live request_json into this nonsecret observation.
+        live['tables'][table]=before['tables'][table]
+    db.close()
+    unit='forge-lifecycle-lr20260912_a-logs-8ce771185be0076a.service'
+    state=m.unit_state(unit)
+    assert state.get('LoadState')=='not-found' and state.get('ActiveState')=='inactive' and state.get('MainPID')=='0'
+    out.mkdir(mode=0o700)
+    fd=os.open(out.parent,os.O_RDONLY|os.O_DIRECTORY);os.fsync(fd);os.close(fd)
+    m.c.save(out/'postgres.json',pg);m.c.save(out/'history.json',history);m.c.save(out/'journal.json',live)
+    m.c.save(out/'report.json',{'observed_at':m.c.now(),'passed':True,'schema':schema,'run_id':row['id'],'tenant':row['tenant'],'status':'queued','version':1,'epoch':0,'no_execution':True,'journal_unchanged_from_preflight':True,'unit':unit,'unit_state':state,'source_hashes':{str(W):sha(W),str(Path(__file__)):sha(Path(__file__)),str(S/'evidence/logs-02/manifest.json'):sha(S/'evidence/logs-02/manifest.json')},'scope':'Exact-schema PostgreSQL repeatable-read/read-only transactions; SQLite read-only complete normalized table comparison and exact service query. No Cancel/worker/runner/provider/Docker/migration/cleanup. Failed schema and queued run remain retained; never route them to a later worker.'})
+    m.c.save(out/'manifest.json',{p.name:sha(p) for p in out.iterdir()})
+    print(json.dumps({'passed':True,'evidence':str(out),'status':'queued','epoch':0,'journal_unchanged':True,'services_started':False,'provider_called':False}))

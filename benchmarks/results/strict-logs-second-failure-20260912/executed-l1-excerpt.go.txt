@@ -1,0 +1,30 @@
+func (f *slFixture) l1() {
+	h, file := f.submit("L1", slCompleteProgram)
+	dir := filepath.Join(f.c.RootDir, "operator-faults")
+	f.check(os.MkdirAll(dir, 0700))
+	plan := filepath.Join(dir, "strict-log-publication.json")
+	f.check(slSave(plan, map[string]any{"point": "after_receipt_before_commit", "action": "delay", "tenant_id": h.s.Tenant, "run_id": h.s.RunID, "workspace_id": h.s.RunID, "operation_id": h.s.TargetOp, "epoch": 2, "expires_at": time.Now().Add(5 * time.Minute), "delay_millis": 10000}))
+	f.startRunner("default", plan)
+	p := f.worker(h, file, "L1")
+	f.approve(h)
+	f.wait(40*time.Second, "durable receipt hook marker", func() bool { _, e := os.Stat(plan + ".used"); return e == nil })
+	marker, e := slRead(plan+".used", 8192)
+	f.check(e)
+	f.check(slWrite(filepath.Join(f.dir, "L1-publication.used.json"), marker))
+	j := f.snapshot("L1-publication-window-journal.json")
+	row, e := slRow(j, "operations", "id", string(h.s.TargetOp))
+	f.check(e)
+	if row["status"] != "running" {
+		f.t.Fatal("missed pre-terminal publication window")
+	}
+	var req runner.OperationRequest
+	f.check(json.Unmarshal([]byte(fmt.Sprint(row["request_json"])), &req))
+	if req.Epoch != 2 || req.RunID != h.s.RunID {
+		f.t.Fatal("fault window does not bind actual intent")
+	}
+	var logRef, receiptRef artifact.Ref
+	for _, pin := range j.Tables["runner_artifacts"] {
+		var ref artifact.Ref
+		f.check(json.Unmarshal([]byte(fmt.Sprint(pin["ref_json"])), &ref))
+		if ref.TenantID != h.s.Tenant || ref.RunID != h.s.RunID {
+	

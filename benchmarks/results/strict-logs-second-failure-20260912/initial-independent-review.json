@@ -1,0 +1,94 @@
+{
+  "audit_passed": true,
+  "audited_at": "2026-09-12T06:10:12.254048+00:00",
+  "checks": [
+    "exact15member rawmanifest",
+    "manifest L1/fixture.json",
+    "manifest L5-claim-audit.json",
+    "manifest L5-http-proof.json",
+    "manifest L5-http.flg",
+    "manifest L5-live-authority.json",
+    "manifest L5-live-claimed-snapshots.json",
+    "manifest L5-referenced-evidence.json",
+    "manifest L5-signal-audit.json",
+    "manifest acceptance.json",
+    "manifest config-bytes.json",
+    "manifest config-count.json",
+    "manifest config-default.json",
+    "manifest preflight.json",
+    "manifest private-schema.json",
+    "manifest worker-role-preflight.json",
+    "overallfalse onlyL5 completed",
+    "execution input hash map unchanged",
+    "preflight andL5 fulljournal exactly priorrelease",
+    "same retained UUIDv5",
+    "44terminal atpreflight",
+    "42removed atpreflight",
+    "4released atpreflight",
+    "actual hostexit1 and unitgone",
+    "precise actualfailure boundary",
+    "new submitted runidentity recorded",
+    "recorded dedicatedschema",
+    "no archivedL1 processlaunch or terminalsamples",
+    "executed source failsafterSubmit before runner/workerlaunch",
+    "existingplan belongs to historicaldifferent run"
+  ],
+  "checks_passed": 30,
+  "execution_path_inference": {
+    "no_paid_model": true,
+    "own_worker_runner_start_not_reached": true,
+    "scope": "Source ordering plus exact Fatal error and missing later raw; not a replacement for separately sampled live DB/journal.",
+    "submit_completed": true
+  },
+  "host_elapsed_seconds": 3.1324778430280276,
+  "hostunit": "forge-lifecycle-lr20260912_a-logs-8ce771185be0076a.service",
+  "minimal_continuation": {
+    "conditions": [
+      "Root records exact retained run SQL state/events/snapshots/effects/model attempts/allocations/counters and sameUUID fulljournal after ownhost unit exit, without using oldworker/runner.",
+      "If preserved run isqueued/epoch0 and effects/attempts/allocations0, keep it in this permanently separate private schema; do not automatically cancel contrary to failure_policy.",
+      "Newbinary uses per-run immutable faultfilename; original plan and used marker remain untouched.",
+      "logs03 begins with originalcleanup proof/currentreleasedjournal prerequisite and an exact logs02 failuremanifest/preflight/hostexit binding, then creates entirely new exclusive evidence03/private03/schema. No old config/schema is reused.",
+      "Any changed authority or unknown startedoperation is not eligible for this no-runner-started continuation."
+    ],
+    "new_execution03_required": true,
+    "no_business_cancel_required": true,
+    "why": "logs02 reached its ownschema and durable run submission; keep failedmanifest/raw/private scope immutable."
+  },
+  "observed_before_failure": {
+    "UUID": "b010dd7440a54c58601967342f397faf686b7e306061af9f49809ee342b0ec8e",
+    "full_journal_matches_cleanup": true,
+    "only_completed_case": "L5",
+    "operations": 44,
+    "released_workspaces": 4,
+    "removed_logs": 42
+  },
+  "original_execution_passed": false,
+  "projection_notice": "No private worker configuration digest from fixture copied; only its surrounding evidence file SHA is referenced.",
+  "run_id": "run_VZZ7CZCKDG65KNL3BW7ZH7F2O4",
+  "schema": "appfault_strictlogs_ggl4ub23utvo6qnlzlkgroms5n",
+  "scope": "Original evidence and nonsecret fault plan reads only; Git source read. No liveSQLite/PostgreSQL/Docker/systemctl/credential/model calls.",
+  "source_and_raw_hashes": {
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/host-logs-02-retry/execution.log": "a4b31b09515ab2a4835deb6ce1f7728ed9e922e371ee581b99589eeb3845842c",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/host-logs-02-retry/result.json": "b7bb3fa5f5baddc1e9b988d1aaeefd69f9c93eec16f36b920b6eb0e200e30f30",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/logs-02/L1/fixture.json": "84ed855edf17cc993b0e19213c3d1ef34475abe15bea6a4e2fe4a1229cc6516e",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/logs-02/L5-live-authority.json": "25dd522f2ac7643e9e2964168461f0dc02393c21d066a46829652c75a98311ed",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/logs-02/acceptance.json": "dafabcabfbf048359f6d52c92727355dcce8006ffda0ef0cc6e6d1b817eb234b",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/logs-02/manifest.json": "fb68b27b8a05a22f7c572d64788b044f81fdc4111c3c07a0dda9a724d1842da2",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/logs-02/preflight.json": "4475f7d1c2ea651b0d0f8058f15a0cf28c60862905141671116e41922b4c2cc7",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/logs-02/private-schema.json": "b298c6cc89af566613e7ec1dc38a8bf222736c83ae235956b865e19d69fda9bf",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/runtime/engine/operator-faults/strict-log-publication.json": "d9a34f57a0da180085d0e8afe4a52f5b6889daaf4a8aa48a24c26973c4c3d2cd"
+  },
+  "source_binding": {
+    "full_source_sha256": "7072eade94ea355cdf2916683da742711f9a52183ee98fa3abe22b45301fd20a",
+    "l1_excerpt_sha256": "42a058ee2c1aa9ce3ff3a8a071d2793c81f98a6fd7bc371178163faa6996b5da",
+    "revision": "0a5f0f47100941858ae12b07ecd9bb094bdca833",
+    "test_binary_sha256": "13d7409a8f371c609f2c096d48e8f73f6346d3cd17abb7ec3d045f00af73a59c"
+  },
+  "tenant_id": "sl-L1-d7wtgoelviiujwjs3rrqiragqp",
+  "test_seconds": 2.84,
+  "unobserved_after_failure": [
+    "No finaljournal sample is present. Current journal equality needs separate read-only host capture.",
+    "No L1 run/events/snapshots/effects sample is present. Current queued/epoch0/zeroeffects is not independently shown by this raw."
+  ],
+  "worker_role": "appfault_worker_j3mgduqhjxselodnbh6qrplrf4"
+}

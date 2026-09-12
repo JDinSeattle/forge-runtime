@@ -1,0 +1,35 @@
+from pathlib import Path
+import json,hashlib,datetime
+R=Path('/home/postedism/Desktop/mini claude code/forge-runtime');S=R/'var/lifecycle-rehearsals/lr20260912_a';D=S/'evidence/logs-02-before-runner-observation';E=S/'evidence/logs-02';O=Path(__file__).parent
+sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest();j=lambda p:json.loads(p.read_bytes());checks=[]
+def check(v,k):
+ if not v:raise AssertionError(k)
+ checks.append(k)
+m=j(D/'manifest.json');check(set(m)|{'manifest.json'}=={p.name for p in D.iterdir() if p.is_file()},'exact4member observationmanifest')
+for n,h in m.items():check(sha(D/n)==h,'observation manifest '+n)
+report=j(D/'report.json');p=j(D/'postgres.json');h=j(D/'history.json');journ=j(D/'journal.json');pre=j(E/'preflight.json');fixture=j(E/'L1/fixture.json');rawsource=[]
+for path,digest in report['source_hashes'].items():check(sha(Path(path))==digest,'observedsource '+Path(path).name);rawsource.append({'path':path,'sha256':digest})
+check(p['database']==h['database']=='forge' and p['current_user']==h['current_user']=='forge_admin' and p['superuser'] is True and h['superuser'] is True,'exact observed read-only-admin identity')
+check(p['schema']==report['schema']==j(E/'private-schema.json')['schema']=='appfault_strictlogs_ggl4ub23utvo6qnlzlkgroms5n' and p['schema_oid']=='852430','exact private namespace and observedOID')
+check(len(p['runs'])==len(h['runs'])==1,'one actual run in both separate SQL samples')
+pr=p['runs'][0];hr=h['runs'][0]
+for left,right in [('id','id'),('tenant','tenant_id'),('state','state'),('version','version'),('epoch','lease_epoch'),('owner','lease_owner'),('workspace','workspace_id'),('snapshot','snapshot')]:check(pr[left]==hr[right],'summary/fullrow '+left)
+check((pr['id'],pr['tenant'],pr['state'],pr['version'],pr['epoch'],pr['owner'],pr['workspace'])==(fixture['run_id'],fixture['tenant'],'queued',1,0,'',''),'fixturebound queuedv1 epoch0 ownerworkspaceempty')
+check(hr['lease_until'] is None and hr['runner_id'] is None and hr['pending_commands']==[] and hr['next_event_seq']==2,'no claim/assignment/pending commands')
+check(pr['snapshot']['stage']=='initialize' and pr['snapshot']['model_rounds']==pr['snapshot']['tool_calls']==pr['snapshot']['cost_microusd']==pr['snapshot']['step_seq']==0,'untouched initialruntime snapshot')
+check(hr['config_snapshot']['provider']==hr['config_snapshot']['model']=='fake','deterministic modelroute retained')
+check(len(h['events'])==len(h['snapshots'])==1 and h['steps'] is None,'exact creationhistory only')
+ev=h['events'][0];sn=h['snapshots'][0]
+check(ev['type']=='run.created' and ev['seq']==1 and ev['payload']==pr['snapshot'] and ev['run_id']==pr['id'] and ev['tenant_id']==pr['tenant'],'one creationevent binds runtime')
+check(sn['version']==1 and sn['body']==pr['snapshot'] and sn['input_event'] is None and sn['input_state'] is None and sn['run_id']==pr['id'] and sn['tenant_id']==pr['tenant'],'initial snapshot alone no workertransition')
+for key in ('effects','unsettled_effects','attempts','artifacts','active','runner_reserved','allocations','requests','unsettled_reservations','cleanup'):check(type(p[key]) is int and p[key]==0,'zero '+key)
+check(h['quota_reservations']==h['runner_allocations']==0,'no reservation/allocation rows of any status')
+check(len(p['quotas'])==1 and all(p['quotas'][0][key]==0 for key in ('active_requests','reserved_microusd','committed_microusd','reserved_tokens','committed_tokens','consecutive_failures')),'synthetic quota zero use')
+check(journ==pre['journal']==j(E/'L5-live-authority.json')==j(S/'evidence/logs-01-cleanup/released-journal.json'),'saved canonicaljournal matches all historicalauthorities')
+check(report['unit']==j(S/'evidence/host-logs-02-retry/result.json')['unit'] and report['unit_state']['LoadState']=='not-found' and report['unit_state']['ActiveState']=='inactive' and report['unit_state']['MainPID']=='0','later exact originalunit absent')
+script=Path('/tmp/forge-observe-logs02-before-runner.py').read_text();helper=Path('/home/postedism/Desktop/mini claude code/forge-runtime/var/local/feature-worktrees/logs/scripts/evaluation/isolated_state.py').read_text()
+check('BEGIN TRANSACTION ISOLATION LEVEL REPEATABLE READ READ ONLY;' in helper and "PGOPTIONS='-c default_transaction_read_only=on -c search_path=pg_catalog'" in helper and "'-X','-qAt','-v','ON_ERROR_STOP=1','-v','schema='+schema" in helper,'source read-only exact identifier SQL mechanism')
+check("'?mode=ro'" in script and "db.execute('PRAGMA query_only=ON');db.execute('BEGIN')" in script and "assert norm(rows)==norm(before['tables'][table]),table" in script,'source liveSQLite normalizationcomparison actuallyrequired')
+check("row['request_json'].pop('grant',None)" in script and "live['tables'][table]=before['tables'][table]" in script,'projection explicit rather than false direct livedump')
+result={'audited_at':datetime.datetime.now(datetime.timezone.utc).isoformat(),'passed':True,'checks':checks,'checks_passed':len(checks),'scope':'Independent offline audit of executor retained PG/history/journal observation and exact observer sources. Reviewer makes no new database/systemctl/Docker/provider/credential calls.','original_logs02_passed':False,'run':{'id':pr['id'],'tenant':pr['tenant'],'schema':p['schema'],'schema_oid':p['schema_oid'],'status':'queued','version':1,'epoch':0,'events':1,'snapshots':1,'steps':0,'effects':0,'attempts':0,'artifacts':0,'allocations':0,'cost_microusd':0,'deadline':pr['snapshot']['limits']['deadline']},'observations':{'pg_clock':p['now'],'observer_report_at':report['observed_at'],'unit':report['unit'],'unit_gone':True,'journal':{'identity':journ['identity'],'version':journ['version'],'operations':len(journ['tables']['operations']),'logs':len(journ['tables']['operation_logs']),'workspaces':len(journ['tables']['workspaces'])}},'projection_limit':'journal.json is the saved original canonical table representation after executor compared every live table in one SQLite read transaction. Comparator normalizes JSON/order and omits request_json.grant. It is not an independently retained raw live-byte dump or proof that transient capability bytes are identical.','sql_transaction_limit':'PG summary and completehistory are two repeatable-read/read-only transactions; their full run snapshot agrees. No simultaneous cross-system atomic snapshot claimed.','source_hashes':rawsource,'minimal_continuation_conclusion':'No Cancel or cleanup needed for this exact unstarted retained run. Keep failed02 schema unselected forever, preserve deadline/counter state;03 uses exclusive new evidence/private/schema, exact failed02/readonlyproof and exitedunit binding, per-run faultfilename, originalcleanup prerequisite/currentreleasedjournal check. New work must not route queued02 to a worker.','raw_hashes':{str(x):sha(x) for x in sorted(D.iterdir()) if x.is_file()}}
+(O/'observation-review.json').write_text(json.dumps(result,indent=2,sort_keys=True)+'\n');print(json.dumps({'checks':len(checks),'report':str(O/'observation-review.json'),'sha256':sha(O/'observation-review.json')}))

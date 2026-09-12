@@ -1,0 +1,107 @@
+{
+  "audited_at": "2026-09-12T06:13:30.320492+00:00",
+  "checks": [
+    "exact4member observationmanifest",
+    "observation manifest history.json",
+    "observation manifest journal.json",
+    "observation manifest postgres.json",
+    "observation manifest report.json",
+    "observedsource manifest.json",
+    "observedsource isolated_state.py",
+    "observedsource forge-observe-logs02-before-runner.py",
+    "exact observed read-only-admin identity",
+    "exact private namespace and observedOID",
+    "one actual run in both separate SQL samples",
+    "summary/fullrow id",
+    "summary/fullrow tenant",
+    "summary/fullrow state",
+    "summary/fullrow version",
+    "summary/fullrow epoch",
+    "summary/fullrow owner",
+    "summary/fullrow workspace",
+    "summary/fullrow snapshot",
+    "fixturebound queuedv1 epoch0 ownerworkspaceempty",
+    "no claim/assignment/pending commands",
+    "untouched initialruntime snapshot",
+    "deterministic modelroute retained",
+    "exact creationhistory only",
+    "one creationevent binds runtime",
+    "initial snapshot alone no workertransition",
+    "zero effects",
+    "zero unsettled_effects",
+    "zero attempts",
+    "zero artifacts",
+    "zero active",
+    "zero runner_reserved",
+    "zero allocations",
+    "zero requests",
+    "zero unsettled_reservations",
+    "zero cleanup",
+    "no reservation/allocation rows of any status",
+    "synthetic quota zero use",
+    "saved canonicaljournal matches all historicalauthorities",
+    "later exact originalunit absent",
+    "source read-only exact identifier SQL mechanism",
+    "source liveSQLite normalizationcomparison actuallyrequired",
+    "projection explicit rather than false direct livedump"
+  ],
+  "checks_passed": 43,
+  "minimal_continuation_conclusion": "No Cancel or cleanup needed for this exact unstarted retained run. Keep failed02 schema unselected forever, preserve deadline/counter state;03 uses exclusive new evidence/private/schema, exact failed02/readonlyproof and exitedunit binding, per-run faultfilename, originalcleanup prerequisite/currentreleasedjournal check. New work must not route queued02 to a worker.",
+  "observations": {
+    "journal": {
+      "identity": "b010dd7440a54c58601967342f397faf686b7e306061af9f49809ee342b0ec8e",
+      "logs": 42,
+      "operations": 44,
+      "version": 5,
+      "workspaces": 4
+    },
+    "observer_report_at": "2026-09-12T06:10:29.912534+00:00",
+    "pg_clock": "2026-09-12T06:10:29.799016+00:00",
+    "unit": "forge-lifecycle-lr20260912_a-logs-8ce771185be0076a.service",
+    "unit_gone": true
+  },
+  "original_logs02_passed": false,
+  "passed": true,
+  "projection_limit": "journal.json is the saved original canonical table representation after executor compared every live table in one SQLite read transaction. Comparator normalizes JSON/order and omits request_json.grant. It is not an independently retained raw live-byte dump or proof that transient capability bytes are identical.",
+  "raw_hashes": {
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/logs-02-before-runner-observation/history.json": "dce44cbc872e0e0a6bb7f62c70a2090ea877719d36a733a7608b2e7fdc18d2f7",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/logs-02-before-runner-observation/journal.json": "627ef29847a4c56c7e4168d6d11b6b5a8e3423162bc63e5e3e688119a28c67f6",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/logs-02-before-runner-observation/manifest.json": "9ac0d6f20dcd256af3b8feaedef407b41e98cb481f532e37248284fd32217e2c",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/logs-02-before-runner-observation/postgres.json": "03dc6a9eb1920c572736d19221650eb68519d530b4afd9562767e2037a07bfb2",
+    "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/logs-02-before-runner-observation/report.json": "0197706aa2fc0dbfd6a58e3bd8c67c67aa5f4933d034a5833d379e6bd1ce5486"
+  },
+  "run": {
+    "allocations": 0,
+    "artifacts": 0,
+    "attempts": 0,
+    "cost_microusd": 0,
+    "deadline": "2026-09-11T23:08:28.321842-07:00",
+    "effects": 0,
+    "epoch": 0,
+    "events": 1,
+    "id": "run_VZZ7CZCKDG65KNL3BW7ZH7F2O4",
+    "schema": "appfault_strictlogs_ggl4ub23utvo6qnlzlkgroms5n",
+    "schema_oid": "852430",
+    "snapshots": 1,
+    "status": "queued",
+    "steps": 0,
+    "tenant": "sl-L1-d7wtgoelviiujwjs3rrqiragqp",
+    "version": 1
+  },
+  "scope": "Independent offline audit of executor retained PG/history/journal observation and exact observer sources. Reviewer makes no new database/systemctl/Docker/provider/credential calls.",
+  "source_hashes": [
+    {
+      "path": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evidence/logs-02/manifest.json",
+      "sha256": "fb68b27b8a05a22f7c572d64788b044f81fdc4111c3c07a0dda9a724d1842da2"
+    },
+    {
+      "path": "/home/postedism/Desktop/mini claude code/forge-runtime/var/local/feature-worktrees/logs/scripts/evaluation/isolated_state.py",
+      "sha256": "05044e79c1d1eb3ca42be3a0f6547172501eed0bf6b149f0b096bfd396a3b680"
+    },
+    {
+      "path": "/tmp/forge-observe-logs02-before-runner.py",
+      "sha256": "f042ef60301058e06abce9c0b9cff8c2ca03f58e2692ebc38c4b77fba77523c7"
+    }
+  ],
+  "sql_transaction_limit": "PG summary and completehistory are two repeatable-read/read-only transactions; their full run snapshot agrees. No simultaneous cross-system atomic snapshot claimed."
+}
