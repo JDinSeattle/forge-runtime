@@ -19,7 +19,7 @@ flowchart LR
   CLI[Go CLI] -->|HTTP + resumable SSE| API[API / restricted DB role]
   API --> PG[(PostgreSQL)]
   W[Bounded workers] -->|claim / epoch / transaction| PG
-  W -->|native streaming| LLM[OpenAI / Anthropic / Fake]
+  W -->|native streaming| LLM[OpenAI / Anthropic / DeepSeek / Fake]
   W -->|typed gRPC + signed grants| R[Independent runner]
   R --> J[(SQLite operation journal)]
   R --> D[Rootless Docker / no network]
@@ -47,14 +47,17 @@ The runtime also supports a frozen, one-way [compatible model fallback](docs/pro
 a durable [closed-batch repetition limit](docs/no-progress-evidence.md), and
 [API/worker/runner trace propagation](docs/telemetry-chain-evidence.md).
 Their evidence distinguishes local native-protocol fixtures, real database and
-journal behavior, and the still-pending paid-model and operational acceptance.
+journal behavior, and separately recorded real-provider and operational results.
 
 [Strict process logs](docs/log-limits-evidence.md) have durable bounds and
 receipt-bound artifact publication. [Worker SIGTERM recovery](docs/worker-sigterm-evidence.md)
 has an actual process test with a recording execution backend. The latest
 [integrated local checks](docs/integration-checks-e49-20260912.md) pass 563
-ordinary/race entries each; combined disk/runtime recovery and paid-model
-evaluation remain explicit acceptance boundaries.
+ordinary/race entries each. Subsequent [physical log-pressure acceptance](docs/strict-logs-combined-evidence.md#actual-targeted-completion-on-2026-09-13)
+and [paired database/journal/volume recovery](docs/recovery-evidence.md#paired-restoration-actual-completion-on-2026-09-13) passed.
+The first [real DeepSeek evaluation](docs/deepseek-live-evidence.md) recorded 0/4
+verified repairs and exposed a concurrency-slot bug. Its fix passes database tests;
+corrected-version live quality and exact vendor billing remain unverified.
 
 ## Build and verify
 

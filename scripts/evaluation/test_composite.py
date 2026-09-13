@@ -267,7 +267,12 @@ class CompositeTests(unittest.TestCase):
    write(scope/'evidence/logs-l4-01/worker-role-preflight.json',dict(schema='appfault_strictlogs_5',current_user='foreign_role',session_user='foreign_role',production_CheckWorkerRole='passed'))
    with patch.object(s,'second_unstarted'),patch.object(s,'sql_json',side_effect=lambda q,e,sch:rows[sch]),patch.object(s.c,'composite_module',return_value=SimpleNamespace(database_closure=lambda *args:None)),self.assertRaises(ValueError):s.previous_databases(scope,{})
  def test_live_pg_query_counts_planned_as_unsettled(self):
-  self.assertIn("status NOT IN ('succeeded','failed','cancelled')",s.QUERIES)
+  import sqlite3
+  predicate=s.QUERIES.split("'unsettled_effects'",1)[1].split(" WHERE ",1)[1].split("),",1)[0]
+  with sqlite3.connect(':memory:') as db:
+   db.execute('CREATE TABLE effects(status TEXT)')
+   db.executemany('INSERT INTO effects VALUES (?)',[(x,) for x in ('planned','prepared','running','unknown','skipped','succeeded','failed','cancelled')])
+   self.assertEqual({row[0] for row in db.execute('SELECT status FROM effects WHERE '+predicate)},{'planned','prepared','running','unknown'})
  def test_process_identity_records_include_runner_exit_proofs(self):
   with tempfile.TemporaryDirectory() as tmp:
    scope=Path(tmp);write(scope/'logs-l4-continuation.json',{})
