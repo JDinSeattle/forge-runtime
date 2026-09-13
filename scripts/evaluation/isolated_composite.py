@@ -177,12 +177,24 @@ def artifact_binding(ref,request,kind,raw):
  exact(ref,{'tenant_id':request['tenant_id'],'run_id':request['run_id'],'kind':kind,'sha256':hashlib.sha256(raw).hexdigest(),'size':len(raw)},'receipt artifact binding differs')
  require(ref.get('object_key')==request['tenant_id']+'/'+request['run_id']+'/'+ref['sha256'],'artifact key differs')
 
+def request_instant(value):
+ match=re.fullmatch(r'(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})(?:\.(\d{1,9}))?(Z|[+-]\d{2}:\d{2})',value)
+ require(match is not None,'invalid immutable request deadline')
+ seconds=int(datetime.datetime.fromisoformat(match[1]+match[3].replace('Z','+00:00')).timestamp())
+ return seconds*1000000000+int((match[2] or '').ljust(9,'0'))
+
+def same_request(left,right):
+ if not isinstance(left,dict) or not isinstance(right,dict) or left.get('grant','') or right.get('grant',''):return False
+ # Go time.Time preserves the instant when RPC/SQLite serialize UTC versus
+ # the caller's local offset. Retain all nine fractional digits when comparing.
+ return dict(left,grant='',deadline=request_instant(left['deadline']))==dict(right,grant='',deadline=request_instant(right['deadline']))
+
 def operation(c,base,label,*,success):
  request=c.read_json(base/(label+'-request.json'));op=c.read_json(base/(label+'-operation.json'),2<<20)
- require(request.get('grant','')=='' and op.get('request')==request,'RPC immutable operation differs')
+ require(same_request(op.get('request'),request),'RPC immutable operation differs')
  raw=c.private(base/(label+'-log.flg'),524288).read_bytes();receipt=c.private(base/(label+'-receipt.json'),2<<20).read_bytes()
  durable=json.loads(receipt,object_pairs_hook=c.deployment.pairs)
- require(durable.get('request')==request and durable.get('status')==op.get('status') and durable.get('result')==op.get('result'),'original receipt differs from RPC')
+ require(same_request(durable.get('request'),request) and durable.get('status')==op.get('status') and durable.get('result')==op.get('result'),'original receipt differs from RPC')
  artifact_binding(op['receipt'],request,'operation_receipt',receipt)
  job=durable['result'];log=job['log'];artifact_binding(log['artifact'],request,'operation_log',raw)
  require(frames(raw)==raw and log.get('retained_bytes')==len(raw),'published FLG prefix differs')
@@ -191,7 +203,7 @@ def operation(c,base,label,*,success):
  if not success:require(log.get('dropped_known') is False and log.get('dropped_bytes')==0,'incomplete capture invented exact dropped bytes')
  j=c.read_json(base/(label+'-journal.json'),16<<20);jr=rows(j,'operations','id',request['operation_id'])
  q=json.loads(jr['request_json']);q['grant']=''
- require(q==request and jr['status']==op['status'] and jr['job_id']==op['job_id'],'original SQLite operation was changed/restarted')
+ require(same_request(q,request) and jr['status']==op['status'] and jr['job_id']==op['job_id'],'original SQLite operation was changed/restarted')
  lr=rows(j,'operation_logs','operation_id',request['operation_id']);cid=lr.get('container_id')
  d=c.read_json(base/(label+'-docker.json'));require(len(d)==1,'one original container required');d=d[0]
  require(d['Id']==cid and d['Name']=='/'+op['job_id'] and job['id']==op['job_id'],'actual container name/ID differs')
@@ -271,7 +283,8 @@ def targeted(c,base,final,object_inputs=None):
  require(req.get('kind')=='run_command' and req.get('args')==expected_args and req.get('args_hash')==hashlib.sha256(canonical_args(expected_args)).hexdigest(),'early-stop oracle requires exact finite ENOSPC command bytes')
  fixture=c.read_json(base/'L4/fixture.json');require((req['tenant_id'],req['run_id'],req['operation_id'])==(fixture['tenant'],fixture['run_id'],fixture['target_operation']),'target fixture identity differs')
  pressure=c.read_json(base/'L4-pressure.json');stages=pressure.get('stages',[])
- require([x.get('chunk_bytes') for x in stages]==[1<<20,4096,1] and all(x.get('error')=='no space left on device' and x.get('synced') is True and type(x.get('written_bytes')) is int and x['written_bytes']>=0 for x in stages),'actual refined ENOSPC and sync required')
+ expected_errors={'no space left on device',f"write {pressure.get('path')}: no space left on device"}
+ require([x.get('chunk_bytes') for x in stages]==[1<<20,4096,1] and all(x.get('error') in expected_errors and x.get('synced') is True and type(x.get('written_bytes')) is int and x['written_bytes']>=0 for x in stages),'actual refined ENOSPC and sync required')
  require(pressure.get('fill_error')=='<nil>' and pressure['owner_uid']==pressure['effective_uid']==0 and sum(x['written_bytes'] for x in stages)==pressure.get('written_bytes') and 0<pressure['allocated_bytes']<=256<<20 and pressure['after']['Bavail']==0 and pressure['device']>0 and pressure['inode']>0,'bounded physical pressure/zero Bavail missing')
  disk=c.read_json(base/'L4-recovered-disk-identity.json');require(pressure['device']==disk['spool_device'],'pressure/spool devices differ')
  lease=rows(j,'volume_leases','workspace_id',req['workspace_id']);slot=rows(j,'volume_slots','id',lease['slot_id']);spec=json.loads(slot['spec_json'])

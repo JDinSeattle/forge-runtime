@@ -20,6 +20,14 @@ def journal():
  return {'identity':m.UUID,'version':5,'tables':{k:([{'id':'slot-'+str(i)} for i in range(4)] if k=='volume_slots' else []) for k in m.TABLES}}
 
 class CompositeTests(unittest.TestCase):
+ def test_request_deadline_compares_instant_without_losing_nanoseconds(self):
+  local={'grant':'','deadline':'2026-09-13T10:12:32.693531353-07:00','operation_id':'same'}
+  utc=dict(local,deadline='2026-09-13T17:12:32.693531353Z')
+  self.assertTrue(m.same_request(local,utc))
+  self.assertFalse(m.same_request(local,dict(utc,deadline='2026-09-13T17:12:32.693531354Z')))
+  self.assertFalse(m.same_request(local,dict(utc,operation_id='other')))
+  self.assertFalse(m.same_request(local,dict(utc,grant='unexpected')))
+
  def test_frames_recompute_binary_crc_and_retain_only_valid_prefix(self):
   self.assertEqual(m.frames(RAW),RAW)
   self.assertEqual(m.frames(RAW+b'FLG1\x02'),RAW)
