@@ -160,6 +160,35 @@ class StorageValidation(unittest.TestCase):
                 privileged.unmount_slot(self.tree, self.manifest, {"slots": {}}, slot)
             tool.assert_not_called()
 
+    def test_park_preserves_data_and_keeps_namespace_guard(self):
+        slot = self.manifest["slots"][0]
+        target = self.tree.storage_path / "mounts" / slot["mount"]
+        target.mkdir(parents=True, mode=0o700)
+        target.parent.chmod(0o700)
+        retained = target / "unknown-workspace"
+        retained.write_text("preserve unresolved evidence")
+        loop = {"name": "/dev/loop9", "maj:min": "7:9"}
+        row = {"device": "7:9", "target": str(target), "mount_id": 42}
+        state = {"slots": {slot["id"]: {"loop": "/dev/loop9", "device": "7:9"}}}
+
+        @contextmanager
+        def fake_image(*_, **__):
+            yield 42
+
+        with mock.patch.object(privileged, "image_fd", fake_image), mock.patch.object(privileged, "mounted_slot", return_value=(loop, row)), mock.patch.object(privileged, "other_namespace_users", return_value=[]) as users, mock.patch.object(privileged, "mount_records", return_value=[row]), mock.patch.object(privileged, "run_tool") as tool, mock.patch.object(privileged, "save_state"), mock.patch.object(privileged, "exact_mount", side_effect=[row, None]), mock.patch.object(privileged, "associated_loop", side_effect=[loop, None]):
+            with self.assertRaises(common.UnsafeState):
+                privileged.unmount_slot(self.tree, self.manifest, state, slot)
+            tool.assert_not_called()
+            users.return_value = [123]
+            with self.assertRaises(common.UnsafeState):
+                privileged.unmount_slot(self.tree, self.manifest, state, slot, preserve_contents=True)
+            tool.assert_not_called()
+            users.return_value = []
+            privileged.unmount_slot(self.tree, self.manifest, state, slot, preserve_contents=True)
+            self.assertEqual(tool.call_args_list, [mock.call("umount", ["--no-canonicalize", str(target)]), mock.call("losetup", ["--detach", "/dev/loop9"])])
+        self.assertEqual(retained.read_text(), "preserve unresolved evidence")
+        self.assertNotIn(slot["id"], state["slots"])
+
     def test_live_capacity_rejects_host_directory_before_reading_sysfs(self):
         mounts = self.tree.directory("mounts", create=True)
         slot = self.manifest["slots"][0]

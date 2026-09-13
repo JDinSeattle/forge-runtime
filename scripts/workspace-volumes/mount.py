@@ -144,7 +144,7 @@ def mount_slot(tree, manifest, state, slot):
         return {"id": slot["id"], "action": "mounted", "mount": observed, "capacity": capacity_evidence(tree, slot, loop)}
 
 
-def unmount_slot(tree, manifest, state, slot):
+def unmount_slot(tree, manifest, state, slot, *, preserve_contents=False):
     with image_fd(tree, slot):
         loop, row = mounted_slot(tree, slot)
         record = state["slots"].get(slot["id"])
@@ -170,12 +170,16 @@ def unmount_slot(tree, manifest, state, slot):
                 os.close(mounts)
             try:
                 # An allocated checkout must be released through the runner first.
-                if any(name != "lost+found" for name in os.listdir(fd)):
+                if not preserve_contents and any(name != "lost+found" for name in os.listdir(fd)):
                     raise UnsafeState("workspace contents remain; release leases through runner before teardown")
                 os.syncfs(fd) if hasattr(os, "syncfs") else os.fsync(fd)
-                run_tool("umount", ["--no-canonicalize", f"/proc/self/fd/{fd}"], pass_fds=(fd,))
             finally:
                 os.close(fd)
+            # Drop our directory descriptor before ordinary unmount so the
+            # helper itself does not keep the mount busy. No force/lazy option.
+            if exact_mount(target) != row:
+                raise UnsafeState("mount identity changed before unmount")
+            run_tool("umount", ["--no-canonicalize", str(target)])
             if exact_mount(target):
                 raise UnsafeState("mount remains after unmount; do not detach loop")
         # Re-read exact backing identity before the single-device detach.
@@ -192,7 +196,7 @@ def unmount_slot(tree, manifest, state, slot):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("action", choices=("mount", "inspect", "unmount"))
+    parser.add_argument("action", choices=("mount", "inspect", "unmount", "park"))
     args = parser.parse_args()
     initial_map = Path("/proc/self/uid_map").read_text().split()
     if os.geteuid() != 0 or initial_map != ["0", "0", "4294967295"] or not sys.flags.isolated:
@@ -208,8 +212,8 @@ def main():
         for slot in manifest["slots"]:
             if args.action == "mount":
                 report.append(mount_slot(tree, manifest, state, slot))
-            elif args.action == "unmount":
-                report.append(unmount_slot(tree, manifest, state, slot))
+            elif args.action in ("unmount", "park"):
+                report.append(unmount_slot(tree, manifest, state, slot, preserve_contents=args.action == "park"))
             else:
                 loop, row = mounted_slot(tree, slot)
                 report.append({"id": slot["id"], "loop": loop, "mount": row,

@@ -31,7 +31,7 @@ repository root in an ordinary operator terminal:
 sudo /usr/bin/python3 -I "$PWD/scripts/workspace-volumes/mount.py" mount
 ```
 
-Only `mount`, `inspect` or `unmount` is accepted. Paths, byte limits, device names and mount options cannot be supplied by arguments. The root helper derives the repository from its own location and checks the fixed manifest scope. Python isolated mode is required; subprocesses use fixed system binaries, a clean environment and no shell. No persistent elevated permissions or privileged daemon is installed.
+Only `mount`, `inspect`, `unmount` or `park` is accepted. Paths, byte limits, device names and mount options cannot be supplied by arguments. The root helper derives the repository from its own location and checks the fixed manifest scope. Python isolated mode is required; subprocesses use fixed system binaries, a clean environment and no shell. No persistent elevated permissions or privileged daemon is installed.
 
 The helper opens each image through anchored, no-follow descriptors. `losetup` receives a pinned image descriptor and an explicit size limit; the helper checks backing inode/device and loop configuration before using it. `mount` receives pinned source-device and target-directory descriptors. A root-owned `mount-state.json` records exact loop/mount ownership. Existing matching mounts are reused only when that ownership record is present. Unrecorded or mismatched loops/mounts are left for inspection, never detached or overwritten automatically.
 
@@ -62,3 +62,11 @@ Mount and loop changes are not atomic across all four slots. A later error prese
 The unit suite uses small temporary files and mocked filesystem-format/mount commands. It tests fixed-scope manifests, symlink/hardlink rejection, exclusive creation, existing-image preservation, descriptor-based calls, backing identity checks, mountinfo decoding, loop mismatch rejection and teardown ownership. It performs **no actual loop attachment, mount, mkfs, daemon operation or privilege escalation**.
 
 Still required after real setup: nonroot task UID1000 creates 0600 files/0700 directories and the mapped runner can inspect/patch them; filling a disposable volume reaches ENOSPC without expanding the image or affecting another slot; actual cgroups enforce memory/PID/CPU limits; restarting runner/worker preserves volume and operation identity; unrelated rootful Docker workloads remain unchanged. See ADR 0002 for the complete acceptance scope.
+
+
+For offline shutdown while retaining unresolved workspace evidence, stop the
+project API, workers, runner and dedicated daemons first, then use `park` instead
+of `unmount`. `park` permits retained files but keeps the exact image/mount/state
+checks, namespace-user rejection and ordinary busy-mount refusal. It does not
+release logical leases, settle unknown costs, erase files or format images.
+Remounting the same images preserves their journal-bound data for reconciliation.
