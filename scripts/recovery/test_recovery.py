@@ -26,6 +26,18 @@ freeze = module("freeze_test_subject", "freeze-copy.py")
 
 
 class RecoveryTests(unittest.TestCase):
+    def test_target_lock_is_private_and_never_replaces_existing_lock(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            storage = Path(temporary)
+            freeze.create_provision_lock(storage, os.getuid(), os.getgid())
+            lock = storage / "provision.lock"
+            self.assertEqual(lock.stat().st_mode & 0o777, 0o600)
+            self.assertEqual(lock.stat().st_uid, os.getuid())
+            inode = lock.stat().st_ino
+            with self.assertRaises(FileExistsError):
+                freeze.create_provision_lock(storage, os.getuid(), os.getgid())
+            self.assertEqual(lock.stat().st_ino, inode)
+
     def test_prepare_has_private_scope_even_under_umask_022(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary) / "rehearsals"

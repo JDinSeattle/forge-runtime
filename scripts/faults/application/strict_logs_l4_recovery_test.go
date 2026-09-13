@@ -231,7 +231,13 @@ func TestStrictLogsL4Recovery(t *testing.T) {
 	if role.Schema != slL4Schema || role.WorkerRole != cfg.ConnConfig.User {
 		t.Fatal("original restricted role differs")
 	}
-	db, e := persistence.Open(ctx, secret.DSN)
+	// Open may establish both its warm connection and the first caller's
+	// connection concurrently. Tag this invocation so its own idle pool
+	// connections are not mistaken for another worker using the role.
+	params := u.Query()
+	params.Set("application_name", fmt.Sprintf("forge-l4-recovery-%d-%d", os.Getpid(), time.Now().UnixNano()))
+	u.RawQuery = params.Encode()
+	db, e := persistence.Open(ctx, u.String())
 	secret.DSN = ""
 	if e != nil {
 		t.Fatal("private database unavailable; original state retained")
@@ -276,9 +282,9 @@ func TestStrictLogsL4Recovery(t *testing.T) {
 	check(slL4InitialRun(before, want, sqlUntil))
 	var now time.Time
 	var peers, active, reserved, allocations, attempts, effects, cleanups int
-	check(db.Pool.QueryRow(ctx, `SELECT clock_timestamp(),(SELECT count(*) FROM pg_stat_activity WHERE usename=current_user AND pid<>pg_backend_pid()),(SELECT coalesce(sum(active_count),0) FROM tenant_runtime),(SELECT reserved_slots FROM runners WHERE id='application-fault-runner'),(SELECT count(*) FROM runner_allocations WHERE state<>'released'),(SELECT count(*) FROM model_attempts),(SELECT count(*) FROM effects),(SELECT count(*) FROM workspace_cleanup WHERE phase<>'released')`).Scan(&now, &peers, &active, &reserved, &allocations, &attempts, &effects, &cleanups))
+	check(db.Pool.QueryRow(ctx, `SELECT clock_timestamp(),(SELECT count(*) FROM pg_stat_activity WHERE usename=current_user AND application_name<>current_setting('application_name')),(SELECT coalesce(sum(active_count),0) FROM tenant_runtime),(SELECT reserved_slots FROM runners WHERE id='application-fault-runner'),(SELECT count(*) FROM runner_allocations WHERE state<>'released'),(SELECT count(*) FROM model_attempts),(SELECT count(*) FROM effects),(SELECT count(*) FROM workspace_cleanup WHERE phase<>'released')`).Scan(&now, &peers, &active, &reserved, &allocations, &attempts, &effects, &cleanups))
 	if peers != 0 || active != 1 || reserved != 1 || allocations != 1 || attempts != 4 || effects != 8 || cleanups != 0 || !now.After(before.State.Lease.Until) || !now.After(before.State.Limits.Deadline) {
-		t.Fatal("retained PG counters/lease/deadline differ")
+		t.Fatalf("retained PG counters/lease/deadline differ: peers=%d active=%d reserved=%d allocations=%d attempts=%d effects=%d cleanups=%d lease_expired=%t deadline_expired=%t", peers, active, reserved, allocations, attempts, effects, cleanups, now.After(before.State.Lease.Until), now.After(before.State.Limits.Deadline))
 	}
 	var requests, reservations int
 	var committedTokens, committedMoney, reservedTokens, reservedMoney int64

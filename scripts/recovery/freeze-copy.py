@@ -33,6 +33,16 @@ def owned_directory(path, uid, gid):
     os.chown(path, uid, gid)
 
 
+def create_provision_lock(storage, uid, gid):
+    fd = os.open(storage / "provision.lock", os.O_RDWR | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
+    try:
+        os.fchown(fd, uid, gid)
+        os.fsync(fd)
+    finally:
+        os.close(fd)
+    rehearse.sync_directory(storage)
+
+
 def freeze(fd, enable):
     subprocess.run(["/usr/sbin/fsfreeze", "--freeze" if enable else "--unfreeze", f"/proc/self/fd/{fd}"], pass_fds=(fd,), check=True, timeout=20, env={"PATH": "/usr/bin:/usr/sbin", "LC_ALL": "C"})
 
@@ -94,6 +104,7 @@ def main():
     target_root = base / "target"
     target_storage = target_root / "var/workspace-storage"
     owned_directory(target_storage, uid, gid)
+    create_provision_lock(target_storage, uid, gid)
     for name in ("images", "mounts"):
         owned_directory(target_storage / name, uid, gid)
     backup_images = base / "backup/images"
