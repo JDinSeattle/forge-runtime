@@ -35,9 +35,6 @@ def main():
                     record = state['slots'].get(slot['id'])
                     if not record or record.get('loop') != loop['name'] or record.get('device') != loop['maj:min']:
                         raise UnsafeState('fixed pool has mismatched privileged ownership')
-                    users = m.other_namespace_users(loop['maj:min'])
-                    if users:
-                        raise UnsafeState(f'{root}: volume remains in other namespaces, example PIDs {users[:8]}')
             pools.append((tree, manifest, state))
         for tree, manifest, state in pools:
             slots = [m.unmount_slot(tree, manifest, state, slot, preserve_contents=True) for slot in manifest['slots']]

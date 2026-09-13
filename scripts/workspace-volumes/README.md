@@ -47,13 +47,13 @@ Mount state and manifest are durable. A failure after attachment can leave an at
 
 ## Release and teardown
 
-First drain and release all workspace leases through the runner, preserve required receipts, and stop only the Forge runner and its dedicated rootless Docker service. The stricter helper also refuses teardown if another mount namespace still references a volume; a running daemon can retain inherited mounts even with no current command. It neither kills processes nor stops services itself.
+First drain and release all workspace leases through the runner, preserve required receipts, and stop only the Forge runner and its dedicated rootless Docker service. The helper performs ordinary unmount first, allowing [shared/slave mount propagation](https://docs.kernel.org/filesystems/sharedsubtree.html) to remove inherited mounts. It then refuses loop detach if another mount namespace still references the volume, preserving the loop and ownership record for inspection or retry. It neither kills processes nor stops services itself.
 
 ```bash
 sudo /usr/bin/python3 -I "$PWD/scripts/workspace-volumes/mount.py" unmount
 ```
 
-Teardown refuses a slot with remaining checkout data, unexpected mounts, other namespace users or mismatched ownership. It performs ordinary unmounts only, then detaches only the exact matching loop device. Busy state is an error; there is no force/lazy-unmount flag, `losetup -D`, Docker prune or image deletion. Images and manifests remain for reuse. Re-running `mount` after clean teardown uses the same files; it does not format them.
+Teardown refuses a slot with remaining checkout data, unexpected current-namespace mounts or mismatched ownership. It performs ordinary unmounts only, checks for remaining references in other namespaces, then detaches only the exact matching loop device. Busy state is an error; there is no force/lazy-unmount flag, `losetup -D`, Docker prune or image deletion. Images and manifests remain for reuse. Re-running `mount` after clean teardown uses the same files; it does not format them.
 
 Mount and loop changes are not atomic across all four slots. A later error preserves already-confirmed state in `mount-state.json`; inspect it and rerun only after resolving the reported condition.
 
@@ -67,6 +67,6 @@ Still required after real setup: nonroot task UID1000 creates 0600 files/0700 di
 For offline shutdown while retaining unresolved workspace evidence, stop the
 project API, workers, runner and dedicated daemons first, then use `park` instead
 of `unmount`. `park` permits retained files but keeps the exact image/mount/state
-checks, namespace-user rejection and ordinary busy-mount refusal. It does not
+checks, post-unmount namespace-user rejection and ordinary busy-mount refusal. It does not
 release logical leases, settle unknown costs, erase files or format images.
 Remounting the same images preserves their journal-bound data for reconciliation.

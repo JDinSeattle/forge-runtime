@@ -175,19 +175,39 @@ class StorageValidation(unittest.TestCase):
         def fake_image(*_, **__):
             yield 42
 
-        with mock.patch.object(privileged, "image_fd", fake_image), mock.patch.object(privileged, "mounted_slot", return_value=(loop, row)), mock.patch.object(privileged, "other_namespace_users", return_value=[]) as users, mock.patch.object(privileged, "mount_records", return_value=[row]), mock.patch.object(privileged, "run_tool") as tool, mock.patch.object(privileged, "save_state"), mock.patch.object(privileged, "exact_mount", side_effect=[row, None]), mock.patch.object(privileged, "associated_loop", side_effect=[loop, None]):
-            with self.assertRaises(common.UnsafeState):
-                privileged.unmount_slot(self.tree, self.manifest, state, slot)
-            tool.assert_not_called()
-            users.return_value = [123]
-            with self.assertRaises(common.UnsafeState):
-                privileged.unmount_slot(self.tree, self.manifest, state, slot, preserve_contents=True)
-            tool.assert_not_called()
-            users.return_value = []
-            privileged.unmount_slot(self.tree, self.manifest, state, slot, preserve_contents=True)
-            self.assertEqual(tool.call_args_list, [mock.call("umount", ["--no-canonicalize", str(target)]), mock.call("losetup", ["--detach", "/dev/loop9"])])
-        self.assertEqual(retained.read_text(), "preserve unresolved evidence")
-        self.assertNotIn(slot["id"], state["slots"])
+        for scenario in ("contents", "busy", "retained_namespace", "propagated"):
+            with self.subTest(scenario=scenario):
+                state = {"slots": {slot["id"]: {"loop": "/dev/loop9", "device": "7:9"}}}
+                events = []
+
+                def command(name, args):
+                    events.append(name)
+                    if scenario == "busy" and name == "umount":
+                        raise common.UnsafeState("target is busy")
+
+                def remaining_users(device):
+                    self.assertEqual(device, "7:9")
+                    self.assertEqual(events, ["umount"])
+                    return [123] if scenario == "retained_namespace" else []
+
+                with mock.patch.object(privileged, "image_fd", fake_image), mock.patch.object(privileged, "mounted_slot", return_value=(loop, row)), mock.patch.object(privileged, "other_namespace_users", side_effect=remaining_users) as users, mock.patch.object(privileged, "mount_records", return_value=[row]), mock.patch.object(privileged, "run_tool", side_effect=command) as tool, mock.patch.object(privileged, "save_state") as save, mock.patch.object(privileged, "exact_mount", side_effect=[row, None]), mock.patch.object(privileged, "associated_loop", side_effect=[loop, None]):
+                    if scenario == "propagated":
+                        privileged.unmount_slot(self.tree, self.manifest, state, slot, preserve_contents=True)
+                        self.assertEqual(tool.call_args_list, [mock.call("umount", ["--no-canonicalize", str(target)]), mock.call("losetup", ["--detach", "/dev/loop9"])])
+                        self.assertNotIn(slot["id"], state["slots"])
+                        save.assert_called_once()
+                    else:
+                        with self.assertRaises(common.UnsafeState):
+                            privileged.unmount_slot(self.tree, self.manifest, state, slot, preserve_contents=scenario != "contents")
+                        self.assertIn(slot["id"], state["slots"])
+                        save.assert_not_called()
+                        if scenario == "contents":
+                            tool.assert_not_called()
+                        else:
+                            tool.assert_called_once_with("umount", ["--no-canonicalize", str(target)])
+                        if scenario != "retained_namespace":
+                            users.assert_not_called()
+                self.assertEqual(retained.read_text(), "preserve unresolved evidence")
 
     def test_live_capacity_rejects_host_directory_before_reading_sysfs(self):
         mounts = self.tree.directory("mounts", create=True)

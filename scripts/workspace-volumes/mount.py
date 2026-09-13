@@ -155,9 +155,6 @@ def unmount_slot(tree, manifest, state, slot, *, preserve_contents=False):
             return {"id": slot["id"], "action": "already_unmounted"}
         if not record or record.get("loop") != loop["name"] or record.get("device") != loop["maj:min"]:
             raise UnsafeState("no matching privileged ownership record for teardown")
-        users = other_namespace_users(loop["maj:min"])
-        if users:
-            raise UnsafeState(f"slot retained in other mount namespaces (example PIDs {users[:8]}); stop only Forge runner/daemon after draining")
         elsewhere = [r for r in mount_records() if r["device"] == loop["maj:min"] and r["target"] != str(tree.storage_path / "mounts" / slot["mount"])]
         if elsewhere:
             raise UnsafeState("another current-namespace mount references this device")
@@ -182,6 +179,12 @@ def unmount_slot(tree, manifest, state, slot, *, preserve_contents=False):
             run_tool("umount", ["--no-canonicalize", str(target)])
             if exact_mount(target):
                 raise UnsafeState("mount remains after unmount; do not detach loop")
+        # Ordinary unmount can propagate to inherited shared/slave mounts.
+        # Check remaining namespaces only afterward, but always before detach,
+        # including retries where the host mount is already gone.
+        users = other_namespace_users(loop["maj:min"])
+        if users:
+            raise UnsafeState(f"slot retained in other mount namespaces after ordinary unmount (example PIDs {users[:8]}); loop and ownership record preserved")
         # Re-read exact backing identity before the single-device detach.
         current = associated_loop(slot)
         if current is None or current["name"] != record["loop"]:
