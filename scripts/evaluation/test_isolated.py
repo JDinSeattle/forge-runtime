@@ -230,7 +230,8 @@ class IsolatedTests(unittest.TestCase):
 
  def test_provision_binds_exact_candidate_bytes_before_seal(self):
   with tempfile.TemporaryDirectory() as tmp:
-   root=Path(tmp);hashes={}
+   root=Path(tmp)/'evaluation'/'batch';hashes={}
+   authority=self.write(Path(tmp)/'runtime/runner.json',{'authority':True});hashes['authority_runner.json']=c.sha(authority)
    for name in ('candidate','platform','runner','registration'):
     p=self.write(root/'candidate'/(name+'.json'),{'synthetic':name});hashes[name+'.json']=c.sha(p)
    reg={'config_id':'eval-config','model_spec':{'credential_group':'deepseek-flash-evalv2','price_version':'fixed'}};platform={'runner_id':'fixture','runner':{'UnixSocket':'/retained.sock'},'listen':'127.0.0.1:18098'}

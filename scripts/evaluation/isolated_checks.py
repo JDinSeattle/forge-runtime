@@ -119,6 +119,7 @@ def policy(platform,runner,registration,scope):
 
 def provision_binding(root,provision,registration,platform):
  expected_hashes={name+'.json':sha(root/'candidate'/(name+'.json')) for name in ('candidate','platform','runner','registration')}
+ expected_hashes['authority_runner.json']=sha(root.parent.parent/'runtime/runner.json')
  expected={'phase':'ready','purpose':'deepseek-eval-v2-provision','schema_version':1,'candidate_dir':str(root/'candidate'),'candidate_hashes':expected_hashes,'provider':'deepseek','model':'deepseek-v4-flash','config_id':registration['config_id'],'credential_group':registration['model_spec']['credential_group'],'price_version':registration['model_spec']['price_version'],'exact_pricing':False,'batch_id':'deepseek-flash-2usd-'+expected_hashes['registration.json'],'budget':{'total_microusd':2000000,'task_budgets_microusd':{k:500000 for k in common.CASES}},'runner_slots':4,'worker_slots':1,'runner_id':platform['runner_id'],'runner_endpoint':'unix://'+platform['runner']['UnixSocket'],'api_url':'http://'+platform['listen']}
  if any(provision.get(k)!=v or type(provision.get(k)) is not type(v) for k,v in expected.items()):raise ValueError('provisioned candidate/batch/config identity differs from current closed inputs')
 
