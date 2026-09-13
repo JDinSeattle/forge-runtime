@@ -247,3 +247,23 @@ The original task `run_DKT2OOLEVCKYXHW5NGNS7BKBHJ`, its pending effect, pressure
 The [targeted correction](../benchmarks/results/strict-logs-targeted-l4-offline-20260912) exhausts allocation using 1 MiB, 4 KiB and 1-byte stages, each requiring real ENOSPC, and increases emitted payload to 2,457,622 bytes. Before removing pressure, it requires zero available blocks, a real spool I/O failure, and an early nonzero/non-OOM container exit while the original worker is paused. It then verifies same-operation incomplete receipts, PG READY publication, HTTP bytes, cleanup/release and a separate real health operation. Offline tests and review are complete; none substitutes for that actual experiment.
 
 S12.9 therefore remains open. The next actual log experiment contains only L4 and its health check. A later evaluation gate may compose its complete evidence with the original five passing cases only after verifying full recovery and unchanged production source, including `internal/`, `cmd/`, `db/`, `proto/`, `go.mod` and `go.sum`. It must retain the original aggregate failure and identify the different fixture binaries. No paid provider call has occurred at this boundary.
+
+
+## Actual targeted completion on 2026-09-13
+
+The authorized retained L4 recovery and the subsequent targeted L4 experiment
+both passed using clean source `067b922c2c908b854ec515088d3b77ca9d499370`.
+The local [recovery report](../var/lifecycle-rehearsals/lr20260912_a/evidence/logs-03-recovery/report.json)
+records the old run's cancellation, verified snapshot and release.
+The [targeted acceptance](../var/lifecycle-rehearsals/lr20260912_a/evidence/logs-l4-01/acceptance.json)
+records actual spool failure, receipt-bound incomplete log publication, PG READY
+and HTTP bytes, all four volume identities, cleanup and a fresh real health operation.
+The Go test completed in 18.16 seconds. Physical pressure wrote 229,019,648 bytes
+and allocated 229,023,744 bytes; the final available-block count was zero.
+The retained log remains explicitly incomplete (`capture_gap`), not a complete transcript.
+
+The launch composition check passed against 1,350 retained inputs and the same
+journal UUID. Together with the third attempt's five successful cases, this
+completes the local S12.9 scope. The third attempt's aggregate remains false;
+no earlier execution result was rewritten. Raw reports above are local operator
+evidence under ignored `var/`, not files distributed in a clean Git clone.
