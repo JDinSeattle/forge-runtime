@@ -154,7 +154,7 @@ func provision(ctx context.Context, b bundle, admin *url.URL) (retErr error) {
 	if e = steps.record("migrated", map[string]any{"schema": schema, "schema_oid": report.SchemaOID, "migration_version": report.MigrationVersion, "relation_oids": report.RelationOIDs, "membership_function_oid": report.MembershipFunctionOID}); e != nil {
 		return e
 	}
-	if e = store.BootstrapTenant(ctx, report.Tenant, report.Principal, "developer"); e != nil {
+	if e = store.BootstrapTenant(ctx, report.Tenant, report.Principal, "admin"); e != nil {
 		return e
 	}
 	tag, e := store.Pool.Exec(ctx, `UPDATE tenant_runtime SET max_active=1 WHERE tenant_id=$1 AND active_count=0`, report.Tenant)
@@ -221,8 +221,8 @@ func provision(ctx context.Context, b bundle, admin *url.URL) (retErr error) {
 	if e != nil {
 		return e
 	}
-	if identity.PrincipalID != report.Principal || identity.TenantID != report.Tenant || identity.Role != "developer" {
-		return errors.New("API token tenant/developer binding mismatch")
+	if identity.PrincipalID != report.Principal || identity.TenantID != report.Tenant || identity.Role != "admin" {
+		return errors.New("API token tenant/admin binding mismatch")
 	}
 	if e = store.Pool.QueryRow(ctx, `SELECT expires_at FROM api_tokens WHERE principal_id=$1 AND revoked_at IS NULL`, report.Principal).Scan(&report.TokenExpiresAt); e != nil {
 		return e
@@ -448,7 +448,7 @@ func verifyRole(ctx context.Context, dsn, kind, schema, role string, schemaOID u
 		if e = tx.QueryRow(ctx, "SELECT "+pgx.Identifier{schema}.Sanitize()+".lock_current_membership($1,$2)", tenant, principal).Scan(&c.MembershipRole); e != nil {
 			return c, e
 		}
-		if c.MembershipRole != "developer" {
+		if c.MembershipRole != "admin" {
 			return c, errors.New("schema-specific membership lock binding failed")
 		}
 	} else {
