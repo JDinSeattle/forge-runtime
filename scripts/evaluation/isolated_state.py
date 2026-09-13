@@ -114,7 +114,7 @@ QUERIES="""SELECT pg_catalog.json_build_object(
  'now',pg_catalog.clock_timestamp(),
  'runs',COALESCE((SELECT json_agg(json_build_object('id',id,'tenant',tenant_id,'state',state,'version',version,'epoch',lease_epoch,'owner',lease_owner,'workspace',workspace_id,'snapshot',snapshot)) FROM :"schema".runs),'[]'::json),
  'effects',(SELECT count(*) FROM :"schema".effects),
- 'unsettled_effects',(SELECT count(*) FROM :"schema".effects WHERE status NOT IN ('succeeded','failed','cancelled')),
+ 'unsettled_effects',(SELECT count(*) FROM :"schema".effects WHERE status NOT IN ('skipped','succeeded','failed','cancelled')),
  'attempts',(SELECT count(*) FROM :"schema".model_attempts),
  'artifacts',(SELECT count(*) FROM :"schema".artifacts),
  'projects',(SELECT count(*) FROM :"schema".projects),
