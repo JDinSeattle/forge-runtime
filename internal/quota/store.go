@@ -280,6 +280,24 @@ func (s *Store) MarkUnknown(ctx context.Context, tenant, id string) error {
 	})
 }
 
+// CompleteWithUnknownUsage requires a durably saved, complete provider response.
+// Release only concurrency: unknown token/cost obligations stay reserved until
+// definitive settlement. Interrupted or unconfirmed responses use MarkUnknown.
+func (s *Store) CompleteWithUnknownUsage(ctx context.Context, tenant, id string) error {
+	ctx, cancel := dependency.Database(ctx)
+	defer cancel()
+	return s.mutate(ctx, tenant, id, func(tx pgx.Tx, q *Snapshot, r *Reservation, now time.Time) error {
+		if r.DispatchedAt == nil || r.Status == "settled" {
+			return ErrConflict
+		}
+		if !r.SlotReleased {
+			q.ActiveRequests--
+		}
+		_, err := tx.Exec(ctx, `UPDATE quota_reservations SET status='unknown',request_slot_released=true WHERE tenant_id=$1 AND id=$2`, tenant, id)
+		return err
+	})
+}
+
 func (s *Store) Settle(ctx context.Context, tenant, id string, actual Settlement) error {
 	ctx, cancel := dependency.Database(ctx)
 	defer cancel()

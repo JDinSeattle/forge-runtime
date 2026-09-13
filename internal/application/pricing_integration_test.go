@@ -9,6 +9,7 @@ import (
 	"github.com/JDinSeattle/forge-runtime/internal/domain"
 	"github.com/JDinSeattle/forge-runtime/internal/persistence"
 	"github.com/JDinSeattle/forge-runtime/internal/provider"
+	"github.com/JDinSeattle/forge-runtime/internal/quota"
 	flow "github.com/JDinSeattle/forge-runtime/internal/runtime"
 )
 
@@ -217,5 +218,47 @@ func TestModelAdmissionKeepsConservativeReducerBudget(t *testing.T) {
 	event, err := d.callModel(ctx, r)
 	if err != nil || event.Kind != flow.EventBudgetReached || p.calls.Load() != 0 {
 		t.Fatalf("budget admission=%+v calls=%d err=%v", event, p.calls.Load(), err)
+	}
+}
+
+func TestCompletedUnknownUsageReleasesOnlyConcurrency(t *testing.T) {
+	d, _, provider, _ := repairSetup(t)
+	ctx := context.Background()
+	spec := d.Models["fake/fake"]
+	provider.scripts[0].Usage.Output.Known = false
+	spec.InputPrice = 1_000_000
+	spec.OutputPrice = 2_000_000
+	spec.RequestTimeout = time.Minute
+	d.Models["fake/fake"] = spec
+	r := freezeAtModelFault(t, d, "after_model_result_before_transition")
+	a, err := d.Store.LatestAttempt(ctx, r.TenantID, r.ID, r.State.StepSeq)
+	if err != nil || a.Status != "completed" {
+		t.Fatalf("attempt=%+v err=%v", a, err)
+	}
+	before, err := d.Quota.Snapshot(ctx, "fake")
+	if err != nil || before.ActiveRequests != 1 || before.ReservedCost <= 0 {
+		t.Fatalf("before=%+v err=%v", before, err)
+	}
+	for n := 0; n < 2; n++ {
+		event, err := d.completedModel(ctx, r, a)
+		if err != nil || event.Kind != flow.EventModelCompleted {
+			t.Fatalf("completion=%+v err=%v", event, err)
+		}
+		r.State.Cost += event.Cost
+	}
+	after, err := d.Quota.Snapshot(ctx, "fake")
+	if err != nil || after.ActiveRequests != 0 || after.ReservedCost != before.ReservedCost || after.ReservedTokens != before.ReservedTokens || after.CommittedCost != before.CommittedCost {
+		t.Fatalf("after=%+v before=%+v err=%v", after, before, err)
+	}
+	reservation, err := d.Quota.Get(ctx, string(r.TenantID), string(a.ID))
+	if err != nil || reservation.Status != "unknown" || !reservation.SlotReleased || reservation.ActualCost != nil || reservation.ActualTokens != nil || provider.calls.Load() != 1 {
+		t.Fatalf("reservation=%+v err=%v", reservation, err)
+	}
+	if err = d.Quota.Settle(ctx, string(r.TenantID), string(a.ID), quota.Settlement{Tokens: 10, Cost: 20}); err != nil {
+		t.Fatal(err)
+	}
+	final, err := d.Quota.Snapshot(ctx, "fake")
+	if err != nil || final.ActiveRequests != 0 || final.ReservedCost != 0 || final.ReservedTokens != 0 || final.CommittedCost != before.CommittedCost+20 {
+		t.Fatalf("final=%+v err=%v", final, err)
 	}
 }

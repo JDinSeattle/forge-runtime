@@ -1,0 +1,678 @@
+{
+  "allocated_total_microusd": 2000000,
+  "audit_mode": "isolated",
+  "collected_at": "2026-09-13T18:06:49.964352+00:00",
+  "complete": true,
+  "conservative_accounted_exposure_microusd": 196610,
+  "corpus_sha256": "80686555b5ca55607fde2d18fa4bec792d8b2ac760b1126d93d593f86d2cdc26",
+  "deployment_binding": {
+    "descriptor": {
+      "api_url": "http://127.0.0.1:18097",
+      "authorization_id": "deepseek-flash-2usd",
+      "bundle_dir": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evaluation/deepseek-flash-2usd-20260912_a/candidate",
+      "candidate_sha256": "2222ad69a146d0051f099e22a7ff2dda6523f58713f0b34da906603bbcd66d71",
+      "cli": {
+        "path": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evaluation/deepseek-flash-2usd-20260912_a/bin/forge",
+        "sha256": "cb42aefa65b57d3fb2f3001542bc44e6f4a62b54fbbe98caede2747e52fc84e4"
+      },
+      "corpus_sha256": "80686555b5ca55607fde2d18fa4bec792d8b2ac760b1126d93d593f86d2cdc26",
+      "database": {
+        "audit_role": "eval_ds_4f797a617b6d81ab849f52deed8c8e6d_audit",
+        "host": "127.0.0.1",
+        "name": "forge",
+        "port": 32773,
+        "schema": "eval_ds_4f797a617b6d81ab849f52deed8c8e6d",
+        "schema_oid": 853705
+      },
+      "model_id": "deepseek-v4-flash",
+      "output_dir": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evaluation/deepseek-flash-2usd-20260912_a/evidence/eval-01",
+      "provider": "deepseek",
+      "purpose": "isolated-eval-v1",
+      "registration_sha256": "e7139c3b91e5ce148cee28a8f67e794983d253f21f2cda23eb1c843d9b747fc9",
+      "tenant": "eval-4f797a617b6d81ab849f52deed8c8e6d",
+      "total_budget_microusd": 2000000,
+      "version": 1
+    },
+    "sha256": "d8c295f4eb25820e6e4a55d94b73e4244d1c44012169e1f406de830e1a4b97b5"
+  },
+  "known_ledger_cost_microusd": 0,
+  "ledger_totals_complete": true,
+  "model_id": "deepseek-v4-flash",
+  "outcome_counts": {
+    "failed": 4
+  },
+  "planned_tasks": 4,
+  "provider": "deepseek",
+  "scope": "real-provider CLI and trusted-grader evaluation; finite held-out-from-demo corpus, no training-contamination claim",
+  "started_at": "2026-09-13T18:06:49.912312+00:00",
+  "submitted_or_unconfirmed_budget_ceiling_microusd": 2000000,
+  "submitted_or_unconfirmed_task_allocations": {
+    "go-midpoint": 500000,
+    "go-rune-rle": 500000,
+    "py-latest-records": 500000,
+    "py-utf8-chunks": 500000
+  },
+  "tasks": [
+    {
+      "baseline_target_failed": true,
+      "billing": {
+        "attempts": [
+          {
+            "attempt": 1,
+            "attempt_id": "attempt_BEJCM3H54FRHUEYLSI6CSMNXN3",
+            "cost_unknown_or_unsettled": true,
+            "dispatch_to_response_persisted_seconds": 1.183873,
+            "error_code": null,
+            "known_ledger_cost_microusd": null,
+            "pricing": {
+              "cache_read_price": 6000,
+              "context_tokens": 32768,
+              "credential_group": "deepseek-flash-evalv2",
+              "exact_pricing": false,
+              "input_price": 300000,
+              "max_output_tokens": 8192,
+              "model": "deepseek-v4-flash",
+              "output_price": 1200000,
+              "price_version": "deepseek-flash-peak-ceiling-20260912",
+              "provider": "deepseek",
+              "request_timeout_ns": 60000000000,
+              "schema_version": 1
+            },
+            "provider_request_id": "",
+            "reservation": {
+              "actual_microusd": null,
+              "actual_tokens": null,
+              "credential_group": "deepseek-flash-evalv2",
+              "dispatched_at": "2026-09-13T18:06:51.322052+00:00",
+              "id": "attempt_BEJCM3H54FRHUEYLSI6CSMNXN3",
+              "microusd": 19661,
+              "outcome": "success",
+              "request_deadline": "2026-09-13T18:07:51.312945+00:00",
+              "request_slot_released": true,
+              "settled_at": null,
+              "settlement_kind": null,
+              "status": "unknown",
+              "tokens": 40960
+            },
+            "status": "completed",
+            "step_seq": 1,
+            "usage": {
+              "cache_read": {
+                "known": true,
+                "value": 0
+              },
+              "cache_write": {
+                "known": false,
+                "value": 0
+              },
+              "final": true,
+              "input": {
+                "known": true,
+                "value": 971
+              },
+              "output": {
+                "known": true,
+                "value": 61
+              }
+            }
+          },
+          {
+            "attempt": 1,
+            "attempt_id": "attempt_TLD4RAKGIY7RTOEBUWF5WCEM4V",
+            "cost_unknown_or_unsettled": true,
+            "dispatch_to_response_persisted_seconds": null,
+            "error_code": "deadline",
+            "known_ledger_cost_microusd": null,
+            "pricing": {
+              "cache_read_price": 6000,
+              "context_tokens": 32768,
+              "credential_group": "deepseek-flash-evalv2",
+              "exact_pricing": false,
+              "input_price": 300000,
+              "max_output_tokens": 8192,
+              "model": "deepseek-v4-flash",
+              "output_price": 1200000,
+              "price_version": "deepseek-flash-peak-ceiling-20260912",
+              "provider": "deepseek",
+              "request_timeout_ns": 60000000000,
+              "schema_version": 1
+            },
+            "provider_request_id": null,
+            "reservation": {
+              "actual_microusd": null,
+              "actual_tokens": null,
+              "credential_group": "deepseek-flash-evalv2",
+              "dispatched_at": "2026-09-13T18:07:52.141104+00:00",
+              "id": "attempt_TLD4RAKGIY7RTOEBUWF5WCEM4V",
+              "microusd": 19661,
+              "outcome": "neutral",
+              "request_deadline": "2026-09-13T18:07:53.006284+00:00",
+              "request_slot_released": true,
+              "settled_at": null,
+              "settlement_kind": null,
+              "status": "unknown",
+              "tokens": 40960
+            },
+            "status": "failed",
+            "step_seq": 2,
+            "usage": null
+          }
+        ],
+        "conservative_ledger_exposure_microusd": 39322,
+        "known_ledger_cost_microusd": 0,
+        "real_provider_dispatches": 2,
+        "unknown_or_unsettled_reserved_microusd": 39322,
+        "vendor_billed_cost_microusd": null,
+        "vendor_invoice_verified": false
+      },
+      "budget_violation": false,
+      "case": "py-utf8-chunks",
+      "collection_elapsed_seconds": 63.4495137790218,
+      "database_created_to_finished_seconds": 63.022889,
+      "regression_passed": null,
+      "run_id": "run_TP3RIRAZTHRXOGMAL2ES7IPW7A",
+      "status": "failed",
+      "target_passed": null,
+      "task_budget_microusd": 500000,
+      "verification_status": "unverified",
+      "verified_repair": false
+    },
+    {
+      "baseline_target_failed": true,
+      "billing": {
+        "attempts": [
+          {
+            "attempt": 1,
+            "attempt_id": "attempt_V5SMVTKQJGVLFSXK6GUVM3ZZ73",
+            "cost_unknown_or_unsettled": true,
+            "dispatch_to_response_persisted_seconds": 1.183199,
+            "error_code": null,
+            "known_ledger_cost_microusd": null,
+            "pricing": {
+              "cache_read_price": 6000,
+              "context_tokens": 32768,
+              "credential_group": "deepseek-flash-evalv2",
+              "exact_pricing": false,
+              "input_price": 300000,
+              "max_output_tokens": 8192,
+              "model": "deepseek-v4-flash",
+              "output_price": 1200000,
+              "price_version": "deepseek-flash-peak-ceiling-20260912",
+              "provider": "deepseek",
+              "request_timeout_ns": 60000000000,
+              "schema_version": 1
+            },
+            "provider_request_id": "",
+            "reservation": {
+              "actual_microusd": null,
+              "actual_tokens": null,
+              "credential_group": "deepseek-flash-evalv2",
+              "dispatched_at": "2026-09-13T18:07:54.949911+00:00",
+              "id": "attempt_V5SMVTKQJGVLFSXK6GUVM3ZZ73",
+              "microusd": 19661,
+              "outcome": "success",
+              "request_deadline": "2026-09-13T18:08:54.93833+00:00",
+              "request_slot_released": true,
+              "settled_at": null,
+              "settlement_kind": null,
+              "status": "unknown",
+              "tokens": 40960
+            },
+            "status": "completed",
+            "step_seq": 1,
+            "usage": {
+              "cache_read": {
+                "known": true,
+                "value": 640
+              },
+              "cache_write": {
+                "known": false,
+                "value": 0
+              },
+              "final": true,
+              "input": {
+                "known": true,
+                "value": 983
+              },
+              "output": {
+                "known": true,
+                "value": 61
+              }
+            }
+          },
+          {
+            "attempt": 1,
+            "attempt_id": "attempt_XFBM7NK2UVITM6VWDHA4PXY7GQ",
+            "cost_unknown_or_unsettled": true,
+            "dispatch_to_response_persisted_seconds": 1.247039,
+            "error_code": null,
+            "known_ledger_cost_microusd": null,
+            "pricing": {
+              "cache_read_price": 6000,
+              "context_tokens": 32768,
+              "credential_group": "deepseek-flash-evalv2",
+              "exact_pricing": false,
+              "input_price": 300000,
+              "max_output_tokens": 8192,
+              "model": "deepseek-v4-flash",
+              "output_price": 1200000,
+              "price_version": "deepseek-flash-peak-ceiling-20260912",
+              "provider": "deepseek",
+              "request_timeout_ns": 60000000000,
+              "schema_version": 1
+            },
+            "provider_request_id": "",
+            "reservation": {
+              "actual_microusd": null,
+              "actual_tokens": null,
+              "credential_group": "deepseek-flash-evalv2",
+              "dispatched_at": "2026-09-13T18:08:55.2934+00:00",
+              "id": "attempt_XFBM7NK2UVITM6VWDHA4PXY7GQ",
+              "microusd": 19661,
+              "outcome": "success",
+              "request_deadline": "2026-09-13T18:08:56.580805+00:00",
+              "request_slot_released": true,
+              "settled_at": null,
+              "settlement_kind": null,
+              "status": "unknown",
+              "tokens": 40960
+            },
+            "status": "completed",
+            "step_seq": 2,
+            "usage": {
+              "cache_read": {
+                "known": true,
+                "value": 1024
+              },
+              "cache_write": {
+                "known": false,
+                "value": 0
+              },
+              "final": true,
+              "input": {
+                "known": true,
+                "value": 1207
+              },
+              "output": {
+                "known": true,
+                "value": 205
+              }
+            }
+          },
+          {
+            "attempt": 1,
+            "attempt_id": "attempt_5WPQZFQIYZQWZ5QNIX2F6O2ML7",
+            "cost_unknown_or_unsettled": true,
+            "dispatch_to_response_persisted_seconds": 0.909585,
+            "error_code": null,
+            "known_ledger_cost_microusd": null,
+            "pricing": {
+              "cache_read_price": 6000,
+              "context_tokens": 32768,
+              "credential_group": "deepseek-flash-evalv2",
+              "exact_pricing": false,
+              "input_price": 300000,
+              "max_output_tokens": 8192,
+              "model": "deepseek-v4-flash",
+              "output_price": 1200000,
+              "price_version": "deepseek-flash-peak-ceiling-20260912",
+              "provider": "deepseek",
+              "request_timeout_ns": 60000000000,
+              "schema_version": 1
+            },
+            "provider_request_id": "",
+            "reservation": {
+              "actual_microusd": null,
+              "actual_tokens": null,
+              "credential_group": "deepseek-flash-evalv2",
+              "dispatched_at": "2026-09-13T18:08:56.800265+00:00",
+              "id": "attempt_5WPQZFQIYZQWZ5QNIX2F6O2ML7",
+              "microusd": 19661,
+              "outcome": "success",
+              "request_deadline": "2026-09-13T18:09:56.791649+00:00",
+              "request_slot_released": true,
+              "settled_at": null,
+              "settlement_kind": null,
+              "status": "unknown",
+              "tokens": 40960
+            },
+            "status": "completed",
+            "step_seq": 3,
+            "usage": {
+              "cache_read": {
+                "known": true,
+                "value": 1280
+              },
+              "cache_write": {
+                "known": false,
+                "value": 0
+              },
+              "final": true,
+              "input": {
+                "known": true,
+                "value": 1429
+              },
+              "output": {
+                "known": true,
+                "value": 61
+              }
+            }
+          },
+          {
+            "attempt": 1,
+            "attempt_id": "attempt_WZKRN2K5HWEHAJB36CWB3P6AGT",
+            "cost_unknown_or_unsettled": true,
+            "dispatch_to_response_persisted_seconds": null,
+            "error_code": "deadline",
+            "known_ledger_cost_microusd": null,
+            "pricing": {
+              "cache_read_price": 6000,
+              "context_tokens": 32768,
+              "credential_group": "deepseek-flash-evalv2",
+              "exact_pricing": false,
+              "input_price": 300000,
+              "max_output_tokens": 8192,
+              "model": "deepseek-v4-flash",
+              "output_price": 1200000,
+              "price_version": "deepseek-flash-peak-ceiling-20260912",
+              "provider": "deepseek",
+              "request_timeout_ns": 60000000000,
+              "schema_version": 1
+            },
+            "provider_request_id": null,
+            "reservation": {
+              "actual_microusd": null,
+              "actual_tokens": null,
+              "credential_group": "deepseek-flash-evalv2",
+              "dispatched_at": "2026-09-13T18:09:57.399423+00:00",
+              "id": "attempt_WZKRN2K5HWEHAJB36CWB3P6AGT",
+              "microusd": 19661,
+              "outcome": "neutral",
+              "request_deadline": "2026-09-13T18:09:58.078524+00:00",
+              "request_slot_released": false,
+              "settled_at": null,
+              "settlement_kind": null,
+              "status": "unknown",
+              "tokens": 40960
+            },
+            "status": "failed",
+            "step_seq": 4,
+            "usage": null
+          }
+        ],
+        "conservative_ledger_exposure_microusd": 78644,
+        "known_ledger_cost_microusd": 0,
+        "real_provider_dispatches": 4,
+        "unknown_or_unsettled_reserved_microusd": 78644,
+        "vendor_billed_cost_microusd": null,
+        "vendor_invoice_verified": false
+      },
+      "budget_violation": false,
+      "case": "py-latest-records",
+      "collection_elapsed_seconds": 125.15123320894782,
+      "database_created_to_finished_seconds": 124.417252,
+      "regression_passed": null,
+      "run_id": "run_QVTC3KKW4WQDG5BHTXGA3XE6GP",
+      "status": "failed",
+      "target_passed": null,
+      "task_budget_microusd": 500000,
+      "verification_status": "unverified",
+      "verified_repair": false
+    },
+    {
+      "baseline_target_failed": true,
+      "billing": {
+        "attempts": [
+          {
+            "attempt": 1,
+            "attempt_id": "attempt_KKDTKUSEWERJCNZTWS5AIFA57Q",
+            "cost_unknown_or_unsettled": true,
+            "dispatch_to_response_persisted_seconds": 0.818415,
+            "error_code": null,
+            "known_ledger_cost_microusd": null,
+            "pricing": {
+              "cache_read_price": 6000,
+              "context_tokens": 32768,
+              "credential_group": "deepseek-flash-evalv2",
+              "exact_pricing": false,
+              "input_price": 300000,
+              "max_output_tokens": 8192,
+              "model": "deepseek-v4-flash",
+              "output_price": 1200000,
+              "price_version": "deepseek-flash-peak-ceiling-20260912",
+              "provider": "deepseek",
+              "request_timeout_ns": 60000000000,
+              "schema_version": 1
+            },
+            "provider_request_id": "",
+            "reservation": {
+              "actual_microusd": null,
+              "actual_tokens": null,
+              "credential_group": "deepseek-flash-evalv2",
+              "dispatched_at": "2026-09-13T18:10:07.084575+00:00",
+              "id": "attempt_KKDTKUSEWERJCNZTWS5AIFA57Q",
+              "microusd": 19661,
+              "outcome": "success",
+              "request_deadline": "2026-09-13T18:11:07.077692+00:00",
+              "request_slot_released": true,
+              "settled_at": null,
+              "settlement_kind": null,
+              "status": "unknown",
+              "tokens": 40960
+            },
+            "status": "completed",
+            "step_seq": 1,
+            "usage": {
+              "cache_read": {
+                "known": true,
+                "value": 640
+              },
+              "cache_write": {
+                "known": false,
+                "value": 0
+              },
+              "final": true,
+              "input": {
+                "known": true,
+                "value": 990
+              },
+              "output": {
+                "known": true,
+                "value": 28
+              }
+            }
+          },
+          {
+            "attempt": 1,
+            "attempt_id": "attempt_7XG6LT4MWDIQGGDA3527AYWNEO",
+            "cost_unknown_or_unsettled": true,
+            "dispatch_to_response_persisted_seconds": null,
+            "error_code": "deadline",
+            "known_ledger_cost_microusd": null,
+            "pricing": {
+              "cache_read_price": 6000,
+              "context_tokens": 32768,
+              "credential_group": "deepseek-flash-evalv2",
+              "exact_pricing": false,
+              "input_price": 300000,
+              "max_output_tokens": 8192,
+              "model": "deepseek-v4-flash",
+              "output_price": 1200000,
+              "price_version": "deepseek-flash-peak-ceiling-20260912",
+              "provider": "deepseek",
+              "request_timeout_ns": 60000000000,
+              "schema_version": 1
+            },
+            "provider_request_id": null,
+            "reservation": {
+              "actual_microusd": null,
+              "actual_tokens": null,
+              "credential_group": "deepseek-flash-evalv2",
+              "dispatched_at": "2026-09-13T18:11:08.071773+00:00",
+              "id": "attempt_7XG6LT4MWDIQGGDA3527AYWNEO",
+              "microusd": 19661,
+              "outcome": "neutral",
+              "request_deadline": "2026-09-13T18:11:08.151486+00:00",
+              "request_slot_released": true,
+              "settled_at": null,
+              "settlement_kind": null,
+              "status": "unknown",
+              "tokens": 40960
+            },
+            "status": "failed",
+            "step_seq": 2,
+            "usage": null
+          }
+        ],
+        "conservative_ledger_exposure_microusd": 39322,
+        "known_ledger_cost_microusd": 0,
+        "real_provider_dispatches": 2,
+        "unknown_or_unsettled_reserved_microusd": 39322,
+        "vendor_billed_cost_microusd": null,
+        "vendor_invoice_verified": false
+      },
+      "budget_violation": false,
+      "case": "go-midpoint",
+      "collection_elapsed_seconds": 69.99905254493933,
+      "database_created_to_finished_seconds": 69.143714,
+      "regression_passed": null,
+      "run_id": "run_K53VI2YEQF3JTG5YQ3C4VMLKFC",
+      "status": "failed",
+      "target_passed": null,
+      "task_budget_microusd": 500000,
+      "verification_status": "unverified",
+      "verified_repair": false
+    },
+    {
+      "baseline_target_failed": true,
+      "billing": {
+        "attempts": [
+          {
+            "attempt": 1,
+            "attempt_id": "attempt_NUCXVHJB3RRIWMRUT42DPHDIP4",
+            "cost_unknown_or_unsettled": true,
+            "dispatch_to_response_persisted_seconds": 1.147384,
+            "error_code": null,
+            "known_ledger_cost_microusd": null,
+            "pricing": {
+              "cache_read_price": 6000,
+              "context_tokens": 32768,
+              "credential_group": "deepseek-flash-evalv2",
+              "exact_pricing": false,
+              "input_price": 300000,
+              "max_output_tokens": 8192,
+              "model": "deepseek-v4-flash",
+              "output_price": 1200000,
+              "price_version": "deepseek-flash-peak-ceiling-20260912",
+              "provider": "deepseek",
+              "request_timeout_ns": 60000000000,
+              "schema_version": 1
+            },
+            "provider_request_id": "",
+            "reservation": {
+              "actual_microusd": null,
+              "actual_tokens": null,
+              "credential_group": "deepseek-flash-evalv2",
+              "dispatched_at": "2026-09-13T18:11:17.182493+00:00",
+              "id": "attempt_NUCXVHJB3RRIWMRUT42DPHDIP4",
+              "microusd": 19661,
+              "outcome": "success",
+              "request_deadline": "2026-09-13T18:12:17.176862+00:00",
+              "request_slot_released": true,
+              "settled_at": null,
+              "settlement_kind": null,
+              "status": "unknown",
+              "tokens": 40960
+            },
+            "status": "completed",
+            "step_seq": 1,
+            "usage": {
+              "cache_read": {
+                "known": true,
+                "value": 640
+              },
+              "cache_write": {
+                "known": false,
+                "value": 0
+              },
+              "final": true,
+              "input": {
+                "known": true,
+                "value": 1000
+              },
+              "output": {
+                "known": true,
+                "value": 33
+              }
+            }
+          },
+          {
+            "attempt": 1,
+            "attempt_id": "attempt_ULY3CS5TOZSW65UMMS2Z3AKJJ6",
+            "cost_unknown_or_unsettled": true,
+            "dispatch_to_response_persisted_seconds": null,
+            "error_code": "deadline",
+            "known_ledger_cost_microusd": null,
+            "pricing": {
+              "cache_read_price": 6000,
+              "context_tokens": 32768,
+              "credential_group": "deepseek-flash-evalv2",
+              "exact_pricing": false,
+              "input_price": 300000,
+              "max_output_tokens": 8192,
+              "model": "deepseek-v4-flash",
+              "output_price": 1200000,
+              "price_version": "deepseek-flash-peak-ceiling-20260912",
+              "provider": "deepseek",
+              "request_timeout_ns": 60000000000,
+              "schema_version": 1
+            },
+            "provider_request_id": null,
+            "reservation": {
+              "actual_microusd": null,
+              "actual_tokens": null,
+              "credential_group": "deepseek-flash-evalv2",
+              "dispatched_at": "2026-09-13T18:12:18.254738+00:00",
+              "id": "attempt_ULY3CS5TOZSW65UMMS2Z3AKJJ6",
+              "microusd": 19661,
+              "outcome": "neutral",
+              "request_deadline": "2026-09-13T18:12:18.581165+00:00",
+              "request_slot_released": true,
+              "settled_at": null,
+              "settlement_kind": null,
+              "status": "unknown",
+              "tokens": 40960
+            },
+            "status": "failed",
+            "step_seq": 2,
+            "usage": null
+          }
+        ],
+        "conservative_ledger_exposure_microusd": 39322,
+        "known_ledger_cost_microusd": 0,
+        "real_provider_dispatches": 2,
+        "unknown_or_unsettled_reserved_microusd": 39322,
+        "vendor_billed_cost_microusd": null,
+        "vendor_invoice_verified": false
+      },
+      "budget_violation": false,
+      "case": "go-rune-rle",
+      "collection_elapsed_seconds": 70.21425519906916,
+      "database_created_to_finished_seconds": 69.321311,
+      "regression_passed": null,
+      "run_id": "run_PIKVLLL5QFN6364BEQ7U2JTX6O",
+      "status": "failed",
+      "target_passed": null,
+      "task_budget_microusd": 500000,
+      "verification_status": "unverified",
+      "verified_repair": false
+    }
+  ],
+  "total_budget_microusd": 2000000,
+  "unaudited_allocated_ceiling_microusd": 0,
+  "unknown_or_unsettled_reserved_microusd": 196610,
+  "unsubmitted_or_uncollected_tasks": 0,
+  "vendor_billed_cost_microusd": null,
+  "vendor_invoice_verified": false,
+  "verified_repairs": 0
+}

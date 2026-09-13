@@ -430,7 +430,7 @@ func (d *Driver) completedModel(ctx context.Context, r persistence.Run, a persis
 	if known {
 		err = d.Quota.Settle(ctx, string(r.TenantID), string(a.ID), settlement)
 	} else if reservation.Status != "settled" {
-		err = d.Quota.MarkUnknown(ctx, string(r.TenantID), string(a.ID))
+		err = d.Quota.CompleteWithUnknownUsage(ctx, string(r.TenantID), string(a.ID))
 	}
 	if err != nil {
 		return flow.Event{}, err

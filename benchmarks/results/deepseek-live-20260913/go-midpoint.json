@@ -1,0 +1,124 @@
+{
+  "baseline_target_failed": true,
+  "billing": {
+    "attempts": [
+      {
+        "attempt": 1,
+        "attempt_id": "attempt_KKDTKUSEWERJCNZTWS5AIFA57Q",
+        "cost_unknown_or_unsettled": true,
+        "dispatch_to_response_persisted_seconds": 0.818415,
+        "error_code": null,
+        "known_ledger_cost_microusd": null,
+        "pricing": {
+          "cache_read_price": 6000,
+          "context_tokens": 32768,
+          "credential_group": "deepseek-flash-evalv2",
+          "exact_pricing": false,
+          "input_price": 300000,
+          "max_output_tokens": 8192,
+          "model": "deepseek-v4-flash",
+          "output_price": 1200000,
+          "price_version": "deepseek-flash-peak-ceiling-20260912",
+          "provider": "deepseek",
+          "request_timeout_ns": 60000000000,
+          "schema_version": 1
+        },
+        "provider_request_id": "",
+        "reservation": {
+          "actual_microusd": null,
+          "actual_tokens": null,
+          "credential_group": "deepseek-flash-evalv2",
+          "dispatched_at": "2026-09-13T18:10:07.084575+00:00",
+          "id": "attempt_KKDTKUSEWERJCNZTWS5AIFA57Q",
+          "microusd": 19661,
+          "outcome": "success",
+          "request_deadline": "2026-09-13T18:11:07.077692+00:00",
+          "request_slot_released": true,
+          "settled_at": null,
+          "settlement_kind": null,
+          "status": "unknown",
+          "tokens": 40960
+        },
+        "status": "completed",
+        "step_seq": 1,
+        "usage": {
+          "cache_read": {
+            "known": true,
+            "value": 640
+          },
+          "cache_write": {
+            "known": false,
+            "value": 0
+          },
+          "final": true,
+          "input": {
+            "known": true,
+            "value": 990
+          },
+          "output": {
+            "known": true,
+            "value": 28
+          }
+        }
+      },
+      {
+        "attempt": 1,
+        "attempt_id": "attempt_7XG6LT4MWDIQGGDA3527AYWNEO",
+        "cost_unknown_or_unsettled": true,
+        "dispatch_to_response_persisted_seconds": null,
+        "error_code": "deadline",
+        "known_ledger_cost_microusd": null,
+        "pricing": {
+          "cache_read_price": 6000,
+          "context_tokens": 32768,
+          "credential_group": "deepseek-flash-evalv2",
+          "exact_pricing": false,
+          "input_price": 300000,
+          "max_output_tokens": 8192,
+          "model": "deepseek-v4-flash",
+          "output_price": 1200000,
+          "price_version": "deepseek-flash-peak-ceiling-20260912",
+          "provider": "deepseek",
+          "request_timeout_ns": 60000000000,
+          "schema_version": 1
+        },
+        "provider_request_id": null,
+        "reservation": {
+          "actual_microusd": null,
+          "actual_tokens": null,
+          "credential_group": "deepseek-flash-evalv2",
+          "dispatched_at": "2026-09-13T18:11:08.071773+00:00",
+          "id": "attempt_7XG6LT4MWDIQGGDA3527AYWNEO",
+          "microusd": 19661,
+          "outcome": "neutral",
+          "request_deadline": "2026-09-13T18:11:08.151486+00:00",
+          "request_slot_released": true,
+          "settled_at": null,
+          "settlement_kind": null,
+          "status": "unknown",
+          "tokens": 40960
+        },
+        "status": "failed",
+        "step_seq": 2,
+        "usage": null
+      }
+    ],
+    "conservative_ledger_exposure_microusd": 39322,
+    "known_ledger_cost_microusd": 0,
+    "real_provider_dispatches": 2,
+    "unknown_or_unsettled_reserved_microusd": 39322,
+    "vendor_billed_cost_microusd": null,
+    "vendor_invoice_verified": false
+  },
+  "budget_violation": false,
+  "case": "go-midpoint",
+  "collection_elapsed_seconds": 69.99905254493933,
+  "database_created_to_finished_seconds": 69.143714,
+  "regression_passed": null,
+  "run_id": "run_K53VI2YEQF3JTG5YQ3C4VMLKFC",
+  "status": "failed",
+  "target_passed": null,
+  "task_budget_microusd": 500000,
+  "verification_status": "unverified",
+  "verified_repair": false
+}

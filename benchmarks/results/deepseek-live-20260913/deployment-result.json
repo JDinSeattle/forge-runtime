@@ -1,0 +1,75 @@
+{
+  "collector_exit_code": 0,
+  "complete": false,
+  "failure": "ValueError: batch remains incomplete, over cap or uncertain",
+  "finished_at": "2026-09-13T18:12:19.855688+00:00",
+  "scope": "one new isolated deployment; ordered idle shutdown composes with separately recorded busy SIGTERM evidence",
+  "shutdown": [
+    {
+      "exit_code": 0,
+      "exited": true,
+      "exited_at": "2026-09-13T18:12:19.717290+00:00",
+      "identity": {
+        "args": [
+          "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evaluation/deepseek-flash-2usd-20260912_a/bin/forge-api",
+          "-config",
+          "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evaluation/deepseek-flash-2usd-20260912_a/candidate/platform.json"
+        ],
+        "exe_path": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evaluation/deepseek-flash-2usd-20260912_a/bin/forge-api",
+        "exe_sha256": "0556f98d985a64928396905c35523b98bab05a85408f2382b1c31e5fbe45cf5f",
+        "pid": 2349144,
+        "proc_start_ticks": "60716107",
+        "state": "R"
+      },
+      "name": "api",
+      "observed_at": "2026-09-13T18:12:19.679186+00:00",
+      "signal": "SIGTERM",
+      "signal_sent_at": "2026-09-13T18:12:19.714111+00:00"
+    },
+    {
+      "exit_code": 0,
+      "exited": true,
+      "exited_at": "2026-09-13T18:12:19.768638+00:00",
+      "identity": {
+        "args": [
+          "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evaluation/deepseek-flash-2usd-20260912_a/bin/forge-worker",
+          "-config",
+          "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evaluation/deepseek-flash-2usd-20260912_a/candidate/platform.json",
+          "-id",
+          "eval-deepseek-flash-20260912-a"
+        ],
+        "exe_path": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evaluation/deepseek-flash-2usd-20260912_a/bin/forge-worker",
+        "exe_sha256": "e17ab7432c1b0816fc5dad4afa9f77eef9cc5ca1550689b4be16eda5735dcafd",
+        "pid": 2349162,
+        "proc_start_ticks": "60716121",
+        "state": "R"
+      },
+      "name": "worker",
+      "observed_at": "2026-09-13T18:12:19.729884+00:00",
+      "signal": "SIGTERM",
+      "signal_sent_at": "2026-09-13T18:12:19.765453+00:00"
+    },
+    {
+      "exit_code": 0,
+      "exited": true,
+      "exited_at": "2026-09-13T18:12:19.805680+00:00",
+      "identity": {
+        "args": [
+          "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evaluation/deepseek-flash-2usd-20260912_a/bin/forge-runner",
+          "-config",
+          "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evaluation/deepseek-flash-2usd-20260912_a/candidate/runner.json"
+        ],
+        "exe_path": "/home/postedism/Desktop/mini claude code/forge-runtime/var/lifecycle-rehearsals/lr20260912_a/evaluation/deepseek-flash-2usd-20260912_a/bin/forge-runner",
+        "exe_sha256": "b23c4c956c0cf3fe1c94843fe38c647b584f33436ee35beb7c994088335fbe50",
+        "pid": 2349078,
+        "proc_start_ticks": "60716088",
+        "state": "R"
+      },
+      "name": "runner",
+      "observed_at": "2026-09-13T18:12:19.774915+00:00",
+      "signal": "SIGTERM",
+      "signal_sent_at": "2026-09-13T18:12:19.790316+00:00"
+    }
+  ],
+  "started_at": "2026-09-13T18:06:44.658486+00:00"
+}
