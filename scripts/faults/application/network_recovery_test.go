@@ -12,8 +12,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/JDinSeattle/forge-runtime/internal/domain"
-	"github.com/JDinSeattle/forge-runtime/internal/persistence"
+	"github.com/simon-jd/forge-runtime/internal/domain"
+	"github.com/simon-jd/forge-runtime/internal/persistence"
 )
 
 // Kept separate from the frozen E25 recovery implementation. This is explicit

@@ -23,12 +23,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/JDinSeattle/forge-runtime/internal/eventstream"
-	"github.com/JDinSeattle/forge-runtime/internal/httpapi"
-	"github.com/JDinSeattle/forge-runtime/internal/persistence"
-	"github.com/JDinSeattle/forge-runtime/internal/testutil"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/simon-jd/forge-runtime/internal/eventstream"
+	"github.com/simon-jd/forge-runtime/internal/httpapi"
+	"github.com/simon-jd/forge-runtime/internal/persistence"
+	"github.com/simon-jd/forge-runtime/internal/testutil"
 )
 
 type sseSample struct {

@@ -15,8 +15,8 @@ import (
 	"path"
 	"path/filepath"
 
-	"github.com/JDinSeattle/forge-runtime/internal/dependency"
-	"github.com/JDinSeattle/forge-runtime/internal/domain"
+	"github.com/simon-jd/forge-runtime/internal/dependency"
+	"github.com/simon-jd/forge-runtime/internal/domain"
 )
 
 type Ref struct {

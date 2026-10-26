@@ -12,9 +12,9 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/JDinSeattle/forge-runtime/internal/artifact"
-	"github.com/JDinSeattle/forge-runtime/internal/domain"
-	"github.com/JDinSeattle/forge-runtime/internal/sandbox"
+	"github.com/simon-jd/forge-runtime/internal/artifact"
+	"github.com/simon-jd/forge-runtime/internal/domain"
+	"github.com/simon-jd/forge-runtime/internal/sandbox"
 	_ "modernc.org/sqlite"
 )
 

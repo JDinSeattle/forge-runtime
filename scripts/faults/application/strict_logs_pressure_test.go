@@ -12,7 +12,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/JDinSeattle/forge-runtime/internal/runner"
+	"github.com/simon-jd/forge-runtime/internal/runner"
 )
 
 type slPressureStage struct {

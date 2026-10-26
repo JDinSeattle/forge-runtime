@@ -19,11 +19,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/JDinSeattle/forge-runtime/internal/artifact"
-	"github.com/JDinSeattle/forge-runtime/internal/domain"
-	"github.com/JDinSeattle/forge-runtime/internal/httpapi"
-	"github.com/JDinSeattle/forge-runtime/internal/persistence"
-	flow "github.com/JDinSeattle/forge-runtime/internal/runtime"
+	"github.com/simon-jd/forge-runtime/internal/artifact"
+	"github.com/simon-jd/forge-runtime/internal/domain"
+	"github.com/simon-jd/forge-runtime/internal/httpapi"
+	"github.com/simon-jd/forge-runtime/internal/persistence"
+	flow "github.com/simon-jd/forge-runtime/internal/runtime"
 )
 
 // These are transaction/control fixtures. No model, runner, Docker operation or

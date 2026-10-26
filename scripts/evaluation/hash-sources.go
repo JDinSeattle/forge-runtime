@@ -8,9 +8,9 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/JDinSeattle/forge-runtime/internal/application"
-	api "github.com/JDinSeattle/forge-runtime/internal/httpcontract"
-	"github.com/JDinSeattle/forge-runtime/internal/runner"
+	"github.com/simon-jd/forge-runtime/internal/application"
+	api "github.com/simon-jd/forge-runtime/internal/httpcontract"
+	"github.com/simon-jd/forge-runtime/internal/runner"
 )
 
 func main() {

@@ -24,10 +24,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/JDinSeattle/forge-runtime/internal/domain"
-	"github.com/JDinSeattle/forge-runtime/internal/runner"
-	"github.com/JDinSeattle/forge-runtime/internal/runnerclient"
-	"github.com/JDinSeattle/forge-runtime/internal/sandbox"
+	"github.com/simon-jd/forge-runtime/internal/domain"
+	"github.com/simon-jd/forge-runtime/internal/runner"
+	"github.com/simon-jd/forge-runtime/internal/runnerclient"
+	"github.com/simon-jd/forge-runtime/internal/sandbox"
 )
 
 const lifecyclePurpose = "worker-runner-sigterm-v1"
@@ -260,7 +260,7 @@ func lifecyclePreflight(ctx context.Context, a lifecycleAcceptance, c lifecycleR
 		return nil, fmt.Errorf("acceptance must name actual test executable")
 	}
 	proof := map[string]any{}
-	for _, b := range []struct{ path, hash, pkg string }{{a.RunnerBinary, a.RunnerSHA256, "github.com/JDinSeattle/forge-runtime/cmd/forge-runner"}, {a.WorkerBinary, a.WorkerSHA256, "github.com/JDinSeattle/forge-runtime/cmd/forge-worker"}, {a.TestBinary, a.TestSHA256, ""}} {
+	for _, b := range []struct{ path, hash, pkg string }{{a.RunnerBinary, a.RunnerSHA256, "github.com/simon-jd/forge-runtime/cmd/forge-runner"}, {a.WorkerBinary, a.WorkerSHA256, "github.com/simon-jd/forge-runtime/cmd/forge-worker"}, {a.TestBinary, a.TestSHA256, ""}} {
 		digest, err := sigtermDigest(b.path)
 		if err != nil || digest != b.hash {
 			return nil, fmt.Errorf("executable changed: %s", b.path)

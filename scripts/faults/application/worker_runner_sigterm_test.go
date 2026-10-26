@@ -16,17 +16,17 @@ import (
 	"testing"
 	"time"
 
-	migrations "github.com/JDinSeattle/forge-runtime/db"
-	"github.com/JDinSeattle/forge-runtime/internal/application"
-	"github.com/JDinSeattle/forge-runtime/internal/configuration"
-	"github.com/JDinSeattle/forge-runtime/internal/domain"
-	"github.com/JDinSeattle/forge-runtime/internal/persistence"
-	"github.com/JDinSeattle/forge-runtime/internal/provider"
-	"github.com/JDinSeattle/forge-runtime/internal/quota"
-	"github.com/JDinSeattle/forge-runtime/internal/runner"
-	"github.com/JDinSeattle/forge-runtime/internal/runnerclient"
-	"github.com/JDinSeattle/forge-runtime/internal/sandbox"
 	"github.com/jackc/pgx/v5"
+	migrations "github.com/simon-jd/forge-runtime/db"
+	"github.com/simon-jd/forge-runtime/internal/application"
+	"github.com/simon-jd/forge-runtime/internal/configuration"
+	"github.com/simon-jd/forge-runtime/internal/domain"
+	"github.com/simon-jd/forge-runtime/internal/persistence"
+	"github.com/simon-jd/forge-runtime/internal/provider"
+	"github.com/simon-jd/forge-runtime/internal/quota"
+	"github.com/simon-jd/forge-runtime/internal/runner"
+	"github.com/simon-jd/forge-runtime/internal/runnerclient"
+	"github.com/simon-jd/forge-runtime/internal/sandbox"
 )
 
 // This opt-in test does not prepare/mount a pool, stop an existing service,

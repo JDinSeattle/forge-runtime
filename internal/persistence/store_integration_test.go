@@ -8,9 +8,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/JDinSeattle/forge-runtime/internal/domain"
-	flow "github.com/JDinSeattle/forge-runtime/internal/runtime"
-	"github.com/JDinSeattle/forge-runtime/internal/testdb"
+	"github.com/simon-jd/forge-runtime/internal/domain"
+	flow "github.com/simon-jd/forge-runtime/internal/runtime"
+	"github.com/simon-jd/forge-runtime/internal/testdb"
 )
 
 func integrationStore(t *testing.T) *Store {

@@ -12,15 +12,15 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/JDinSeattle/forge-runtime/db"
-	"github.com/JDinSeattle/forge-runtime/internal/application"
-	"github.com/JDinSeattle/forge-runtime/internal/artifact"
-	"github.com/JDinSeattle/forge-runtime/internal/configuration"
-	"github.com/JDinSeattle/forge-runtime/internal/domain"
-	"github.com/JDinSeattle/forge-runtime/internal/localsetup"
-	"github.com/JDinSeattle/forge-runtime/internal/persistence"
-	"github.com/JDinSeattle/forge-runtime/internal/retention"
-	"github.com/JDinSeattle/forge-runtime/internal/runnerclient"
+	"github.com/simon-jd/forge-runtime/db"
+	"github.com/simon-jd/forge-runtime/internal/application"
+	"github.com/simon-jd/forge-runtime/internal/artifact"
+	"github.com/simon-jd/forge-runtime/internal/configuration"
+	"github.com/simon-jd/forge-runtime/internal/domain"
+	"github.com/simon-jd/forge-runtime/internal/localsetup"
+	"github.com/simon-jd/forge-runtime/internal/persistence"
+	"github.com/simon-jd/forge-runtime/internal/retention"
+	"github.com/simon-jd/forge-runtime/internal/runnerclient"
 )
 
 func main() {

@@ -7,11 +7,11 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/JDinSeattle/forge-runtime/internal/domain"
-	"github.com/JDinSeattle/forge-runtime/internal/persistence"
-	"github.com/JDinSeattle/forge-runtime/internal/runner"
-	flow "github.com/JDinSeattle/forge-runtime/internal/runtime"
-	"github.com/JDinSeattle/forge-runtime/internal/sandbox"
+	"github.com/simon-jd/forge-runtime/internal/domain"
+	"github.com/simon-jd/forge-runtime/internal/persistence"
+	"github.com/simon-jd/forge-runtime/internal/runner"
+	flow "github.com/simon-jd/forge-runtime/internal/runtime"
+	"github.com/simon-jd/forge-runtime/internal/sandbox"
 )
 
 func observedFixture(kind, args string, result any) (persistence.StoredEffect, runner.Operation) {

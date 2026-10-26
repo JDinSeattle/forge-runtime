@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"strings"
 
-	"github.com/JDinSeattle/forge-runtime/internal/domain"
+	"github.com/simon-jd/forge-runtime/internal/domain"
 )
 
 func (b *SubmitBody) UnmarshalJSON(raw []byte) error {

@@ -9,9 +9,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/JDinSeattle/forge-runtime/internal/artifact"
-	"github.com/JDinSeattle/forge-runtime/internal/persistence"
-	flow "github.com/JDinSeattle/forge-runtime/internal/runtime"
+	"github.com/simon-jd/forge-runtime/internal/artifact"
+	"github.com/simon-jd/forge-runtime/internal/persistence"
+	flow "github.com/simon-jd/forge-runtime/internal/runtime"
 )
 
 // reviewContext is for existing declarative Store-only lifecycle fixtures. Its

@@ -20,12 +20,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/JDinSeattle/forge-runtime/internal/application"
-	"github.com/JDinSeattle/forge-runtime/internal/configuration"
-	"github.com/JDinSeattle/forge-runtime/internal/domain"
-	"github.com/JDinSeattle/forge-runtime/internal/httpapi"
-	"github.com/JDinSeattle/forge-runtime/internal/persistence"
-	"github.com/JDinSeattle/forge-runtime/internal/provider"
+	"github.com/simon-jd/forge-runtime/internal/application"
+	"github.com/simon-jd/forge-runtime/internal/configuration"
+	"github.com/simon-jd/forge-runtime/internal/domain"
+	"github.com/simon-jd/forge-runtime/internal/httpapi"
+	"github.com/simon-jd/forge-runtime/internal/persistence"
+	"github.com/simon-jd/forge-runtime/internal/provider"
 )
 
 // This is a real TCP/process-signal/PG test. It does not start a worker, runner,

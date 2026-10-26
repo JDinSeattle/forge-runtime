@@ -638,7 +638,7 @@ and [all generation checks](../benchmarks/results/clean-checkout-generated-b924f
 leaving zero tracked changes. The [final delivery manifest](../benchmarks/results/delivery-validation-b924f1c.json)
 distinguishes this from the earlier checkout and the hosted CI result.
 
-Hosted [GitHub Actions run 34206855353](https://github.com/JDinSeattle/forge-runtime/actions/runs/34206855353)
+Hosted [GitHub Actions run 34206855353](https://github.com/simon-jd/forge-runtime/actions/runs/34206855353)
 completed successfully for exact commit `b924f1cc59583bfd0b812787aec98464cb997830`:
 build, ordinary tests, race tests, vet, all three generators and both Python
 helper suites passed. The [captured job/step result](../benchmarks/results/github-ci-b924f1c.json)
@@ -949,13 +949,13 @@ passes build, generation, ordinary tests and all 13 evaluation helper tests in a
 [separate local clone](../benchmarks/results/clean-clone-0a2cb15/report.json),
 with no tracked or untracked changes. The clone reuses installed tools/caches
 and the local PG fixture; it is not a fresh-machine deployment. Its
-[GitHub Actions run](https://github.com/JDinSeattle/forge-runtime/actions/runs/34641822549)
+[GitHub Actions run](https://github.com/simon-jd/forge-runtime/actions/runs/34641822549)
 passes the Go checks but fails the evaluation helper step: candidate preparation
 times out while an explicitly hard-coded temporary cache bypasses CI's warmed
 default cache. The [failed log](../benchmarks/results/clean-clone-0a2cb15/github-actions-failure.log)
 is preserved. The cache inheritance and process cleanup correction was committed
 as `224a6b64ce0cc41c564ce2c9bfd2e74b4b9ccc0a`. Its
-[GitHub Actions run 34643905860](https://github.com/JDinSeattle/forge-runtime/actions/runs/34643905860)
+[GitHub Actions run 34643905860](https://github.com/simon-jd/forge-runtime/actions/runs/34643905860)
 passes all Go, generation, evaluation-helper and audit checks; the
 [exact-commit execution and manifest](../benchmarks/results/github-actions-224a6b6/manifest.json)
 are retained. Later working-tree changes are not covered by that CI result.

@@ -15,14 +15,14 @@ import (
 	"testing"
 	"time"
 
-	"github.com/JDinSeattle/forge-runtime/internal/artifact"
-	"github.com/JDinSeattle/forge-runtime/internal/domain"
-	"github.com/JDinSeattle/forge-runtime/internal/persistence"
-	"github.com/JDinSeattle/forge-runtime/internal/provider"
-	"github.com/JDinSeattle/forge-runtime/internal/quota"
-	"github.com/JDinSeattle/forge-runtime/internal/runner"
-	"github.com/JDinSeattle/forge-runtime/internal/sandbox"
-	"github.com/JDinSeattle/forge-runtime/internal/testutil"
+	"github.com/simon-jd/forge-runtime/internal/artifact"
+	"github.com/simon-jd/forge-runtime/internal/domain"
+	"github.com/simon-jd/forge-runtime/internal/persistence"
+	"github.com/simon-jd/forge-runtime/internal/provider"
+	"github.com/simon-jd/forge-runtime/internal/quota"
+	"github.com/simon-jd/forge-runtime/internal/runner"
+	"github.com/simon-jd/forge-runtime/internal/sandbox"
+	"github.com/simon-jd/forge-runtime/internal/testutil"
 )
 
 type scriptedRepair struct {

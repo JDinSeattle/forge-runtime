@@ -7,8 +7,8 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/JDinSeattle/forge-runtime/internal/domain"
-	"github.com/JDinSeattle/forge-runtime/internal/sandbox"
+	"github.com/simon-jd/forge-runtime/internal/domain"
+	"github.com/simon-jd/forge-runtime/internal/sandbox"
 )
 
 func (j *journal) reserveLogs(ctx context.Context, tx *sql.Tx, o Operation, p sandbox.LogPolicy) error {

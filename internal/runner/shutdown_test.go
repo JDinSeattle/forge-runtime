@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/JDinSeattle/forge-runtime/internal/sandbox"
+	"github.com/simon-jd/forge-runtime/internal/sandbox"
 )
 
 // These are deterministic journal/engine tests. The backend never executes a

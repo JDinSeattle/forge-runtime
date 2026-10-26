@@ -11,10 +11,10 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/JDinSeattle/forge-runtime/internal/domain"
-	"github.com/JDinSeattle/forge-runtime/internal/runner"
-	"github.com/JDinSeattle/forge-runtime/internal/telemetry"
-	pb "github.com/JDinSeattle/forge-runtime/proto/runner/v1"
+	"github.com/simon-jd/forge-runtime/internal/domain"
+	"github.com/simon-jd/forge-runtime/internal/runner"
+	"github.com/simon-jd/forge-runtime/internal/telemetry"
+	pb "github.com/simon-jd/forge-runtime/proto/runner/v1"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 )

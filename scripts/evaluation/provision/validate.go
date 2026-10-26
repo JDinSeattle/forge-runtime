@@ -18,12 +18,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/JDinSeattle/forge-runtime/internal/application"
-	"github.com/JDinSeattle/forge-runtime/internal/configuration"
-	"github.com/JDinSeattle/forge-runtime/internal/domain"
-	"github.com/JDinSeattle/forge-runtime/internal/provider"
-	"github.com/JDinSeattle/forge-runtime/internal/runnerclient"
-	"github.com/JDinSeattle/forge-runtime/internal/sandbox"
+	"github.com/simon-jd/forge-runtime/internal/application"
+	"github.com/simon-jd/forge-runtime/internal/configuration"
+	"github.com/simon-jd/forge-runtime/internal/domain"
+	"github.com/simon-jd/forge-runtime/internal/provider"
+	"github.com/simon-jd/forge-runtime/internal/runnerclient"
+	"github.com/simon-jd/forge-runtime/internal/sandbox"
 )
 
 const purpose = "deepseek-eval-v2-provision"

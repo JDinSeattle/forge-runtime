@@ -1,4 +1,4 @@
-module github.com/JDinSeattle/forge-runtime
+module github.com/simon-jd/forge-runtime
 
 go 1.26.0
 

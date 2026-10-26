@@ -6,10 +6,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/JDinSeattle/forge-runtime/internal/domain"
-	flow "github.com/JDinSeattle/forge-runtime/internal/runtime"
-	"github.com/JDinSeattle/forge-runtime/internal/telemetry"
 	"github.com/jackc/pgx/v5"
+	"github.com/simon-jd/forge-runtime/internal/domain"
+	flow "github.com/simon-jd/forge-runtime/internal/runtime"
+	"github.com/simon-jd/forge-runtime/internal/telemetry"
 )
 
 type observationCommit struct {

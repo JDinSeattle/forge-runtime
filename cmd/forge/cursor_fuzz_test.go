@@ -7,7 +7,7 @@ import (
 	"math"
 	"testing"
 
-	api "github.com/JDinSeattle/forge-runtime/internal/httpcontract"
+	api "github.com/simon-jd/forge-runtime/internal/httpcontract"
 )
 
 func FuzzEventCursorOnlyAcknowledgesPrintedContiguousFrames(f *testing.F) {

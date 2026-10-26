@@ -10,11 +10,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/JDinSeattle/forge-runtime/internal/dependency"
-	"github.com/JDinSeattle/forge-runtime/internal/eventstream"
-	"github.com/JDinSeattle/forge-runtime/internal/httpapi"
-	"github.com/JDinSeattle/forge-runtime/internal/persistence"
-	"github.com/JDinSeattle/forge-runtime/internal/testutil"
+	"github.com/simon-jd/forge-runtime/internal/dependency"
+	"github.com/simon-jd/forge-runtime/internal/eventstream"
+	"github.com/simon-jd/forge-runtime/internal/httpapi"
+	"github.com/simon-jd/forge-runtime/internal/persistence"
+	"github.com/simon-jd/forge-runtime/internal/testutil"
 )
 
 func TestSSESurvivesIndependentDatabaseDeadline(t *testing.T) {

@@ -6,10 +6,10 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/JDinSeattle/forge-runtime/internal/artifact"
-	"github.com/JDinSeattle/forge-runtime/internal/domain"
-	"github.com/JDinSeattle/forge-runtime/internal/runner"
-	pb "github.com/JDinSeattle/forge-runtime/proto/runner/v1"
+	"github.com/simon-jd/forge-runtime/internal/artifact"
+	"github.com/simon-jd/forge-runtime/internal/domain"
+	"github.com/simon-jd/forge-runtime/internal/runner"
+	pb "github.com/simon-jd/forge-runtime/proto/runner/v1"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 

@@ -8,10 +8,10 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/JDinSeattle/forge-runtime/internal/configuration"
-	"github.com/JDinSeattle/forge-runtime/internal/provider"
-	"github.com/JDinSeattle/forge-runtime/internal/runner"
-	"github.com/JDinSeattle/forge-runtime/internal/sandbox"
+	"github.com/simon-jd/forge-runtime/internal/configuration"
+	"github.com/simon-jd/forge-runtime/internal/provider"
+	"github.com/simon-jd/forge-runtime/internal/runner"
+	"github.com/simon-jd/forge-runtime/internal/sandbox"
 )
 
 // FixtureSet is trusted, repository-owned setup input. Loading it reads only

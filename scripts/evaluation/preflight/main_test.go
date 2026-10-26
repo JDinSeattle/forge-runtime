@@ -11,7 +11,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/JDinSeattle/forge-runtime/internal/sandbox"
+	"github.com/simon-jd/forge-runtime/internal/sandbox"
 )
 
 func sqliteFixture(t *testing.T) (runnerConfig, string) {

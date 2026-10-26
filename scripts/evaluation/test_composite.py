@@ -225,7 +225,7 @@ class CompositeTests(unittest.TestCase):
   self.assertEqual(re.search(r'const slENOSPCProgram = `([^`]+)`',source).group(1),m.ENOSPC_PROGRAM)
  def test_build_info_requires_actual_clean_revision_and_package(self):
   p=Path('/frozen/forge-runner');rev='a'*40
-  raw=str(p)+': go1.26.8\n\tpath\tgithub.com/JDinSeattle/forge-runtime/cmd/forge-runner\n'+''.join('\tbuild\t'+k+'='+v+'\n' for k,v in [('GOOS','linux'),('GOARCH','amd64'),('vcs.revision',rev),('vcs.modified','false')])
+  raw=str(p)+': go1.26.8\n\tpath\tgithub.com/simon-jd/forge-runtime/cmd/forge-runner\n'+''.join('\tbuild\t'+k+'='+v+'\n' for k,v in [('GOOS','linux'),('GOARCH','amd64'),('vcs.revision',rev),('vcs.modified','false')])
   with patch.object(c,'output',return_value=raw):self.assertEqual(m.binary_build(c,p,rev)['vcs.revision'],rev)
   for value in (raw.replace(rev,'b'*40),raw.replace('modified=false','modified=true'),raw.replace('cmd/forge-runner','cmd/forge-worker'),raw.replace('go1.26.8','go1.26.7')):
    with patch.object(c,'output',return_value=value),self.assertRaises(ValueError):m.binary_build(c,p,rev)

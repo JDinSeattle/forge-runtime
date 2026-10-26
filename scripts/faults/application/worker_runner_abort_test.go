@@ -18,11 +18,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/JDinSeattle/forge-runtime/internal/configuration"
-	"github.com/JDinSeattle/forge-runtime/internal/domain"
-	"github.com/JDinSeattle/forge-runtime/internal/persistence"
-	flow "github.com/JDinSeattle/forge-runtime/internal/runtime"
 	"github.com/jackc/pgx/v5"
+	"github.com/simon-jd/forge-runtime/internal/configuration"
+	"github.com/simon-jd/forge-runtime/internal/domain"
+	"github.com/simon-jd/forge-runtime/internal/persistence"
+	flow "github.com/simon-jd/forge-runtime/internal/runtime"
 )
 
 // This is NOT business cancellation completion. It persists cancellation intent

@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/JDinSeattle/forge-runtime/internal/domain"
+	"github.com/simon-jd/forge-runtime/internal/domain"
 )
 
 var clock = time.Date(2026, 9, 7, 12, 0, 0, 0, time.UTC)

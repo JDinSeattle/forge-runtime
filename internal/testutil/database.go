@@ -11,9 +11,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/JDinSeattle/forge-runtime/db"
-	"github.com/JDinSeattle/forge-runtime/internal/persistence"
 	"github.com/jackc/pgx/v5"
+	"github.com/simon-jd/forge-runtime/db"
+	"github.com/simon-jd/forge-runtime/internal/persistence"
 )
 
 func Database(t *testing.T) *persistence.Store {

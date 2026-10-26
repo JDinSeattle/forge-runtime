@@ -13,7 +13,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/JDinSeattle/forge-runtime/internal/localsetup"
+	"github.com/simon-jd/forge-runtime/internal/localsetup"
 )
 
 func main() {

@@ -6,10 +6,10 @@ import (
 	"math"
 	"math/big"
 
-	"github.com/JDinSeattle/forge-runtime/internal/domain"
-	"github.com/JDinSeattle/forge-runtime/internal/persistence"
-	"github.com/JDinSeattle/forge-runtime/internal/provider"
-	"github.com/JDinSeattle/forge-runtime/internal/quota"
+	"github.com/simon-jd/forge-runtime/internal/domain"
+	"github.com/simon-jd/forge-runtime/internal/persistence"
+	"github.com/simon-jd/forge-runtime/internal/provider"
+	"github.com/simon-jd/forge-runtime/internal/quota"
 )
 
 // attemptPricing is a versioned quote from operator configuration, not a vendor

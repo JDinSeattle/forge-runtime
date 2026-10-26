@@ -8,7 +8,7 @@ import (
 	"math"
 	"strings"
 
-	"github.com/JDinSeattle/forge-runtime/internal/domain"
+	"github.com/simon-jd/forge-runtime/internal/domain"
 )
 
 // Transition is deterministic and never performs I/O. On error it returns the

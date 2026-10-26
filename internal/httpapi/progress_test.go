@@ -1,7 +1,7 @@
 package httpapi
 
 import (
-	"github.com/JDinSeattle/forge-runtime/internal/persistence"
+	"github.com/simon-jd/forge-runtime/internal/persistence"
 	"testing"
 )
 

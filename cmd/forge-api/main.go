@@ -12,12 +12,12 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/JDinSeattle/forge-runtime/internal/artifact"
-	"github.com/JDinSeattle/forge-runtime/internal/configuration"
-	"github.com/JDinSeattle/forge-runtime/internal/eventstream"
-	"github.com/JDinSeattle/forge-runtime/internal/httpapi"
-	"github.com/JDinSeattle/forge-runtime/internal/persistence"
-	"github.com/JDinSeattle/forge-runtime/internal/telemetry"
+	"github.com/simon-jd/forge-runtime/internal/artifact"
+	"github.com/simon-jd/forge-runtime/internal/configuration"
+	"github.com/simon-jd/forge-runtime/internal/eventstream"
+	"github.com/simon-jd/forge-runtime/internal/httpapi"
+	"github.com/simon-jd/forge-runtime/internal/persistence"
+	"github.com/simon-jd/forge-runtime/internal/telemetry"
 )
 
 func main() {

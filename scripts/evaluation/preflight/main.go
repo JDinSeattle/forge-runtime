@@ -21,9 +21,9 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/JDinSeattle/forge-runtime/internal/configuration"
-	"github.com/JDinSeattle/forge-runtime/internal/runnerclient"
-	"github.com/JDinSeattle/forge-runtime/internal/sandbox"
+	"github.com/simon-jd/forge-runtime/internal/configuration"
+	"github.com/simon-jd/forge-runtime/internal/runnerclient"
+	"github.com/simon-jd/forge-runtime/internal/sandbox"
 	"golang.org/x/sys/unix"
 	_ "modernc.org/sqlite"
 )
@@ -98,7 +98,7 @@ func binary(path, revision, pkg string) (map[string]any, error) {
 	for _, x := range info.Settings {
 		settings[x.Key] = x.Value
 	}
-	if info.Path != "github.com/JDinSeattle/forge-runtime/"+pkg || settings["vcs.revision"] != revision || settings["vcs.modified"] != "false" || settings["GOOS"] != "linux" || settings["GOARCH"] != "amd64" {
+	if info.Path != "github.com/simon-jd/forge-runtime/"+pkg || settings["vcs.revision"] != revision || settings["vcs.modified"] != "false" || settings["GOOS"] != "linux" || settings["GOARCH"] != "amd64" {
 		return nil, errors.New("binary package or clean source revision differs")
 	}
 	f, err := os.Open(path)

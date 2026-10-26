@@ -13,9 +13,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/JDinSeattle/forge-runtime/internal/persistence"
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/simon-jd/forge-runtime/internal/persistence"
 )
 
 func TestDependencyErrorsSeparateAvailabilityFromPermanentFailures(t *testing.T) {

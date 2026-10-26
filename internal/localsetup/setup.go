@@ -14,14 +14,14 @@ import (
 	"strings"
 	"time"
 
-	"github.com/JDinSeattle/forge-runtime/db"
-	"github.com/JDinSeattle/forge-runtime/internal/application"
-	"github.com/JDinSeattle/forge-runtime/internal/configuration"
-	"github.com/JDinSeattle/forge-runtime/internal/persistence"
-	"github.com/JDinSeattle/forge-runtime/internal/provider"
-	"github.com/JDinSeattle/forge-runtime/internal/quota"
-	"github.com/JDinSeattle/forge-runtime/internal/runnerclient"
 	"github.com/jackc/pgx/v5"
+	"github.com/simon-jd/forge-runtime/db"
+	"github.com/simon-jd/forge-runtime/internal/application"
+	"github.com/simon-jd/forge-runtime/internal/configuration"
+	"github.com/simon-jd/forge-runtime/internal/persistence"
+	"github.com/simon-jd/forge-runtime/internal/provider"
+	"github.com/simon-jd/forge-runtime/internal/quota"
+	"github.com/simon-jd/forge-runtime/internal/runnerclient"
 )
 
 func Setup(ctx context.Context, databaseURL, repoDir, stateDir string) error {

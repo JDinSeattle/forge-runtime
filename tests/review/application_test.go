@@ -15,15 +15,15 @@ import (
 	"testing"
 	"time"
 
-	"github.com/JDinSeattle/forge-runtime/internal/application"
-	"github.com/JDinSeattle/forge-runtime/internal/artifact"
-	"github.com/JDinSeattle/forge-runtime/internal/domain"
-	"github.com/JDinSeattle/forge-runtime/internal/persistence"
-	"github.com/JDinSeattle/forge-runtime/internal/provider"
-	"github.com/JDinSeattle/forge-runtime/internal/quota"
-	"github.com/JDinSeattle/forge-runtime/internal/runner"
-	flow "github.com/JDinSeattle/forge-runtime/internal/runtime"
-	"github.com/JDinSeattle/forge-runtime/internal/sandbox"
+	"github.com/simon-jd/forge-runtime/internal/application"
+	"github.com/simon-jd/forge-runtime/internal/artifact"
+	"github.com/simon-jd/forge-runtime/internal/domain"
+	"github.com/simon-jd/forge-runtime/internal/persistence"
+	"github.com/simon-jd/forge-runtime/internal/provider"
+	"github.com/simon-jd/forge-runtime/internal/quota"
+	"github.com/simon-jd/forge-runtime/internal/runner"
+	flow "github.com/simon-jd/forge-runtime/internal/runtime"
+	"github.com/simon-jd/forge-runtime/internal/sandbox"
 )
 
 type reviewDispatchProbe struct{ calls atomic.Int64 }

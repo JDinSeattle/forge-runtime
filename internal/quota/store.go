@@ -7,10 +7,10 @@ import (
 	"math"
 	"time"
 
-	"github.com/JDinSeattle/forge-runtime/internal/dependency"
-	"github.com/JDinSeattle/forge-runtime/internal/domain"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/simon-jd/forge-runtime/internal/dependency"
+	"github.com/simon-jd/forge-runtime/internal/domain"
 )
 
 // Store requires a trusted worker pool with visibility across tenant reservation

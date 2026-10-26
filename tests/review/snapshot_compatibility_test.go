@@ -20,15 +20,15 @@ import (
 	"testing"
 	"time"
 
-	"github.com/JDinSeattle/forge-runtime/internal/application"
-	"github.com/JDinSeattle/forge-runtime/internal/artifact"
-	"github.com/JDinSeattle/forge-runtime/internal/domain"
-	"github.com/JDinSeattle/forge-runtime/internal/eventstream"
-	"github.com/JDinSeattle/forge-runtime/internal/httpapi"
-	"github.com/JDinSeattle/forge-runtime/internal/persistence"
-	"github.com/JDinSeattle/forge-runtime/internal/quota"
-	"github.com/JDinSeattle/forge-runtime/internal/runner"
-	flow "github.com/JDinSeattle/forge-runtime/internal/runtime"
+	"github.com/simon-jd/forge-runtime/internal/application"
+	"github.com/simon-jd/forge-runtime/internal/artifact"
+	"github.com/simon-jd/forge-runtime/internal/domain"
+	"github.com/simon-jd/forge-runtime/internal/eventstream"
+	"github.com/simon-jd/forge-runtime/internal/httpapi"
+	"github.com/simon-jd/forge-runtime/internal/persistence"
+	"github.com/simon-jd/forge-runtime/internal/quota"
+	"github.com/simon-jd/forge-runtime/internal/runner"
+	flow "github.com/simon-jd/forge-runtime/internal/runtime"
 )
 
 func compatibilityFuture(t *testing.T, ctx context.Context, s *persistence.Store, r persistence.Run, version string) {

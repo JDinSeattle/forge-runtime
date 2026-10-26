@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/JDinSeattle/forge-runtime/internal/domain"
+	"github.com/simon-jd/forge-runtime/internal/domain"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 	semconv "go.opentelemetry.io/otel/semconv/v1.38.0"

@@ -133,7 +133,7 @@ def binary_build(c,path,revision):
   if len(parts)==2 and parts[0]=='path':fields['package']=parts[1]
   if len(parts)==2 and parts[0]=='build' and '=' in parts[1]:
    k,v=parts[1].split('=',1);require(k not in fields,'duplicate build setting');fields[k]=v
- exact(fields,{'package':'github.com/JDinSeattle/forge-runtime/cmd/'+path.name,'vcs.revision':revision,'vcs.modified':'false','GOOS':'linux','GOARCH':'amd64'},'actual executable build identity differs')
+ exact(fields,{'package':'github.com/simon-jd/forge-runtime/cmd/'+path.name,'vcs.revision':revision,'vcs.modified':'false','GOOS':'linux','GOARCH':'amd64'},'actual executable build identity differs')
  return {k:fields[k] for k in ('package','vcs.revision','vcs.modified','GOOS','GOARCH')}
 
 def compatibility(c,scope,old,phases):

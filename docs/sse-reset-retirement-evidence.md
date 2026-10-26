@@ -58,7 +58,7 @@ An independent implementation review finds no P1/P2 issue in lock ordering,
 reset visibility, repeated retirement or late cleanup of an older generation.
 
 The exact correction commit `7b7504711538aa8fb9a9ad3b3124d0043e545bb2`
-passes [GitHub Actions 34651379712](https://github.com/JDinSeattle/forge-runtime/actions/runs/34651379712):
+passes [GitHub Actions 34651379712](https://github.com/simon-jd/forge-runtime/actions/runs/34651379712):
 build, ordinary/race tests, vet, generation and five Python suites. The
 [run record](../benchmarks/results/github-actions-7b75047/run.json),
 [original execution log](../benchmarks/results/github-actions-7b75047/execution.log)

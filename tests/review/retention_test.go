@@ -11,9 +11,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/JDinSeattle/forge-runtime/internal/domain"
-	"github.com/JDinSeattle/forge-runtime/internal/persistence"
-	flow "github.com/JDinSeattle/forge-runtime/internal/runtime"
+	"github.com/simon-jd/forge-runtime/internal/domain"
+	"github.com/simon-jd/forge-runtime/internal/persistence"
+	flow "github.com/simon-jd/forge-runtime/internal/runtime"
 )
 
 func retentionRun(t *testing.T, ctx context.Context, s *persistence.Store, project domain.ID, label string, status domain.RunStatus) persistence.Run {

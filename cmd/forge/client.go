@@ -16,7 +16,7 @@ import (
 	"strings"
 	"time"
 
-	api "github.com/JDinSeattle/forge-runtime/internal/httpcontract"
+	api "github.com/simon-jd/forge-runtime/internal/httpcontract"
 )
 
 const maxJSONBytes = 2 << 20

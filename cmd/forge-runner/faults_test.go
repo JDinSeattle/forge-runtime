@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/JDinSeattle/forge-runtime/internal/runner"
+	"github.com/simon-jd/forge-runtime/internal/runner"
 )
 
 func planFixture(t *testing.T) (string, string, faultPlan) {

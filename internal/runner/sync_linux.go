@@ -6,8 +6,8 @@ import (
 	"context"
 	"os"
 
-	"github.com/JDinSeattle/forge-runtime/internal/domain"
-	"github.com/JDinSeattle/forge-runtime/internal/sandbox"
+	"github.com/simon-jd/forge-runtime/internal/domain"
+	"github.com/simon-jd/forge-runtime/internal/sandbox"
 	"golang.org/x/sys/unix"
 )
 

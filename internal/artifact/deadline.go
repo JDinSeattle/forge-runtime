@@ -5,8 +5,8 @@ import (
 	"io"
 	"sync"
 
-	"github.com/JDinSeattle/forge-runtime/internal/dependency"
-	"github.com/JDinSeattle/forge-runtime/internal/domain"
+	"github.com/simon-jd/forge-runtime/internal/dependency"
+	"github.com/simon-jd/forge-runtime/internal/domain"
 )
 
 // OpenWithDeadline also bounds consumption of the returned reader. Store

@@ -4,7 +4,7 @@ import (
 	"context"
 	"strings"
 
-	"github.com/JDinSeattle/forge-runtime/internal/telemetry"
+	"github.com/simon-jd/forge-runtime/internal/telemetry"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 )

@@ -20,16 +20,16 @@ import (
 	"testing"
 	"time"
 
-	"github.com/JDinSeattle/forge-runtime/internal/application"
-	"github.com/JDinSeattle/forge-runtime/internal/artifact"
-	"github.com/JDinSeattle/forge-runtime/internal/configuration"
-	"github.com/JDinSeattle/forge-runtime/internal/domain"
-	"github.com/JDinSeattle/forge-runtime/internal/persistence"
-	"github.com/JDinSeattle/forge-runtime/internal/quota"
-	"github.com/JDinSeattle/forge-runtime/internal/runner"
-	flow "github.com/JDinSeattle/forge-runtime/internal/runtime"
-	"github.com/JDinSeattle/forge-runtime/internal/sandbox"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/simon-jd/forge-runtime/internal/application"
+	"github.com/simon-jd/forge-runtime/internal/artifact"
+	"github.com/simon-jd/forge-runtime/internal/configuration"
+	"github.com/simon-jd/forge-runtime/internal/domain"
+	"github.com/simon-jd/forge-runtime/internal/persistence"
+	"github.com/simon-jd/forge-runtime/internal/quota"
+	"github.com/simon-jd/forge-runtime/internal/runner"
+	flow "github.com/simon-jd/forge-runtime/internal/runtime"
+	"github.com/simon-jd/forge-runtime/internal/sandbox"
 	"golang.org/x/sys/unix"
 )
 
@@ -175,7 +175,7 @@ func TestStrictLogsL4Recovery(t *testing.T) {
 	}
 	_, e = slCleanupHashFile(path, inputs, "")
 	check(e)
-	for _, x := range []struct{ p, h, pkg string }{{a.TestBinary, a.TestSHA, ""}, {a.RunnerBinary, a.RunnerSHA, "github.com/JDinSeattle/forge-runtime/cmd/forge-runner"}, {a.WorkerBinary, a.WorkerSHA, "github.com/JDinSeattle/forge-runtime/cmd/forge-worker"}} {
+	for _, x := range []struct{ p, h, pkg string }{{a.TestBinary, a.TestSHA, ""}, {a.RunnerBinary, a.RunnerSHA, "github.com/simon-jd/forge-runtime/cmd/forge-runner"}, {a.WorkerBinary, a.WorkerSHA, "github.com/simon-jd/forge-runtime/cmd/forge-worker"}} {
 		_, e = slCleanupHashFile(x.p, inputs, x.h)
 		check(e)
 		bi, e := buildinfo.ReadFile(x.p)

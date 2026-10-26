@@ -13,11 +13,11 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/JDinSeattle/forge-runtime/internal/artifact"
-	"github.com/JDinSeattle/forge-runtime/internal/runner"
-	"github.com/JDinSeattle/forge-runtime/internal/runnerclient"
-	"github.com/JDinSeattle/forge-runtime/internal/sandbox"
-	"github.com/JDinSeattle/forge-runtime/internal/telemetry"
+	"github.com/simon-jd/forge-runtime/internal/artifact"
+	"github.com/simon-jd/forge-runtime/internal/runner"
+	"github.com/simon-jd/forge-runtime/internal/runnerclient"
+	"github.com/simon-jd/forge-runtime/internal/sandbox"
+	"github.com/simon-jd/forge-runtime/internal/telemetry"
 )
 
 type configuration struct {

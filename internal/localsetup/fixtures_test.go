@@ -10,7 +10,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/JDinSeattle/forge-runtime/internal/runner"
+	"github.com/simon-jd/forge-runtime/internal/runner"
 )
 
 func TestFixtureProfilesPreservePythonAndSeparateTrustedGoVerifier(t *testing.T) {

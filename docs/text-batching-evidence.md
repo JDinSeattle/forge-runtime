@@ -1,7 +1,7 @@
 # E35 — Configurable and lossless text batching, 2026-09-11
 
 The delivered commit `a0b3a5da4c09181cf600e7e4f54d83df93387282` also passes
-[GitHub Actions 34652651662](https://github.com/JDinSeattle/forge-runtime/actions/runs/34652651662):
+[GitHub Actions 34652651662](https://github.com/simon-jd/forge-runtime/actions/runs/34652651662):
 build, ordinary/race, vet, generated bindings and all five Python suites. Its
 [record and original log](../benchmarks/results/github-actions-a0b3a5d/run.json)
 are separate from the targeted frozen-binary experiments below.

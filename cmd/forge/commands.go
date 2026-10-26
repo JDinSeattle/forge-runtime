@@ -7,7 +7,7 @@ import (
 	"os"
 	"strings"
 
-	api "github.com/JDinSeattle/forge-runtime/internal/httpcontract"
+	api "github.com/simon-jd/forge-runtime/internal/httpcontract"
 	"github.com/spf13/cobra"
 )
 

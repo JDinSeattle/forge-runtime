@@ -9,8 +9,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/JDinSeattle/forge-runtime/internal/domain"
-	flow "github.com/JDinSeattle/forge-runtime/internal/runtime"
+	"github.com/simon-jd/forge-runtime/internal/domain"
+	flow "github.com/simon-jd/forge-runtime/internal/runtime"
 )
 
 // Explicit synthetic control observations exercise the refusal oracle only.

@@ -18,18 +18,18 @@ import (
 	"testing"
 	"time"
 
-	migrations "github.com/JDinSeattle/forge-runtime/db"
-	"github.com/JDinSeattle/forge-runtime/internal/application"
-	"github.com/JDinSeattle/forge-runtime/internal/artifact"
-	"github.com/JDinSeattle/forge-runtime/internal/configuration"
-	"github.com/JDinSeattle/forge-runtime/internal/domain"
-	"github.com/JDinSeattle/forge-runtime/internal/persistence"
-	"github.com/JDinSeattle/forge-runtime/internal/provider"
-	"github.com/JDinSeattle/forge-runtime/internal/quota"
-	"github.com/JDinSeattle/forge-runtime/internal/runner"
-	"github.com/JDinSeattle/forge-runtime/internal/runnerclient"
-	"github.com/JDinSeattle/forge-runtime/internal/sandbox"
 	"github.com/jackc/pgx/v5"
+	migrations "github.com/simon-jd/forge-runtime/db"
+	"github.com/simon-jd/forge-runtime/internal/application"
+	"github.com/simon-jd/forge-runtime/internal/artifact"
+	"github.com/simon-jd/forge-runtime/internal/configuration"
+	"github.com/simon-jd/forge-runtime/internal/domain"
+	"github.com/simon-jd/forge-runtime/internal/persistence"
+	"github.com/simon-jd/forge-runtime/internal/provider"
+	"github.com/simon-jd/forge-runtime/internal/quota"
+	"github.com/simon-jd/forge-runtime/internal/runner"
+	"github.com/simon-jd/forge-runtime/internal/runnerclient"
+	"github.com/simon-jd/forge-runtime/internal/sandbox"
 )
 
 const sigtermCommand = `import os,time
@@ -302,7 +302,7 @@ func TestRealWorkerSIGTERMRecording(t *testing.T) {
 		t.Fatal("absolute worker binary/evidence and dedicated loopback /forge required")
 	}
 	info, err := buildinfo.ReadFile(binary)
-	if err != nil || info.Path != "github.com/JDinSeattle/forge-runtime/cmd/forge-worker" {
+	if err != nil || info.Path != "github.com/simon-jd/forge-runtime/cmd/forge-worker" {
 		t.Fatal("actual production forge-worker executable required")
 	}
 	if err = os.Mkdir(dir, 0700); err != nil {

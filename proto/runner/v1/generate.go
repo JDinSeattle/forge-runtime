@@ -51,7 +51,7 @@ func generate() error {
 	if outputDir == "" {
 		outputDir = "."
 	}
-	args = append(args, "--go_out="+outputDir, "--go_opt=module=github.com/JDinSeattle/forge-runtime", "--go-grpc_out="+outputDir, "--go-grpc_opt=module=github.com/JDinSeattle/forge-runtime", "proto/runner/v1/runner.proto")
+	args = append(args, "--go_out="+outputDir, "--go_opt=module=github.com/simon-jd/forge-runtime", "--go-grpc_out="+outputDir, "--go-grpc_opt=module=github.com/simon-jd/forge-runtime", "proto/runner/v1/runner.proto")
 	cmd := exec.Command(protoc, args...)
 	cmd.Dir = root
 	cmd.Stdout, cmd.Stderr = os.Stdout, os.Stderr

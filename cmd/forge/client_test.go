@@ -19,7 +19,7 @@ import (
 	"testing"
 	"time"
 
-	api "github.com/JDinSeattle/forge-runtime/internal/httpcontract"
+	api "github.com/simon-jd/forge-runtime/internal/httpcontract"
 )
 
 func commandEnv(t *testing.T, endpoint string) {

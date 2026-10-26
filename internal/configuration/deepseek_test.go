@@ -3,8 +3,8 @@ package configuration
 import (
 	"testing"
 
-	"github.com/JDinSeattle/forge-runtime/internal/application"
-	"github.com/JDinSeattle/forge-runtime/internal/provider"
+	"github.com/simon-jd/forge-runtime/internal/application"
+	"github.com/simon-jd/forge-runtime/internal/provider"
 )
 
 func TestDeepSeekRequiresOwnCredentialAndRegistry(t *testing.T) {

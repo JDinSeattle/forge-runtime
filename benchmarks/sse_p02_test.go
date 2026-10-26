@@ -19,11 +19,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/JDinSeattle/forge-runtime/internal/eventstream"
-	"github.com/JDinSeattle/forge-runtime/internal/persistence"
-	"github.com/JDinSeattle/forge-runtime/internal/telemetry"
-	"github.com/JDinSeattle/forge-runtime/internal/testutil"
 	"github.com/jackc/pgx/v5"
+	"github.com/simon-jd/forge-runtime/internal/eventstream"
+	"github.com/simon-jd/forge-runtime/internal/persistence"
+	"github.com/simon-jd/forge-runtime/internal/telemetry"
+	"github.com/simon-jd/forge-runtime/internal/testutil"
 )
 
 // This is the exact P02 traffic shape. Server sockets, queue/history sizes,

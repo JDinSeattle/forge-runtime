@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/JDinSeattle/forge-runtime/internal/dependency"
+	"github.com/simon-jd/forge-runtime/internal/dependency"
 )
 
 func (s *Store) DatabaseTime(ctx context.Context) (time.Time, error) {

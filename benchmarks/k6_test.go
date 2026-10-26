@@ -14,7 +14,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/JDinSeattle/forge-runtime/internal/persistence"
+	"github.com/simon-jd/forge-runtime/internal/persistence"
 )
 
 func TestK6MetadataEvidence(t *testing.T) {

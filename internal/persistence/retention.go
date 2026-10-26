@@ -4,9 +4,9 @@ import (
 	"context"
 	"time"
 
-	"github.com/JDinSeattle/forge-runtime/internal/dependency"
-	"github.com/JDinSeattle/forge-runtime/internal/domain"
 	"github.com/jackc/pgx/v5"
+	"github.com/simon-jd/forge-runtime/internal/dependency"
+	"github.com/simon-jd/forge-runtime/internal/domain"
 )
 
 // TrimEvents removes only old terminal-run transport events, preserving at

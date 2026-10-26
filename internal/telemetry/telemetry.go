@@ -90,7 +90,7 @@ func Setup(ctx context.Context, serviceName, endpointURL string) (*Telemetry, er
 }
 
 func newTelemetry(provider *sdktrace.TracerProvider) *Telemetry {
-	t := &Telemetry{Registry: prometheus.NewRegistry(), provider: provider, tracer: provider.Tracer("github.com/JDinSeattle/forge-runtime/internal/telemetry", trace.WithSchemaURL(semconv.SchemaURL))}
+	t := &Telemetry{Registry: prometheus.NewRegistry(), provider: provider, tracer: provider.Tracer("github.com/simon-jd/forge-runtime/internal/telemetry", trace.WithSchemaURL(semconv.SchemaURL))}
 	counter := func(name, help string, labels ...string) *prometheus.CounterVec {
 		v := prometheus.NewCounterVec(prometheus.CounterOpts{Namespace: "forge", Subsystem: "runtime", Name: name, Help: help}, labels)
 		t.Registry.MustRegister(v)

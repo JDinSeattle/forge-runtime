@@ -27,19 +27,19 @@ import (
 	"testing"
 	"time"
 
-	migrations "github.com/JDinSeattle/forge-runtime/db"
-	"github.com/JDinSeattle/forge-runtime/internal/application"
-	"github.com/JDinSeattle/forge-runtime/internal/artifact"
-	"github.com/JDinSeattle/forge-runtime/internal/configuration"
-	"github.com/JDinSeattle/forge-runtime/internal/domain"
-	"github.com/JDinSeattle/forge-runtime/internal/httpapi"
-	"github.com/JDinSeattle/forge-runtime/internal/persistence"
-	"github.com/JDinSeattle/forge-runtime/internal/provider"
-	"github.com/JDinSeattle/forge-runtime/internal/quota"
-	"github.com/JDinSeattle/forge-runtime/internal/runner"
-	"github.com/JDinSeattle/forge-runtime/internal/runnerclient"
-	"github.com/JDinSeattle/forge-runtime/internal/sandbox"
 	"github.com/jackc/pgx/v5"
+	migrations "github.com/simon-jd/forge-runtime/db"
+	"github.com/simon-jd/forge-runtime/internal/application"
+	"github.com/simon-jd/forge-runtime/internal/artifact"
+	"github.com/simon-jd/forge-runtime/internal/configuration"
+	"github.com/simon-jd/forge-runtime/internal/domain"
+	"github.com/simon-jd/forge-runtime/internal/httpapi"
+	"github.com/simon-jd/forge-runtime/internal/persistence"
+	"github.com/simon-jd/forge-runtime/internal/provider"
+	"github.com/simon-jd/forge-runtime/internal/quota"
+	"github.com/simon-jd/forge-runtime/internal/runner"
+	"github.com/simon-jd/forge-runtime/internal/runnerclient"
+	"github.com/simon-jd/forge-runtime/internal/sandbox"
 	"golang.org/x/sys/unix"
 )
 
@@ -1558,7 +1558,7 @@ func slRunLogsAcceptance(t *testing.T, targeted bool) {
 	ctx, end := context.WithTimeout(context.Background(), 10*time.Minute)
 	defer end()
 	f := &slFixture{t: t, ctx: ctx, a: a, c: c, dir: dir, private: private, configs: map[string]string{"default": a.RunnerConfig, "bytes": filepath.Join(a.ScopeRoot, "runtime", "runner-byteguard.json"), "count": filepath.Join(a.ScopeRoot, "runtime", "runner-countguard.json")}, inputs: map[string]string{}, cases: map[string]any{}, started: time.Now().UTC()}
-	for _, x := range []struct{ path, hash, pkg string }{{a.RunnerBinary, a.RunnerSHA, "github.com/JDinSeattle/forge-runtime/cmd/forge-runner"}, {a.WorkerBinary, a.WorkerSHA, "github.com/JDinSeattle/forge-runtime/cmd/forge-worker"}, {a.TestBinary, a.TestSHA, ""}} {
+	for _, x := range []struct{ path, hash, pkg string }{{a.RunnerBinary, a.RunnerSHA, "github.com/simon-jd/forge-runtime/cmd/forge-runner"}, {a.WorkerBinary, a.WorkerSHA, "github.com/simon-jd/forge-runtime/cmd/forge-worker"}, {a.TestBinary, a.TestSHA, ""}} {
 		raw, e := slRead(x.path, 128<<20)
 		f.check(e)
 		if slSHA(raw) != x.hash {

@@ -43,6 +43,6 @@ the full worker/runner process scenario remains open under S16.4. No live servic
 or mounted workspace was changed by E47.
 
 The preceding integrated commit `826f88f` passed
-[GitHub Actions](https://github.com/JDinSeattle/forge-runtime/actions/runs/34659200602);
+[GitHub Actions](https://github.com/simon-jd/forge-runtime/actions/runs/34659200602);
 its [raw archive](../benchmarks/results/github-actions-826f88f/run.json) identifies
 that exact commit. That CI run predates E47 and does not validate this new patch.
