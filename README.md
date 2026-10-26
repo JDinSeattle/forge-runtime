@@ -9,10 +9,9 @@ and authenticated receipts. A timed-out request is inspected by the same
 operation ID on the original runner before execution can continue.
 
 This is an engineering project with reproducible failure tests, not a claim of
-production adoption or prior employment. Current measured results and remaining
+production adoption. Current measured results and remaining
 acceptance work are recorded in [the evidence ledger](docs/evidence.md).
-See the [remaining acceptance boundaries](docs/open-acceptance.md) and
-[Chinese interview case study](docs/portfolio-zh.md) when evaluating its scope.
+See the [remaining acceptance boundaries](docs/open-acceptance.md) when evaluating its scope.
 
 ```mermaid
 flowchart LR
@@ -41,7 +40,7 @@ The repository contains five binaries:
 
 Key implementation decisions are explained in [ADR 0001](docs/adr/0001-receipt-first-runtime.md)
 and [ADR 0002](docs/adr/0002-workspace-storage.md). The [implementation map](docs/implementation-map.md)
-tracks the scope of the [SDE plan](docs/spec/SDE_IMPLEMENTATION_PLAN.md).
+tracks the scope of the original implementation plan.
 
 The runtime also supports a frozen, one-way [compatible model fallback](docs/provider-handoff-evidence.md),
 a durable [closed-batch repetition limit](docs/no-progress-evidence.md), and

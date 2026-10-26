@@ -1,7 +1,7 @@
 # Independent design review
 
 Reviewed 2026-09-07 by a separate review agent. This is an agent review of
-`../SDE_IMPLEMENTATION_PLAN.md` supplied with the project, not a human or employer
+the original implementation plan, not a human
 endorsement. Implementation and benchmark results were not yet available when
 this review was written. Passing a unit test is not evidence that its real
 PostgreSQL, container, or remote-provider counterpart works.

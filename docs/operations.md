@@ -153,4 +153,4 @@ Check the same run's model attempt rows, effect receipt references, final state,
 released allocation and outstanding quota. Each durable model step should have
 one saved result; the next owner must reuse that result. The operator fault flag
 is rejected if any non-fake provider is configured. The recorded execution and
-its precise scope are linked from [the case study](portfolio-zh.md).
+its precise scope are recorded in [the evidence ledger](evidence.md).

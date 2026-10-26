@@ -4,7 +4,7 @@ Date: 2026-09-07
 
 Status: Proposed architecture; implementation and acceptance remain subject to the gates in [the implementation map](../implementation-map.md).
 
-Scope: The mandatory single-runner, controlled-tenant SDE baseline in `SDE_IMPLEMENTATION_PLAN.md`, sections 1–18 and 20.
+Scope: The mandatory single-runner, controlled-tenant baseline of the original implementation plan, sections 1–18 and 20.
 
 ## Product problem
 
@@ -117,6 +117,6 @@ The complete requirement set and raw-evidence gates remain in [the implementatio
 
 ## Source basis
 
-The parent SDE plan, researched on 2026-09-07, is the baseline specification. Relevant primary references supplied by it are [Temporal Activity definitions](https://docs.temporal.io/activity-definition), [PostgreSQL locking reads](https://www.postgresql.org/docs/current/sql-select.html), [PostgreSQL notifications](https://www.postgresql.org/docs/current/sql-notify.html), [Go constrained filesystem access](https://go.dev/blog/osroot), and [Docker rootless mode](https://docs.docker.com/engine/security/rootless/). Dependency and protocol versions must still be checked, pinned and contract-tested at implementation time. This ADR records a project decision, not a claim of new upstream releases or industry adoption.
+The original implementation plan, researched on 2026-09-07, is the baseline specification. Relevant primary references supplied by it are [Temporal Activity definitions](https://docs.temporal.io/activity-definition), [PostgreSQL locking reads](https://www.postgresql.org/docs/current/sql-select.html), [PostgreSQL notifications](https://www.postgresql.org/docs/current/sql-notify.html), [Go constrained filesystem access](https://go.dev/blog/osroot), and [Docker rootless mode](https://docs.docker.com/engine/security/rootless/). Dependency and protocol versions must still be checked, pinned and contract-tested at implementation time. This ADR records a project decision, not a claim of new upstream releases or industry adoption.
 
-The repository should present independently built work, measured results and technical decisions. It must not invent an employer, production users, paid customer usage, incident history or performance metrics. Interview material can describe realistic failure cases through reproducible demonstrations and actual engineering evidence.
+The repository presents independently built work, measured results and technical decisions. It does not claim production users, paid customer usage, incident history or performance metrics beyond what its tests and benchmarks record.

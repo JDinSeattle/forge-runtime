@@ -17,7 +17,7 @@ CI: protocol/implementation validation and model quality are distinct.
 
 Prior scoped independent reviews, the 140-row implementation map, actual runtime
 and recovery evidence, and this final CI constitute the bounded delivery audit.
-The 13 optional extension rows remain deferred. This is a portfolio engineering
+The 13 optional extension rows remain deferred. This is an engineering
 baseline, not a claim of production adoption or universal recovery guarantees.
 
 The operator authorized making the repository public. A scan of 3,174 reachable
