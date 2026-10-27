@@ -1153,7 +1153,7 @@ const file_proto_runner_v1_runner_proto_rawDesc = "" +
 	"\x0fCancelOperation\x12(.forge.runner.v1.InspectOperationRequest\x1a\x1a.forge.runner.v1.Operation\x12P\n" +
 	"\rStopWorkspace\x12!.forge.runner.v1.WorkspaceRequest\x1a\x1c.forge.runner.v1.StopReceipt\x12L\n" +
 	"\fSealSnapshot\x12!.forge.runner.v1.WorkspaceRequest\x1a\x19.forge.runner.v1.Snapshot\x12U\n" +
-	"\x10ReleaseWorkspace\x12!.forge.runner.v1.WorkspaceRequest\x1a\x1e.forge.runner.v1.ReleaseResultB?Z=github.com/simon-jd/forge-runtime/proto/runner/v1;runnerv1b\x06proto3"
+	"\x10ReleaseWorkspace\x12!.forge.runner.v1.WorkspaceRequest\x1a\x1e.forge.runner.v1.ReleaseResultB<Z:github.com/simon-jd/forge-runtime/proto/runner/v1;runnerv1b\x06proto3"
 
 var (
 	file_proto_runner_v1_runner_proto_rawDescOnce sync.Once
